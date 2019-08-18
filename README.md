@@ -309,3 +309,51 @@ flow:
 Several files might be generated in the `flow` section and outputs indicates which ones
 should be considered as the final outputs of the workflow. Executors may return back
 these outputs as a dictionary.
+
+
+# Command Line Interface
+
+You can also use queenbee from command line. The most commonly used commands are:
+
+1. validate
+  
+  `queenbee validate [WORKFLOW-FILE]`
+
+  This command validates the workflow to ensure:
+    a. the workflow complies with queenbee schema
+    b. all the `import_from` resources are available and valid.
+    c. all the operators are included in workflow file.
+
+  You can also validate a workflow against an input file.
+
+  `queenbee validate [WORKFLOW-FILE] --inputs [INPUT-FILE]`
+
+2. package
+  
+  `queenbee package [WORKFLOW-FILE] [PACKAGED-WORKFLOW-FILE]`
+
+  This command packages the workflow and all its dependencies into a single file. If
+  there is no `import_from` in original workflow the packaged workflow will be identical
+  to the original workflow.
+
+3. freeze
+  
+  `queenbee freeze [WORKFLOW-FILE] [INPUT-FILE] [FROZEN-WORKFLOW-FILE]`
+
+  Queenbee workflows are designed to be reusable and it is valid to have input parameters
+  with no default values. These values will be provided in an input file. In some cases
+  you want to use the workflow over and over with the same input values. This command
+  makes a frozen version of the workflow with all the values hard-coded in the workflow.
+
+  `freeze` command calls `package` command under the hood. In other words a frozen
+  workflow will not have an `import_from` key.
+
+4. populate-inputs
+
+  `queenbee populate-inputs [WORKFLOW-FILE] [INPUT-FILE]`
+
+  This command generates a template input file for a specific workflow. You can use
+  `--include-defaults` flag to also get the inputs that already have a default value. The
+  inputs with referenced inputs with prefix variable name (e.g.
+  {{steps.create_octree.outputs.artifacts.octree}}) will not be included in the inputs
+  file. 
