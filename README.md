@@ -68,11 +68,11 @@ value for inputs or it can be passed to workflow using an input YAML / JSON file
       value: /mnt/c/ladybug/untitled
     artifacts:
     - name: sky_file
-      value: full_path_to_sky_file.sky
+      path: full_path_to_sky_file.sky
     - name: material_file
-      value: full_path_to_material_file.mat
+      path: full_path_to_material_file.mat
     - name: geometry_file
-      value: full_path_to_geometry_file.rad
+      path: full_path_to_geometry_file.rad
 
 ```
 
@@ -82,27 +82,16 @@ value for inputs or it can be passed to workflow using an input YAML / JSON file
 image. This is an operator for running arbitrary Radiance commands.
 
 ```yaml
-
-operators:
   - name: radiance-operator
-    inputs:
-      parameters:
-        - name: command
     container:
       name: radiance52
       image: ladybugtools/radiance:5.2
-      command:
-        - /bin/sh
-        - -c
-      args:
-        - '{{ inputs.parameters.command }}'
-    requirements:
+    local:
       app:
         - name: radiance
           version: ">=5.2"
           command: rtrace -version  # command to get the version
           pattern: r'\d+\.\d+'  # regex pattern to extract the version from command output
-
 ```
 
 Here is another one for running a `template` for running `ladybug` Python scripts.
@@ -112,17 +101,10 @@ by removing it from the list.
 ```yaml
 
   - name: ladybug-operator
-    inputs:
-      parameters:
-        - name: script
     container:
       name: ladybug
       image: ladybugtools/ladybug:latest
-      command:
-        - python
-      args:
-        - '{{ inputs.parameters.script }}'
-    requirements:
+    local:
       pip:
         - name: lbt-ladybug
           version: ">=0.4.3"
@@ -137,14 +119,12 @@ by removing it from the list.
 ```
 
 You can also import the operator from a `YAML` or `JSON` file using the `import_from`
-key.
+key. All the fields except for the name will be loaded from the file. It's good practice
+to use the same name inside the yaml file and the workflow.
 
 ```yaml
 
   - name: ladybug-operator
-    inputs:
-      parameters:
-        - name: script
     import_from: /operators/ladybug_operator.yaml
 
 ```
@@ -164,6 +144,52 @@ Templates can use the `import_from` keyword to import the `template` from a `YAM
 `JSON` file. Keep in mind that a template in a file should be self-sufficient and include
 all the information including `operator`s. This is different from when the `template` is
 part of the `workflow` where an `operator` will be referenced by name.
+
+Here is a `module` for generating a sky with desired irradiance which is part of a
+workflow. In order to make it a valid `template` in a separate file you should use the
+full operator specification from the last step instead of only using the name of the
+operator.
+
+```yaml
+  name: generate_sky
+  inputs:
+    parameters:
+      - name: desired_irradiance
+        value: 100000   # default value which can be overwritten
+  operator: radiance-operator
+  # commands and args will be used both locally and inside the container
+  command:
+    - /bin/sh
+    - -c
+  args:
+    - gensky -c -B '{{ inputs.parameters.desired_irradiance }}' > '{{ workflow.artifacts.sky }}'
+  outputs:
+    artifacts:
+      - name: sky
+        path: '{{ workflow.artifacts.sky }}'
+```
+
+Alternatively, you can use `honeybee-radiance` operator which has a command for
+generating sky.
+
+```yaml
+  name: generate_sky
+  inputs:
+    parameters:
+      - name: desired_irradiance
+        value: 100000   # default value which can be overwritten
+  operator: honeybee-radiance
+  command:
+    - honeybee-radiance
+  args:
+    - fixed-irradiance-sky
+    - --irradiance
+    - "{{inputs.parameters.desired_irradiance}}"
+  outputs:
+    artifacts:
+      - name: sky
+        path: '{{ workflow.artifacts.sky }}'
+```
 
 ## 4. flow
 
@@ -192,7 +218,7 @@ flow:
       template: generate_sky
       inputs:
         parameters:
-          - name: desired_illuminance
+          - name: desired_irradiance
             value: 100000
     - name: generate_octree_step
       template: generate_octree
@@ -244,7 +270,7 @@ flow:
       template: generate_sky
       inputs:
         parameters:
-          - name: desired_illuminance
+          - name: desired_irradiance
             value: 100000
     - name: generate_octree_task
       template: generate_octree
