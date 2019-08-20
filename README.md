@@ -16,7 +16,7 @@ should also support any other custom workflows.
 
 # Queenbee Workflow structure
 
-A Queenbee workflow is a YAML / JSON file which is consisted from different parts. You
+A Queenbee workflow is a YAML / JSON file which consists of different parts. You
 can use Queenbee to generate the workflows programmatically using Python or you can
 write a workflow line by line.
 
@@ -79,7 +79,14 @@ value for inputs or it can be passed to workflow using an input YAML / JSON file
 ## 2. operators
 
 `Operators` include the requirements for running `templates` locally or using a Docker
-image. This is an operator for running arbitrary Radiance commands.
+image. Operators are referenced from inside `templates` [see below]. To have a valid
+workflow all the `operators` that are referenced by `templates` must be included in this
+section.
+
+An operator has two separate sections for `container` and `local`. Container identifies
+the Docker image and local identifies applications and libraries that this operator
+relies on to execute a task locally. For instance this is an operator for running
+arbitrary Radiance commands.
 
 ```yaml
   - name: radiance-operator
@@ -94,20 +101,26 @@ image. This is an operator for running arbitrary Radiance commands.
           pattern: r'\d+\.\d+'  # regex pattern to extract the version from command output
 ```
 
-Here is another one for running a `template` for running `ladybug` Python scripts.
+Here is another one for running a `template` for running `honeybee-radiance` workflows.
 This `operator` will run on Windows, Linux and Mac platforms. You can exclude a platform
 by removing it from the list.
 
 ```yaml
 
-  - name: ladybug-operator
+  - name: honeybee-radiance
     container:
-      name: ladybug
-      image: ladybugtools/ladybug:latest
+      name: honeybee-radiance
+      image: ladybugtools/honeybee-radiance-workflow:latest
     local:
+      app:
+        - name: radiance
+          version: ">=5.2"
+          command: rtrace -version
+          pattern: r'\d+\.\d+'
       pip:
-        - name: lbt-ladybug
+        - name: lbt-honeybee
           version: ">=0.4.3"
+        - name: honeybee-radiance-workflow
       language:
         - name: python
           version: ">=3.6"
@@ -197,8 +210,8 @@ generating sky.
 Queenbee supports two different types of workflows. DAGFlow and SteppedFlow. 
 
 It's common to use the output of one step as an input for another step or reference one
-of the workflow inputs as an input for one of the steps or tasks. Queenbee supports below
-words as prefix variable name:
+of the workflow inputs as an input for one of the steps or tasks. Queenbee supports the
+following words as prefix variable names::
 
 - workflow: "{{workflow.xx.yy}} is used for workflow level parameters.
 - steps: "{{steps.step_name.xx.yy}} is used in chained templates.
@@ -207,7 +220,7 @@ words as prefix variable name:
 - item: "{{item}}" or "{{item.key_name}}" is used in loops. You can change item to a
   different keyword by setting up `loop_var` in `loop_control`.
 
-Here is a example of creating the sky and generating and octree as two consecutive steps.
+Here is a example of creating a sky and generating an octree as two consecutive steps.
 Note that the values are place-holders and can be overwritten by input parameters file.
 
 ```yaml
@@ -232,12 +245,19 @@ flow:
 
 ```
 
-We can add generating sensors and running the ray-tracing itself to the current flow but
-there is a difference between these new two steps and what we had before. In previous
-example the second step of generating the octree was dependant on the first step and it
-made sense to run them one after another. However we don't need to wait for generating
-sky to generate the sensor grids. The last step of ray-tracing will need both the grid
-and the octree. To describe such flows we will use a Directed Acyclic Graph or DAG. Here
+Now let's think about a longer workflow which also includes ray-tracing using the
+generated octree. We need to add two new steps to the workflow:
+
+1. generate sensor grids
+2. run ray-tracing
+
+But there is a difference between these new two steps and the initial two steps.
+In the first two steps the second step of generating the octree was dependant on the
+first step and it couldn't be executed until generating sky is finished. However for
+generating the sensor grids we we do not need to wait for generating sky to be finished.
+Finally, the last step of ray-tracing will need both the grid and the octree.
+
+To describe such flows we will use a Directed Acyclic Graph or DAG. Here
 is the updated flow. Note the the keyword `step` is changed to `tasks` and each `task` has
 a key for `dependency`.
 
@@ -305,10 +325,12 @@ flow:
 
 ## 5. outputs
 
-`outputs` is a list of parameters or artifacts that are generated during the flow.
-Several files might be generated in the `flow` section and outputs indicates which ones
-should be considered as the final outputs of the workflow. Executors may return back
-these outputs as a dictionary.
+Several files might be generated in the `flow` section and the `outputs` `artifcats`
+section indicates which ones should be saved as the final outputs of the `workflow`.
+Executors may return these outputs as a collection of file locations or file contents.
+
+Outputs can also return `parameters` that are generated in the `flow` section of the
+workflow. 
 
 
 # Command Line Interface
