@@ -337,45 +337,53 @@ workflow.
 
 You can also use queenbee from command line. The most commonly used commands are:
 
-1. validate
-  
-  `queenbee validate [WORKFLOW-FILE]`
+## validate
 
-  This command validates the workflow to ensure:
-    a. the workflow complies with queenbee schema
-    b. all the `import_from` resources are available and valid.
-    c. all the operators are included in workflow file.
+`queenbee validate [WORKFLOW-FILE]`
 
-  You can also validate a workflow against an input file.
+This command validates the workflow to ensure:
+  a. the workflow complies with queenbee schema
+  b. all the `import_from` resources are available and valid.
+  c. all the operators are included in workflow file.
 
-  `queenbee validate [WORKFLOW-FILE] --inputs [INPUT-FILE]`
+You can also validate a workflow against an input file.
 
-2. package
-  
-  `queenbee package [WORKFLOW-FILE] [PACKAGED-WORKFLOW-FILE]`
+`queenbee validate [WORKFLOW-FILE] --inputs [INPUT-FILE]`
 
-  This command packages the workflow and all its dependencies into a single file. If
-  there is no `import_from` in original workflow the packaged workflow will be identical
-  to the original workflow.
+## package
 
-3. freeze
-  
-  `queenbee freeze [WORKFLOW-FILE] [INPUT-FILE] [FROZEN-WORKFLOW-FILE]`
+`queenbee package [WORKFLOW-FILE] [PACKAGED-WORKFLOW-FILE]`
 
-  Queenbee workflows are designed to be reusable and it is valid to have input parameters
-  with no default values. These values will be provided in an input file. In some cases
-  you want to use the workflow over and over with the same input values. This command
-  makes a frozen version of the workflow with all the values hard-coded in the workflow.
+This command packages the workflow and all its dependencies into a single file. If
+there is no `import_from` in original workflow the packaged workflow will be identical
+to the original workflow.
 
-  `freeze` command calls `package` command under the hood. In other words a frozen
-  workflow will not have an `import_from` key.
+## freeze
 
-4. populate-inputs
+`queenbee freeze [WORKFLOW-FILE] [INPUT-FILE] [FROZEN-WORKFLOW-FILE]`
 
-  `queenbee populate-inputs [WORKFLOW-FILE] [INPUT-FILE]`
+Queenbee workflows are designed to be reusable and it is valid to have input parameters
+with no default values. These values will be provided in an input file. In some cases
+you want to use the workflow over and over with the same input values. This command
+makes a frozen version of the workflow with all the values hard-coded in the workflow.
 
-  This command generates a template input file for a specific workflow. You can use
-  `--include-defaults` flag to also get the inputs that already have a default value. The
-  inputs with referenced inputs with prefix variable name (e.g.
-  {{steps.create_octree.outputs.artifacts.octree}}) will not be included in the inputs
-  file. 
+`freeze` command calls `package` command under the hood. In other words a frozen
+workflow will not have an `import_from` key.
+
+## populate-inputs
+
+`queenbee populate-inputs [WORKFLOW-FILE] [INPUT-FILE]`
+
+This command generates a template input file for a specific workflow. You can use
+`--include-defaults` flag to also get the inputs that already have a default value. The
+inputs with referenced inputs with prefix variable name (e.g.
+{{steps.create_octree.outputs.artifacts.octree}}) will not be included in the inputs
+file. 
+
+## visualize
+
+`queenbee visualize [WORKFLOW-FILE]`
+
+This command creates an interactive visual representation of the workflow.
+
+![image](https://user-images.githubusercontent.com/2915573/61600213-9405e280-abfd-11e9-91e7-a0a622ca3ece.png)
