@@ -1,18 +1,17 @@
 # queenbee
 
-👑 Queenbee is a workflow language for creating complex workflows! The Queenbee workflow
+:crown: Queenbee is a workflow language for creating workflows! The Queenbee workflow
 is inspired by [Argo Workflow](https://argoproj.github.io/docs/argo/readme.html) and
 borrows a number of terms and expressions from
 [Apache Airflow](http://airflow.apache.org/) and [Ansible](https://docs.ansible.com/).
 
-Queenbee populates and validates the workflows but does not run them. For running the
+Queenbee populates and validates the workflows but does not run them! For running the
 workflows see `ladybug-tools/workerbee` which converts Queenbee workflows to executable
-[Luigi](https://luigi.readthedocs.io/en/stable/) workflows.
+[Luigi](https://luigi.readthedocs.io/en/stable/) pipelines.
 
 You can find more workflow samples in
 [honeybee-radiance-workflow](https://github.com/ladybug-tools/honeybee-radiance-workflow)
-repository. The workflow is meant to mainly be used with Ladybug Tools libraries but it
-should also support any other custom workflows.
+repository.
 
 # Queenbee Workflow structure
 
@@ -24,8 +23,9 @@ Here we discuss the generic structure of a Queenbee workflow. See OpenApi schema
 documentation for all Workflow objects: [Missing link]()
 
 ```
-
   Workflow
+    |
+    |__ name
     |
     |__ inputs
     |   |___ parameters
@@ -46,47 +46,60 @@ documentation for all Workflow objects: [Missing link]()
 
 ## 1. inputs
 
-Workflow inputs are global inputs that can be accessed using `"{{workflow.inputs.xx.yy}}"`.
-For instance to access an input parameter with the name `file_path` one should use
-`"{{workflow.inputs.parameters.file_path}}"` and Queenbee will map the value of
-`file_path` parameter to this placeholder.
+Workflow inputs are global inputs that can be accessed as `"{{workflow.inputs.xx.yy}}"`
+when creating the `flow` section. For instance to access an input parameter with the
+name `file-path` one should use `"{{workflow.inputs.parameters.file-path}}"` and Queenbee
+will map the value of `file-path` parameter to this place-holder.
 
-Inputs can be from two different types: `parameters` and `artifacts`. Use `artifacts` for
-*files* and *folder* inputs. The content of these `artifacts` will be copied to target
-location before executing the workflow. For all the other `inputs` use `parameters`.
+Inputs can be from two different types: `parameters` and `artifacts`.
 
-Here is an example `inputs` for a daylight simulation workflow. You can put a default
-value for inputs or it can be passed to workflow using an input YAML / JSON file.
+Input `artifacts` are a collection of *files* that will be accessed during the run.
+Artifacts in this section usually exist before the execution of the workflow. If the
+`artifact` is generated as part of the `flow` it is usually identified in that `step` of
+the `flow`. Keep in mind that in distributed execution that each section of the `flow`
+might be executed on a separate machine the content of these `artifacts` will be copied
+to target location before executing the workflow. For all the other `inputs` use
+`parameters`.
+
+Here is an example `inputs` for a typical simulation workflow. The `parameters` section
+is used to define the maximum number of workers during the execution of the workflow and
+`artifacts` section is used to define the project-folder. Both inputs have a default
+value which can be overwritten by an input file.
+
 
 ```yaml
 
   inputs:
     parameters:
-    # this is just the path to target folder not the content itself. It can be referenced
-    # as {{workflow.parameters.folder}}
-    - name: folder
-      value: /mnt/c/ladybug/untitled
+    - name: worker
+      description: Maximum number of workers for executing this workflow.
+      value: 1   # this is the default value which can be overwritten
     artifacts:
-    - name: sky_file
-      path: full_path_to_sky_file.sky
-    - name: material_file
-      path: full_path_to_material_file.mat
-    - name: geometry_file
-      path: full_path_to_geometry_file.rad
+    - name: project-folder
+      description: |
+        Path to project folder for this study. This will make it easy to use relative
+        path for other template inputs.
+      path: '.'   # this is the default value which can be overwritten
 
 ```
 
 ## 2. operators
 
-`Operators` include the requirements for running `templates` locally or using a Docker
-image. Operators are referenced from inside `templates` [see below]. To have a valid
-workflow all the `operators` that are referenced by `templates` must be included in this
-section.
+`Operators` include the requirements for running `templates` [see below]. Operator can be
+an operator for running the templates locally or using containers. In a valid workflow
+all the the `operators` that are referenced by `templates` should be included in
+this section. Keep in mind that the operators are reusable and can be shared between
+different templates.
 
-An operator has two separate sections for `container` and `local`. Container identifies
-the Docker image and local identifies applications and libraries that this operator
-relies on to execute a task locally. For instance this is an operator for running
-arbitrary Radiance commands.
+An operator has two separate fields for `container` and `local`. The `container` field
+identifies the image for running a `template` and the `local` field identifies the
+applications and libraries that this operator relies on to run locally.
+
+For instance this is an operator for running arbitrary Radiance commands. It uses a
+radiance image for running the commands in docker and uses radiance application to run
+the application. Once can identify version requirement for the application and the
+command to check the version. If the command outputs more than just the version you can
+pass a regex pattern which will be applied to the output of the command.
 
 ```yaml
   - name: radiance-operator
@@ -101,9 +114,7 @@ arbitrary Radiance commands.
           pattern: r'\d+\.\d+'  # regex pattern to extract the version from command output
 ```
 
-Here is another one for running a `template` for running `honeybee-radiance` workflows.
-This `operator` will run on Windows, Linux and Mac platforms. You can exclude a platform
-by removing it from the list.
+Here is another operator example for running `honeybee-radiance` commands.
 
 ```yaml
 
@@ -124,32 +135,52 @@ by removing it from the list.
       language:
         - name: python
           version: ">=3.6"
-      platform:
-       - Windows
-       - Linux
-       - Mac
 
 ```
 
 You can also import the operator from a `YAML` or `JSON` file using the `import_from`
-key. All the fields except for the name will be loaded from the file. It's good practice
-to use the same name inside the yaml file and the workflow.
+key. All the fields will be loaded from the file except for the `name`. The original name
+will be kept since this is the name that has been used inside the workflow to refer to
+this operator.
 
 ```yaml
 
-  - name: ladybug-operator
-    import_from: /operators/ladybug_operator.yaml
+operators:
+  - name: radiance-operator  # will not change even if the operator name in the file is different
+    import_from: 'radiance_operator.yaml'  # relative path to the workflow file itself
 
+```
+
+In this example the content of `radiance_operator.yaml` can be something like this:
+
+```yaml
+---
+name: honeybee-radiance
+container:
+  name: honeybee-radiance
+  image: ladybugtools/honeybee-radiance-workflow:latest
+local:
+  app:
+    - name: radiance
+      version: ">=5.2"
+      command: rtrace -version
+      pattern: r'\d+\.\d+'
+  pip:
+    - name: lbt-honeybee
+      version: ">=0.4.3"
+    - name: honeybee-radiance-workflow
+  language:
+    - name: python
+      version: ">=3.6"
 ```
 
 ## 3. templates
 
-Templates are a discrete reusable unit of code that can be executed separately or as part
-of a workflow. Queenbee supports 4 type of objects as templates:
+Templates are discrete reusable units of code that can be executed separately or as part
+of a workflow. Queenbee supports 4 types of objects as templates:
 
-- `module` : A single module. Each module uses an operator from operators section.
-- `dag`: Collection of modules as a Directed Acyclic Graph (DAG).
-- `steps`: Collection of modules to be executed sequentially in steps.
+- `function` : A single function to execute a single command.
+- `dag`: Collection of functions as a Directed Acyclic Graph (DAG).
 - `workflow`: A full Queenbee workflow itself can be referenced as a template in another
   workflow.
 
@@ -158,92 +189,74 @@ Templates can use the `import_from` keyword to import the `template` from a `YAM
 all the information including `operator`s. This is different from when the `template` is
 part of the `workflow` where an `operator` will be referenced by name.
 
-Here is a `module` for generating a sky with desired irradiance which is part of a
-workflow. In order to make it a valid `template` in a separate file you should use the
-full operator specification from the last step instead of only using the name of the
+Here is an example `function` for generating a sky with desired irradiance which is part
+of a workflow. In order to make it a valid `template` in a separate file you should use
+the full operator specification from the last step instead of only using the name of the
 operator.
 
 ```yaml
-  name: generate_sky
+  name: generate-overcast-sky
+  type: function
   inputs:
     parameters:
-      - name: desired_irradiance
-        value: 100000   # default value which can be overwritten
+      - name: desired-irradiance
+        description: desired sky horizontal irradiance
+      - name: sky-file
+        description: full path to output sky file
   operator: radiance-operator
   # commands and args will be used both locally and inside the container
-  command:
-    - /bin/sh
-    - -c
-  args:
-    - gensky -c -B '{{ inputs.parameters.desired_irradiance }}' > '{{ workflow.artifacts.sky }}'
+  # TODO: This will change to be platform specific
+  command: gensky -c -B '{{ inputs.parameters.desired-irradiance }}' > '{{ inputs.parameters.sky-file }}'
   outputs:
     artifacts:
       - name: sky
-        path: '{{ workflow.artifacts.sky }}'
-```
-
-Alternatively, you can use `honeybee-radiance` operator which has a command for
-generating sky.
-
-```yaml
-  name: generate_sky
-  inputs:
-    parameters:
-      - name: desired_irradiance
-        value: 100000   # default value which can be overwritten
-  operator: honeybee-radiance
-  command:
-    - honeybee-radiance
-  args:
-    - fixed-irradiance-sky
-    - --irradiance
-    - "{{inputs.parameters.desired_irradiance}}"
-  outputs:
-    artifacts:
-      - name: sky
-        path: '{{ workflow.artifacts.sky }}'
+        path: '{{ inputs.parameters.sky-file }}'
 ```
 
 ## 4. flow
 
-`flow` is the heart of the workflow to define how the templates should be executed.
-Queenbee supports two different types of workflows. DAGFlow and SteppedFlow. 
+`flow` is the workflow logic that defines in what order the templates should be executed
+and how the output from one task will be consumed by another task(s). Such a workflow is
+also known as Directed Acyclic Graph (DAG).
 
-It's common to use the output of one step as an input for another step or reference one
-of the workflow inputs as an input for one of the steps or tasks. Queenbee supports the
-following words as prefix variable names::
+Here is an example of creating a sky and generating an octree as two consecutive steps.
+Note that the values are place-holders and can be overwritten by input parameters file.
+
+
+```yaml
+
+flow:
+  - name: prepare-sky-and-octree
+    tasks:
+      - name: generate-sky-step
+        template: generate-sky
+        inputs:
+          parameters:
+            - name: desired_irradiance
+              value: 100000
+      - name: generate_octree_step
+        template: generate_octree
+        dependencies: [generate-sky]
+        inputs:
+          parameters:
+            - name: scene_files
+              value:
+                - "{{steps.generate_sky_steps.outputs.sky_file}}"
+                - "{{workflow.inputs.parameters.folder}}"/model/static/scene.mat
+                - "{{workflow.inputs.parameters.folder}}"/model/static/scene.rad
+
+```
+
+As you can see it is common to use the output of one step as an input for another step or
+reference one of the workflow inputs as an input for one of the steps or tasks. Queenbee
+supports the following words as prefix variable names inside the `flow` section:
 
 - workflow: "{{workflow.xx.yy}} is used for workflow level parameters.
-- steps: "{{steps.step_name.xx.yy}} is used in chained templates.
 - tasks: "{{tasks.task_name.xx.yy}} is used in DAG task to refer to other tasks.
 - inputs: "{{inputs.xx.yy}}" is used in operators.
 - item: "{{item}}" or "{{item.key_name}}" is used in loops. You can change item to a
   different keyword by setting up `loop_var` in `loop_control`.
 
-Here is a example of creating a sky and generating an octree as two consecutive steps.
-Note that the values are place-holders and can be overwritten by input parameters file.
-
-```yaml
-
-flow:
-  - steps:
-    - name: generate_sky_step
-      template: generate_sky
-      inputs:
-        parameters:
-          - name: desired_irradiance
-            value: 100000
-    - name: generate_octree_step
-      template: generate_octree
-      inputs:
-        parameters:
-           - name: scene_files
-             value:
-               - "{{steps.generate_sky_steps.outputs.sky_file}}"
-               - "{{workflow.inputs.parameters.folder}}"/model/static/scene.mat
-               - "{{workflow.inputs.parameters.folder}}"/model/static/scene.rad
-
-```
 
 Now let's think about a longer workflow which also includes ray-tracing using the
 generated octree. We need to add two new steps to the workflow:
@@ -258,8 +271,8 @@ generating the sensor grids we we do not need to wait for generating sky to be f
 Finally, the last step of ray-tracing will need both the grid and the octree.
 
 To describe such flows we will use a Directed Acyclic Graph or DAG. Here
-is the updated flow. Note the the keyword `step` is changed to `tasks` and each `task` has
-a key for `dependency`.
+is the updated process. Note the the keyword `step` is changed to `tasks` and each `task`
+has a key for `dependency`.
 
 Also since the step for generating grids can generate more than one grid we are using
 loop to run ray-tracing for all these grids in parallel.
@@ -285,6 +298,7 @@ loop to run ray-tracing for all these grids in parallel.
 ```yaml
 
 flow:
+  - name: jjjjj
   - tasks:
     - name: generate_sky_task
       template: generate_sky
@@ -325,11 +339,11 @@ flow:
 
 ## 5. outputs
 
-Several files might be generated in the `flow` section and the `outputs` `artifcats`
+Several files might be generated in the `process` section and the `outputs` `artifacts`
 section indicates which ones should be saved as the final outputs of the `workflow`.
 Executors may return these outputs as a collection of file locations or file contents.
 
-Outputs can also return `parameters` that are generated in the `flow` section of the
+Outputs can also return `parameters` that are generated in the `process` section of the
 workflow. 
 
 

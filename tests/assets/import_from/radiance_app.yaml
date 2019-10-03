@@ -1,0 +1,4 @@
+name: not-radiance        # this will be overwritten by the name in workflow
+version: ">=5.2"
+command: rtrace -version
+pattern: r'\d+\.\d+'

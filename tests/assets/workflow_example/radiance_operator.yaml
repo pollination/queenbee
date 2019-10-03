@@ -1,0 +1,11 @@
+---
+name: radiance-operator
+container:
+  name: radiance52
+  image: ladybugtools/radiance:5.2
+local:
+  app:
+    - name: radiance
+      version: ">=5.2"
+      command: rtrace -version
+      pattern: r'\d+\.\d+'

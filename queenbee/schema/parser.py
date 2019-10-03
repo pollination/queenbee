@@ -1,7 +1,8 @@
-"""Parse workflow files from JSON / YAML files."""
+"""Parse workflow files from JSON / YAML files with support for import_from key."""
 import json
 import yaml
 import os
+import re
 
 
 def _check_list(lst, folder):
@@ -71,3 +72,10 @@ def parse_file(input_file):
     # populate full dictionary
     folder = os.path.dirname(input_file)
     return _import_dict_data(data, folder)
+
+
+def parse_double_quotes_vars(input):
+    """Parse values between {{ }}."""
+    pattern = r"{{\s*([_a-zA-Z0-9.\-\$#\?]*)\s*}}"
+    match = re.findall(pattern, input, flags=re.MULTILINE)
+    return match

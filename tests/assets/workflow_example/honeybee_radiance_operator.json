@@ -1,0 +1,20 @@
+{
+    "name": "honeybee-radiance-operator",
+    "container": {
+      "name": "honeybee_radiance",
+      "image": "ladybugtools/honeybee-radiance"
+    },
+    "local": {
+      "app": [
+        {
+          "name": "radiance",
+          "version": ">=5.2",
+          "command": "rtrace -version",
+          "pattern": "r'\\d+\\.\\d+'"
+        }
+      ]
+    },
+    "pip": [
+      "honeybee-radiance>=1.0.0"
+    ]
+}
