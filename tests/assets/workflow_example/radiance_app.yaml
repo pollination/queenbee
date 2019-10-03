@@ -1,0 +1,4 @@
+name: radiance
+version: ">=5.2"
+command: rtrace -version
+pattern: r'\d+\.\d+'
