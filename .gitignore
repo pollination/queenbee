@@ -13,4 +13,4 @@ tox.ini
 .eggs
 *.code-workspace
 
-tests/assets/temp/
+tests/assets/temp/*.*
