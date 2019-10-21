@@ -37,6 +37,7 @@ class Workflow(BaseModel):
 
     outputs: Arguments
 
+    # TODO: add a validator to ensure all the names for templates are unique
     # @validator('flow')
     # def check_templates(cls, v, values):
     #     """Check templates in flow to ensure they exist."""

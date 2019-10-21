@@ -1,4 +1,4 @@
-from queenbee.schema.operator import Operator, Container, LocalRequirements
+from queenbee.schema.operator import Operator, LocalRequirements
 import yaml
 
 
@@ -8,11 +8,9 @@ def test_load_operator():
 
     assert operator.name == 'honeybee-radiance'
     
-    # check container
-    container = operator.container
-    assert isinstance(container, Container)
-    container.name == 'honeybee-radiance'
-    container.image == 'ladybugtools/honeybee-radiance-workflow:latest'
+    # check image
+    image = operator.image
+    image == 'ladybugtools/honeybee-radiance-workflow:latest'
     
     # more checks is not really helpful as successful load to Pydantic object means
     # the object has been loaded correctly.
@@ -21,10 +19,7 @@ def test_load_operator():
 def test_create_operator():
     operator_dict = {
         'name': 'honeybee-radiance',
-        'container': {
-            'name': 'honeybee-radiance',
-            'image': 'ladybugtools/honeybee-radiance-workflow:latest'
-        },
+        'image': 'ladybugtools/honeybee-radiance-workflow:latest',
         'local': {
             'app': [
                 {

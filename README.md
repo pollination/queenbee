@@ -91,7 +91,7 @@ all the the `operators` that are referenced by `templates` should be included in
 this section. Keep in mind that the operators are reusable and can be shared between
 different templates.
 
-An operator has two separate fields for `container` and `local`. The `container` field
+An operator has two separate fields for container `image` and `local`. The `image` field
 identifies the image for running a `template` and the `local` field identifies the
 applications and libraries that this operator relies on to run locally.
 
@@ -103,9 +103,7 @@ pass a regex pattern which will be applied to the output of the command.
 
 ```yaml
   - name: radiance-operator
-    container:
-      name: radiance52
-      image: ladybugtools/radiance:5.2
+    image: ladybugtools/radiance:5.2
     local:
       app:
         - name: radiance
@@ -119,9 +117,7 @@ Here is another operator example for running `honeybee-radiance` commands.
 ```yaml
 
   - name: honeybee-radiance
-    container:
-      name: honeybee-radiance
-      image: ladybugtools/honeybee-radiance-workflow:latest
+    image: ladybugtools/honeybee-radiance-workflow:latest
     local:
       app:
         - name: radiance
@@ -156,9 +152,7 @@ In this example the content of `radiance_operator.yaml` can be something like th
 ```yaml
 ---
 name: honeybee-radiance
-container:
-  name: honeybee-radiance
-  image: ladybugtools/honeybee-radiance-workflow:latest
+image: ladybugtools/honeybee-radiance-workflow:latest
 local:
   app:
     - name: radiance
@@ -205,7 +199,7 @@ operator.
         description: full path to output sky file
   operator: radiance-operator
   # commands and args will be used both locally and inside the container
-  # TODO: This will change to be platform specific
+  # TODO: This must change to be platform specific
   command: gensky -c -B '{{ inputs.parameters.desired-irradiance }}' > '{{ inputs.parameters.sky-file }}'
   outputs:
     artifacts:

@@ -120,7 +120,13 @@ class Function(BaseModel):
 
     @staticmethod
     def validate_variable(variables, func_name, input_names):
-        """Validate referenced variables."""
+        """Validate referenced variables.
+        
+        Referenced variables must follow x.y.z pattern and start with inputs, outputs or
+        workflow (e.g. inputs.parameters.filename).
+
+        This method is a helper that is used by other @validator classmethods.
+        """
         for m in variables:
             try:
                 ref, typ, name = m.split('.')

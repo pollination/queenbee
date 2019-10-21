@@ -10,9 +10,8 @@ def test_parser():
     # check operator itself
     operator = data['operators'][0]
     assert operator['name'] == 'radiance-operator'
-    assert 'container' in operator
-    assert operator['container']['name'] == 'radiance52'
-    assert operator['container']['image'] == 'ladybugtools/radiance:5.2'
+    assert 'image' in operator
+    assert operator['image'] == 'ladybugtools/radiance:5.2'
     assert 'local' in operator
     assert 'app' in operator['local']
     # check if app is loaded correctly
