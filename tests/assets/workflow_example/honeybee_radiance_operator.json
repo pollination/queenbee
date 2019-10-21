@@ -1,9 +1,6 @@
 {
     "name": "honeybee-radiance-operator",
-    "container": {
-      "name": "honeybee_radiance",
-      "image": "ladybugtools/honeybee-radiance"
-    },
+    "image": "ladybugtools/honeybee-radiance",
     "local": {
       "app": [
         {

@@ -22,7 +22,8 @@ class Parameter(BaseModel):
     """
     name: str = Schema(
         ...,
-        description='Name is the parameter name.'
+        description='Name is the parameter name. must be unique within a task\'s '
+        'inputs / outputs.'
     )
 
     value: Any = Schema(
