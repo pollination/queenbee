@@ -13,4 +13,6 @@ tox.ini
 .eggs
 *.code-workspace
 
+venv
+
 tests/assets/temp/*.*
