@@ -24,7 +24,9 @@ class Workflow(BaseModel):
 
     id: str = str(uuid4())
 
-    inputs: Arguments
+    inputs: Arguments = Schema(
+        None
+    )
 
     operators: List[Operator]
 
@@ -35,7 +37,9 @@ class Workflow(BaseModel):
         description='A list of steps for using tasks in a DAG workflow'
     )
 
-    outputs: Arguments
+    outputs: Arguments = Schema(
+        None
+    )
 
     # TODO: add a validator to ensure all the names for templates are unique
     # @validator('flow')

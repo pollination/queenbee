@@ -17,6 +17,7 @@ inputs:
         Path to project folder for this study. This will make it easy to use relative
         path for other template inputs.
       path: '.'   # this is the default value which can be overwritten
+      task_path: project
 
 operators:
   - name: radiance-operator
@@ -34,11 +35,22 @@ templates:
       parameters:
         - name: project-folder
           value: '.'
-    command: honeybee radiance sky illuminance 100000 --folder {{inputs.parameters.project-folder}}/sky
+      artifacts:
+        - name: sky-folder
+          path: '{{inputs.parameters.project-folder}}/sky'
+          task_path: sky
+    command: honeybee radiance sky illuminance 100000 --folder sky
     outputs:
       artifacts:
         - name: sky
           path: '{{inputs.parameters.project-folder}}/sky/100000_lux.sky'
+          task_path: sky/100000_lux.sky'
+
+        # Could also copy the sky-folder and just have that be the output artifact
+        # - name: sky-folder
+        #   path: '{{inputs.parameters.project-folder}}/sky'
+        #   task_path: sky
+
 
   - name: split-grid
     type: function
@@ -50,12 +62,20 @@ templates:
         - name: sensor-count
         - name: output-folder
           value: '.'   # default value
+      artifacts:
+        - name: sensor-grid
+          path: '{{inputs.parameters.input-grid}}'
+          task_path: grid-file
     command: |
-      honeybee radiance grid split '{{inputs.parameters.input-grid}}' '{{inputs.parameters.sensor-count}}' --folder '{{inputs.parameters.output-folder}}' > '{{inputs.parameters.output-folder}}'/grids_list.txt
+      honeybee radiance grid split grid-file '{{inputs.parameters.sensor-count}}' --folder grids-folder > grids_list.txt
     outputs:
       parameters:
         - name: grid-list
-          path: '{{inputs.parameters.output-folder}}/grids_list.txt'
+          path: grids_list.txt'
+      artifacts:
+        - name: grids
+          path: '{{inputs.parameters.output-folder}}'
+          task_path: grids-folder
 
   - name: create-octree
     type: function
@@ -69,11 +89,16 @@ templates:
           description: Octree input files separated by space. 
         - name: output-file
           description: Path to output octree file.
-    command: oconv -f "{{inputs.parameters.input-files}}" > "{{inputs.parameters.output-file}}" 
+      artifacts:
+        - name: input-files
+          path: "{{inputs.parameters.input-file}}"
+          task_path: in
+    command: oconv -f in > out 
     outputs:
       artifacts:
         - name: octree-file
           path: "{{inputs.parameters.output-file}}"
+          task_path: out
 
   - name: trace-rays-daylight-factor
     type: function
@@ -87,12 +112,20 @@ templates:
         - name: grid-file
         - name: output-file
           description: Path to output results file.
+      artifacts:
+        - name: octree-file
+          path: "{{inputs.parameters.octree-file}}"
+          task_path: octree.oct
+        - name: grid-file
+          path: "{{input.parameters.grid-file}}"
+          task_path: grid
     command: |
-      rtrace -I -h "{{inputs.parameters.ray-tracing-options}}" "{{inputs.parameters.octree-file}}" < "{{inputs.parameters.grid-file}}" | rcalc -e "$1=(0.265*$1+0.67*$2+0.065*$3)*179/1000" > "{{inputs.parameters.output-file}}"
+      rtrace -I -h {{inputs.parameters.ray-tracing-options}} octree.oct < grid | rcalc -e $1=(0.265*$1+0.67*$2+0.065*$3)*179/1000 > out
     outputs:
       artifacts:
         - name: result-file
           path: '{{inputs.parameters.output-file}}'
+          task_path: out
 
   - name: merge-results
     type: function
@@ -102,11 +135,16 @@ templates:
         - name: base-name
         - name: input-folder
         - name: output-folder
-    command: 'honeybee radiance grid merge {{inputs.parameters.input-folder}} {{inputs.parameters.base-name}} .res --folder {{inputs.parameters.output-folder}}'
+      artifacts:
+        - name: input-folder
+          path: "{{inputs.parameters.input-folder}}"
+          task_path: results-in
+    command: honeybee radiance grid merge results-in results .res --folder out
     outputs:
       artifacts:
         - name: result-file
           path: "{{inputs.parameters.output-folder}}/{{inputs.parameters.base-name}}.res"
+          task_path: "out/results.res"
 
 flow:
   name: daylight-factor
@@ -161,7 +199,7 @@ flow:
             value: "{{ workflow.inputs.parameters.grid-name }}"
 
 # this is not supported in Argo or is it?
-outputs:
-  artifacts:
-    - name: daylight-factor-values
-      path: "{{ tasks.merge-results.outputs.artifacts.result-file }}"
+# outputs:
+#   artifacts:
+#     - name: daylight-factor-values
+#       path: "{{ tasks.merge-results.outputs.artifacts.result-file }}"

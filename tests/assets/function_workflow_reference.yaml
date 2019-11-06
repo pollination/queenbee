@@ -12,4 +12,5 @@ outputs:
   artifacts:
     - name: sky
       path: '{{ inputs.parameters.sky-file }}'
+      task_path: file.sky
 

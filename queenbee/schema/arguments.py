@@ -53,13 +53,18 @@ class Artifact(BaseModel):
     )
 
     path: str = Schema(
-        None,
-        description='Path is the path to the artifact which can be a local path or a url.'
+        ...,
+        description='Path to the artifact on the local machine, url or S3 bucket.'
+    )
+
+    task_path: str = Schema(
+        ...,
+        description='Path the artifact should be copied to in the temporary task folder.'
     )
 
     is_url: bool = Schema(
         False,
-        description='Switch to indicate if path is a url.'
+        description='Switch to indicate if the from path is a url.'
     )
 
     description: str = Schema(

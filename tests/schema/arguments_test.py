@@ -16,12 +16,14 @@ def test_load_arguments():
     assert isinstance(artifact, Artifact)
     artifact.name == 'project-folder'
     artifact.path == '.'
+    artifact.task_path == 'project'
+
 
 
 def test_create_arguments():
     args_dict = {
         'parameters': [{'name': 'worker', 'value': 1}],
-        'artifacts': [{'name': 'project-folder', 'path': '.'}]
+        'artifacts': [{'name': 'project-folder', 'path': '.', 'task_path': 'project'}]
     }
 
     args = Arguments.parse_obj(args_dict)
