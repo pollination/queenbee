@@ -11,6 +11,7 @@ command: gensky -c -B '{{ inputs.parameters.desired-irradiance }}' > '{{ inputs.
 outputs:
   artifacts:
     - name: sky
+      location: project-folder
       path: '{{ inputs.parameters.sky-file }}'
       task_path: file.sky
 

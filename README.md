@@ -27,6 +27,8 @@ documentation for all Workflow objects: [Missing link]()
     |
     |__ name
     |
+    |__ artifact_locations
+    |
     |__ inputs
     |   |___ parameters
     |   |___ artifacts
@@ -44,7 +46,34 @@ documentation for all Workflow objects: [Missing link]()
 
 ```
 
-## 1. inputs
+## 1. Artifact Locations
+
+Artifacts are files that will be used during different steps of the workflow computation. These files can be stored on different types of systems (remote folder, local machine or API call to a webapp). Every artifact indicates which `location` or source-system it is to be acquired from, and each `Artifact Location` is listed in the `artifact_locations` key of the `workflow` object. Currently 3 types of locations are supported:
+* **Local**: Artifacts situated on the machine running the workflows
+* **HTTP**: Artifacts that can be sourced from a website or web API
+* **S3**: Artifacts that can be retrieved from an S3 bucket
+
+```yaml
+artifact_locations:
+- name: local-test
+  type: local
+  root: C:\\Users\Test\Projects\Project 1
+
+- name: http-test
+  type: http
+  root: http://climate.onebuilding.org
+  headers: 
+    Authorization: some-long-JWT-token
+
+- name: s3-test
+  type: s3
+  root: pollination
+  endpoint: s3.eu-west-1.amazonaws.com
+  bucket: all-of-my-data
+  credentials_path: C:\\Users\Test\.queenbee\config.yaml
+```
+
+## 2. inputs
 
 Workflow inputs are global inputs that can be accessed as `"{{workflow.inputs.xx.yy}}"`
 when creating the `flow` section. For instance to access an input parameter with the
@@ -75,15 +104,17 @@ value which can be overwritten by an input file.
       description: Maximum number of workers for executing this workflow.
       value: 1   # this is the default value which can be overwritten
     artifacts:
-    - name: project-folder
+    - name: model-folder
       description: |
         Path to project folder for this study. This will make it easy to use relative
         path for other template inputs.
-      path: '.'   # this is the default value which can be overwritten
+      location: project-folder
+      path: models/
+      task_path: . # this is the default value which can be overwritten
 
 ```
 
-## 2. operators
+## 3. operators
 
 `Operators` include the requirements for running `templates` [see below]. Operator can be
 an operator for running the templates locally or using containers. In a valid workflow
@@ -168,7 +199,7 @@ local:
       version: ">=3.6"
 ```
 
-## 3. templates
+## 4. templates
 
 Templates are discrete reusable units of code that can be executed separately or as part
 of a workflow. Queenbee supports 4 types of objects as templates:
@@ -200,14 +231,16 @@ operator.
   operator: radiance-operator
   # commands and args will be used both locally and inside the container
   # TODO: This must change to be platform specific
-  command: gensky -c -B '{{ inputs.parameters.desired-irradiance }}' > '{{ inputs.parameters.sky-file }}'
+  command: gensky -c -B {{ inputs.parameters.desired-irradiance }} > file.sky
   outputs:
     artifacts:
       - name: sky
-        path: '{{ inputs.parameters.sky-file }}'
+        task_path: file.sky
+        path: {{ inputs.parameters.sky-file }}
+        source: project-folder
 ```
 
-## 4. flow
+## 5. flow
 
 `flow` is the workflow logic that defines in what order the templates should be executed
 and how the output from one task will be consumed by another task(s). Such a workflow is
@@ -331,7 +364,7 @@ flow:
       loop: "{{ tasks.generate_grids_task.outputs.parameters.grids }}"
 ```
 
-## 5. outputs
+## 6. outputs
 
 Several files might be generated in the `process` section and the `outputs` `artifacts`
 section indicates which ones should be saved as the final outputs of the `workflow`.

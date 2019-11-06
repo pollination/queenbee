@@ -1,0 +1,17 @@
+artifact_locations:
+- name: local-test
+  type: local
+  root: C:\\Users\Test\Projects\Project 1
+
+- name: http-test
+  type: http
+  root: http://climate.onebuilding.org
+  headers: 
+    Authorization: some-long-JWT-token
+        
+- name: s3-test
+  type: s3
+  root: pollination
+  endpoint: s3.eu-west-1.amazonaws.com
+  bucket: all-of-my-data
+  credentials_path: C:\\Users\Test\.queenbee\config.yaml

@@ -112,9 +112,13 @@ class Function(BaseModel):
         # check the variables are fine
         func_name = values['name']
         input_names = [param.name for param in values['inputs'].parameters]
-        for v in output_params:
-            match = var_parser(v.path)
-            cls.validate_variable(match, func_name, input_names)
+        for v_out in output_params:
+            if 'path' in v_out:
+                match = var_parser(v_out.path)
+                cls.validate_variable(match, func_name, input_names)
+            if 'value' in v_out:
+                match = var_parser(v_out.value)
+                cls.validate_variable(match, func_name, input_names)
 
         return v
 
@@ -134,19 +138,18 @@ class Function(BaseModel):
                 raise ValueError(
                     '{{%s}} in %s function does not follow x.y.z pattern'% (m, func_name)
                 )
-            else:
-                if not ref in ('inputs', 'outputs', 'workflow'):
-                    raise ValueError(
-                        'Referenced values must start with inputs, outputs or workflow'
-                    )
-                if ref == 'workflow':
-                    warnings.warn(
-                        '[{}]: Referencing workflow parameters in a function '
-                        ' makes the function less reusable. Use inputs of the function'
-                        ' instead and assign workflow values in flow section when calling'
-                        ' this function. Reference: {}'.format(func_name, m)
-                    )
-                    continue
+            if not ref in ('inputs', 'outputs', 'workflow'):
+                raise ValueError(
+                    'Referenced values must start with inputs, outputs or workflow'
+                )
+            if ref == 'workflow':
+                warnings.warn(
+                    '[{}]: Referencing workflow parameters in a function '
+                    ' makes the function less reusable. Use inputs of the function'
+                    ' instead and assign workflow values in flow section when calling'
+                    ' this function. Reference: {}'.format(func_name, m)
+                )
+                continue
             
             # now ensure input references are valid
             if ref != 'inputs' or typ != 'parameters':

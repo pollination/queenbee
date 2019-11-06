@@ -10,8 +10,9 @@ Queenbee accepts two types of arguments:
         a path.
 """
 from queenbee.schema.qutil import BaseModel
+from queenbee.schema.artifact_location import VerbEnum
 from pydantic import Schema
-from typing import List, Any
+from typing import List, Any, Optional, Dict
 
 
 class Parameter(BaseModel):
@@ -52,6 +53,11 @@ class Artifact(BaseModel):
         'inputs / outputs.'
     )
 
+    location: str = Schema(
+        ...,
+        description="Name of the Artifact Location to source this artifact from."
+    )
+
     path: str = Schema(
         ...,
         description='Path to the artifact on the local machine, url or S3 bucket.'
@@ -62,14 +68,19 @@ class Artifact(BaseModel):
         description='Path the artifact should be copied to in the temporary task folder.'
     )
 
-    is_url: bool = Schema(
-        False,
-        description='Switch to indicate if the from path is a url.'
-    )
-
     description: str = Schema(
         None,
         description='Optional description for input parameter.'
+    )
+
+    headers: Optional[Dict[str, str]] = Schema(
+        None,
+        description="An object with Key Value pairs of HTTP headers. For artifacts from URL Location only"
+    )
+
+    verb: Optional[VerbEnum] = Schema(
+        None,
+        description="The HTTP verb to use when making the request. For artifacts from URL Location only"
     )
 
 

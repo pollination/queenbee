@@ -14,11 +14,15 @@ from queenbee.schema.dag import DAG
 from queenbee.schema.arguments import Arguments
 from queenbee.schema.operator import Operator
 from queenbee.schema.function import Function
+from queenbee.schema.artifact_location import LocalLocation, HTTPLocation, S3Location
 
+
+class WorkflowTypeEnum(str, Enum):
+    workflow: 'workflow'
 
 class Workflow(BaseModel):
     """A DAG Workflow."""
-    type: Enum('Workflow', {'type': 'Workflow'}) = 'Workflow'
+    type: Enum('workflow', {'type': 'workflow'}) = 'workflow'
 
     name: str
 
@@ -40,6 +44,22 @@ class Workflow(BaseModel):
     outputs: Arguments = Schema(
         None
     )
+
+    artifact_locations: List[Union[LocalLocation, HTTPLocation, S3Location]] = Schema(
+        None,
+        description="A list of artifact locations which can be used by child flow objects"
+    )
+
+    @validator('artifact_locations', whole=True)
+    def check_references_exist(cls, v, values):
+        """Check that any artifact location referenced in templates or flows exists in artifact_locations"""
+
+        locations = list(map(lambda x: x.name, v))
+        artifacts = list_artifacts(values)
+        sources = list(set(map(lambda x: x.location, artifacts)))
+        for source in sources:
+            if source not in locations:
+                raise ValueError("Artifact with location \"{}\" is not valid because it is not listed in the artifact_locations object.".format(source))
 
     # TODO: add a validator to ensure all the names for templates are unique
     # @validator('flow')
@@ -80,6 +100,30 @@ class Workflow(BaseModel):
 
         return {'nodes': nodes, 'links': links}
 
+
+def list_artifacts(obj):
+    artifacts = []
+    
+    if 'flow' in obj:
+        for dag in obj['flow']:
+            artifacts += list_artifacts(dag)
+    
+    if 'templates' in obj:
+        for template in obj['templates']:
+            artifacts += list_artifacts(template)
+    
+    if isinstance(obj, DAG):
+        for task in obj.tasks:
+            if 'arguments' in task and 'artifacts' in task.arguments:
+                artifacts = artifacts + task.arguments.artifacts  
+    
+    if isinstance(obj, Function):
+        if obj.inputs != None and obj.inputs.artifacts != None:
+            artifacts = artifacts + obj.inputs.artifacts
+        if obj.outputs != None and obj.outputs.artifacts != None:
+            artifacts = artifacts + obj.outputs.artifacts
+    
+    return artifacts
 
 # required for self.referencing model
 # see https://pydantic-docs.helpmanual.io/#self-referencing-models

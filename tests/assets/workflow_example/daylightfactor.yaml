@@ -1,6 +1,11 @@
-type: Workflow
+type: workflow
 
 name: daylight-factor
+
+artifact_locations:
+  - type: local
+    name: project-folder
+    root: /path/to/test
 
 inputs:
   parameters:
@@ -13,6 +18,7 @@ inputs:
     # This should be an artifacts since the content of the folder will be copied to
     # container for distributed runs
     - name: project-folder
+      location: project-folder
       description: |
         Path to project folder for this study. This will make it easy to use relative
         path for other template inputs.
@@ -37,12 +43,17 @@ templates:
           value: '.'
       artifacts:
         - name: sky-folder
+          location: project-folder
           path: '{{inputs.parameters.project-folder}}/sky'
           task_path: sky
     command: honeybee radiance sky illuminance 100000 --folder sky
     outputs:
+      parameters:
+        - name: fill
+          value: this gap
       artifacts:
         - name: sky
+          location: project-folder
           path: '{{inputs.parameters.project-folder}}/sky/100000_lux.sky'
           task_path: sky/100000_lux.sky'
 
@@ -64,6 +75,7 @@ templates:
           value: '.'   # default value
       artifacts:
         - name: sensor-grid
+          location: project-folder
           path: '{{inputs.parameters.input-grid}}'
           task_path: grid-file
     command: |
@@ -74,6 +86,7 @@ templates:
           path: grids_list.txt'
       artifacts:
         - name: grids
+          location: project-folder
           path: '{{inputs.parameters.output-folder}}'
           task_path: grids-folder
 
@@ -91,12 +104,14 @@ templates:
           description: Path to output octree file.
       artifacts:
         - name: input-files
+          location: project-folder
           path: "{{inputs.parameters.input-file}}"
           task_path: in
     command: oconv -f in > out 
     outputs:
       artifacts:
         - name: octree-file
+          location: project-folder
           path: "{{inputs.parameters.output-file}}"
           task_path: out
 
@@ -114,9 +129,11 @@ templates:
           description: Path to output results file.
       artifacts:
         - name: octree-file
+          location: project-folder
           path: "{{inputs.parameters.octree-file}}"
           task_path: octree.oct
         - name: grid-file
+          location: project-folder
           path: "{{input.parameters.grid-file}}"
           task_path: grid
     command: |
@@ -124,6 +141,7 @@ templates:
     outputs:
       artifacts:
         - name: result-file
+          location: project-folder
           path: '{{inputs.parameters.output-file}}'
           task_path: out
 
@@ -137,12 +155,14 @@ templates:
         - name: output-folder
       artifacts:
         - name: input-folder
+          location: project-folder
           path: "{{inputs.parameters.input-folder}}"
           task_path: results-in
     command: honeybee radiance grid merge results-in results .res --folder out
     outputs:
       artifacts:
         - name: result-file
+          location: project-folder
           path: "{{inputs.parameters.output-folder}}/{{inputs.parameters.base-name}}.res"
           task_path: "out/results.res"
 
