@@ -14,6 +14,8 @@ inputs:
       value: 1   # this is the default value which can be overwritten
     - name: sensor-grid-path
       description: Relative source_path to sensor grid from project folder.
+    - name: scene-file-paths
+      description: A list of file paths to input as assets to the rtrace command
   artifacts:
     # This should be an artifacts since the content of the folder will be copied to
     # container for distributed runs
@@ -82,6 +84,8 @@ templates:
       other by a space.
     operator: radiance-operator
     inputs:
+      parameters:
+        - name: scene-file-paths
       artifacts:
         - name: sky-file
           location: project-folder
@@ -92,17 +96,7 @@ templates:
           source_path: model
           path: '.'
     command: |
-      oconv \
-        ./static/aperture/*.mat ./static/aperture/*.rad \
-        ./static/aperture/interior/*.mat ./static/aperture/interior/*.rad  \
-        ./static/nonopaque/*.mat ./static/nonopaque/*.rad \
-        ./static/nonopaque/indoor/*.mat ./static/nonopaque/indoor/*.rad \
-        ./static/nonopaque/outdoor/*.mat ./static/nonopaque/outdoor/*.rad \
-        ./static/opaque/*.mat ./static/opaque/*.rad \
-        ./static/opaque/indoor/*.mat ./static/opaque/indoor/*.rad \
-        ./static/opaque/outdoor/*.mat  ./static/opaque/outdoor/*.rad \
-        ./sky.file
-        \> static_scene.oct
+      oconv {{ inputs.parameters.scene-file-paths }} ./sky.file > static_scene.oct
     outputs:
       artifacts:
         - name: octree-file
@@ -171,6 +165,9 @@ flow:
       dependencies:
         - generate-overcast-sky
       arguments:
+        parameters:
+          - name: scene-file-paths
+            value: "{{ workflow.inputs.parameters.scene-file-paths }}"
         artifacts:
           - name: sky-file
             source_path: "{{ tasks.generate-sky.outputs.artifacts.sky.path }}"
