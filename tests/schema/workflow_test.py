@@ -1,6 +1,4 @@
 from queenbee.schema.workflow import Workflow
-import yaml
-import pytest
 
 
 def test_load_workflow():

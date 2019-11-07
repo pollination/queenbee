@@ -4,9 +4,8 @@ Workflow is a collection of operators and inter-related tasks that describes an 
 end steps for the workflow.
 """
 from queenbee.schema.qutil import BaseModel
-from pydantic import Schema, validator
+from pydantic import Schema, validator, constr
 from typing import List, Union
-from enum import Enum
 from uuid import UUID, uuid4
 import json
 import os
@@ -17,12 +16,10 @@ from queenbee.schema.function import Function
 from queenbee.schema.artifact_location import LocalLocation, HTTPLocation, S3Location
 
 
-class WorkflowTypeEnum(str, Enum):
-    workflow: 'workflow'
-
 class Workflow(BaseModel):
     """A DAG Workflow."""
-    type: Enum('workflow', {'type': 'workflow'}) = 'workflow'
+
+    type: constr(regex='^workflow$')
 
     name: str
 

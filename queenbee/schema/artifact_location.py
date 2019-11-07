@@ -20,15 +20,6 @@ class VerbEnum(str, Enum):
     patch = 'PATCH'
     delete = 'DELETE'
 
-# class LocalLocationType(str, Enum):
-#     local = 'local'
-
-# class HTTPLocationType(str, Enum):
-#     http = 'http'
-
-# class S3LocationType(str, Enum):
-#     s3 = 's3'
-
 class ArtifactLocation(BaseModel):
     """ArtifactLocation
     
