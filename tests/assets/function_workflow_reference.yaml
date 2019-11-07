@@ -12,6 +12,6 @@ outputs:
   artifacts:
     - name: sky
       location: project-folder
-      path: '{{ inputs.parameters.sky-file }}'
-      task_path: file.sky
+      source_path: '{{ inputs.parameters.sky-file }}'
+      path: file.sky
 

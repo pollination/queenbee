@@ -102,26 +102,30 @@ class Function(BaseModel):
         if v == None:
             return values
         
-        output_params = []
+        output_paths = []
+        output_values = []
 
         if v.parameters is not None:
-            output_params.extend([p for p in v.parameters])
+            output_paths.extend([p.path for p in v.parameters])
+            output_values.extend([p.value for p in v.parameters])
+
         if v.artifacts is not None:
-            output_params.extend([p for p in v.artifacts])
+            output_paths.extend([p.path for p in v.artifacts])
+            output_paths.extend([p.source_path for p in v.artifacts])
+
+        output_paths = filter(None, output_paths)
+        output_values = filter(None, output_values)
 
         ref_params = []
-        for param in output_params:
-            if not param.path:
-                continue
-            if 'workflow.' in param.path:
-                ref_params.append(param)
+        for path in output_paths:
+            if 'workflow.' in path:
+                ref_params.append(path)
         if len(ref_params) > 0:
-            params = ['{}: {}'.format(param.name, param.path) for param in ref_params]
             warnings.warn(
                 'Referencing workflow parameters in a template function makes the'
                 ' function less reusable. Try using inputs / outputs of the function'
                 ' instead and assign workflow values in flow section when calling'
-                ' this function.\n\t- {}'.format('\n\t-'.join(params))
+                ' this function.\n\t- {}'.format('\n\t-'.join(ref_params))
             )
         # check the variables are fine
         func_name = values['name']
@@ -130,14 +134,13 @@ class Function(BaseModel):
         else:
             input_names = []
 
-        for v_out in output_params:
+        for path in output_paths:
+            match = var_parser(path)
+            cls.validate_variable(match, func_name, input_names)
 
-            if 'path' in v_out:
-                match = var_parser(v_out.path)
-                cls.validate_variable(match, func_name, input_names)
-            if 'value' in v_out:
-                match = var_parser(v_out.value)
-                cls.validate_variable(match, func_name, input_names)
+        for value in output_values:
+            match = var_parser(value)
+            cls.validate_variable(match, func_name, input_names)
 
         return values
 

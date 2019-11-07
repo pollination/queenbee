@@ -58,12 +58,12 @@ class Artifact(BaseModel):
         description="Name of the Artifact Location to source this artifact from."
     )
 
-    path: str = Field(
+    source_path: str = Field(
         None,
         description='Path to the artifact on the local machine, url or S3 bucket.'
     )
 
-    task_path: str = Field(
+    path: str = Field(
         None,
         description='Path the artifact should be copied to in the temporary task folder.'
     )

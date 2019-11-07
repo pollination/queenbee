@@ -9,5 +9,5 @@ artifacts:
     description: |
       Path to project folder for this study. This will make it easy to use relative
       path for other template inputs.
-    path: '.'   # this is the default value which can be overwritten
-    task_path: project
+    source_path: '.'   # this is the default value which can be overwritten
+    path: project

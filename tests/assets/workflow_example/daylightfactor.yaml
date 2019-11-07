@@ -13,17 +13,17 @@ inputs:
       description: Maximum number of workers for executing this workflow.
       value: 1   # this is the default value which can be overwritten
     - name: sensor-grid-path
-      description: Relative path to sensor grid from project folder.
+      description: Relative source_path to sensor grid from project folder.
   artifacts:
     # This should be an artifacts since the content of the folder will be copied to
     # container for distributed runs
     - name: project-folder
       location: project-folder
       description: |
-        Path to project folder for this study. This will make it easy to use relative
-        path for other template inputs.
-      path: '.'   # this is the default value which can be overwritten
-      task_path: project
+        source_path to project folder for this study. This will make it easy to use relative
+        source_path for other template inputs.
+      source_path: '.'   # this is the default value which can be overwritten
+      path: project
 
 operators:
   - name: radiance-operator
@@ -42,13 +42,13 @@ templates:
       artifacts:
         - name: sky
           location: project-folder
-          path: asset/sky/100000_lux.sky
-          task_path: sky/100000_lux.sky
+          source_path: asset/sky/100000_lux.sky
+          path: sky/100000_lux.sky
 
         # Could also copy the sky-folder and just have that be the output artifact
         # - name: sky-folder
-        #   path: '{{inputs.parameters.project-folder}}/sky'
-        #   task_path: sky
+        #   source_path: '{{inputs.parameters.project-folder}}/sky'
+        #    path: sky
 
 
   - name: split-grid
@@ -61,8 +61,8 @@ templates:
       artifacts:
         - name: sensor-grid
           location: project-folder
-          path: asset/grid/grid.pts
-          task_path: grid-file
+          source_path: asset/grid/grid.pts
+          path: grid-file
     command: |
       honeybee radiance grid split grid-file {{inputs.parameters.sensor-count}} --folder grids-folder > grids_list.txt
     outputs:
@@ -72,8 +72,8 @@ templates:
       artifacts:
         - name: grids
           location: project-folder
-          path: asset/grid/split
-          task_path: grids-folder
+          source_path: asset/grid/split
+          path: grids-folder
 
   - name: create-octree
     type: function
@@ -85,12 +85,12 @@ templates:
       artifacts:
         - name: sky-file
           location: project-folder
-          path: sky.file # Note that this is overwritten in the DAG by the output artifact path from the generate-sky task template
-          task_path: sky.file
+          source_path: sky.file # Note that this is overwritten in the DAG by the output artifact source_path from the generate-sky task template
+          path: sky.file
         - name: scene-files
           location: project-folder
-          path: model
-          task_path: '.'
+          source_path: model
+          path: '.'
     command: |
       oconv \
         ./static/aperture/*.mat ./static/aperture/*.rad \
@@ -107,8 +107,8 @@ templates:
       artifacts:
         - name: octree-file
           location: project-folder
-          path: output/octree/static_scene.oct
-          task_path: static_scene.oct
+          source_path: output/octree/static_scene.oct
+          path: static_scene.oct
 
   - name: trace-rays-daylight-factor
     type: function
@@ -121,20 +121,20 @@ templates:
       artifacts:
         - name: octree-file
           location: project-folder
-          path: output/octree/static_scene.oct
-          task_path: octree.oct
+          source_path: output/octree/static_scene.oct
+          path: octree.oct
         - name: grid-file
           location: project-folder
-          # path: because this step is run in a loop we specify the path in the project folder dynamically in the DAG definition
-          task_path: grid
+          # source_path: because this step is run in a loop we specify the source_path in the project folder dynamically in the DAG definition
+          path: grid
     command: |
       rtrace -I -h {{inputs.parameters.ray-tracing-options}} octree.oct < grid | rcalc -e $1=(0.265*$1+0.67*$2+0.065*$3)*179/1000 > out
     outputs:
       artifacts:
         - name: result-file
           location: project-folder
-          path: output/raw/
-          task_path: out
+          source_path: output/raw/
+          path: out
 
   - name: merge-results
     type: function
@@ -143,15 +143,15 @@ templates:
       artifacts:
         - name: input-folder
           location: project-folder
-          path: output/raw/
-          task_path: results-folder
+          source_path: output/raw/
+          path: results-folder
     command: honeybee radiance grid merge results-folder results .res --folder out
     outputs:
       artifacts:
         - name: result-file
           location: project-folder
-          path: output/postprocess/results.res
-          task_path: "out/results.res"
+          source_path: output/postprocess/results.res
+          path: "out/results.res"
 
 flow:
   name: daylight-factor
@@ -173,7 +173,7 @@ flow:
       arguments:
         artifacts:
           - name: sky-file
-            path: "{{ tasks.generate-sky.outputs.artifacts.sky.path }}"
+            source_path: "{{ tasks.generate-sky.outputs.artifacts.sky.path }}"
 
 
     - name: trace-rays
@@ -187,9 +187,9 @@ flow:
             value: '-ab 2'
       artifacts:
         - name: octree-file
-          path: "{{tasks.generate-octree.outputs.artifacts.octree-file}}"
+          source_path: "{{tasks.generate-octree.outputs.artifacts.octree-file}}"
         - name: grid-file
-          path: "asset/grid/{{item}}" # item represents the individual string output from looping over output grids below
+          source_path: "asset/grid/{{item}}" # item represents the individual string output from looping over output grids below
       loop: "{{tasks.generate-sky.outputs.parameters.split-grid}}"  # loop over the output grids
 
     - name: merge-results
@@ -201,4 +201,4 @@ flow:
 outputs:
   artifacts:
     - name: daylight-factor-values
-      path: "{{ tasks.merge-results.outputs.artifacts.result-file }}"
+      source_path: "{{ tasks.merge-results.outputs.artifacts.result-file }}"
