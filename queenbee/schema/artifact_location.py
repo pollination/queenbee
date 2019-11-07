@@ -50,7 +50,7 @@ class LocalLocation(BaseModel):
 
     root: str = Field(
         ...,
-        description="For a local filesystem this can be \"C:\\\\Users\\me\\simulations\\test\"."
+        description="For a local filesystem this can be \"C:\\Users\\me\\simulations\\test\"."
     )
 
 class HTTPLocation(BaseModel):

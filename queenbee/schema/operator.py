@@ -109,7 +109,7 @@ class LocalRequirements(BaseModel):
     # NOTE: yaml conversion doesn't play well with Enum hence using a validator.
     @validator('platform')
     def check_platform(cls, v):
-        v = list(map(lambda x: x.lower(), v))
+        v = [x.lower() for x in v]
 
         for plat in v:
             assert plat in cls._valid_platforms, \

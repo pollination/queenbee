@@ -57,7 +57,7 @@ Artifacts are files that will be used during different steps of the workflow com
 artifact_locations:
 - name: local-test
   type: local
-  root: C:\\Users\Test\Projects\Project 1
+  root: C:\Users\Test\Projects\Project 1
 
 - name: http-test
   type: http
@@ -70,7 +70,7 @@ artifact_locations:
   root: pollination
   endpoint: s3.eu-west-1.amazonaws.com
   bucket: all-of-my-data
-  credentials_path: C:\\Users\Test\.queenbee\config.yaml
+  credentials_path: C:\Users\Test\.queenbee\config.yaml
 ```
 
 ## 2. inputs

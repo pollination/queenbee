@@ -53,9 +53,9 @@ class Workflow(BaseModel):
         """Check that any artifact location referenced in templates or flows exists in artifact_locations"""
         v = values.get('artifact_locations')
         if v != None:
-            locations = list(map(lambda x: x.name, v))
+            locations = [x.name for x in v]
             artifacts = list_artifacts(values)
-            sources = list(set(map(lambda x: x.location, artifacts)))
+            sources = list(set([x.location for x in artifacts]))
             for source in sources:
                 if source not in locations:
                     raise ValueError("Artifact with location \"{}\" is not valid because it is not listed in the artifact_locations object.".format(source))

@@ -12,7 +12,7 @@ def test_create_local_location():
     loc_dict = {
         'name': 'local-test',
         'type': 'local',
-        'root': 'C:\\\\Users\\Test\\Projects\\Project 1'
+        'root': 'C:\\Users\\Test\\Projects\\Project 1'
     }
 
     loc = LocalLocation.parse_obj(loc_dict)
@@ -54,7 +54,7 @@ def test_create_s3_location():
         'root': 'pollination',
         'endpoint': 's3.eu-west-1.amazonaws.com',
         'bucket': 'all-of-my-data',
-        'credentials_path': 'C:\\\\Users\\Test\\.queenbee\\config.yaml'
+        'credentials_path': 'C:\\Users\\Test\\.queenbee\\config.yaml'
     }
 
     loc = S3Location.parse_obj(loc_dict)
@@ -74,7 +74,7 @@ def test_load_artifact_locations():
     local_dict = {
         'name': 'local-test',
         'type': 'local',
-        'root': 'C:\\\\Users\\Test\\Projects\\Project 1'
+        'root': 'C:\\Users\\Test\\Projects\\Project 1'
     }
 
     http_dict = {
@@ -91,7 +91,7 @@ def test_load_artifact_locations():
         'root': 'pollination',
         'endpoint': 's3.eu-west-1.amazonaws.com',
         'bucket': 'all-of-my-data',
-        'credentials_path': 'C:\\\\Users\\Test\\.queenbee\\config.yaml'
+        'credentials_path': 'C:\\Users\\Test\\.queenbee\\config.yaml'
     }
 
     locs.artifact_locations[0].to_dict() == local_dict

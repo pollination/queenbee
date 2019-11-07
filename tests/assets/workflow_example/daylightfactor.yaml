@@ -198,7 +198,7 @@ flow:
         - trace-rays
 
 # this is not supported in Argo or is it?
-# outputs:
-#   artifacts:
-#     - name: daylight-factor-values
-#       path: "{{ tasks.merge-results.outputs.artifacts.result-file }}"
+outputs:
+  artifacts:
+    - name: daylight-factor-values
+      path: "{{ tasks.merge-results.outputs.artifacts.result-file }}"
