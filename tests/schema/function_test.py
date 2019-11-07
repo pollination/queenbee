@@ -2,6 +2,7 @@ from queenbee.schema.function import Function
 import yaml
 import pytest
 import warnings
+from pydantic.error_wrappers import ValidationError
 
 
 def test_load_function():
@@ -12,7 +13,7 @@ def test_load_function():
 def test_load_illegal_input():
     fp = './tests/assets/function_illegal_input.yaml'
     
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValidationError):
         Function.from_file(fp)
 
 

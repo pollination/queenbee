@@ -9,7 +9,7 @@ Queenbee accepts three types of locations:
     3. S3: An S3 bucket
 """
 from queenbee.schema.qutil import BaseModel
-from pydantic import Schema, constr
+from pydantic import Field, constr
 from typing import Dict
 from enum import Enum
 
@@ -26,12 +26,12 @@ class ArtifactLocation(BaseModel):
     An Artifact Location System
     """
 
-    name: str = Schema(
+    name: str = Field(
         ...,
         description='Name is a unique identifier for this particular Artifact Location'
     )
 
-    root: str = Schema(
+    root: str = Field(
         ...,
         description="The root path to the artifacts."   
     )
@@ -43,12 +43,12 @@ class LocalLocation(BaseModel):
     """
     type: constr(regex='^local$')
 
-    name: str = Schema(
+    name: str = Field(
         ...,
         description='Name is a unique identifier for this particular Artifact Location'
     )
 
-    root: str = Schema(
+    root: str = Field(
         ...,
         description="For a local filesystem this can be \"C:\\\\Users\\me\\simulations\\test\"."
     )
@@ -61,26 +61,29 @@ class HTTPLocation(BaseModel):
     
     type: constr(regex='^http$')
 
-    name: str = Schema(
+    name: str = Field(
         ...,
         description='Name is a unique identifier for this particular Artifact Location'
     )
 
 
-    root: str = Schema(
+    root: str = Field(
         ...,
         description="For a HTTP endpoint this can be http://climate.onebuilding.org."
     )
 
-    headers: Dict[str, str] = Schema(
+    headers: Dict[str, str] = Field(
         None,
         description="An object with Key Value pairs of HTTP headers"
     )
 
-    verb: VerbEnum = Schema(
+    verb: VerbEnum = Field(
         'GET',
         description="The HTTP verb to use when making the request."
     )
+
+    class Config:
+        use_enum_value=True
 
 class S3Location(BaseModel):
     """S3Location
@@ -90,27 +93,27 @@ class S3Location(BaseModel):
     
     type: constr(regex='^s3$')
 
-    name: str = Schema(
+    name: str = Field(
         ...,
         description='Name is a unique identifier for this particular Artifact Location'
     )
 
-    root: str = Schema(
+    root: str = Field(
         '/',
         description="The path inside the bucket to source artifacts from."
     )
 
-    endpoint: str = Schema(
+    endpoint: str = Field(
         ...,
         description="The HTTP endpoint to reach the S3 bucket."
     )
 
-    bucket: str = Schema(
+    bucket: str = Field(
         ...,
         description="The name of the S3 bucket on the host server."
     )
 
-    credentials_path: str = Schema(
+    credentials_path: str = Field(
         ...,
         description="Path to the file holding the AccessKey and SecretAccessKey to authenticate to the bucket"
     )

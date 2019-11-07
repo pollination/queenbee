@@ -4,7 +4,7 @@ Workflow is a collection of operators and inter-related tasks that describes an 
 end steps for the workflow.
 """
 from queenbee.schema.qutil import BaseModel
-from pydantic import Schema, validator, constr
+from pydantic import Field, validator, constr, root_validator
 from typing import List, Union
 from uuid import UUID, uuid4
 import json
@@ -25,7 +25,7 @@ class Workflow(BaseModel):
 
     id: str = str(uuid4())
 
-    inputs: Arguments = Schema(
+    inputs: Arguments = Field(
         None
     )
 
@@ -33,31 +33,34 @@ class Workflow(BaseModel):
 
     templates: List[Union[Function, DAG, 'Workflow']]
 
-    flow: DAG = Schema(
+    flow: DAG = Field(
         ...,
         description='A list of steps for using tasks in a DAG workflow'
     )
 
-    outputs: Arguments = Schema(
+    outputs: Arguments = Field(
         None
     )
 
-    artifact_locations: List[Union[LocalLocation, HTTPLocation, S3Location]] = Schema(
+    artifact_locations: List[Union[LocalLocation, HTTPLocation, S3Location]] = Field(
         None,
         description="A list of artifact locations which can be used by child flow objects"
     )
 
-    @validator('artifact_locations', whole=True)
-    def check_references_exist(cls, v, values):
+    # @validator('artifact_locations', each_item=True)
+    @root_validator
+    def check_references_exist(cls, values):
         """Check that any artifact location referenced in templates or flows exists in artifact_locations"""
+        v = values.get('artifact_locations')
+        if v != None:
+            locations = list(map(lambda x: x.name, v))
+            artifacts = list_artifacts(values)
+            sources = list(set(map(lambda x: x.location, artifacts)))
+            for source in sources:
+                if source not in locations:
+                    raise ValueError("Artifact with location \"{}\" is not valid because it is not listed in the artifact_locations object.".format(source))
 
-        locations = list(map(lambda x: x.name, v))
-        artifacts = list_artifacts(values)
-        sources = list(set(map(lambda x: x.location, artifacts)))
-        for source in sources:
-            if source not in locations:
-                raise ValueError("Artifact with location \"{}\" is not valid because it is not listed in the artifact_locations object.".format(source))
-
+        return values
     # TODO: add a validator to ensure all the names for templates are unique
     # @validator('flow')
     # def check_templates(cls, v, values):

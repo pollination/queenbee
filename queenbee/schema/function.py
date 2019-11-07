@@ -1,7 +1,7 @@
 """Queenbee Function class."""
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.parser import parse_double_quotes_vars as var_parser
-from pydantic import Schema, validator
+from pydantic import Field, validator, root_validator
 from typing import List, Dict
 from enum import Enum
 from queenbee.schema.arguments import Arguments
@@ -13,25 +13,25 @@ class Function(BaseModel):
     """A function with a single command."""
     type: Enum('function', {'type': 'function'}) = 'function'
 
-    name: str = Schema(
+    name: str = Field(
         ...,
         description='Function name. Must be unique within a workflow.'
     )
 
-    description: str = Schema(
+    description: str = Field(
         None,
         description='Function description. A short human readable description for this function.'
     )
 
-    inputs: Arguments = Schema(
-        ...,
+    inputs: Arguments = Field(
+        None,
         description=u'Input arguments for this function.'
     )
 
     # TODO: This will end up being an issue. command here is what args really are in
     # docker. Changing this to args will be confusing. Keep it as command will also be
     # confusing if one wants to match it with container
-    command: str = Schema(
+    command: str = Field(
         ...,
         description=u'Full shell command for this function. Each function accepts only '
             'one command. The command will be executed as a shell command in operator. '
@@ -39,17 +39,17 @@ class Function(BaseModel):
             'or pipe data from one to another using |'
     )
 
-    operator: str = Schema(
+    operator: str = Field(
         ...,
         description='Function operator name.'
     )
 
-    env: Dict[str, str] = Schema(
+    env: Dict[str, str] = Field(
         None,
         description='A dictionary of key:values for environmental variables.'
     )
 
-    outputs: Arguments = Schema(
+    outputs: Arguments = Field(
         None,
         description='List of output arguments.'
     )
@@ -57,7 +57,12 @@ class Function(BaseModel):
     @validator('inputs')
     def check_workflow_reference(cls, v):
         input_params = v.parameters
+        
+        if input_params == None:
+            return v
+
         ref_params = []
+
         for param in input_params:
             if not param.value:
                 continue
@@ -73,21 +78,30 @@ class Function(BaseModel):
             )
         return v
 
-    @validator('command')
-    def check_command_referenced_values(cls, v, values):
+    @root_validator
+    def check_command_referenced_values(cls, values):
+        v = values.get('command')
         # get references
         match = var_parser(v)
         if not match:
-            return v
+            return values
         # ensure referenced values are valid
         func_name = values['name']
-        input_names = [param.name for param in values['inputs'].parameters]
+        if 'inputs' in values and values['inputs'] != None:
+            input_names = [param.name for param in values['inputs'].parameters]
+        else:
+            input_names = []
         # check inputs
         cls.validate_variable(match, func_name, input_names)
-        return v
+        return values
 
-    @validator('outputs')
-    def check_output_referenced_values(cls, v, values):
+    @root_validator
+    def check_output_referenced_values(cls, values):
+        v = values.get('outputs')
+
+        if v == None:
+            return values
+        
         output_params = []
 
         if v.parameters is not None:
@@ -111,8 +125,13 @@ class Function(BaseModel):
             )
         # check the variables are fine
         func_name = values['name']
-        input_names = [param.name for param in values['inputs'].parameters]
+        if 'inputs' in values and values['inputs'] != None and values['inputs'].parameters != None:
+            input_names = [param.name for param in values['inputs'].parameters]
+        else:
+            input_names = []
+
         for v_out in output_params:
+
             if 'path' in v_out:
                 match = var_parser(v_out.path)
                 cls.validate_variable(match, func_name, input_names)
@@ -120,7 +139,8 @@ class Function(BaseModel):
                 match = var_parser(v_out.value)
                 cls.validate_variable(match, func_name, input_names)
 
-        return v
+        return values
+
 
     @staticmethod
     def validate_variable(variables, func_name, input_names):
@@ -138,6 +158,7 @@ class Function(BaseModel):
                 raise ValueError(
                     '{{%s}} in %s function does not follow x.y.z pattern'% (m, func_name)
                 )
+
             if not ref in ('inputs', 'outputs', 'workflow'):
                 raise ValueError(
                     'Referenced values must start with inputs, outputs or workflow'
@@ -156,5 +177,5 @@ class Function(BaseModel):
                 continue
 
             assert name in input_names, \
-                'Illegal input parameter name in "%s": {{%s}}\n' \
+                'Illegal output parameter name in "%s": {{%s}}\n' \
                 'Valid inputs:\n\t- %s' % (func_name, m, '\n\t- '.join(input_names))

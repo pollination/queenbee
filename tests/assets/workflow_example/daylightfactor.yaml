@@ -37,25 +37,13 @@ templates:
     type: function
     description: Generate an overcast sky for daylight factor simulation.
     operator: honeybee-radiance
-    inputs:
-      parameters:
-        - name: project-folder
-          value: '.'
-      artifacts:
-        - name: sky-folder
-          location: project-folder
-          path: '{{inputs.parameters.project-folder}}/sky'
-          task_path: sky
     command: honeybee radiance sky illuminance 100000 --folder sky
     outputs:
-      parameters:
-        - name: fill
-          value: this gap
       artifacts:
         - name: sky
           location: project-folder
-          path: '{{inputs.parameters.project-folder}}/sky/100000_lux.sky'
-          task_path: sky/100000_lux.sky'
+          path: asset/sky/100000_lux.sky
+          task_path: sky/100000_lux.sky
 
         # Could also copy the sky-folder and just have that be the output artifact
         # - name: sky-folder
@@ -69,17 +57,14 @@ templates:
     operator: honeybee-radiance
     inputs:
       parameters:
-        - name: input-grid
         - name: sensor-count
-        - name: output-folder
-          value: '.'   # default value
       artifacts:
         - name: sensor-grid
           location: project-folder
-          path: '{{inputs.parameters.input-grid}}'
+          path: asset/grid/grid.pts
           task_path: grid-file
     command: |
-      honeybee radiance grid split grid-file '{{inputs.parameters.sensor-count}}' --folder grids-folder > grids_list.txt
+      honeybee radiance grid split grid-file {{inputs.parameters.sensor-count}} --folder grids-folder > grids_list.txt
     outputs:
       parameters:
         - name: grid-list
@@ -87,7 +72,7 @@ templates:
       artifacts:
         - name: grids
           location: project-folder
-          path: '{{inputs.parameters.output-folder}}'
+          path: asset/grid/split
           task_path: grids-folder
 
   - name: create-octree
@@ -97,44 +82,50 @@ templates:
       other by a space.
     operator: radiance-operator
     inputs:
-      parameters:
-        - name: input-files
-          description: Octree input files separated by space. 
-        - name: output-file
-          description: Path to output octree file.
       artifacts:
-        - name: input-files
+        - name: sky-file
           location: project-folder
-          path: "{{inputs.parameters.input-file}}"
-          task_path: in
-    command: oconv -f in > out 
+          path: sky.file # Note that this is overwritten in the DAG by the output artifact path from the generate-sky task template
+          task_path: sky.file
+        - name: scene-files
+          location: project-folder
+          path: model
+          task_path: '.'
+    command: |
+      oconv \
+        ./static/aperture/*.mat ./static/aperture/*.rad \
+        ./static/aperture/interior/*.mat ./static/aperture/interior/*.rad  \
+        ./static/nonopaque/*.mat ./static/nonopaque/*.rad \
+        ./static/nonopaque/indoor/*.mat ./static/nonopaque/indoor/*.rad \
+        ./static/nonopaque/outdoor/*.mat ./static/nonopaque/outdoor/*.rad \
+        ./static/opaque/*.mat ./static/opaque/*.rad \
+        ./static/opaque/indoor/*.mat ./static/opaque/indoor/*.rad \
+        ./static/opaque/outdoor/*.mat  ./static/opaque/outdoor/*.rad \
+        ./sky.file
+        \> static_scene.oct
     outputs:
       artifacts:
         - name: octree-file
           location: project-folder
-          path: "{{inputs.parameters.output-file}}"
-          task_path: out
+          path: output/octree/static_scene.oct
+          task_path: static_scene.oct
 
   - name: trace-rays-daylight-factor
     type: function
     operator: radiance-operator
     inputs:
       parameters:
-        - name: octree-file
         - name: ray-tracing-options
           description: Radiance rtrace options for ray-tracing (e.g. -ab 3 -ad 2480)
           value: '-ab 2'
-        - name: grid-file
-        - name: output-file
-          description: Path to output results file.
       artifacts:
         - name: octree-file
           location: project-folder
-          path: "{{inputs.parameters.octree-file}}"
+          path: output/octree/static_scene.oct
           task_path: octree.oct
         - name: grid-file
           location: project-folder
-          path: "{{input.parameters.grid-file}}"
+          # path: because this step is run in a loop we specify the path in the project folder dynamically in the DAG definition
           task_path: grid
     command: |
       rtrace -I -h {{inputs.parameters.ray-tracing-options}} octree.oct < grid | rcalc -e $1=(0.265*$1+0.67*$2+0.065*$3)*179/1000 > out
@@ -142,28 +133,24 @@ templates:
       artifacts:
         - name: result-file
           location: project-folder
-          path: '{{inputs.parameters.output-file}}'
+          path: output/raw/
           task_path: out
 
   - name: merge-results
     type: function
     operator: honeybee-radiance
     inputs:
-      parameters:
-        - name: base-name
-        - name: input-folder
-        - name: output-folder
       artifacts:
         - name: input-folder
           location: project-folder
-          path: "{{inputs.parameters.input-folder}}"
-          task_path: results-in
-    command: honeybee radiance grid merge results-in results .res --folder out
+          path: output/raw/
+          task_path: results-folder
+    command: honeybee radiance grid merge results-folder results .res --folder out
     outputs:
       artifacts:
         - name: result-file
           location: project-folder
-          path: "{{inputs.parameters.output-folder}}/{{inputs.parameters.base-name}}.res"
+          path: output/postprocess/results.res
           task_path: "out/results.res"
 
 flow:
@@ -171,10 +158,6 @@ flow:
   tasks:
     - name: generate-overcast-sky
       template: generate-overcast-sky
-      arguments:
-        parameters:
-          - name: project-folder
-            value: '{{ workflow.inputs.parameters.project-folder }}'
 
     - name: split-grid
       template: split-grid
@@ -182,41 +165,37 @@ flow:
         parameters:
           - name: sensor-count
             value: "{{ workflow.inputs.parameters.sensor-count }}"
-          - name: input-grid
-            value: "{{ workflow.inputs.parameters.grid-name }}"
-          - name: output-folder
-            value: "{{ workflow.inputs.parameters.project-folder }}"
+
     - name: create-octree
       template: create-octree
       dependencies:
         - generate-overcast-sky
       arguments:
-        - name: sky-file
-          value: "{{ tasks.generate-sky.outputs.artifacts.sky }}"
-        - name: scene-files
-          value: "{{ workflow.inputs.parameters.scene-files }}"
+        artifacts:
+          - name: sky-file
+            path: "{{ tasks.generate-sky.outputs.artifacts.sky.path }}"
+
 
     - name: trace-rays
-      template: trace-rays
+      template: trace-rays-daylight-factor
       dependencies:
         - create-octree
         - split-grid
       arguments:
         parameters:
-          - name: grid
-            value: '{{ item }}'
-          - name: octree
-            value: "{{ tasks.create-octree.outputs.artifacts.octree-file }}"
+          - name: ray-tracing-options
+            value: '-ab 2'
+      artifacts:
+        - name: octree-file
+          path: "{{tasks.generate-octree.outputs.artifacts.octree-file}}"
+        - name: grid-file
+          path: "asset/grid/{{item}}" # item represents the individual string output from looping over output grids below
       loop: "{{tasks.generate-sky.outputs.parameters.split-grid}}"  # loop over the output grids
 
     - name: merge-results
       template: merge-results
       dependencies:
         - trace-rays
-      arguments:
-        parameters:
-          - name: base-name
-            value: "{{ workflow.inputs.parameters.grid-name }}"
 
 # this is not supported in Argo or is it?
 # outputs:

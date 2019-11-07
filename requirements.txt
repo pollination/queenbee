@@ -1,2 +1,2 @@
-pydantic~=0.32.2
+pydantic~=1.0.0
 PyYAML~=5.1.2
