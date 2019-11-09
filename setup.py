@@ -20,6 +20,12 @@ setuptools.setup(
     url="https://github.com/ladybug-tools/queenbee",
     packages=setuptools.find_packages(exclude=["tests"]),
     install_requires=requirements,
+    extra_requires={
+        'cli': ['click>=5.1']
+    },
+    entry_points={
+        "console_scripts": ["queenbee = queenbee.cli:main"]
+    },
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: Implementation :: CPython",

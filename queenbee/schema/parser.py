@@ -60,7 +60,7 @@ def parse_file(input_file):
 
     ext = input_file.split('.')[-1].lower()
     assert  ext in ('json', 'yml', 'yaml'), \
-        'Invalid input file type: [{}]. Only JSON and YAML files are valid.'
+        'Invalid input file type: [{}]. Only JSON and YAML files are valid.'.format(ext)
 
     if ext == 'json':
         with open(input_file) as inf:
