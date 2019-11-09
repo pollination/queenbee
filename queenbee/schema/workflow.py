@@ -3,12 +3,13 @@
 Workflow is a collection of operators and inter-related tasks that describes an end to
 end steps for the workflow.
 """
-from queenbee.schema.qutil import BaseModel
-from pydantic import Field, validator, constr, root_validator
-from typing import List, Union
 from uuid import UUID, uuid4
 import json
 import os
+from graphviz import Digraph
+from pydantic import Field, validator, constr, root_validator
+from typing import List, Union
+from queenbee.schema.qutil import BaseModel
 from queenbee.schema.dag import DAG
 from queenbee.schema.arguments import Arguments
 from queenbee.schema.operator import Operator
@@ -87,6 +88,19 @@ class Workflow(BaseModel):
 
         # call index.html
         os.system(os.path.join(directory, 'chart/index.html'))
+
+    def to_diagraph(self, filename=None):
+        """Return a graphviz instance of a diagraph from workflow"""
+        if filename is None:
+            filename = self.id
+        f = Digraph(self.name, filename='{}.gv'.format(filename))
+
+        for task in self.flow.tasks:
+            if task.dependencies is not None:
+                for dep in task.dependencies:
+                    f.edge(dep, task.name)
+
+        return f
 
     @property
     def nodes_links(self):

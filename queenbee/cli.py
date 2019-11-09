@@ -61,6 +61,8 @@ except ImportError:
         'click module is not installed. Try `pip install queenbee[cli]` command.'
     )
 
+import webbrowser
+import urllib.parse
 from queenbee.schema.workflow import Workflow
 
 # TODO: Comment out and use for logging once we are adding commands to this file.
@@ -115,6 +117,8 @@ def viz():
 def validate(ctx, file):
     wf = ctx.obj.parse_workflow(file)
 
+    dot = wf.to_diagraph(filename=file.split('.')[0])
+
     click.echo("""
                        _   _
                       ( | / )
@@ -123,6 +127,10 @@ def validate(ctx, file):
 Valid Workflow!        <\\\\
 
     """)
+
+    query = urllib.parse.quote(dot.pipe(format='xdot'))
+    url = 'https://dreampuf.github.io/GraphvizOnline/#{}'.format(query)
+    webbrowser.open(url)
 
 if __name__ == "__main__":
     main()
