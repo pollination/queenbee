@@ -11,8 +11,10 @@ tox.ini
 /.cache
 /.vscode
 .eggs
+*.egg-info
 *.code-workspace
 
 venv
 
 tests/assets/temp/*.*
+*.gv

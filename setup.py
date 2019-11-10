@@ -21,7 +21,7 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=["tests"]),
     install_requires=requirements,
     extra_requires={
-        'cli': ['click>=5.1']
+        'cli': ['click>=7.0']
     },
     entry_points={
         "console_scripts": ["queenbee = queenbee.cli:main"]

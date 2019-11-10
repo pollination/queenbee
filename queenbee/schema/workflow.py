@@ -71,24 +71,6 @@ class Workflow(BaseModel):
     #         if task.template not in template_names:
     #             raise ValueError('{} is not a valid template.'.format(task.template))
 
-    def visualize(self):
-        """Visualize workflow."""
-        # get data for links and nodes
-        data = self.nodes_links
-        # write force_layout.js
-        directory = os.path.dirname(__file__)
-        os.chdir(directory)
-
-        with open('./chart/force_layout.js', 'w') as fl, \
-                open('./chart/lib/force_layout') as inf:
-            fl.write('data = ' + json.dumps(data))
-            fl.write('\n')
-            for line in inf:
-                fl.write(line)
-
-        # call index.html
-        os.system(os.path.join(directory, 'chart/index.html'))
-
     def to_diagraph(self, filename=None):
         """Return a graphviz instance of a diagraph from workflow"""
         if filename is None:
