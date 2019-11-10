@@ -132,7 +132,7 @@ Valid Workflow!        <\\\\
 
     """)
 
-    if open:
+    if display:
         query = urllib.parse.quote(dot.pipe(format='xdot'))
         url = 'https://dreampuf.github.io/GraphvizOnline/#{}'.format(query)
         webbrowser.open(url)
