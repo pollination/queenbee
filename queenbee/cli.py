@@ -56,13 +56,15 @@ Note:
 
 try:
     import click
+    from click_plugins import with_plugins
 except ImportError:
     raise ImportError(
-        'click module is not installed. Try `pip install queenbee[cli]` command.'
+        'click modules not installed. Try `pip install queenbee[cli]` command.'
     )
 
 import webbrowser
 import urllib.parse
+from pkg_resources import iter_entry_points
 from queenbee.schema.workflow import Workflow
 
 # TODO: Comment out and use for logging once we are adding commands to this file.
@@ -81,6 +83,7 @@ class Context():
             raise click.ClickException(e)
 
 
+@with_plugins(iter_entry_points('queenbee.plugins'))
 @click.group()
 @click.version_option()
 @click.pass_context

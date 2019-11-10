@@ -9,3 +9,4 @@ sphinxcontrib-fulltoc==1.2.0
 sphinxcontrib-websupport==1.1.0
 twine==1.13.0
 click>=7.0
+click-plugins==1.1.1
