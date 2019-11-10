@@ -118,7 +118,7 @@ def viz():
 @click.option('-f', '--file', help='path to the workflow file to validate', required=True)
 @click.option('-d', '--display', help='boolean flag to display the workflow in your browser', default=False, type=bool, is_flag=True)
 @click.pass_context
-def validate(ctx, file, open):
+def validate(ctx, file, display):
     wf = ctx.obj.parse_workflow(file)
 
     dot = wf.to_diagraph(filename=file.split('.')[0])
