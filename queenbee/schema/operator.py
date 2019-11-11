@@ -3,7 +3,7 @@
 A task operator includes the information for executing tasks locally or in a container.
 """
 from queenbee.schema.qutil import BaseModel
-from pydantic import Field, validator
+from pydantic import Field, validator, constr
 from typing import List, Any, Set
 from enum import Enum
 
@@ -66,7 +66,7 @@ class Package(BaseModel):
 
 class LocalRequirements(BaseModel):
     """Operator requirements for local runs."""
-    type: Enum('Operator', {'type': 'Operator'}) = 'Operator'
+    type: constr(regex='^operator$') = 'operator'
 
     _valid_platforms: Set[str] = set(['linux', 'windows', 'mac'])
 
@@ -125,7 +125,7 @@ class Operator(BaseModel):
     A task operator includes the information for executing tasks from command line
     or in a container.
     """
-    type: Enum('Operator', {'type': 'Operator'}) = 'Operator'
+    type: constr(regex='^operator$') = 'operator'
 
     name: str = Field(
         ...,

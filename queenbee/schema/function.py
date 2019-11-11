@@ -1,7 +1,7 @@
 """Queenbee Function class."""
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.parser import parse_double_quotes_vars as var_parser
-from pydantic import Field, validator, root_validator
+from pydantic import Field, validator, root_validator, constr
 from typing import List, Dict
 from enum import Enum
 from queenbee.schema.arguments import Arguments
@@ -11,7 +11,7 @@ import re
 
 class Function(BaseModel):
     """A function with a single command."""
-    type: Enum('function', {'type': 'function'}) = 'function'
+    type: constr(regex='^function$')
 
     name: str = Field(
         ...,
