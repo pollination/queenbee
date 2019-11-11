@@ -129,7 +129,14 @@ class Workflow(BaseModel):
 
 
 def hydrate_templates(workflow, wf_value=None):
-    """cyle through an arbitary workflow value (dictionary, list, string etc...) and hydrate any workflow template value with it's actual value"""
+    """Replace all `{{ workflow.x.y.z }}` with corresponding value
+
+    Cyle through an arbitary workflow value (dictionary, list, string etc...) 
+    and hydrate any workflow template value with it's actual value. This command 
+    should mostly be used by the plugin libraries when converting a queenbee 
+    workflow to their own job scheduling language. As such the workflow should 
+    contain all the required variable values indicated by a `{{ workflow.x.y...z }}`.
+    """
 
     if isinstance(wf_value, list):
         wf_value = [hydrate_templates(workflow, item) for item in wf_value]
