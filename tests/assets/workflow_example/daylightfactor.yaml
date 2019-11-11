@@ -5,15 +5,15 @@ name: daylight-factor
 artifact_locations:
   - type: local
     name: project-folder
-    root: /path/to/test
+    root: /path/to/test/{{ workflow.id }}
 
 inputs:
   parameters:
     - name: worker
       description: Maximum number of workers for executing this workflow.
       value: 1   # this is the default value which can be overwritten
-    - name: sensor-grid-path
-      description: Relative source_path to sensor grid from project folder.
+    - name: sensor-count
+      description: Number of sensors per split grid.
     - name: scene-file-paths
       description: A list of file paths to input as assets to the rtrace command
   artifacts:
@@ -158,7 +158,7 @@ flow:
       arguments:
         parameters:
           - name: sensor-count
-            value: "{{ workflow.inputs.parameters.sensor-count }}"
+            value: "{{ workflow.inputs.parameters.sensor-count.value }}"
 
     - name: create-octree
       template: create-octree
@@ -167,7 +167,7 @@ flow:
       arguments:
         parameters:
           - name: scene-file-paths
-            value: "{{ workflow.inputs.parameters.scene-file-paths }}"
+            value: "{{ workflow.inputs.parameters.scene-file-paths.value }}"
         artifacts:
           - name: sky-file
             source_path: "{{ tasks.generate-sky.outputs.artifacts.sky.path }}"

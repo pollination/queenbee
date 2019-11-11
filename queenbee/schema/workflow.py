@@ -6,6 +6,7 @@ end steps for the workflow.
 from uuid import UUID, uuid4
 import json
 import os
+import re
 from graphviz import Digraph
 from pydantic import Field, validator, constr, root_validator
 from typing import List, Union
@@ -15,6 +16,7 @@ from queenbee.schema.arguments import Arguments
 from queenbee.schema.operator import Operator
 from queenbee.schema.function import Function
 from queenbee.schema.artifact_location import LocalLocation, HTTPLocation, S3Location
+from queenbee.schema.parser import parse_double_quote_workflow_vars, replace_double_quote_vars
 
 
 class Workflow(BaseModel):
@@ -48,7 +50,6 @@ class Workflow(BaseModel):
         description="A list of artifact locations which can be used by child flow objects"
     )
 
-    # @validator('artifact_locations', each_item=True)
     @root_validator
     def check_references_exist(cls, values):
         """Check that any artifact location referenced in templates or flows exists in artifact_locations"""
@@ -62,6 +63,8 @@ class Workflow(BaseModel):
                     raise ValueError("Artifact with location \"{}\" is not valid because it is not listed in the artifact_locations object.".format(source))
 
         return values
+
+
     # TODO: add a validator to ensure all the names for templates are unique
     # @validator('flow')
     # def check_templates(cls, v, values):
@@ -84,6 +87,33 @@ class Workflow(BaseModel):
 
         return f
 
+    def fetch_workflow_values(self, template_string):
+        """replaces template value with workflow level value"""
+        references = parse_double_quote_workflow_vars(template_string)
+
+        values = {}
+
+        for ref in references:
+            keys = ref.split('.')
+            obj = self.dict()
+
+            for key in keys[1:]:
+                if isinstance(obj, list):
+                    obj = list(filter(lambda x: x.get('name') == key, obj))[0]
+                else:
+                    obj = obj[key]
+
+            values[ref] = obj
+
+        return values
+
+
+    def hydrate_workflow_templates(self):
+        """returns a copy of the workflow but the {{workflow.x.y.z}} templates are replaced with the actual values referenced}}"""
+        wf_dict = hydrate_templates(self, wf_value= self.dict(exclude_unset=True))
+
+        return Workflow.parse_obj(wf_dict)
+
     @property
     def nodes_links(self):
         """Get nodes and links for workflow visualization."""
@@ -95,6 +125,50 @@ class Workflow(BaseModel):
                 links.append({'source': task_names.index(source), 'target': count})
 
         return {'nodes': nodes, 'links': links}
+
+
+def hydrate_templates(workflow, wf_value=None):
+    """cyle through an arbitary workflow value (dictionary, list, string etc...) and hydrate any workflow template value with it's actual value"""
+    
+    if isinstance(wf_value, list):
+        wf_value = [hydrate_templates(workflow, item) for item in wf_value]
+
+    elif isinstance(wf_value, str):
+        values = workflow.fetch_workflow_values(wf_value)
+        
+        if values == {}:
+            pass
+
+        elif len(values.keys()) == 1:
+            for match_k, match_v in values.items():
+                assert match_v is not None, "{{%s}} cannot reference an empty or null value."% (match_k)
+
+                pattern = r"^\s*{{\s*" + match_k + r"\s*}}\s*$"
+
+                # if match is not None then it means that the string value "{{ workflow.key }}" does not
+                # require string replace values like the following example: "{{ workflow.id }}-{{ workflow.name }}"
+                match = re.search(pattern, wf_value)
+
+                if isinstance(match_v, list) or isinstance(match_v, dict) or match is not None:
+                    wf_value = match_v
+                else:
+                    wf_value = replace_double_quote_vars(wf_value, match_k, str(match_v))
+
+        else:
+            new_v = v
+            for match_k, match_v in values.items():
+                assert not isinstance(match_v, list) or not isinstance(match_v, dict), \
+                    "Cannot concat {{%s}} of type %s into %s"% (match_k, type(match_v), k)
+                new_v = replace_double_quote_vars(new_v, match_k, str(match_v))
+
+            wf_value = new_v
+
+
+    elif isinstance(wf_value, dict):
+        for k, v in wf_value.items():
+            wf_value[k] = hydrate_templates(workflow, v)
+
+    return wf_value
 
 
 def list_artifacts(obj):

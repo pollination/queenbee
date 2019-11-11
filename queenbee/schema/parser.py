@@ -79,3 +79,14 @@ def parse_double_quotes_vars(input):
     pattern = r"{{\s*([_a-zA-Z0-9.\-\$#\?]*)\s*}}"
     match = re.findall(pattern, input, flags=re.MULTILINE)
     return match
+
+def parse_double_quote_workflow_vars(input):
+    """Parse values between {{ workflow. }}."""
+    pattern = r"{{\s*(workflow\.[_a-zA-Z0-9.\-\$#\?]*)\s*}}"
+    match = re.findall(pattern, input, flags=re.MULTILINE)
+    return match
+
+def replace_double_quote_vars(text, key, replace):
+    """Take an input string with template keys and replace them"""
+    pattern = r"{{\s*" + key + r"\s*}}"
+    return re.sub(pattern, replace, text)
