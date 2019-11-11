@@ -49,7 +49,9 @@ def test_hydrate_templates():
     wf.inputs.parameters[1].value = 50
     wf.inputs.parameters[2].value = 'path/to/scene/files'
 
-    new_wf = wf.hydrate_workflow_templates()
+    wf_dict = wf.hydrate_workflow_templates()
+
+    new_wf = Workflow.parse_obj(wf_dict)
 
     # Test string allocation
     assert new_wf.flow.tasks[2].arguments.parameters[0].value == 'path/to/scene/files'

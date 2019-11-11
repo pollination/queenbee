@@ -108,12 +108,11 @@ class Workflow(BaseModel):
         return values
 
     def hydrate_workflow_templates(self):
-        """returns a copy of the workflow but the {{workflow.x.y.z}} templates are replaced with the actual values referenced}}"""
-        wf_dict = hydrate_templates(
+        """returns a dictionary version of the workflow with {{workflow.x.y.z}} variables as values"""
+        return hydrate_templates(
             self, wf_value=self.dict(exclude_unset=True))
 
-        return Workflow.parse_obj(wf_dict)
-
+        
     @property
     def nodes_links(self):
         """Get nodes and links for workflow visualization."""
