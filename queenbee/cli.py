@@ -110,7 +110,7 @@ def viz():
                                        .' '.            __
   viiiiiiiiiiiiizzzzzzzzz!  . .        .   .           (__\_
                                .         .         . -{{_(|8)
-                                ' .  . ' ' .  . '     (__/
+                                 ' .  . ' ' .  . '     (__/
 
     """)
 
@@ -119,6 +119,7 @@ def viz():
 @click.option('-d', '--display', help='boolean flag to display the workflow in your browser', default=False, type=bool, is_flag=True)
 @click.pass_context
 def validate(ctx, file, display):
+    """Validate an existing workflow file"""
     wf = ctx.obj.parse_workflow(file)
 
     dot = wf.to_diagraph(filename=file.split('.')[0])
