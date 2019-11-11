@@ -60,10 +60,10 @@ class Workflow(BaseModel):
             sources = list(set([x.location for x in artifacts]))
             for source in sources:
                 if source not in locations:
-                    raise ValueError("Artifact with location \"{}\" is not valid because it is not listed in the artifact_locations object.".format(source))
+                    raise ValueError(
+                        "Artifact with location \"{}\" is not valid because it is not listed in the artifact_locations object.".format(source))
 
         return values
-
 
     # TODO: add a validator to ensure all the names for templates are unique
     # @validator('flow')
@@ -107,10 +107,10 @@ class Workflow(BaseModel):
 
         return values
 
-
     def hydrate_workflow_templates(self):
         """returns a copy of the workflow but the {{workflow.x.y.z}} templates are replaced with the actual values referenced}}"""
-        wf_dict = hydrate_templates(self, wf_value= self.dict(exclude_unset=True))
+        wf_dict = hydrate_templates(
+            self, wf_value=self.dict(exclude_unset=True))
 
         return Workflow.parse_obj(wf_dict)
 
@@ -122,26 +122,28 @@ class Workflow(BaseModel):
         links = []
         for count, task in enumerate(self.flow.tasks):
             for source in task.dependencies:
-                links.append({'source': task_names.index(source), 'target': count})
+                links.append(
+                    {'source': task_names.index(source), 'target': count})
 
         return {'nodes': nodes, 'links': links}
 
 
 def hydrate_templates(workflow, wf_value=None):
     """cyle through an arbitary workflow value (dictionary, list, string etc...) and hydrate any workflow template value with it's actual value"""
-    
+
     if isinstance(wf_value, list):
         wf_value = [hydrate_templates(workflow, item) for item in wf_value]
 
     elif isinstance(wf_value, str):
         values = workflow.fetch_workflow_values(wf_value)
-        
+
         if values == {}:
             pass
 
         elif len(values.keys()) == 1:
             for match_k, match_v in values.items():
-                assert match_v is not None, "{{%s}} cannot reference an empty or null value."% (match_k)
+                assert match_v is not None, "{{%s}} cannot reference an empty or null value." % (
+                    match_k)
 
                 pattern = r"^\s*{{\s*" + match_k + r"\s*}}\s*$"
 
@@ -152,17 +154,18 @@ def hydrate_templates(workflow, wf_value=None):
                 if isinstance(match_v, list) or isinstance(match_v, dict) or match is not None:
                     wf_value = match_v
                 else:
-                    wf_value = replace_double_quote_vars(wf_value, match_k, str(match_v))
+                    wf_value = replace_double_quote_vars(
+                        wf_value, match_k, str(match_v))
 
         else:
-            new_v = v
+            new_v = wf_value
             for match_k, match_v in values.items():
                 assert not isinstance(match_v, list) or not isinstance(match_v, dict), \
-                    "Cannot concat {{%s}} of type %s into %s"% (match_k, type(match_v), k)
+                    "Cannot concat {{%s}} of type %s into %s" % (
+                        match_k, type(match_v), wf_value)
                 new_v = replace_double_quote_vars(new_v, match_k, str(match_v))
 
             wf_value = new_v
-
 
     elif isinstance(wf_value, dict):
         for k, v in wf_value.items():
@@ -173,27 +176,28 @@ def hydrate_templates(workflow, wf_value=None):
 
 def list_artifacts(obj):
     artifacts = []
-    
+
     if 'flow' in obj:
         for dag in obj['flow']:
             artifacts += list_artifacts(dag)
-    
+
     if 'templates' in obj:
         for template in obj['templates']:
             artifacts += list_artifacts(template)
-    
+
     if isinstance(obj, DAG):
         for task in obj.tasks:
             if 'arguments' in task and 'artifacts' in task.arguments:
-                artifacts = artifacts + task.arguments.artifacts  
-    
+                artifacts = artifacts + task.arguments.artifacts
+
     if isinstance(obj, Function):
         if obj.inputs != None and obj.inputs.artifacts != None:
             artifacts = artifacts + obj.inputs.artifacts
         if obj.outputs != None and obj.outputs.artifacts != None:
             artifacts = artifacts + obj.outputs.artifacts
-    
+
     return artifacts
+
 
 # required for self.referencing model
 # see https://pydantic-docs.helpmanual.io/#self-referencing-models

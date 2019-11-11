@@ -71,6 +71,7 @@ from queenbee.schema.workflow import Workflow
 # import logging
 # logger = logging.getLogger(__name__)
 
+
 class Context():
 
     @staticmethod
@@ -100,7 +101,7 @@ def main(ctx):
 
     """
     ctx.obj = Context()
-    
+
 
 @main.command('viz')
 def viz():
@@ -113,6 +114,7 @@ def viz():
                                  ' .  . ' ' .  . '     (__/
 
     """)
+
 
 @main.command('validate')
 @click.option('-f', '--file', help='path to the workflow file to validate', required=True)
@@ -137,6 +139,7 @@ Valid Workflow!        <\\\\
         query = urllib.parse.quote(dot.pipe(format='xdot'))
         url = 'https://dreampuf.github.io/GraphvizOnline/#{}'.format(query)
         webbrowser.open(url)
+
 
 if __name__ == "__main__":
     main()

@@ -9,29 +9,36 @@ def test_load_workflow():
     fp = './tests/assets/workflow_example/daylightfactor.yaml'
     Workflow.from_file(fp)
 
+
 def test_workflow_fetch_dict():
     fp = './tests/assets/workflow_example/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
 
     output = wf.fetch_workflow_values('{{workflow.inputs.parameters.worker}}')
 
-    assert output == {'workflow.inputs.parameters.worker': {'name': 'worker', 'path': None, 'description': 'Maximum number of workers for executing this workflow.', 'value': 1}}
-    
+    assert output == {'workflow.inputs.parameters.worker': {'name': 'worker', 'path': None,
+                                                            'description': 'Maximum number of workers for executing this workflow.', 'value': 1}}
+
+
 def test_workflow_fetch_value():
     fp = './tests/assets/workflow_example/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
 
-    output = wf.fetch_workflow_values('{{workflow.inputs.parameters.worker.value}}')
+    output = wf.fetch_workflow_values(
+        '{{workflow.inputs.parameters.worker.value}}')
 
     assert output == {'workflow.inputs.parameters.worker.value': 1}
+
 
 def test_workflow_fetch_multi():
     fp = './tests/assets/workflow_example/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
 
-    output = wf.fetch_workflow_values('{{workflow.inputs.parameters.worker.value}}-something-{{workflow.operators.honeybee-radiance.image}}')
+    output = wf.fetch_workflow_values(
+        '{{workflow.inputs.parameters.worker.value}}-something-{{workflow.operators.honeybee-radiance.image}}')
 
-    assert output == {'workflow.inputs.parameters.worker.value': 1, 'workflow.operators.honeybee-radiance.image': 'ladybugtools/honeybee-radiance'}
+    assert output == {'workflow.inputs.parameters.worker.value': 1,
+                      'workflow.operators.honeybee-radiance.image': 'ladybugtools/honeybee-radiance'}
 
 
 def test_hydrate_templates():
@@ -42,7 +49,6 @@ def test_hydrate_templates():
     wf.inputs.parameters[1].value = 50
     wf.inputs.parameters[2].value = 'path/to/scene/files'
 
-
     new_wf = wf.hydrate_workflow_templates()
 
     # Test string allocation
@@ -52,6 +58,7 @@ def test_hydrate_templates():
     # Test string concatenation
     assert new_wf.artifact_locations[0].root == "/path/to/test/some-test-id"
 
+
 def test_hydrate__missing_value_error():
     fp = './tests/assets/workflow_example/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
@@ -59,5 +66,5 @@ def test_hydrate__missing_value_error():
     with pytest.raises(AssertionError) as e:
         new_wf = wf.hydrate_workflow_templates()
 
-    assert '{{workflow.inputs.parameters.sensor-count.value}} cannot reference an empty or null value.' in str(e)
-
+    assert '{{workflow.inputs.parameters.sensor-count.value}} cannot reference an empty or null value.' in str(
+        e)

@@ -86,7 +86,7 @@ class Artifact(BaseModel):
 
 class Arguments(BaseModel):
     """Arguments to a task or a workflow.
-    
+
     Queenbee accepts two types of arguments: parameters and artifacts. A ``parameter``
     is a variable that can be passed to a task or a workflow. An ``artifact`` is a file
     or folder that can be identified by a url or a path.

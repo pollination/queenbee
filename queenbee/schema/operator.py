@@ -14,12 +14,12 @@ class Language(BaseModel):
         'python',
         description='Language name'
     )
-    
+
     version: str = Field(
         None,
         description='Language version requirements. For instance ==3.7 or >=3.6'
     )
-    
+
     _valid_languages: Set[str] = set(['python', 'nodejs', 'bash'])
 
     # NOTE: yaml conversion doesn't play well with Enum. Use validators like this
@@ -29,7 +29,7 @@ class Language(BaseModel):
         assert v.lower() in cls._valid_languages, \
             '{} is not a valid language. Try one of these languages:\n - {}'.format(
                 v, '\n - '.join(cls._valid_languages)
-            )
+        )
         return v.lower()
 
 
@@ -73,38 +73,38 @@ class LocalRequirements(BaseModel):
     platform: List[str] = Field(
         ['linux', 'windows', 'mac'],
         description='List of valid platforms that operator can execute the commands.'
-        )
+    )
 
     language: List[Language] = Field(
         'bash',
         description='List of required programming languages to execute the commands'
-            ' with an operator.'
-        )
+        ' with an operator.'
+    )
 
     # TODO: expand this to accept command to get the version and also add regex to parse
     # version from stdout
     app: List[App] = Field(
         None,
         description='List of applications that are required for operator to '
-            'execute the commands locally. You must follow pip requirement specifiers: '
-            'https://pip.pypa.io/en/stable/reference/pip_install/#requirement-specifiers'
-            ' For instance use rtrace>=5.2 for radiance 5.2 or newer. Command will run '
-            ' rtrace --version and tries to parse version from command.'
-        )
+        'execute the commands locally. You must follow pip requirement specifiers: '
+        'https://pip.pypa.io/en/stable/reference/pip_install/#requirement-specifiers'
+        ' For instance use rtrace>=5.2 for radiance 5.2 or newer. Command will run '
+        ' rtrace --version and tries to parse version from command.'
+    )
 
     pip: List[Package] = Field(
         None,
         description='List of Python packages that are required for operator to '
-            'execute the commands locally. You must follow pip requirement specifiers: '
-            'https://pip.pypa.io/en/stable/reference/pip_install/#requirement-specifiers'
-        )
+        'execute the commands locally. You must follow pip requirement specifiers: '
+        'https://pip.pypa.io/en/stable/reference/pip_install/#requirement-specifiers'
+    )
 
     npm: List[Package] = Field(
         None,
         description='List of npm packages that are required for operator to '
-            'execute the commands locally. You must follow npm install requirements: '
-            'https://docs.npmjs.com/cli/install#synopsis'
-        )
+        'execute the commands locally. You must follow npm install requirements: '
+        'https://docs.npmjs.com/cli/install#synopsis'
+    )
 
     # NOTE: yaml conversion doesn't play well with Enum hence using a validator.
     @validator('platform')
@@ -114,7 +114,8 @@ class LocalRequirements(BaseModel):
         for plat in v:
             assert plat in cls._valid_platforms, \
                 '{} is not a valid platform. Try one of these platforms:\n - {}'.format(
-                    plat, '\n - '.join(pl.title() for pl in cls._valid_platforms)
+                    plat, '\n - '.join(pl.title()
+                                       for pl in cls._valid_platforms)
                 )
         return v
 
@@ -130,8 +131,8 @@ class Operator(BaseModel):
     name: str = Field(
         ...,
         description='Operator name. This name should be unique among all the operators'
-            ' in your workflow.'
-        )
+        ' in your workflow.'
+    )
 
     version: str = Field(
         None,
@@ -146,5 +147,5 @@ class Operator(BaseModel):
     local: LocalRequirements = Field(
         None,
         description='An optional requirement object to specify requirements for local'
-            ' execution of the commands.'
-        )
+        ' execution of the commands.'
+    )

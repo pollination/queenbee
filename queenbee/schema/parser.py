@@ -15,7 +15,7 @@ def _check_list(lst, folder):
 
 def _import_dict_data(dictionary, folder):
     """find import_from keys if any.
-    
+
     Args:
         dictionary: Input dictionary to be parsed.
         folder: Starting folder for relative paths in dictionary.
@@ -45,12 +45,12 @@ def _import_dict_data(dictionary, folder):
 
 def parse_file(input_file):
     """Parse queenbee objects from an input JSON / YAML file.
-    
+
     This method will replace 'import_from' keys with the content from files recursively. 
-    
+
     Args:
         input_file: A YAML / JSON input file.
-    
+
     Returns:
         The content of the input file as a dictionary.
     """
@@ -59,8 +59,9 @@ def parse_file(input_file):
     assert os.path.isfile(input_file), 'Failed to find {}'.format(input_file)
 
     ext = input_file.split('.')[-1].lower()
-    assert  ext in ('json', 'yml', 'yaml'), \
-        'Invalid input file type: [{}]. Only JSON and YAML files are valid.'.format(ext)
+    assert ext in ('json', 'yml', 'yaml'), \
+        'Invalid input file type: [{}]. Only JSON and YAML files are valid.'.format(
+            ext)
 
     if ext == 'json':
         with open(input_file) as inf:
@@ -80,11 +81,13 @@ def parse_double_quotes_vars(input):
     match = re.findall(pattern, input, flags=re.MULTILINE)
     return match
 
+
 def parse_double_quote_workflow_vars(input):
     """Parse values between {{ workflow. }}."""
     pattern = r"{{\s*(workflow\.[_a-zA-Z0-9.\-\$#\?]*)\s*}}"
     match = re.findall(pattern, input, flags=re.MULTILINE)
     return match
+
 
 def replace_double_quote_vars(text, key, replace):
     """Take an input string with template keys and replace them"""

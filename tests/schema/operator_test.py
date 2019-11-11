@@ -7,11 +7,11 @@ def test_load_operator():
     operator = Operator.from_file(fp)
 
     assert operator.name == 'honeybee-radiance'
-    
+
     # check image
     image = operator.image
     image == 'ladybugtools/honeybee-radiance-workflow:latest'
-    
+
     # more checks is not really helpful as successful load to Pydantic object means
     # the object has been loaded correctly.
 
@@ -29,22 +29,22 @@ def test_create_operator():
                     'pattern': "r'\\d+\\.\\d+'"
                 }
             ],
-        'pip': [
-            {
-                'name': 'lbt-honeybee',
-                'version': '>=0.4.3'
-            },
-            {
-                'name': 'honeybee-radiance-workflow'
-            }],
-        'language': [
-            {
-                'name': 'python',
-                'version': '>=3.6'
-            }],
-        'platform': [
-            'Windows',
-            'Mac'
+            'pip': [
+                {
+                    'name': 'lbt-honeybee',
+                    'version': '>=0.4.3'
+                },
+                {
+                    'name': 'honeybee-radiance-workflow'
+                }],
+            'language': [
+                {
+                    'name': 'python',
+                    'version': '>=3.6'
+                }],
+            'platform': [
+                'Windows',
+                'Mac'
             ]
         }
     }
@@ -59,4 +59,3 @@ def test_create_operator():
         obj = yaml.safe_load(inf.read())
 
     assert obj == operator.to_dict()
-

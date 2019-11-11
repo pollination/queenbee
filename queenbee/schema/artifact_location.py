@@ -13,6 +13,7 @@ from pydantic import Field, constr
 from typing import Dict
 from enum import Enum
 
+
 class VerbEnum(str, Enum):
     get = 'GET'
     post = 'POST'
@@ -20,9 +21,10 @@ class VerbEnum(str, Enum):
     patch = 'PATCH'
     delete = 'DELETE'
 
+
 class ArtifactLocation(BaseModel):
     """ArtifactLocation
-    
+
     An Artifact Location System
     """
 
@@ -33,12 +35,13 @@ class ArtifactLocation(BaseModel):
 
     root: str = Field(
         ...,
-        description="The root path to the artifacts."   
+        description="The root path to the artifacts."
     )
+
 
 class LocalLocation(BaseModel):
     """Local Location
-    
+
     A folder on a machine's file system. This machine is the one where the workflow is running.
     """
     type: constr(regex='^local$')
@@ -53,19 +56,19 @@ class LocalLocation(BaseModel):
         description="For a local filesystem this can be \"C:\\Users\\me\\simulations\\test\"."
     )
 
+
 class HTTPLocation(BaseModel):
     """HTTPLocation
-    
+
     A web HTTP to an FTP server or an API for example.
     """
-    
+
     type: constr(regex='^http$')
 
     name: str = Field(
         ...,
         description='Name is a unique identifier for this particular Artifact Location'
     )
-
 
     root: str = Field(
         ...,
@@ -83,14 +86,15 @@ class HTTPLocation(BaseModel):
     )
 
     class Config:
-        use_enum_value=True
+        use_enum_value = True
+
 
 class S3Location(BaseModel):
     """S3Location
 
     An S3 bucket
     """
-    
+
     type: constr(regex='^s3$')
 
     name: str = Field(

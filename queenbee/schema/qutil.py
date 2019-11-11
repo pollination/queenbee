@@ -6,10 +6,14 @@ import json
 
 # set up yaml.dump to keep the order of the input dictionary
 # from https://stackoverflow.com/a/31609484/4394669
+
+
 def _keep_name_order_in_yaml():
     represent_dict_order = \
-        lambda self, data:  self.represent_mapping('tag:yaml.org,2002:map', data.items())
+        lambda self, data:  self.represent_mapping(
+            'tag:yaml.org,2002:map', data.items())
     yaml.add_representer(dict, represent_dict_order)
+
 
 _keep_name_order_in_yaml()
 

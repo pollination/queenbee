@@ -20,7 +20,6 @@ def test_load_arguments():
     artifact.path == 'project'
 
 
-
 def test_create_arguments():
     args_dict = {
         'parameters': [{'name': 'worker', 'value': 1}],

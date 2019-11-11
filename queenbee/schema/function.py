@@ -34,9 +34,9 @@ class Function(BaseModel):
     command: str = Field(
         ...,
         description=u'Full shell command for this function. Each function accepts only '
-            'one command. The command will be executed as a shell command in operator. '
-            'For running several commands after each other use && between the commands '
-            'or pipe data from one to another using |'
+        'one command. The command will be executed as a shell command in operator. '
+        'For running several commands after each other use && between the commands '
+        'or pipe data from one to another using |'
     )
 
     operator: str = Field(
@@ -57,7 +57,7 @@ class Function(BaseModel):
     @validator('inputs')
     def check_workflow_reference(cls, v):
         input_params = v.parameters
-        
+
         if input_params == None:
             return v
 
@@ -69,7 +69,8 @@ class Function(BaseModel):
             if 'workflow.' in param.value:
                 ref_params.append(param)
         if len(ref_params) > 0:
-            params = ['{}: {}'.format(param.name, param.value) for param in ref_params]
+            params = ['{}: {}'.format(param.name, param.value)
+                      for param in ref_params]
             warnings.warn(
                 'Referencing workflow parameters in a template function makes the'
                 ' function less reusable. Try using inputs / outputs of the function'
@@ -101,7 +102,7 @@ class Function(BaseModel):
 
         if v == None:
             return values
-        
+
         output_paths = []
         output_values = []
 
@@ -144,11 +145,10 @@ class Function(BaseModel):
 
         return values
 
-
     @staticmethod
     def validate_variable(variables, func_name, input_names):
         """Validate referenced variables.
-        
+
         Referenced variables must follow x.y.z pattern and start with inputs, outputs or
         workflow (e.g. inputs.parameters.filename).
 
@@ -159,7 +159,8 @@ class Function(BaseModel):
                 ref, typ, name = m.split('.')
             except ValueError:
                 raise ValueError(
-                    '{{%s}} in %s function does not follow x.y.z pattern'% (m, func_name)
+                    '{{%s}} in %s function does not follow x.y.z pattern' % (
+                        m, func_name)
                 )
 
             if not ref in ('inputs', 'outputs', 'workflow'):
@@ -174,11 +175,12 @@ class Function(BaseModel):
                     ' this function. Reference: {}'.format(func_name, m)
                 )
                 continue
-            
+
             # now ensure input references are valid
             if ref != 'inputs' or typ != 'parameters':
                 continue
 
             assert name in input_names, \
                 'Illegal output parameter name in "%s": {{%s}}\n' \
-                'Valid inputs:\n\t- %s' % (func_name, m, '\n\t- '.join(input_names))
+                'Valid inputs:\n\t- %s' % (func_name,
+                                           m, '\n\t- '.join(input_names))

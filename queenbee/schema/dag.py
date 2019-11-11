@@ -31,7 +31,7 @@ class LoopControl(BaseModel):
     parallel: bool = Field(
         True,
         description='A switch to indicate if loops should be executed in serial or'
-            ' parallel.'
+        ' parallel.'
     )
 
 
@@ -89,9 +89,9 @@ class DAG(BaseModel):
     target: str = Field(
         None,
         description='Target are one or more names of target tasks to execute in a DAG. '
-            'Multiple targets can be specified as space delimited inputs. When a target '
-            'is provided only a subset of tasks in DAG that are required to generate '
-            'the target(s) will be executed.'
+        'Multiple targets can be specified as space delimited inputs. When a target '
+        'is provided only a subset of tasks in DAG that are required to generate '
+        'the target(s) will be executed.'
     )
 
     fail_fast: bool = Field(
