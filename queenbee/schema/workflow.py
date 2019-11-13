@@ -8,7 +8,7 @@ import json
 import os
 import re
 from graphviz import Digraph
-from pydantic import Field, validator, constr, root_validator
+from pydantic import Schema, validator, constr
 from typing import List, Union
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.dag import DAG
@@ -28,7 +28,7 @@ class Workflow(BaseModel):
 
     id: str = str(uuid4())
 
-    inputs: Arguments = Field(
+    inputs: Arguments = Schema(
         None
     )
 
@@ -36,23 +36,32 @@ class Workflow(BaseModel):
 
     templates: List[Union[Function, DAG, 'Workflow']]
 
-    flow: DAG = Field(
+    flow: DAG = Schema(
         ...,
         description='A list of steps for using tasks in a DAG workflow'
     )
 
-    outputs: Arguments = Field(
+    outputs: Arguments = Schema(
         None
     )
 
-    artifact_locations: List[Union[LocalLocation, HTTPLocation, S3Location]] = Field(
+    artifact_locations: List[Union[LocalLocation, HTTPLocation, S3Location]] = Schema(
         None,
         description="A list of artifact locations which can be used by child flow objects"
     )
 
-    @root_validator
-    def check_references_exist(cls, values):
+    def validate_all(self):
+        """Check that all elements of the workflow are valid together"""
+        self.check_references_exist()
+
+        for template in self.templates:
+            if template.type == 'function':
+                template.validate()
+
+
+    def check_references_exist(self):
         """Check that any artifact location referenced in templates or flows exists in artifact_locations"""
+        values = self.dict()
         v = values.get('artifact_locations')
         if v != None:
             locations = [x.name for x in v]
@@ -110,7 +119,7 @@ class Workflow(BaseModel):
     def hydrate_workflow_templates(self):
         """returns a dictionary version of the workflow with {{workflow.x.y.z}} variables as values"""
         return hydrate_templates(
-            self, wf_value=self.dict(exclude_unset=True))
+            self, wf_value=self.dict(skip_defaults=True))
 
         
     @property

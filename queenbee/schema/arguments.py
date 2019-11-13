@@ -11,7 +11,7 @@ Queenbee accepts two types of arguments:
 """
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.artifact_location import VerbEnum
-from pydantic import Field
+from pydantic import Schema
 from typing import List, Any, Optional, Dict
 
 
@@ -21,24 +21,24 @@ class Parameter(BaseModel):
     Parameter indicate a passed string parameter to a service template with an optional
     default value.
     """
-    name: str = Field(
+    name: str = Schema(
         ...,
         description='Name is the parameter name. must be unique within a task\'s '
         'inputs / outputs.'
     )
 
-    value: Any = Field(
+    value: Any = Schema(
         None,
         description='Default value to use for an input parameter if a value was not'
         ' supplied.'
     )
 
-    description: str = Field(
+    description: str = Schema(
         None,
         description='Optional description for input parameter.'
     )
 
-    path: str = Field(
+    path: str = Schema(
         None,
         description='load parameters from a file. File can be a JSON / YAML or a text file.'
     )
@@ -47,38 +47,38 @@ class Parameter(BaseModel):
 class Artifact(BaseModel):
     """Artifact indicates an artifact to place at a specified path"""
 
-    name: str = Field(
+    name: str = Schema(
         ...,
         description='name of the artifact. must be unique within a task\'s '
         'inputs / outputs.'
     )
 
-    location: str = Field(
+    location: str = Schema(
         None,
         description="Name of the Artifact Location to source this artifact from."
     )
 
-    source_path: str = Field(
+    source_path: str = Schema(
         None,
         description='Path to the artifact on the local machine, url or S3 bucket.'
     )
 
-    path: str = Field(
+    path: str = Schema(
         None,
         description='Path the artifact should be copied to in the temporary task folder.'
     )
 
-    description: str = Field(
+    description: str = Schema(
         None,
         description='Optional description for input parameter.'
     )
 
-    headers: Optional[Dict[str, str]] = Field(
+    headers: Optional[Dict[str, str]] = Schema(
         None,
         description="An object with Key Value pairs of HTTP headers. For artifacts from URL Location only"
     )
 
-    verb: Optional[VerbEnum] = Field(
+    verb: Optional[VerbEnum] = Schema(
         None,
         description="The HTTP verb to use when making the request. For artifacts from URL Location only"
     )
@@ -92,14 +92,14 @@ class Arguments(BaseModel):
     or folder that can be identified by a url or a path.
     """
 
-    parameters: List[Parameter] = Field(
+    parameters: List[Parameter] = Schema(
         None,
         description='Parameters is the list of input parameters to pass to the task '
         'or workflow. A parameter can have a default value which will be overwritten if '
         'an input value is provided.'
     )
 
-    artifacts: List[Artifact] = Field(
+    artifacts: List[Artifact] = Schema(
         None,
         description='Artifacts is the list of file and folder arguments to pass to the '
         'task or workflow.'

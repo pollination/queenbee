@@ -1,7 +1,7 @@
 """Queenbee Function class."""
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.parser import parse_double_quotes_vars as var_parser
-from pydantic import Field, validator, root_validator, constr
+from pydantic import Schema, validator, constr
 from typing import List, Dict
 from enum import Enum
 from queenbee.schema.arguments import Arguments
@@ -13,17 +13,17 @@ class Function(BaseModel):
     """A function with a single command."""
     type: constr(regex='^function$')
 
-    name: str = Field(
+    name: str = Schema(
         ...,
         description='Function name. Must be unique within a workflow.'
     )
 
-    description: str = Field(
+    description: str = Schema(
         None,
         description='Function description. A short human readable description for this function.'
     )
 
-    inputs: Arguments = Field(
+    inputs: Arguments = Schema(
         None,
         description=u'Input arguments for this function.'
     )
@@ -31,7 +31,7 @@ class Function(BaseModel):
     # TODO: This will end up being an issue. command here is what args really are in
     # docker. Changing this to args will be confusing. Keep it as command will also be
     # confusing if one wants to match it with container
-    command: str = Field(
+    command: str = Schema(
         ...,
         description=u'Full shell command for this function. Each function accepts only '
         'one command. The command will be executed as a shell command in operator. '
@@ -39,17 +39,17 @@ class Function(BaseModel):
         'or pipe data from one to another using |'
     )
 
-    operator: str = Field(
+    operator: str = Schema(
         ...,
         description='Function operator name.'
     )
 
-    env: Dict[str, str] = Field(
+    env: Dict[str, str] = Schema(
         None,
         description='A dictionary of key:values for environmental variables.'
     )
 
-    outputs: Arguments = Field(
+    outputs: Arguments = Schema(
         None,
         description='List of output arguments.'
     )
@@ -79,8 +79,14 @@ class Function(BaseModel):
             )
         return v
 
-    @root_validator
-    def check_command_referenced_values(cls, values):
+    def validate_all(self):
+        """Check that all the elements of the function are valid together"""
+        self.check_command_referenced_values()
+        self.check_output_referenced_values()
+
+
+    def check_command_referenced_values(self):
+        values = self.dict()
         v = values.get('command')
         # get references
         match = var_parser(v)
@@ -89,15 +95,16 @@ class Function(BaseModel):
         # ensure referenced values are valid
         func_name = values['name']
         if 'inputs' in values and values['inputs'] != None:
-            input_names = [param.name for param in values['inputs'].parameters]
+            input_names = [param['name'] for param in values['inputs']['parameters']]
         else:
             input_names = []
         # check inputs
-        cls.validate_variable(match, func_name, input_names)
+        self.validate_variable(match, func_name, input_names)
         return values
 
-    @root_validator
-    def check_output_referenced_values(cls, values):
+
+    def check_output_referenced_values(self):
+        values = self.dict()
         v = values.get('outputs')
 
         if v == None:
@@ -106,13 +113,13 @@ class Function(BaseModel):
         output_paths = []
         output_values = []
 
-        if v.parameters is not None:
-            output_paths.extend([p.path for p in v.parameters])
-            output_values.extend([p.value for p in v.parameters])
+        if v.get('parameters') is not None:
+            output_paths.extend([p['path'] for p in v['parameters']])
+            output_values.extend([p['value'] for p in v['parameters']])
 
-        if v.artifacts is not None:
-            output_paths.extend([p.path for p in v.artifacts])
-            output_paths.extend([p.source_path for p in v.artifacts])
+        if v.get('artifacts') is not None:
+            output_paths.extend([p['path'] for p in v['artifacts']])
+            output_paths.extend([p['source_path'] for p in v['artifacts']])
 
         output_paths = filter(None, output_paths)
         output_values = filter(None, output_values)
@@ -130,18 +137,18 @@ class Function(BaseModel):
             )
         # check the variables are fine
         func_name = values['name']
-        if 'inputs' in values and values['inputs'] != None and values['inputs'].parameters != None:
-            input_names = [param.name for param in values['inputs'].parameters]
+        if 'inputs' in values and values['inputs'] != None and values['inputs']['parameters'] != None:
+            input_names = [param['name'] for param in values['inputs']['parameters']]
         else:
             input_names = []
 
         for path in output_paths:
             match = var_parser(path)
-            cls.validate_variable(match, func_name, input_names)
+            self.validate_variable(match, func_name, input_names)
 
         for value in output_values:
             match = var_parser(value)
-            cls.validate_variable(match, func_name, input_names)
+            self.validate_variable(match, func_name, input_names)
 
         return values
 
