@@ -7,7 +7,8 @@ def test_load_workflow():
     # not necessarily the best practice but it is fine since this
     # is the test for the schema and every other part has been already tested.
     fp = './tests/assets/workflow_example/daylightfactor.yaml'
-    Workflow.from_file(fp)
+    wf = Workflow.from_file(fp)
+    wf.validate_all()
 
 
 def test_workflow_fetch_dict():

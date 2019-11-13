@@ -56,7 +56,7 @@ class Workflow(BaseModel):
 
         for template in self.templates:
             if template.type == 'function':
-                template.validate()
+                template.validate_all()
 
 
     def check_references_exist(self):
@@ -64,9 +64,9 @@ class Workflow(BaseModel):
         values = self.dict()
         v = values.get('artifact_locations')
         if v != None:
-            locations = [x.name for x in v]
+            locations = [x.get('name') for x in v]
             artifacts = list_artifacts(values)
-            sources = list(set([x.location for x in artifacts]))
+            sources = list(set([x.get('location') for x in artifacts]))
             for source in sources:
                 if source not in locations:
                     raise ValueError(

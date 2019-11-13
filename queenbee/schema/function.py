@@ -93,9 +93,10 @@ class Function(BaseModel):
         if not match:
             return values
         # ensure referenced values are valid
-        func_name = values['name']
+        func_name = values.get('name')
         if 'inputs' in values and values['inputs'] != None:
-            input_names = [param['name'] for param in values['inputs']['parameters']]
+            input_names = [param.get('name')
+                           for param in values['inputs']['parameters']]
         else:
             input_names = []
         # check inputs
@@ -136,9 +137,9 @@ class Function(BaseModel):
                 ' this function.\n\t- {}'.format('\n\t-'.join(ref_params))
             )
         # check the variables are fine
-        func_name = values['name']
+        func_name = values.get('name')
         if 'inputs' in values and values['inputs'] != None and values['inputs']['parameters'] != None:
-            input_names = [param['name'] for param in values['inputs']['parameters']]
+            input_names = [param.get('name') for param in values['inputs']['parameters']]
         else:
             input_names = []
 
