@@ -3,18 +3,19 @@ language: python
 python:
   - "3.6"
 
-install:
-  - pip install -r dev-requirements.txt
-
 script:
   - python -m pytest tests/
 
-after_success:
-  - coverage report
-  - coveralls
 
 jobs:
   include:
+  - stage: test
+    install:
+      - pip install -r dev-requirements.txt
+      - pip install -r requirements.txt
+    after_success:
+      - coverage report
+      - coveralls
   - stage: deploy
     if: branch = master AND (NOT type IN (pull_request))
     before_install:
