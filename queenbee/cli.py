@@ -77,7 +77,9 @@ class Context():
     @staticmethod
     def parse_workflow(filepath):
         try:
-            return Workflow.from_file(filepath)
+            wf = Workflow.from_file(filepath)
+            wf.validate_all()
+            return wf
         except AssertionError as e:
             raise click.UsageError(e)
         except Exception as e:
