@@ -20,7 +20,7 @@ setuptools.setup(
     url="https://github.com/ladybug-tools/queenbee",
     packages=setuptools.find_packages(exclude=["tests", "docs"]),
     install_requires=requirements,
-    extra_requires={
+    extras_require={
         'cli': ['click>=7.0', 'click_plugins==1.1.1']
     },
     entry_points={
