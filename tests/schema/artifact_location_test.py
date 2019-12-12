@@ -1,4 +1,4 @@
-from queenbee.schema.artifact_location import LocalLocation, HTTPLocation, S3Location
+from queenbee.schema.artifact_location import RunFolderLocation, HTTPLocation, S3Location
 from queenbee.schema.qutil import BaseModel
 from typing import List, Union
 import yaml
@@ -6,17 +6,17 @@ import yaml
 
 class ArtifactLocationReader(BaseModel):
 
-    artifact_locations: List[Union[LocalLocation, HTTPLocation, S3Location]]
+    artifact_locations: List[Union[RunFolderLocation, HTTPLocation, S3Location]]
 
 
 def test_create_local_location():
     loc_dict = {
         'name': 'local-test',
-        'type': 'local',
+        'type': 'run-folder',
         'root': 'C:\\Users\\Test\\Projects\\Project 1'
     }
 
-    loc = LocalLocation.parse_obj(loc_dict)
+    loc = RunFolderLocation.parse_obj(loc_dict)
 
     loc_file = './tests/assets/temp/local_location.yaml'
     loc.to_yaml(loc_file)
@@ -78,7 +78,7 @@ def test_load_artifact_locations():
 
     local_dict = {
         'name': 'local-test',
-        'type': 'local',
+        'type': 'run-folder',
         'root': 'C:\\Users\\Test\\Projects\\Project 1'
     }
 

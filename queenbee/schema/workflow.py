@@ -15,7 +15,7 @@ from queenbee.schema.dag import DAG
 from queenbee.schema.arguments import Arguments
 from queenbee.schema.operator import Operator
 from queenbee.schema.function import Function
-from queenbee.schema.artifact_location import LocalLocation, HTTPLocation, S3Location
+from queenbee.schema.artifact_location import RunFolderLocation, HTTPLocation, S3Location
 from queenbee.schema.parser import parse_double_quote_workflow_vars, replace_double_quote_vars
 
 
@@ -45,7 +45,7 @@ class Workflow(BaseModel):
         None
     )
 
-    artifact_locations: List[Union[LocalLocation, HTTPLocation, S3Location]] = Schema(
+    artifact_locations: List[Union[RunFolderLocation, HTTPLocation, S3Location]] = Schema(
         None,
         description="A list of artifact locations which can be used by child flow objects"
     )

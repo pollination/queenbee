@@ -39,12 +39,16 @@ class ArtifactLocation(BaseModel):
     )
 
 
-class LocalLocation(BaseModel):
-    """Local Location
+class RunFolderLocation(BaseModel):
+    """Run Folder Location
 
-    A folder on a machine's file system. This machine is the one where the workflow is running.
+    This is the folder a workflow will use as it's root path when running a simulation.
+    When run on a local machine (using queenbee-luigi for example) the root path should
+    be a path on the user's machine.
+    If running on the Pollination platform the `root` value is ignored and the data is
+    persisted to a run specific folder in S3 within the Pollination backend.
     """
-    type: constr(regex='^local$')
+    type: constr(regex='^run-folder$')
 
     name: str = Schema(
         ...,
@@ -52,8 +56,9 @@ class LocalLocation(BaseModel):
     )
 
     root: str = Schema(
-        ...,
-        description="For a local filesystem this can be \"C:\\Users\\me\\simulations\\test\"."
+        None,
+        description="For a local filesystem this can be \"C:\\Users\\me\\simulations\\test\".\
+            Will be ignored when running on the Pollination platform."
     )
 
 

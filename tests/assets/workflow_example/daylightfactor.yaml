@@ -3,7 +3,7 @@ type: workflow
 name: daylight-factor
 
 artifact_locations:
-  - type: local
+  - type: run-folder
     name: project-folder
     root: /path/to/test/{{ workflow.id }}
 

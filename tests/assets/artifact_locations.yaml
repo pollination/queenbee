@@ -1,6 +1,6 @@
 artifact_locations:
 - name: local-test
-  type: local
+  type: run-folder
   root: C:\Users\Test\Projects\Project 1
 
 - name: http-test
