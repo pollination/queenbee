@@ -71,3 +71,12 @@ def test_hydrate__missing_value_error():
 
     assert '{{workflow.inputs.parameters.sensor-count.value}} cannot reference an empty or null value.' in str(
         e)
+
+def test_workflow_single_run_folder():
+    """A workflow artifact locations should only contain one run folder"""
+    fp = './tests/assets/workflow_example/double_run_folder.yaml'
+
+    with pytest.raises(AssertionError) as e:
+            wf = Workflow.from_file(fp)
+
+    assert "Workflow can only have 1 run-folder artifact location" in str(e)

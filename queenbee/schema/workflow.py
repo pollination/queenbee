@@ -50,6 +50,15 @@ class Workflow(BaseModel):
         description="A list of artifact locations which can be used by child flow objects"
     )
 
+    @validator('artifact_locations', whole=True)
+    def check_duplicate_run_folders(cls, v):
+        count = 0
+        for location in v:
+            if location.type == 'run-folder':
+                count +=1
+        assert count <= 1, "Workflow can only have 1 run-folder artifact location"
+        return v
+
     def validate_all(self):
         """Check that all elements of the workflow are valid together"""
         self.check_references_exist()
