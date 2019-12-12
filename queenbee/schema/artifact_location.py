@@ -39,6 +39,27 @@ class ArtifactLocation(BaseModel):
     )
 
 
+class InputFolderLocation(BaseModel):
+    """Input Folder Location
+
+    This is a folder that the workflow can use to pull input artifacts from.
+    When running locally it can be any folder path on the machine's filesystem.
+    When running on the Pollination platform the root 
+    """
+    type: constr(regex='^input-folder$')
+
+    name: str = Schema(
+        ...,
+        description='Name is a unique identifier for this particular Artifact Location'
+    )
+
+    root: str = Schema(
+        None,
+        description="For a local filesystem this can be \"C:\\Users\\me\\simulations\\test\".\
+            Will be ignored when running on the Pollination platform."
+    )
+
+
 class RunFolderLocation(BaseModel):
     """Run Folder Location
 

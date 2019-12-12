@@ -15,3 +15,7 @@ artifact_locations:
   endpoint: s3.eu-west-1.amazonaws.com
   bucket: all-of-my-data
   credentials_path: C:\Users\Test\.queenbee\config.yaml
+
+- name: basic-input
+  type: input-folder
+  

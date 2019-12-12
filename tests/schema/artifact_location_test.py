@@ -1,4 +1,4 @@
-from queenbee.schema.artifact_location import RunFolderLocation, HTTPLocation, S3Location
+from queenbee.schema.artifact_location import InputFolderLocation, RunFolderLocation, HTTPLocation, S3Location
 from queenbee.schema.qutil import BaseModel
 from typing import List, Union
 import yaml
@@ -6,10 +6,10 @@ import yaml
 
 class ArtifactLocationReader(BaseModel):
 
-    artifact_locations: List[Union[RunFolderLocation, HTTPLocation, S3Location]]
+    artifact_locations: List[Union[InputFolderLocation, RunFolderLocation, HTTPLocation, S3Location]]
 
 
-def test_create_local_location():
+def test_create_run_folder_location():
     loc_dict = {
         'name': 'local-test',
         'type': 'run-folder',
@@ -18,7 +18,27 @@ def test_create_local_location():
 
     loc = RunFolderLocation.parse_obj(loc_dict)
 
-    loc_file = './tests/assets/temp/local_location.yaml'
+    loc_file = './tests/assets/temp/run_location.yaml'
+    loc.to_yaml(loc_file)
+
+    # parse the yaml file and compare the two
+    with open(loc_file) as inf:
+        obj = yaml.safe_load(inf.read())
+
+    assert obj == loc.to_dict()
+
+
+
+def test_create_input_folder_location():
+    loc_dict = {
+        'name': 'local-test',
+        'type': 'input-folder',
+        'root': 'C:\\Users\\Test\\Projects\\Project 1'
+    }
+
+    loc = InputFolderLocation.parse_obj(loc_dict)
+
+    loc_file = './tests/assets/temp/input_location.yaml'
     loc.to_yaml(loc_file)
 
     # parse the yaml file and compare the two
