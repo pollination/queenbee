@@ -3,16 +3,14 @@ language: python
 python:
   - "3.6"
 
-script:
-  - python -m pytest tests/
-
-
 jobs:
   include:
   - stage: test
     install:
       - pip install -r dev-requirements.txt
       - pip install -r requirements.txt
+    script:
+      - python -m pytest tests/
     after_success:
       - coverage report
       - coveralls
