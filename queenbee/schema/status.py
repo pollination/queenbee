@@ -4,7 +4,7 @@ A task status keeps track of the outcome of a given workflow task.
 """
 
 from datetime import datetime
-from pydantic import Schema
+from pydantic import Schema, validator
 from typing import List, Dict
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.arguments import Arguments
