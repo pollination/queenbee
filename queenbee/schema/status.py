@@ -81,7 +81,7 @@ class TaskStatus(BaseStatus):
     )
 
     boundary_id: str = Schema(
-        ...,
+        None,
         description='This indicates the task ID of the associated template root \
             task in which this task belongs to. A DAG task will have the id of the \
             parent DAG for example.'
@@ -99,6 +99,9 @@ class TaskStatus(BaseStatus):
             been executed. It will remain empty for functions.'
     )
 
+    @validator('type')
+    def check_config(cls, v,):
+        assert v in ['Function', 'DAG', 'Workflow', 'Loop'], "Type must be one of Function, DAG, Workflow or Loop"
 
 class WorkflowStatus(BaseStatus):
     """Workflow Status"""
