@@ -111,5 +111,4 @@ class WorkflowStatus(BaseStatus):
         description='The ID of the individual workflow run.'
     )
 
-    tasks = Dict[str, TaskStatus]
-
+    tasks: Dict[str, TaskStatus] = {}
