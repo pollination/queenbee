@@ -1,13 +1,14 @@
 ---
 parameters:
-  - name: worker
-    description: Maximum number of workers for executing this workflow.
-    value: 1   # this is the default value which can be overwritten
+  - name: grid-name
+    value: grid
+    description: null
+    path: null
+  - name: sensor-count
+    value: 250
+    description: null
+    path: null
 artifacts:
-  - name: project-folder
-    location: project-folder
-    description: |
-      Path to project folder for this study. This will make it easy to use relative
-      path for other template inputs.
-    source_path: '.'   # this is the default value which can be overwritten
-    path: project
+  - name: input-grid-folder
+    location: model-source  # this is important for copying the files.
+    path: asset/grid  # can we reference this as a parameter?

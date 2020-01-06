@@ -10,6 +10,12 @@ def test_load_function():
     Function.from_file(fp)
 
 
+def test_load_function_with_int_input():
+    fp = './tests/assets/function_int_input.yaml'
+    fn = Function.from_file(fp)
+    assert fn.inputs.parameters[1].value == 250
+
+
 def test_load_illegal_input():
     fp = './tests/assets/function_illegal_input.yaml'
 

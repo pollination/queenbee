@@ -64,6 +64,8 @@ class Function(BaseModel):
         ref_params = []
 
         for param in input_params:
+            if not isinstance(param, (str, bytes)):
+                continue
             if not param.value:
                 continue
             if 'workflow.' in param.value:
