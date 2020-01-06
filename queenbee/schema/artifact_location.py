@@ -4,7 +4,7 @@ ArtifactLocation is a configuration to a source system to acquire artifacts from
 
 Queenbee accepts three types of locations:
 
-    1. Local: The machine where the workflow is running's local file system
+    1. Local: The machine where the workflow is running on local file system
     2. HTTP: A web http to a website or an API for example
     3. S3: An S3 bucket
 """

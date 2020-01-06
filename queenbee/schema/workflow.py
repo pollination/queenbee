@@ -45,7 +45,9 @@ class Workflow(BaseModel):
         None
     )
 
-    artifact_locations: List[Union[RunFolderLocation, InputFolderLocation, HTTPLocation, S3Location]] = Schema(
+    artifact_locations: List[
+        Union[RunFolderLocation, InputFolderLocation, HTTPLocation, S3Location]
+        ] = Schema(
         None,
         description="A list of artifact locations which can be used by child flow objects"
     )
@@ -148,7 +150,7 @@ class Workflow(BaseModel):
 def hydrate_templates(workflow, wf_value=None):
     """Replace all `{{ workflow.x.y.z }}` with corresponding value
 
-    Cyle through an arbitary workflow value (dictionary, list, string etc...) 
+    Cycle through an arbitrary workflow value (dictionary, list, string etc...) 
     and hydrate any workflow template value with it's actual value. This command 
     should mostly be used by the plugin libraries when converting a queenbee 
     workflow to their own job scheduling language. As such the workflow should 
@@ -166,8 +168,8 @@ def hydrate_templates(workflow, wf_value=None):
 
         elif len(values.keys()) == 1:
             for match_k, match_v in values.items():
-                assert match_v is not None, "{{%s}} cannot reference an empty or null value." % (
-                    match_k)
+                assert match_v is not None, \
+                    "{{%s}} cannot reference an empty or null value." % (match_k)
 
                 pattern = r"^\s*{{\s*" + match_k + r"\s*}}\s*$"
 

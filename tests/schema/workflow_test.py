@@ -17,8 +17,12 @@ def test_workflow_fetch_dict():
 
     output = wf.fetch_workflow_values('{{workflow.inputs.parameters.worker}}')
 
-    assert output == {'workflow.inputs.parameters.worker': {'name': 'worker', 'path': None,
-                                                            'description': 'Maximum number of workers for executing this workflow.', 'value': 1}}
+    assert output == {
+        'workflow.inputs.parameters.worker': {
+            'name': 'worker', 'path': None,
+            'description': 'Maximum number of workers for executing this workflow.',
+            'value': 1}
+    }
 
 
 def test_workflow_fetch_value():
@@ -38,8 +42,10 @@ def test_workflow_fetch_multi():
     output = wf.fetch_workflow_values(
         '{{workflow.inputs.parameters.worker.value}}-something-{{workflow.operators.honeybee-radiance.image}}')
 
-    assert output == {'workflow.inputs.parameters.worker.value': 1,
-                      'workflow.operators.honeybee-radiance.image': 'ladybugtools/honeybee-radiance'}
+    assert output == {
+        'workflow.inputs.parameters.worker.value': 1,
+        'workflow.operators.honeybee-radiance.image': 'ladybugtools/honeybee-radiance'
+    }
 
 
 def test_hydrate_templates():

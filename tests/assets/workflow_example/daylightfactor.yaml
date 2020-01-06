@@ -66,11 +66,11 @@ templates:
           source_path: asset/grid/grid.pts
           path: grid-file
     command: |
-      honeybee radiance grid split grid-file {{inputs.parameters.sensor-count}} --folder grids-folder > grids_list.txt
+      honeybee radiance grid split grid-file {{inputs.parameters.sensor-count}} --folder grids-folder --log-file grids_list.txt
     outputs:
       parameters:
         - name: grid-list
-          path: grids_list.txt'
+          path: grids_list.txt
       artifacts:
         - name: grids
           location: project-folder

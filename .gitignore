@@ -18,3 +18,5 @@ venv
 
 tests/assets/temp/*.*
 *.gv
+
+NOTES.md
