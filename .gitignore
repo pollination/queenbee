@@ -13,10 +13,8 @@ tox.ini
 .eggs
 *.egg-info
 *.code-workspace
-
 venv
-
 tests/assets/temp/*.*
 *.gv
-
 NOTES.md
+docs/openapi.json

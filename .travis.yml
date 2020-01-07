@@ -31,8 +31,7 @@ jobs:
   - stage: docs
     if: branch = master AND (NOT type IN (pull_request))
     script:
-    - sphinx-apidoc -f -e -d 4 -o ./docs ./queenbee
-    - sphinx-build -b html ./docs ./docs/_build/docs
+    - python ./docs.py
     deploy:
       provider: pages
       skip_cleanup: true

@@ -1,7 +1,0 @@
-queenbee
-=================
-
-.. toctree::
-   :maxdepth: 4
-
-   queenbee
