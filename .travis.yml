@@ -38,6 +38,6 @@ jobs:
       skip_cleanup: true
       github-token: $GH_TOKEN
       keep-history: false
-      local_dir: docs/_build/
+      local_dir: docs/
       on:
         branch: master
