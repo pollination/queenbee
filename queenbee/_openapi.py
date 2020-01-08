@@ -1,7 +1,7 @@
 """This module generates the OpenAPI documentation for Queenbee workflow
 based on Pydantic implementation.
 """
-
+from pkg_resources import get_distribution
 from pydantic.schema import schema
 from typing import Dict
 
@@ -12,7 +12,7 @@ _base_open_api = {
     "servers": [],
     "info": {
         "description": "This is the documentation for Queenbee Workflow schema.",
-        "version": "1.7.0",
+        "version": '.'.join(get_distribution('queenbee').version.split('.')[:3]),
         "title": "Queenbee Workflow Schema",
         "contact": {
             "name": "Ladybug Tools",
