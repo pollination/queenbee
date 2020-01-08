@@ -19,8 +19,8 @@ A Queenbee workflow is a YAML / JSON file which consists of different parts. You
 can use Queenbee to generate the workflows programmatically using Python or you can
 write a workflow line by line.
 
-Here we discuss the generic structure of a Queenbee workflow. See OpenApi schema
-documentation for all Workflow objects: [Missing link]()
+Here we discuss the generic structure of a Queenbee workflow. [See OpenApi schema
+documentation for all Workflow objects](https://www.ladybug.tools/queenbee/).
 
 ```
   Workflow
