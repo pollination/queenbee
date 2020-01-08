@@ -31,6 +31,7 @@ jobs:
   - stage: docs
     if: branch = master AND (NOT type IN (pull_request))
     script:
+    - pip install -U .
     - python ./docs.py
     deploy:
       provider: pages
