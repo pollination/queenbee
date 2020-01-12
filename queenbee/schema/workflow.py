@@ -47,7 +47,7 @@ class Workflow(BaseModel):
 
     artifact_locations: List[
         Union[RunFolderLocation, InputFolderLocation, HTTPLocation, S3Location]
-        ] = Field(
+    ] = Field(
         None,
         description="A list of artifact locations which can be used by child flow objects"
     )
@@ -58,7 +58,7 @@ class Workflow(BaseModel):
         print(v)
         for location in v:
             if location.type == 'run-folder':
-                count +=1
+                count += 1
         assert count <= 1, "Workflow can only have 1 run-folder artifact location"
         return v
 
@@ -69,7 +69,6 @@ class Workflow(BaseModel):
         for template in self.templates:
             if template.type == 'function':
                 template.validate_all()
-
 
     def check_references_exist(self):
         """Check that any artifact location referenced in templates or flows exists in artifact_locations"""
@@ -133,7 +132,6 @@ class Workflow(BaseModel):
         return hydrate_templates(
             self, wf_value=self.dict(exclude_unset=True))
 
-        
     @property
     def nodes_links(self):
         """Get nodes and links for workflow visualization."""
@@ -170,7 +168,8 @@ def hydrate_templates(workflow, wf_value=None):
         elif len(values.keys()) == 1:
             for match_k, match_v in values.items():
                 assert match_v is not None, \
-                    "{{%s}} cannot reference an empty or null value." % (match_k)
+                    "{{%s}} cannot reference an empty or null value." % (
+                        match_k)
 
                 pattern = r"^\s*{{\s*" + match_k + r"\s*}}\s*$"
 

@@ -50,7 +50,7 @@ def get_openapi(
     version: str = None,
     openapi_version: str = "3.0.2",
     description: str = None,
-    ) -> Dict:
+) -> Dict:
     """Return Queenbee Workflow Schema as an openapi compatible dictionary."""
     open_api = dict(_base_open_api)
 

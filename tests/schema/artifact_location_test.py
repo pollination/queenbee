@@ -6,7 +6,8 @@ import yaml
 
 class ArtifactLocationReader(BaseModel):
 
-    artifact_locations: List[Union[InputFolderLocation, RunFolderLocation, HTTPLocation, S3Location]]
+    artifact_locations: List[Union[InputFolderLocation,
+                                   RunFolderLocation, HTTPLocation, S3Location]]
 
 
 def test_create_run_folder_location():
@@ -26,7 +27,6 @@ def test_create_run_folder_location():
         obj = yaml.safe_load(inf.read())
 
     assert obj == loc.to_dict()
-
 
 
 def test_create_input_folder_location():

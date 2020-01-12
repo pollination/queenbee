@@ -23,6 +23,7 @@ def test_load_illegal_input():
         f = Function.from_file(fp)
         f.validate_all()
 
+
 def test_load_workflow_input():
     fp = './tests/assets/function_workflow_reference.yaml'
 

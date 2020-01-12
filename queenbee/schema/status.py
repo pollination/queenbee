@@ -101,8 +101,10 @@ class TaskStatus(BaseStatus):
 
     @validator('type')
     def check_config(cls, v,):
-        assert v in ['Function', 'DAG', 'Workflow', 'Loop'], "Type must be one of Function, DAG, Workflow or Loop"
+        assert v in ['Function', 'DAG', 'Workflow',
+                     'Loop'], "Type must be one of Function, DAG, Workflow or Loop"
         return v
+
 
 class WorkflowStatus(BaseStatus):
     """Workflow Status"""

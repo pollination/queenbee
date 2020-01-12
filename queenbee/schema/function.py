@@ -86,7 +86,6 @@ class Function(BaseModel):
         self.check_command_referenced_values()
         self.check_output_referenced_values()
 
-
     def check_command_referenced_values(self):
         values = self.dict()
         v = values.get('command')
@@ -104,7 +103,6 @@ class Function(BaseModel):
         # check inputs
         self.validate_variable(match, func_name, input_names)
         return values
-
 
     def check_output_referenced_values(self):
         values = self.dict()
@@ -141,7 +139,8 @@ class Function(BaseModel):
         # check the variables are fine
         func_name = values.get('name')
         if 'inputs' in values and values['inputs'] != None and values['inputs']['parameters'] != None:
-            input_names = [param.get('name') for param in values['inputs']['parameters']]
+            input_names = [param.get('name')
+                           for param in values['inputs']['parameters']]
         else:
             input_names = []
 
