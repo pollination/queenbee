@@ -1,6 +1,6 @@
 import pytest
 from queenbee.schema.workflow import Workflow
-
+from pydantic.error_wrappers import ValidationError
 
 def test_load_workflow():
     # this import tests all the parts of workflow schema
@@ -82,7 +82,7 @@ def test_workflow_single_run_folder():
     """A workflow artifact locations should only contain one run folder"""
     fp = './tests/assets/workflow_example/double_run_folder.yaml'
 
-    with pytest.raises(AssertionError) as e:
+    with pytest.raises(ValidationError) as e:
             wf = Workflow.from_file(fp)
 
-    assert "Workflow can only have 1 run-folder artifact location" in str(e)
+    assert "Workflow can only have 1 run-folder artifact location" in str(e.value)

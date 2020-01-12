@@ -5,30 +5,30 @@ used and maps inputs and outputs for the specific task.
 """
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.arguments import Arguments
-from pydantic import Schema
+from pydantic import Field
 from typing import List, Any, Union
 
 
 class LoopControl(BaseModel):
     """Control object for loops."""
 
-    loop_var: str = Schema(
+    loop_var: str = Field(
         'item',
         description='Name of variable which will be referenced in task.'
     )
 
-    pause: int = Schema(
+    pause: int = Field(
         None,
         description='Number of seconds to pause between the loops.'
     )
 
     # TODO: Add validator for this case.
-    iterable_type: str = Schema(
+    iterable_type: str = Field(
         'list',
         description='Iterable object type: list | object'
     )
 
-    parallel: bool = Schema(
+    parallel: bool = Field(
         True,
         description='A switch to indicate if loops should be executed in serial or'
         ' parallel.'
@@ -38,33 +38,33 @@ class LoopControl(BaseModel):
 class DAGTask(BaseModel):
     """DAGTask defines a single step in a Directed Acyclic Graph (DAG) workflow."""
 
-    name: str = Schema(
+    name: str = Field(
         ...,
         description='Name for this step. It must be unique in DAG.'
     )
 
-    arguments: Arguments = Schema(
+    arguments: Arguments = Field(
         None,
         description='Input arguments for template.'
     )
 
     # this can change to Union[Function, Workflow]
-    template: str = Schema(
+    template: str = Field(
         ...,
         description='Template name.'
     )
 
-    dependencies: List[str] = Schema(
+    dependencies: List[str] = Field(
         None,
         description='Dependencies are name of other DAG steps which this depends on.'
     )
 
-    loop: Union[str, List[Any]] = Schema(
+    loop: Union[str, List[Any]] = Field(
         None,
         description='List of inputs to loop over.'
     )
 
-    loop_control: LoopControl = Schema(
+    loop_control: LoopControl = Field(
         None,
         description='Control parameters for loop.'
     )
@@ -81,12 +81,12 @@ class DAGTask(BaseModel):
 class DAG(BaseModel):
     """DAG includes different steps of a directed acyclic graph."""
 
-    name: str = Schema(
+    name: str = Field(
         ...,
         description='A unique name for this dag.'
     )
 
-    target: str = Schema(
+    target: str = Field(
         None,
         description='Target are one or more names of target tasks to execute in a DAG. '
         'Multiple targets can be specified as space delimited inputs. When a target '
@@ -94,13 +94,13 @@ class DAG(BaseModel):
         'the target(s) will be executed.'
     )
 
-    fail_fast: bool = Schema(
+    fail_fast: bool = Field(
         True,
         description='Stop scheduling new steps, as soon as it detects that one of the'
         ' DAG nodes is failed. Default is True.'
     )
 
-    tasks: List[DAGTask] = Schema(
+    tasks: List[DAGTask] = Field(
         ...,
         description='Tasks are a list of DAG steps'
     )

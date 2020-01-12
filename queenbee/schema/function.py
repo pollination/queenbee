@@ -1,7 +1,7 @@
 """Queenbee Function class."""
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.parser import parse_double_quotes_vars as var_parser
-from pydantic import Schema, validator, constr
+from pydantic import Field, validator, constr
 from typing import List, Dict
 from enum import Enum
 from queenbee.schema.arguments import Arguments
@@ -13,17 +13,17 @@ class Function(BaseModel):
     """A function with a single command."""
     type: constr(regex='^function$')
 
-    name: str = Schema(
+    name: str = Field(
         ...,
         description='Function name. Must be unique within a workflow.'
     )
 
-    description: str = Schema(
+    description: str = Field(
         None,
         description='Function description. A short human readable description for this function.'
     )
 
-    inputs: Arguments = Schema(
+    inputs: Arguments = Field(
         None,
         description=u'Input arguments for this function.'
     )
@@ -31,7 +31,7 @@ class Function(BaseModel):
     # TODO: This will end up being an issue. command here is what args really are in
     # docker. Changing this to args will be confusing. Keep it as command will also be
     # confusing if one wants to match it with container
-    command: str = Schema(
+    command: str = Field(
         ...,
         description=u'Full shell command for this function. Each function accepts only '
         'one command. The command will be executed as a shell command in operator. '
@@ -39,17 +39,17 @@ class Function(BaseModel):
         'or pipe data from one to another using |'
     )
 
-    operator: str = Schema(
+    operator: str = Field(
         ...,
         description='Function operator name.'
     )
 
-    env: Dict[str, str] = Schema(
+    env: Dict[str, str] = Field(
         None,
         description='A dictionary of key:values for environmental variables.'
     )
 
-    outputs: Arguments = Schema(
+    outputs: Arguments = Field(
         None,
         description='List of output arguments.'
     )

@@ -3,19 +3,19 @@
 A task operator includes the information for executing tasks locally or in a container.
 """
 from queenbee.schema.qutil import BaseModel
-from pydantic import Schema, validator, constr
+from pydantic import Field, validator, constr
 from typing import List, Any, Set
 from enum import Enum
 
 
 class Language(BaseModel):
     """Required programming language."""
-    name: str = Schema(
+    name: str = Field(
         'python',
         description='Language name'
     )
 
-    version: str = Schema(
+    version: str = Field(
         None,
         description='Language version requirements. For instance ==3.7 or >=3.6'
     )
@@ -36,19 +36,19 @@ class Language(BaseModel):
 # TODO: This will most likely change. Too much to take on!
 class App(BaseModel):
     """Local application."""
-    name: str = Schema(..., description='App name')
+    name: str = Field(..., description='App name')
 
-    version: str = Schema(
+    version: str = Field(
         None,
         description='App version requirements. For instance >=5.2'
     )
 
-    command: str = Schema(
+    command: str = Field(
         ...,
         description='A command to check if application is installed'
     )
 
-    pattern: str = Schema(
+    pattern: str = Field(
         None,
         description='An optional regex pattern to apply to command output.'
     )
@@ -56,9 +56,9 @@ class App(BaseModel):
 
 class Package(BaseModel):
     """A distribution package."""
-    name: str = Schema(..., description='Package name')
+    name: str = Field(..., description='Package name')
 
-    version: str = Schema(
+    version: str = Field(
         None,
         description='Package version requirements. For instance ==3.7 or >=3.6'
     )
@@ -70,12 +70,12 @@ class LocalRequirements(BaseModel):
 
     _valid_platforms: Set[str] = set(['linux', 'windows', 'mac'])
 
-    platform: List[str] = Schema(
+    platform: List[str] = Field(
         ['linux', 'windows', 'mac'],
         description='List of valid platforms that operator can execute the commands.'
     )
 
-    language: List[Language] = Schema(
+    language: List[Language] = Field(
         'bash',
         description='List of required programming languages to execute the commands'
         ' with an operator.'
@@ -83,7 +83,7 @@ class LocalRequirements(BaseModel):
 
     # TODO: expand this to accept command to get the version and also add regex to parse
     # version from stdout
-    app: List[App] = Schema(
+    app: List[App] = Field(
         None,
         description='List of applications that are required for operator to '
         'execute the commands locally. You must follow pip requirement specifiers: '
@@ -92,14 +92,14 @@ class LocalRequirements(BaseModel):
         ' rtrace --version and tries to parse version from command.'
     )
 
-    pip: List[Package] = Schema(
+    pip: List[Package] = Field(
         None,
         description='List of Python packages that are required for operator to '
         'execute the commands locally. You must follow pip requirement specifiers: '
         'https://pip.pypa.io/en/stable/reference/pip_install/#requirement-specifiers'
     )
 
-    npm: List[Package] = Schema(
+    npm: List[Package] = Field(
         None,
         description='List of npm packages that are required for operator to '
         'execute the commands locally. You must follow npm install requirements: '
@@ -107,7 +107,7 @@ class LocalRequirements(BaseModel):
     )
 
     # NOTE: yaml conversion doesn't play well with Enum hence using a validator.
-    @validator('platform', whole=True)
+    @validator('platform', each_item=False)
     def check_platform(cls, v):
         v = [x.lower() for x in v]
 
@@ -128,23 +128,23 @@ class Operator(BaseModel):
     """
     type: constr(regex='^operator$') = 'operator'
 
-    name: str = Schema(
+    name: str = Field(
         ...,
         description='Operator name. This name should be unique among all the operators'
         ' in your workflow.'
     )
 
-    version: str = Schema(
+    version: str = Field(
         None,
         description='Optional version input for operator.'
     )
 
-    image: str = Schema(
+    image: str = Field(
         ...,
         description='Docker image name.'
     )
 
-    local: LocalRequirements = Schema(
+    local: LocalRequirements = Field(
         None,
         description='An optional requirement object to specify requirements for local'
         ' execution of the commands.'

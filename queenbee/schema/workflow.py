@@ -8,7 +8,7 @@ import json
 import os
 import re
 from graphviz import Digraph
-from pydantic import Schema, validator, constr
+from pydantic import Field, validator, constr
 from typing import List, Union
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.dag import DAG
@@ -28,7 +28,7 @@ class Workflow(BaseModel):
 
     id: str = str(uuid4())
 
-    inputs: Arguments = Schema(
+    inputs: Arguments = Field(
         None
     )
 
@@ -36,25 +36,26 @@ class Workflow(BaseModel):
 
     templates: List[Union[Function, DAG, 'Workflow']]
 
-    flow: DAG = Schema(
+    flow: DAG = Field(
         ...,
         description='A list of steps for using tasks in a DAG workflow'
     )
 
-    outputs: Arguments = Schema(
+    outputs: Arguments = Field(
         None
     )
 
     artifact_locations: List[
         Union[RunFolderLocation, InputFolderLocation, HTTPLocation, S3Location]
-        ] = Schema(
+        ] = Field(
         None,
         description="A list of artifact locations which can be used by child flow objects"
     )
 
-    @validator('artifact_locations', whole=True)
+    @validator('artifact_locations', each_item=False)
     def check_duplicate_run_folders(cls, v):
         count = 0
+        print(v)
         for location in v:
             if location.type == 'run-folder':
                 count +=1
@@ -130,7 +131,7 @@ class Workflow(BaseModel):
     def hydrate_workflow_templates(self):
         """returns a dictionary version of the workflow with {{workflow.x.y.z}} variables as values"""
         return hydrate_templates(
-            self, wf_value=self.dict(skip_defaults=True))
+            self, wf_value=self.dict(exclude_unset=True))
 
         
     @property
