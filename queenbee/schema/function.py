@@ -56,6 +56,9 @@ class Function(BaseModel):
 
     @validator('inputs')
     def check_workflow_reference(cls, v):
+        if v == None:
+            return v
+
         input_params = v.parameters
 
         if input_params == None:
