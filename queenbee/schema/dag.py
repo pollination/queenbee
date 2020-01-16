@@ -104,3 +104,13 @@ class DAG(BaseModel):
         ...,
         description='Tasks are a list of DAG steps'
     )
+
+    @property
+    def artifacts(self):
+        """List of unique DAG artifacts."""
+        artifacts = []
+        for dag_task in self.tasks:
+            if not dag_task.arguments:
+                continue
+            artifacts.append(dag_task.arguments.artifacts)
+        return list(artifacts)

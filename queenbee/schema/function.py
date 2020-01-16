@@ -196,3 +196,16 @@ class Function(BaseModel):
                 'Illegal output parameter name in "%s": {{%s}}\n' \
                 'Valid inputs:\n\t- %s' % (func_name,
                                            m, '\n\t- '.join(input_names))
+
+    @property
+    def artifacts(self):
+        """List of workflow artifacts."""
+        artifacts = []
+
+        if self.inputs and self.inputs.artifacts:
+            artifacts.extend(self.inputs.artifacts)
+
+        if self.outputs and self.outputs.artifacts:
+            artifacts.extend(self.outputs.artifacts)
+
+        return list(artifacts)
