@@ -1,4 +1,4 @@
-from queenbee.schema.operator import Operator, LocalRequirements
+from queenbee.schema.operator import Operator
 import yaml
 
 
@@ -19,34 +19,7 @@ def test_load_operator():
 def test_create_operator():
     operator_dict = {
         'name': 'honeybee-radiance',
-        'image': 'ladybugtools/honeybee-radiance-workflow:latest',
-        'local': {
-            'app': [
-                {
-                    'name': 'radiance',
-                    'version': '>=5.2',
-                    'command': 'rtrace -version',
-                    'pattern': "r'\\d+\\.\\d+'"
-                }
-            ],
-            'pip': [
-                {
-                    'name': 'lbt-honeybee',
-                    'version': '>=0.4.3'
-                },
-                {
-                    'name': 'honeybee-radiance-workflow'
-                }],
-            'language': [
-                {
-                    'name': 'python',
-                    'version': '>=3.6'
-                }],
-            'platform': [
-                'Windows',
-                'Mac'
-            ]
-        }
+        'image': 'ladybugtools/honeybee-radiance-workflow:latest'
     }
 
     operator = Operator.parse_obj(operator_dict)

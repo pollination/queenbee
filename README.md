@@ -48,7 +48,12 @@ documentation for all Workflow objects](https://www.ladybug.tools/queenbee/).
 
 ## 1. Artifact Locations
 
-Artifacts are files that will be used during different steps of the workflow computation. These files can be stored on different types of systems (remote folder, local machine or API call to a webapp). Every artifact indicates which `location` or source-system it is to be acquired from, and each `Artifact Location` is listed in the `artifact_locations` key of the `workflow` object. Currently 3 types of locations are supported:
+Artifacts are files that will be used during different steps of the workflow computation.
+These files can be stored on different types of systems (remote folder, local machine or
+API call to a webapp). Every artifact indicates which `location` or source-system it is
+to be acquired from, and each `Artifact Location` is listed in the `artifact_locations`
+key of the `workflow` object. Currently 3 types of locations are supported:
+
 * **Local**: Artifacts situated on the machine running the workflows
 * **HTTP**: Artifacts that can be sourced from a website or web API
 * **S3**: Artifacts that can be retrieved from an S3 bucket
@@ -116,31 +121,15 @@ value which can be overwritten by an input file.
 
 ## 3. operators
 
-`Operators` include the requirements for running `templates` [see below]. Operator can be
-an operator for running the templates locally or using containers. In a valid workflow
-all the the `operators` that are referenced by `templates` should be included in
-this section. Keep in mind that the operators are reusable and can be shared between
-different templates.
-
-An operator has two separate fields for container `image` and `local`. The `image` field
-identifies the image for running a `template` and the `local` field identifies the
-applications and libraries that this operator relies on to run locally.
-
-For instance this is an operator for running arbitrary Radiance commands. It uses a
-radiance image for running the commands in docker and uses radiance application to run
-the application. Once can identify version requirement for the application and the
-command to check the version. If the command outputs more than just the version you can
-pass a regex pattern which will be applied to the output of the command.
+`Operators` include the requirements for running `templates` [see below]. In a valid
+workflow all the the `operators` that are referenced by `templates` should be included
+in this section. Keep in mind that the operators are reusable and can be shared between
+different templates. The `image` field identifies the Docker image for running a
+`template`. Below is an operator for running arbitrary Radiance commands.
 
 ```yaml
   - name: radiance-operator
     image: ladybugtools/radiance:5.2
-    local:
-      app:
-        - name: radiance
-          version: ">=5.2"
-          command: rtrace -version  # command to get the version
-          pattern: r'\d+\.\d+'  # regex pattern to extract the version from command output
 ```
 
 Here is another operator example for running `honeybee-radiance` commands.
@@ -148,20 +137,7 @@ Here is another operator example for running `honeybee-radiance` commands.
 ```yaml
 
   - name: honeybee-radiance
-    image: ladybugtools/honeybee-radiance-workflow:latest
-    local:
-      app:
-        - name: radiance
-          version: ">=5.2"
-          command: rtrace -version
-          pattern: r'\d+\.\d+'
-      pip:
-        - name: lbt-honeybee
-          version: ">=0.4.3"
-        - name: honeybee-radiance-workflow
-      language:
-        - name: python
-          version: ">=3.6"
+    image: ladybugtools/honeybee-radiance:latest
 
 ```
 
@@ -173,7 +149,7 @@ this operator.
 ```yaml
 
 operators:
-  - name: radiance-operator  # will not change even if the operator name in the file is different
+  - name: radiance-operator  # will NOT change based on the operator name in the file
     import_from: 'radiance_operator.yaml'  # relative path to the workflow file itself
 
 ```
@@ -183,20 +159,8 @@ In this example the content of `radiance_operator.yaml` can be something like th
 ```yaml
 ---
 name: honeybee-radiance
-image: ladybugtools/honeybee-radiance-workflow:latest
-local:
-  app:
-    - name: radiance
-      version: ">=5.2"
-      command: rtrace -version
-      pattern: r'\d+\.\d+'
-  pip:
-    - name: lbt-honeybee
-      version: ">=0.4.3"
-    - name: honeybee-radiance-workflow
-  language:
-    - name: python
-      version: ">=3.6"
+image: ladybugtools/honeybee-radiance:latest
+
 ```
 
 ## 4. templates
@@ -231,12 +195,12 @@ operator.
   operator: radiance-operator
   # commands and args will be used both locally and inside the container
   # TODO: This must change to be platform specific
-  command: gensky -c -B {{ inputs.parameters.desired-irradiance }} > file.sky
+  command: gensky -c -B "{{inputs.parameters.desired-irradiance}}" > file.sky
   outputs:
     artifacts:
       - name: sky
         task_path: file.sky
-        path: {{ inputs.parameters.sky-file }}
+        path: "{{inputs.parameters.sky-file}}"
         source: project-folder
 ```
 
@@ -326,10 +290,10 @@ flow:
       inputs:
         parameters:
            - name: scene_files
-             value:
-               - "{{tasks.generate_sky_steps.outputs.sky_file}}"
-               - "{{workflow.inputs.parameters.folder}}"/model/static/scene.mat
-               - "{{workflow.inputs.parameters.folder}}"/model/static/scene.rad
+             value: |
+               "{{tasks.generate_sky_steps.outputs.sky_file}}"
+               "{{workflow.inputs.parameters.folder}}"/model/static/scene.mat
+               "{{workflow.inputs.parameters.folder}}"/model/static/scene.rad
     - name: generate_grids_task
       template: generate_grids
       inputs:
@@ -444,7 +408,7 @@ workflow will not have an `import_from` key.
 This command generates a template input file for a specific workflow. You can use
 `--include-defaults` flag to also get the inputs that already have a default value. The
 inputs with referenced inputs with prefix variable name (e.g.
-{{steps.create_octree.outputs.artifacts.octree}}) will not be included in the inputs
+"{{tasks.create_octree.outputs.artifacts.octree}}") will not be included in the inputs
 file. 
 
 ## visualize
