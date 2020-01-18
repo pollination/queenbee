@@ -1,7 +1,3 @@
 ---
 name: radiance-operator
 image: ladybugtools/radiance:5.2
-local:
-  app:
-    - name: radiance
-      import_from: radiance_app.yaml

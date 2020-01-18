@@ -12,11 +12,3 @@ def test_parser():
     assert operator['name'] == 'radiance-operator'
     assert 'image' in operator
     assert operator['image'] == 'ladybugtools/radiance:5.2'
-    assert 'local' in operator
-    assert 'app' in operator['local']
-    # check if app is loaded correctly
-    app = operator['local']['app'][0]
-    assert app['name'] == 'radiance'
-    assert app['version'] == ">=5.2"
-    assert app['command'] == 'rtrace -version'
-    assert app['pattern'] == "r'\\d+\\.\\d+'"
