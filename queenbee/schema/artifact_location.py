@@ -25,7 +25,7 @@ class VerbEnum(str, Enum):
 class ArtifactLocation(BaseModel):
     """ArtifactLocation
 
-    An Artifact Location System
+    An Artifact Location System.
     """
 
     name: str = Field(
@@ -35,7 +35,7 @@ class ArtifactLocation(BaseModel):
 
     root: str = Field(
         ...,
-        description="The root path to the artifacts."
+        description='The root path to the artifacts.'
     )
 
 

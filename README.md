@@ -247,8 +247,6 @@ and how the output from one task will be consumed by another task(s). Such a wor
 also known as Directed Acyclic Graph (DAG).
 
 Here is an example of creating a sky and generating an octree as two consecutive steps.
-Note that the values are place-holders and can be overwritten by input parameters file.
-
 
 ```yaml
 
@@ -267,23 +265,12 @@ flow:
         inputs:
           parameters:
             - name: scene_files
-              value:
-                - "{{steps.generate_sky_steps.outputs.sky_file}}"
-                - "{{workflow.inputs.parameters.folder}}"/model/static/scene.mat
-                - "{{workflow.inputs.parameters.folder}}"/model/static/scene.rad
+              value: |
+                "{{tasks.generate_sky_steps.outputs.sky_file}}"
+                "{{workflow.inputs.parameters.folder}}"/model/static/scene.mat
+                "{{workflow.inputs.parameters.folder}}"/model/static/scene.rad
 
 ```
-
-As you can see it is common to use the output of one step as an input for another step or
-reference one of the workflow inputs as an input for one of the steps or tasks. Queenbee
-supports the following words as prefix variable names inside the `flow` section:
-
-- workflow: "{{workflow.xx.yy}} is used for workflow level parameters.
-- tasks: "{{tasks.task_name.xx.yy}} is used in DAG task to refer to other tasks.
-- inputs: "{{inputs.xx.yy}}" is used in operators.
-- item: "{{item}}" or "{{item.key_name}}" is used in loops. You can change item to a
-  different keyword by setting up `loop_var` in `loop_control`.
-
 
 Now let's think about a longer workflow which also includes ray-tracing using the
 generated octree. We need to add two new steps to the workflow:
@@ -298,8 +285,7 @@ generating the sensor grids we we do not need to wait for generating sky to be f
 Finally, the last step of ray-tracing will need both the grid and the octree.
 
 To describe such flows we will use a Directed Acyclic Graph or DAG. Here
-is the updated process. Note the the keyword `step` is changed to `tasks` and each `task`
-has a key for `dependency`.
+is the updated process.
 
 Also since the step for generating grids can generate more than one grid we are using
 loop to run ray-tracing for all these grids in parallel.
@@ -325,7 +311,7 @@ loop to run ray-tracing for all these grids in parallel.
 ```yaml
 
 flow:
-  - name: jjjjj
+  - name: sample-workflow
   - tasks:
     - name: generate_sky_task
       template: generate_sky
@@ -372,6 +358,46 @@ Executors may return these outputs as a collection of file locations or file con
 
 Outputs can also return `parameters` that are generated in the `process` section of the
 workflow. 
+
+
+## Variables
+
+As you can see it is common to use the output of one task as an input for another task or
+reference one of the workflow inputs as an input for one of the steps or tasks. Queenbee
+supports the following words as prefix variable names:
+
+### Global variables
+
+| Variable | Description|
+|----------|------------|
+| `workflow.name` | Replaced by workflow name |
+| `workflow.id` | Replaced by workflow id |
+| `workflow.inputs.parameters.<NAME>` | Replaced by `value` for parameter `<NAME>` |
+| `workflow.inputs.artifacts.<NAME>` | Replaced by `path` for artifact `<NAME>` |
+| `workflow.operators.<OPERATORNAME>.image` | Replaced by image name for operator `<OPERATORNAME>` |
+
+### Flow variables
+
+| Variable | Description|
+|----------|------------|
+| `tasks.<TASKNAME>.outputs.parameters.<NAME>` | Output parameter of any previous task |
+| `tasks.<TASKNAME>.outputs.artifacts.<NAME>` | Output artifact of any previous task |
+
+### Task variables
+
+| Variable | Description|
+|----------|------------|
+| `inputs.parameters.<NAME>` | Input parameter of task `<NAME>`|
+| `inputs.artifacts.<NAME>` | Input artifact of task `<NAME>`|
+| `outputs.parameters.<NAME>` | Output parameter of task `<NAME>`|
+| `outputs.artifacts.<NAME>` | Output artifact of task `<NAME>`|
+
+### Loops
+
+| Variable | Description|
+|----------|------------|
+| `item` | Replaced by the value of item |
+| `item.<FIELDNAME>` | Replaced by the field value of the item |
 
 
 # TODO: Command Line Interface

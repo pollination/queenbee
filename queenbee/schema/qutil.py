@@ -1,13 +1,13 @@
-"""Queenbee utility methods."""
+"""Queenbee utility functions."""
 from pydantic import BaseModel as PydanticBaseModel
 from .parser import parse_file
 import yaml
 import json
+import collections
+from typing import List
 
 # set up yaml.dump to keep the order of the input dictionary
 # from https://stackoverflow.com/a/31609484/4394669
-
-
 def _keep_name_order_in_yaml():
     represent_dict_order = \
         lambda self, data:  self.represent_mapping(
@@ -58,3 +58,9 @@ class BaseModel(PydanticBaseModel):
 
     def __repr__(self):
         return self.yaml()
+
+
+def find_dup_items(values: List) -> List:
+    """Find duplicate items in a list.""" 
+    dup = [t for t, c in collections.Counter(values).items() if c > 1]
+    return dup
