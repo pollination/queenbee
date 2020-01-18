@@ -9,32 +9,6 @@ from pydantic import Field
 from typing import List, Any, Union
 
 
-class LoopControl(BaseModel):
-    """Control object for loops."""
-
-    loop_var: str = Field(
-        'item',
-        description='Name of variable which will be referenced in task.'
-    )
-
-    pause: int = Field(
-        None,
-        description='Number of seconds to pause between the loops.'
-    )
-
-    # TODO: Add validator for this case.
-    iterable_type: str = Field(
-        'list',
-        description='Iterable object type: list | object'
-    )
-
-    parallel: bool = Field(
-        True,
-        description='A switch to indicate if loops should be executed in serial or'
-        ' parallel.'
-    )
-
-
 class DAGTask(BaseModel):
     """DAGTask defines a single step in a Directed Acyclic Graph (DAG) workflow."""
 
@@ -62,11 +36,6 @@ class DAGTask(BaseModel):
     loop: Union[str, List[Any]] = Field(
         None,
         description='List of inputs to loop over.'
-    )
-
-    loop_control: LoopControl = Field(
-        None,
-        description='Control parameters for loop.'
     )
 
     @property
