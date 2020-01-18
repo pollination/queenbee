@@ -54,36 +54,6 @@ class Function(BaseModel):
         description='List of output arguments.'
     )
 
-    @validator('inputs')
-    def check_workflow_reference(cls, v):
-        if v == None:
-            return v
-
-        input_params = v.parameters
-
-        if input_params == None:
-            return v
-
-        ref_params = []
-
-        for param in input_params:
-            if not isinstance(param, (str, bytes)):
-                continue
-            if not param.value:
-                continue
-            if 'workflow.' in param.value:
-                ref_params.append(param)
-        if len(ref_params) > 0:
-            params = ['{}: {}'.format(param.name, param.value)
-                      for param in ref_params]
-            warnings.warn(
-                'Referencing workflow parameters in a template function makes the'
-                ' function less reusable. Try using inputs / outputs of the function'
-                ' instead and assign workflow values in flow section when calling'
-                ' this function.\n\t- {}'.format('\n\t-'.join(params))
-            )
-        return v
-
     def validate_all(self):
         """Check that all the elements of the function are valid together"""
         self.check_command_referenced_values()

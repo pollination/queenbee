@@ -134,7 +134,7 @@ class Workflow(BaseModel):
         return values
 
     def to_diagraph(self, filename=None):
-        """Return a graphviz instance of a diagraph from workflow"""
+        """Return a graphviz instance of a diagraph from workflow."""
         if filename is None:
             filename = self.id
         f = Digraph(self.name, filename='{}.gv'.format(filename))
@@ -146,30 +146,49 @@ class Workflow(BaseModel):
 
         return f
 
-    def fetch_workflow_values(self, template_string):
-        """replaces template value with workflow level value"""
-        references = parse_double_quote_workflow_vars(template_string)
+    def fetch_workflow_values(self, input_string):
+        """Get referenced template value from workflow level value.
 
+        This method returns a dictionary where the keys are the workflow variables in
+        input_string and values are the fetched values from workflow. 
+        """
+        references = parse_double_quote_workflow_vars(input_string)
+        if not references:
+            return {}
         values = {}
-
         for ref in references:
-            keys = ref.split('.')
-            obj = self.dict()
-
-            for key in keys[1:]:
-                if isinstance(obj, list):
-                    obj = list(filter(lambda x: x.get('name') == key, obj))[0]
+            try:
+                _, attr, prop, name = ref.split('.')
+            except ValueError:
+                *_, name = ref.split('.')
+                if name == 'id':
+                    values[ref] = self.id
+                elif name == 'name':
+                    values[ref] = self.name
+            else:
+                if attr in ('inputs', 'outputs'):
+                    if prop == 'parameters':
+                        values[ref] = self.inputs.get_parameter_value(name)
+                    elif prop == 'artifacts':
+                        values[ref] = self.inputs.get_artifact_value(name)
+                elif attr == 'operators':
+                    values[ref] = self.get_operator(prop).image
                 else:
-                    obj = obj[key]
-
-            values[ref] = obj
+                    raise ValueError(
+                        f'Invalid workflow variable: {ref}. '
+                        f'Variable type must be "parameters", "artifacts" '
+                        f'or "operators" not "{attr}"'
+                    )
 
         return values
 
     def hydrate_workflow_templates(self):
-        """returns a dictionary version of the workflow with {{workflow.x.y.z}} variables as values"""
-        return hydrate_templates(
-            self, wf_value=self.dict(exclude_unset=True))
+        """Find and replace {{workflow.x.y.z}} variables with input values.
+
+        This method returns the workflow as a dictionary with {{workflow.x.y.z}}
+        variables replaced by workflow input values.
+        """
+        return hydrate_templates(self, wf_value=self.dict(exclude_unset=True))
 
     @property
     def nodes_links(self):
@@ -208,21 +227,32 @@ class Workflow(BaseModel):
 
         return list(artifacts)
 
+    def get_operator(self, name):
+        """Get operator by name."""
+        operator = [op for op in self.operators if op.name == name]
+        if not operator:
+            raise ValueError(f'Invalid operator name: {name}')
+        return operator[0]
+
 
 def hydrate_templates(workflow, wf_value=None):
-    """Replace all `{{ workflow.x.y.z }}` with corresponding value
+    """Replace all ``{{ workflow.x.y.z }}`` variables with corresponding values.
 
     Cycle through an arbitrary workflow value (dictionary, list, string etc...) 
-    and hydrate any workflow template value with it's actual value. This command 
+    and hydrate any workflow template value with it's actual value. This function 
     should mostly be used by the plugin libraries when converting a queenbee 
     workflow to their own job scheduling language. As such the workflow should 
-    contain all the required variable values indicated by a `{{ workflow.x.y...z }}`.
-    """
+    contain all the required variable values indicated by a ``{{ workflow.x.y...z }}``.
 
+    In most cases you should use Workflow's ``hydrate_workflow_templates`` method instead
+    of using this function directly.
+    """
     if isinstance(wf_value, list):
         wf_value = [hydrate_templates(workflow, item) for item in wf_value]
 
     elif isinstance(wf_value, str):
+        "{{workflow.id}}_{{workflow.name}}"
+        "{{workflow.id}}"
         values = workflow.fetch_workflow_values(wf_value)
 
         if values == {}:
@@ -236,8 +266,9 @@ def hydrate_templates(workflow, wf_value=None):
 
                 pattern = r"^\s*{{\s*" + match_k + r"\s*}}\s*$"
 
-                # if match is not None then it means that the string value "{{ workflow.key }}" does not
-                # require string replace values like the following example: "{{ workflow.id }}-{{ workflow.name }}"
+                # if match is not None then it means that the string value
+                # "{{ workflow.key }}" does not require string replace values like the
+                # following example: "{{ workflow.id }}-{{ workflow.name }}"
                 match = re.search(pattern, wf_value)
 
                 if isinstance(match_v, list) or isinstance(match_v, dict) or match is not None:

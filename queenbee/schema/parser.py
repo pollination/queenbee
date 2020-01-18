@@ -44,12 +44,12 @@ def _import_dict_data(dictionary, folder):
 
 
 def parse_file(input_file):
-    """Parse queenbee objects from an input JSON / YAML file.
+    """Parse queenbee objects from an input JSON or YAML file.
 
     This method will replace 'import_from' keys with the content from files recursively. 
 
     Args:
-        input_file: A YAML / JSON input file.
+        input_file: A YAML or JSON input file.
 
     Returns:
         The content of the input file as a dictionary.

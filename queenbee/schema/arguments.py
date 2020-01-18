@@ -9,9 +9,10 @@ Queenbee accepts two types of arguments:
     2. Artifact: An ``artifact`` is a file or folder that can be identified by a url or
         a path.
 """
-from queenbee.schema.qutil import BaseModel
+from queenbee.schema.qutil import BaseModel, find_dup_items
 from queenbee.schema.artifact_location import VerbEnum
-from pydantic import Field
+import queenbee.schema.variable as qbvar
+from pydantic import Field, root_validator
 from typing import List, Any, Optional, Dict
 
 
@@ -40,22 +41,69 @@ class Parameter(BaseModel):
 
     path: str = Field(
         None,
-        description='load parameters from a file. File can be a JSON / YAML or a text file.'
+        description='Load parameters values from a JSON file.'
     )
+
+    @root_validator
+    def validate_vars(cls, values):
+        """Validate input values."""
+        name = values.get('name')
+        value = values.get('value')
+        path = values.get('path')
+        if value and path:
+            raise ValueError(
+                f'You should either set value or path for parameter {name}.'
+            )
+
+        value = value if value is not None else path
+        if not value or isinstance(value, (int, float)):
+            return values
+        # check if it is a referenced variable
+        ref_var = qbvar.get_ref_variable(value)
+
+        if ref_var:
+            for rv in ref_var:
+                qbvar.validate_ref_variable_format(rv)
+
+        return values
+
+    @property
+    def current_value(self):
+        """Try to get the current value.
+
+        This method checks the ``value`` property first and if it is None it will return
+        the value for ``path``.
+        """
+        return self.value if self.value is not None else self.path
+
+    @property
+    def ref_vars(self) -> Dict[str, List[str]]:
+        """Get referenced variables if any.
+
+        """
+        value = self.current_value
+        if not value:
+            return {}
+
+        ref_var = qbvar.get_ref_variable(value)
+        if not ref_var:
+            return {}
+
+        return {'value': ref_var} if self.value is not None else {'path': ref_var}
 
 
 class Artifact(BaseModel):
-    """Artifact indicates an artifact to place at a specified path"""
+    """Artifact indicates an artifact to be placed at a specified path."""
 
     name: str = Field(
         ...,
-        description='name of the artifact. must be unique within a task\'s '
+        description='Name of the artifact. Must be unique within a task\'s '
         'inputs / outputs.'
     )
 
     location: str = Field(
-        None,
-        description="Name of the Artifact Location to source this artifact from."
+        None,  # is it possible to create an artifact with no artifact location?
+        description="Name of the artifact_location to source this artifact from."
     )
 
     source_path: str = Field(
@@ -75,13 +123,64 @@ class Artifact(BaseModel):
 
     headers: Optional[Dict[str, str]] = Field(
         None,
-        description="An object with Key Value pairs of HTTP headers. For artifacts from URL Location only"
+        description='An object with Key Value pairs of HTTP headers. '
+        'For artifacts from URL location only.'
     )
 
     verb: Optional[VerbEnum] = Field(
         None,
-        description="The HTTP verb to use when making the request. For artifacts from URL Location only"
+        description='The HTTP verb to use when making the request. '
+        'For artifacts from URL location only.'
     )
+
+    @root_validator
+    def validate_vars(cls, values):
+        """Validate input values."""
+        input_values = [
+            v for v in (values.get('location'), values.get('path'),
+            values.get('source_path')) if v is not None
+        ]
+
+        if not input_values:
+            return values
+
+        for value in values:
+            # check if it is a referenced variable
+            ref_var = qbvar.get_ref_variable(value)
+            if not ref_var:
+                continue
+            for rv in ref_var:
+                qbvar.validate_ref_variable_format(rv)
+
+        return values
+
+    @property
+    def current_value(self):
+        """Try to get the current value.
+
+        This method checks the ``path`` property first and if it is None it will return
+        the value for ``source_path``.
+        """
+        return self.path if self.path is not None else self.source_path
+
+    @property
+    def ref_vars(self) -> Dict[str, List[str]]:
+        """Get referenced variables if any."""
+        ref_values = {}
+        values = [
+            v for v in (self.location, self.path, self.source_path)
+            if v is not None
+        ]
+
+        if not values:
+            return ref_values
+
+        for value in values:
+            ref_var = qbvar.get_ref_variable(value)
+            if ref_var:
+                ref_values[value] = ref_var
+
+        return ref_values
 
 
 class Arguments(BaseModel):
@@ -104,3 +203,35 @@ class Arguments(BaseModel):
         description='Artifacts is the list of file and folder arguments to pass to the '
         'task or workflow.'
     )
+
+    @root_validator
+    def unique_names(cls, values):
+        params = values.get('parameters')
+        if params:
+            param_names = [par.name for par in params]
+            if len(param_names) != len(set(param_names)):
+                dup = find_dup_items(param_names)
+                raise ValueError(f'Duplicate parameter names: {dup}')
+        artifacts = values.get('artifacts')
+        if artifacts:
+            artifact_names = [par.name for par in artifacts]
+            if len(artifact_names) != len(set(artifact_names)):
+                dup = find_dup_items(artifact_names)
+                raise ValueError(f'Duplicate artifact names: {dup}')
+        return values
+
+    def get_parameter_value(self, name):
+        """Get a parameter value by name."""
+        param = [par for par in self.parameters if par.name == name]
+        if not param:
+            raise ValueError(f'Invalid parameter name: {name}')
+        return param[0].current_value
+
+    def get_artifact_value(self, name):
+        """Get an artifact value by name."""
+        if not self.artifacts:
+            raise ValueError('Arguments has no artifacts')
+        param = [par for par in self.artifacts if par.name == name]
+        if not param:
+            raise ValueError(f'Invalid artifact name: {name}')
+        return param[0].current_value
