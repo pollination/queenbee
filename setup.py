@@ -1,6 +1,4 @@
-import re
 import setuptools
-import sys
 
 with open('README.md') as fh:
     long_description = fh.read()
@@ -10,11 +8,12 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="queenbee",
-    use_scm_version = True,
+    use_scm_version=True,
     setup_requires=['setuptools_scm'],
     author="Ladybug Tools",
     author_email="info@ladybug.tools",
-    description="Queenbee is a workflow language for creating DAG workflows which empowers all workflow libraries in Ladybug Tools!",
+    description="Queenbee is a workflow language for creating DAG workflows which "
+    "empowers all workflow libraries in Ladybug Tools!",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ladybug-tools/queenbee",

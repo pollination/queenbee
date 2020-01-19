@@ -44,7 +44,7 @@ class InputFolderLocation(BaseModel):
 
     This is a folder that the workflow can use to pull input artifacts from.
     When running locally it can be any folder path on the machine's filesystem.
-    When running on the Pollination platform the root 
+    When running on the Pollination platform the root.
     """
     type: constr(regex='^input-folder$')
 
@@ -146,5 +146,5 @@ class S3Location(BaseModel):
     credentials_path: str = Field(
         ...,
         description="Path to the file holding the AccessKey and SecretAccessKey to "
-            "authenticate to the bucket"
+        "authenticate to the bucket"
     )

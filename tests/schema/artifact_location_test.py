@@ -1,4 +1,5 @@
-from queenbee.schema.artifact_location import InputFolderLocation, RunFolderLocation, HTTPLocation, S3Location
+from queenbee.schema.artifact_location import InputFolderLocation, RunFolderLocation, \
+    HTTPLocation, S3Location
 from queenbee.schema.qutil import BaseModel
 from typing import List, Union
 import yaml

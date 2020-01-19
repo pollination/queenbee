@@ -1,8 +1,6 @@
 """Queenbee Task Operator class."""
 from queenbee.schema.qutil import BaseModel
-from pydantic import Field, validator, constr
-from typing import List, Any, Set
-from enum import Enum
+from pydantic import Field, constr
 
 
 class Operator(BaseModel):

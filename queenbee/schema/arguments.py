@@ -137,8 +137,10 @@ class Artifact(BaseModel):
     def validate_vars(cls, values):
         """Validate input values."""
         input_values = [
-            v for v in (values.get('location'), values.get('path'),
-            values.get('source_path')) if v is not None
+            v for v in (
+                values.get('location'), values.get('path'),
+                values.get('source_path')
+            ) if v is not None
         ]
 
         if not input_values:

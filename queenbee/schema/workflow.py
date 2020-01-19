@@ -53,7 +53,7 @@ class Workflow(BaseModel):
         Union[RunFolderLocation, InputFolderLocation, HTTPLocation, S3Location]
     ] = Field(
         None,
-        description="A list of artifact locations which can be used by child flow objects"
+        description='A list of artifact locations which can be used by flow objects.'
     )
 
     @validator('artifact_locations', each_item=False)
@@ -118,7 +118,7 @@ class Workflow(BaseModel):
         """
         values = self.dict()
         v = values.get('artifact_locations')
-        if v != None:
+        if v is not None:
             locations = [x.get('name') for x in v]
             artifacts = self.artifacts
             sources = set(artifact.location for artifact in artifacts)
@@ -149,7 +149,7 @@ class Workflow(BaseModel):
         """Get referenced template value from workflow level value.
 
         This method returns a dictionary where the keys are the workflow variables in
-        input_string and values are the fetched values from workflow. 
+        input_string and values are the fetched values from workflow.
         """
         references = parse_double_quote_workflow_vars(input_string)
         if not references:
@@ -314,7 +314,8 @@ def hydrate_templates(workflow, wf_value=None):
                 # following example: "{{ workflow.id }}-{{ workflow.name }}"
                 match = re.search(pattern, wf_value)
 
-                if isinstance(match_v, list) or isinstance(match_v, dict) or match is not None:
+                if isinstance(match_v, list) or isinstance(match_v, dict) or \
+                        match is not None:
                     wf_value = match_v
                 else:
                     wf_value = replace_double_quote_vars(

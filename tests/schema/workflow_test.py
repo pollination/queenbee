@@ -67,7 +67,8 @@ def test_workflow_fetch_multi():
     wf = Workflow.from_file(fp)
 
     output = wf.fetch_workflow_values(
-        '{{workflow.inputs.parameters.worker}}-something-{{workflow.operators.honeybee-radiance.image}}')
+        '{{workflow.inputs.parameters.worker}}-something'
+        '-{{workflow.operators.honeybee-radiance.image}}')
 
     assert output == {
         'workflow.inputs.parameters.worker': 1,
@@ -85,7 +86,7 @@ def test_hydrate_templates():
 
     wf_dict = wf.hydrate_workflow_templates()
 
-    new_wf = Workflow.parse_obj(wf_dict)
+    _ = Workflow.parse_obj(wf_dict)
 
     # TODO: Put the tests back after rewriting hydrate workflow
     # Test string allocation
@@ -111,7 +112,7 @@ def test_workflow_single_run_folder():
     fp = './tests/assets/workflow_example/double_run_folder.yaml'
 
     with pytest.raises(ValidationError) as e:
-        wf = Workflow.from_file(fp)
+        Workflow.from_file(fp)
 
     assert "Workflow can only have 1 run-folder artifact location" in str(
         e.value)
