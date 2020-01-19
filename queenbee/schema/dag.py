@@ -77,7 +77,8 @@ class DAGTask(BaseModel):
                         if vv.startswith('item'):
                             return values
         raise ValueError(
-                f'Task "{name}" has a loop but there is no {{item}} reference in arguments.'
+                f'Task "{name}" has a loop but there is no {{item}} reference in'
+                ' arguments.'
             )
 
     @property
@@ -102,6 +103,7 @@ class DAGTask(BaseModel):
                 if ref_var:
                     ref_values['loop'].append({v: ref_var})
         return ref_values
+
 
 class DAG(BaseModel):
     """DAG includes different steps of a directed acyclic graph."""
@@ -144,7 +146,7 @@ class DAG(BaseModel):
         if not targets:
             return values
         targets = targets.split()
-        invalid_targets = [target for target in targets if not target in task_names]
+        invalid_targets = [target for target in targets if target not in task_names]
         if invalid_targets:
             raise ValueError(f'Invalid target names: {invalid_targets}')
         return values

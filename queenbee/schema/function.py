@@ -2,12 +2,9 @@
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.parser import parse_double_quotes_vars as var_parser
 from queenbee.schema.variable import validate_function_ref_variables
-from pydantic import Field, validator, constr, root_validator
-from typing import List, Dict
-from enum import Enum
+from pydantic import Field, constr, root_validator
+from typing import Dict
 from queenbee.schema.arguments import Arguments
-import warnings
-import re
 
 
 class Function(BaseModel):
@@ -21,7 +18,8 @@ class Function(BaseModel):
 
     description: str = Field(
         None,
-        description='Function description. A short human readable description for this function.'
+        description='Function description. A short human readable description for'
+        ' this function.'
     )
 
     inputs: Arguments = Field(
@@ -42,6 +40,7 @@ class Function(BaseModel):
         description='Function operator name.'
     )
 
+    # TODO: check for referenced variables
     env: Dict[str, str] = Field(
         None,
         description='A dictionary of key:values for environmental variables.'
@@ -84,20 +83,21 @@ class Function(BaseModel):
             # check output referenced values
             orf = outputs.ref_vars
             for rfv in orf.values():
-                if len(rfv) != 0:
-                    for vv in rfv:
-                        for ovs in vv.values():
-                            for ov_refs in ovs.values():
-                                for ov in ov_refs:
-                                    try:
-                                        names = input_names[ov.split('.')[1]]
-                                    except KeyError:
-                                        names = []
-                                    except:
-                                        raise ValueError(
-                                            f'Invalid referenced value: {ov}'
-                                        )
-                                validate_function_ref_variables(ov, names)
+                if len(rfv) == 0:
+                    continue
+                for vv in rfv:
+                    for ovs in vv.values():
+                        for ov_refs in ovs.values():
+                            for ov in ov_refs:
+                                try:
+                                    names = input_names[ov.split('.')[1]]
+                                except KeyError:
+                                    names = []
+                                except Exception:
+                                    raise ValueError(
+                                        f'Invalid referenced value: {ov}'
+                                    )
+                            validate_function_ref_variables(ov, names)
         # check command
         command = ' '.join(values.get('command').split())
         ref_vars = var_parser(command)

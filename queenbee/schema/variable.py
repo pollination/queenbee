@@ -10,6 +10,7 @@ def get_ref_variable(value: Union[bytes, str]) -> List:
     """Get referenced variable if any."""
     return parse_double_quotes_vars(value)
 
+
 def _validate_workflow_var_format(value: str):
     """Validate workflow vars."""
     add_info = ''
@@ -104,7 +105,7 @@ def validate_function_ref_variables(value, input_names):
         if not add_info:
             # check the value exist in inputs
             name = value.split('.')[-1]
-            if  name not in input_names:
+            if name not in input_names:
                 add_info = f'Invalid reference: {value}. Cannot find {name} in inputs.'
     else:
         add_info = 'Only "inputs" variables are allowed in functions.'

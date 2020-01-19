@@ -1,6 +1,5 @@
 import pytest
-from queenbee.schema.dag import DAG, DAGTask
-from pydantic.error_wrappers import ValidationError
+from queenbee.schema.dag import DAG
 
 
 def test_load_from_file():

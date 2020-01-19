@@ -16,7 +16,8 @@ class BaseStatus(BaseModel):
 
     status: str = Field(
         ...,
-        description='The status of this task. Can be "Running", "Succeeded", "Failed" or "Error"'
+        description='The status of this task. Can be "Running", "Succeeded", "Failed" '
+        'or "Error"'
     )
 
     message: str = Field(
@@ -45,14 +46,15 @@ class TaskStatus(BaseStatus):
 
     name: str = Field(
         ...,
-        description='A human readable name for the task. Usually defined by the \
-            DAG task name but can be extended if the task is part of a loop for example. \
-            This name is unique within the boundary of the DAG/Workflow that generated it.'
+        description='A human readable name for the task. Usually defined by the '
+        'DAG task name but can be extended if the task is part of a loop for example. '
+        'This name is unique within the boundary of the DAG/Workflow that generated it.'
     )
 
     type: str = Field(
         ...,
-        description='The type of task this status is for. Can be "Function", "DAG", "Workflow" or "Loop"'
+        description='The type of task this status is for. Can be "Function", "DAG", '
+        '"Workflow" or "Loop"'
     )
 
     template_ref: str = Field(
@@ -94,9 +96,9 @@ class TaskStatus(BaseStatus):
 
     outbound_tasks: List[str] = Field(
         ...,
-        description='A list of the last tasks to ran in the context of this \
-            task. In the case of a DAG or a workflow this will be the last task that has \
-            been executed. It will remain empty for functions.'
+        description='A list of the last tasks to ran in the context of this '
+        'task. In the case of a DAG or a workflow this will be the last task that has '
+        'been executed. It will remain empty for functions.'
     )
 
     @validator('type')

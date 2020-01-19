@@ -19,6 +19,7 @@ def test_load_arguments():
     assert artifact.location == 'model-source'
     assert artifact.path == 'asset/grid'
 
+
 def test_load_params_only_arguments():
     args = Arguments.from_file('./tests/assets/parameters.yaml')
 
@@ -33,8 +34,10 @@ def test_create_arguments():
     args_dict = {
         'parameters': [{'name': 'worker', 'value': 1}],
         'artifacts': [
-            {'name': 'project-folder', 'source_path': '.',
-            'path': 'project', 'location': 'project-folder'}
+            {
+                'name': 'project-folder', 'source_path': '.',
+                'path': 'project', 'location': 'project-folder'
+            }
         ]
     }
 
