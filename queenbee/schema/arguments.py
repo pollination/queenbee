@@ -235,3 +235,18 @@ class Arguments(BaseModel):
         if not param:
             raise ValueError(f'Invalid artifact name: {name}')
         return param[0].current_value
+
+    @property
+    def ref_vars(self):
+        """Get list of referenced values in parameters and artifacts."""
+        ref_values = {'artifacts': [], 'parameters': []}
+        if self.artifacts:
+            ref_values['artifacts'] = [
+                {art.name: art.ref_vars} for art in self.artifacts
+            ]
+        if self.parameters:
+            ref_values['parameters'] = [
+                {par.name: par.ref_vars} for par in self.parameters
+            ]
+
+        return ref_values

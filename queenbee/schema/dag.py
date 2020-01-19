@@ -3,10 +3,11 @@
 A DAG step defines a single step in the workflow. Each step indicates what task should be
 used and maps inputs and outputs for the specific task.
 """
-from queenbee.schema.qutil import BaseModel
+from queenbee.schema.qutil import BaseModel, find_dup_items
 from queenbee.schema.arguments import Arguments
-from pydantic import Field
+from pydantic import Field, root_validator, validator
 from typing import List, Any, Union
+import queenbee.schema.variable as qbvar
 
 
 class DAGTask(BaseModel):
@@ -22,7 +23,6 @@ class DAGTask(BaseModel):
         description='Input arguments for template.'
     )
 
-    # this can change to Union[Function, Workflow]
     template: str = Field(
         ...,
         description='Template name.'
@@ -38,6 +38,46 @@ class DAGTask(BaseModel):
         description='List of inputs to loop over.'
     )
 
+    @validator('loop', each_item=False)
+    def check_loop_ref(cls, value):
+        values = [value] if isinstance(value, str) else value
+        for v in values:
+            # check for referenced values and validate the format
+            ref_var = qbvar.get_ref_variable(v)
+            if not ref_var:
+                return value
+            for rv in ref_var:
+                qbvar.validate_ref_variable_format(rv)
+        return value
+
+    @root_validator
+    def check_item_ref(cls, values):
+        loop = values.get('loop')
+        if not loop:
+            return values
+        # get referenced values
+        name = values.get('name')
+        args = values.get('arguments')
+        if not args:
+            raise ValueError(f'Task "{name}" has a loop value by no arguments.')
+        ref_values = args.ref_vars
+        # ensure there is a reference to {{item}}
+        for rv in ref_values['parameters']:
+            for k, v in rv.items():
+                for i, j in v.items():
+                    for vv in j:
+                        if vv.startswith('item'):
+                            return values
+        for rv in ref_values['artifacts']:
+            for k, v in rv.items():
+                for i, j in v.items():
+                    for vv in j:
+                        if vv.startswith('item'):
+                            return values
+        raise ValueError(
+                f'Task "{name}" has a loop but there is no {{item}} reference in arguments.'
+            )
+
     @property
     def is_root(self) -> bool:
         """Return true if this function is a root function.
@@ -46,6 +86,20 @@ class DAGTask(BaseModel):
         """
         return len(self.dependencies) == 0
 
+    @property
+    def ref_vars(self):
+        """Get list of referenced values in parameters and artifacts."""
+        ref_values = {'arguments': [], 'loop': []}
+        if self.arguments:
+            ref_values['arguments'] = self.arguments.ref_vars
+        if self.loop:
+            values = [self.loop] if isinstance(self.loop, str) else self.loop
+            for v in values:
+                # check for referenced values and validate the format
+                ref_var = qbvar.get_ref_variable(v)
+                if ref_var:
+                    ref_values['loop'].append({v: ref_var})
+        return ref_values
 
 class DAG(BaseModel):
     """DAG includes different steps of a directed acyclic graph."""
@@ -74,6 +128,25 @@ class DAG(BaseModel):
         description='Tasks are a list of DAG steps'
     )
 
+    @root_validator
+    def check_task_names(cls, values):
+        """Check to ensure there is no duplicate name in tasks.
+
+        This validator also checks for target names to be valid if a target is passed.
+        """
+        task_names = [t.name for t in values.get('tasks')]
+        if len(task_names) != len(set(task_names)):
+            dup = find_dup_items(task_names)
+            raise ValueError(f'Duplicate parameter names: {dup}')
+        targets = values.get('target')
+        if not targets:
+            return values
+        targets = targets.split()
+        invalid_targets = [target for target in targets if not target in task_names]
+        if invalid_targets:
+            raise ValueError(f'Invalid target names: {invalid_targets}')
+        return values
+
     @property
     def artifacts(self):
         """List of unique DAG artifacts."""
@@ -83,3 +156,10 @@ class DAG(BaseModel):
                 continue
             artifacts.append(dag_task.arguments.artifacts)
         return list(artifacts)
+
+    def get_task(self, name):
+        """Get task by name."""
+        task = [t for t in self.tasks if t.name == name]
+        if not task:
+            raise ValueError(f'Invalid task name: {name}')
+        return task[0]

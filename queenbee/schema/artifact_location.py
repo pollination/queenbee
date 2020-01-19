@@ -145,5 +145,6 @@ class S3Location(BaseModel):
 
     credentials_path: str = Field(
         ...,
-        description="Path to the file holding the AccessKey and SecretAccessKey to authenticate to the bucket"
+        description="Path to the file holding the AccessKey and SecretAccessKey to "
+            "authenticate to the bucket"
     )
