@@ -1,0 +1,31 @@
+---
+name: arrival
+target: walk-in
+tasks:
+- name: say-hi
+  template: say-hi
+- name: step-in
+  template: step-in
+  arguments:
+    parameters:
+    - name: step-count
+      value: "{{workflow.inputs.parameters.step-count}}"
+    - name: shake-hand
+      value: "{{workflow.inputs.parameters.shake-hand}}"
+  dependencies:
+    - say-hi
+- name: take-off-shoes
+  template: take-off-shoes
+  dependencies:
+    - say-hi
+- name: walk-in
+  template: walking
+  arguments:
+    parameters:
+    - name: step-count
+      value: "{{item}}"
+  loop: "{{tasks.step-in.outputs.parameters.step-count}}"
+  dependencies:
+  - take-off-shoes
+  - step-in
+fail_fast: true

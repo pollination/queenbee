@@ -84,7 +84,7 @@ def validate_ref_variable_format(value: str):
     elif value.startswith('item'):
         pass
     else:
-        add_info = 'Queenbee variable must start with workflow, tasks or items.'
+        add_info = 'Queenbee variable must start with workflow, tasks or item.'
 
     if add_info != '':
         msg = f'Invalid Queenbee variable: {value}.\n{add_info} ' \
