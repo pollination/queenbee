@@ -102,14 +102,10 @@ class Workflow(BaseModel):
                 f'Invalid dependency names in flow tasks: {invalid_names}')
         return v
 
+    # TODO: Remove validate_all and add it as a root_validator
     def validate_all(self):
         """Check that all elements of the workflow are valid together."""
         self.check_artifact_references()
-
-        # TODO: add validate all to DAG
-        for template in self.templates:
-            if template.type == 'function':
-                template.validate_all()
 
     def check_artifact_references(self):
         """Check artifact references.
