@@ -3,10 +3,8 @@
 Workflow is a collection of operators and inter-related tasks that describes an end to
 end steps for the workflow.
 """
-from uuid import UUID, uuid4
+from uuid import uuid4
 import collections
-import json
-import os
 import re
 from graphviz import Digraph
 from pydantic import Field, validator, constr
@@ -16,8 +14,10 @@ from queenbee.schema.dag import DAG
 from queenbee.schema.arguments import Arguments
 from queenbee.schema.operator import Operator
 from queenbee.schema.function import Function
-from queenbee.schema.artifact_location import RunFolderLocation, InputFolderLocation, HTTPLocation, S3Location
-from queenbee.schema.parser import parse_double_quote_workflow_vars, replace_double_quote_vars
+from queenbee.schema.artifact_location import RunFolderLocation, InputFolderLocation, \
+    HTTPLocation, S3Location
+from queenbee.schema.parser import parse_double_quote_workflow_vars, \
+    replace_double_quote_vars
 
 
 class Workflow(BaseModel):
@@ -35,11 +35,14 @@ class Workflow(BaseModel):
 
     operators: List[Operator]
 
-    templates: List[Union[Function, DAG, 'Workflow']]
+    templates: List[Union[Function, DAG, 'Workflow']] = Field(
+        ...,
+        description='A list of templates. Templates can be Function, DAG or a Workflow.'
+    )
 
     flow: DAG = Field(
         ...,
-        description='A list of steps for using tasks in a DAG workflow'
+        description='A list of tasks to create a DAG workflow.'
     )
 
     outputs: Arguments = Field(
@@ -230,14 +233,60 @@ class Workflow(BaseModel):
             raise ValueError(f'Invalid operator name: {name}')
         return operator[0]
 
+    def get_inputs_parameter(self, name):
+        """Get an inputs parameter by name."""
+        if self.inputs:
+            return self.inputs.get_parameter(name)
+        else:
+            raise ValueError('Workflow has no inputs.')
+
+    def get_inputs_artifact(self, name):
+        """Get an inputs artifact by name."""
+        if self.inputs:
+            return self.inputs.get_artifact(name)
+        else:
+            raise ValueError('Workflow has no inputs.')
+
+    def get_outputs_parameter(self, name):
+        """Get an outpus parameter by name."""
+        if self.outputs:
+            return self.outputs.get_parameter(name)
+        else:
+            raise ValueError('Workflow has no outputs.')
+
+    def get_outputs_artifact(self, name):
+        """Get an outputs artifact by name."""
+        if self.outputs:
+            return self.outputs.get_artifact(name)
+        else:
+            raise ValueError('Workflow has no outputs.')
+
+    def get_template(self, name):
+        """Get template by name."""
+        if self.templates:
+            template = [t for t in self.templates if t.name == name]
+            if not template:
+                raise ValueError(f'No template with name: {name}.')
+        else:
+            raise ValueError(f'Workflow {self.name} has no templates.')
+
+        return template[0]
+
+    def get_task(self, name):
+        """Get a task from the flow by name."""
+        task = [t for t in self.flow.tasks if t.name == name]
+        if not task:
+            raise ValueError('No task with name: {name}')
+        return task[0]
+
 
 def hydrate_templates(workflow, wf_value=None):
     """Replace all ``{{ workflow.x.y.z }}`` variables with corresponding values.
 
-    Cycle through an arbitrary workflow value (dictionary, list, string etc...) 
-    and hydrate any workflow template value with it's actual value. This function 
-    should mostly be used by the plugin libraries when converting a queenbee 
-    workflow to their own job scheduling language. As such the workflow should 
+    Cycle through an arbitrary workflow value (dictionary, list, string etc...)
+    and hydrate any workflow template value with it's actual value. This function
+    should mostly be used by the plugin libraries when converting a queenbee
+    workflow to their own job scheduling language. As such the workflow should
     contain all the required variable values indicated by a ``{{ workflow.x.y...z }}``.
 
     In most cases you should use Workflow's ``hydrate_workflow_templates`` method instead
@@ -247,8 +296,6 @@ def hydrate_templates(workflow, wf_value=None):
         wf_value = [hydrate_templates(workflow, item) for item in wf_value]
 
     elif isinstance(wf_value, str):
-        "{{workflow.id}}_{{workflow.name}}"
-        "{{workflow.id}}"
         values = workflow.fetch_workflow_values(wf_value)
 
         if values == {}:

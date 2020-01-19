@@ -220,21 +220,29 @@ class Arguments(BaseModel):
                 raise ValueError(f'Duplicate artifact names: {dup}')
         return values
 
-    def get_parameter_value(self, name):
-        """Get a parameter value by name."""
+    def get_parameter(self, name):
+        """Get a parameter by name."""
         param = [par for par in self.parameters if par.name == name]
         if not param:
             raise ValueError(f'Invalid parameter name: {name}')
-        return param[0].current_value
+        return param[0]
 
-    def get_artifact_value(self, name):
-        """Get an artifact value by name."""
+    def get_artifact(self, name):
+        """Get an artifact by name."""
         if not self.artifacts:
             raise ValueError('Arguments has no artifacts')
         param = [par for par in self.artifacts if par.name == name]
         if not param:
             raise ValueError(f'Invalid artifact name: {name}')
-        return param[0].current_value
+        return param[0]
+
+    def get_parameter_value(self, name):
+        """Get a parameter value by name."""
+        return self.get_parameter(name).current_value
+
+    def get_artifact_value(self, name):
+        """Get an artifact value by name."""
+        return self.get_artifact(name).current_value
 
     @property
     def ref_vars(self):

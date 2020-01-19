@@ -8,8 +8,49 @@ def test_load_workflow():
     # not necessarily the best practice but it is fine since this
     # is the test for the schema and every other part has been already tested.
     fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    Workflow.from_file(fp)
+    # wf.validate_all()
+
+
+def test_get_parameter():
+    fp = './tests/assets/workflow_example/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
-    wf.validate_all()
+    par = wf.get_inputs_parameter('sensor-grid-name')
+    assert par.value == 'room'
+    par = wf.get_inputs_parameter('worker')
+    assert par.value == 1
+
+
+def test_get_artifact():
+    fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    wf = Workflow.from_file(fp)
+    with pytest.raises(ValueError, match='Arguments has no artifacts'):
+        wf.get_inputs_artifact('sensor-grid-name')
+
+
+def test_get_operator():
+    fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    wf = Workflow.from_file(fp)
+    opt = wf.get_operator('honeybee-radiance')
+    assert opt.image == 'ladybugtools/honeybee-radiance'
+    with pytest.raises(ValueError, match='Invalid operator name: honeybee'):
+        wf.get_operator('honeybee')
+
+
+def test_get_template():
+    fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    wf = Workflow.from_file(fp)
+    template = wf.get_template('generate-sky')
+    assert template.type == 'function'
+    assert template.operator == 'honeybee-radiance'
+
+
+def test_get_task():
+    fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    wf = Workflow.from_file(fp)
+    t = wf.get_task('daylight-factor-simulation')
+    assert t.template == 'ray-tracing'
+    assert len(t.dependencies) == 2
 
 
 def test_workflow_fetch_value():
@@ -46,7 +87,7 @@ def test_hydrate_templates():
 
     new_wf = Workflow.parse_obj(wf_dict)
 
-    ## TODO: Put the tests back after rewriting hydrate workflow
+    # TODO: Put the tests back after rewriting hydrate workflow
     # Test string allocation
     # assert new_wf.flow.tasks[2].arguments.parameters[0].value == 'path/to/scene/files'
     # Test number allocation
