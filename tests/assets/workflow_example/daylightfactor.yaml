@@ -8,7 +8,7 @@ inputs:
     value: room
   - name: sensor-grid-count
   - name: radiance-parameters
-    value: "-I -ab 2 -h"
+    value: -I -ab 2 -h
   - name: scene-rad-files
     value: |
       model/static/opaque/sample_case.mat model/static/opaque/sample_case.rad
