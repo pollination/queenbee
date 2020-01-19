@@ -82,7 +82,7 @@ class Parameter(BaseModel):
 
         """
         value = self.current_value
-        if not value:
+        if not value or isinstance(value, (int, float)):
             return {}
 
         ref_var = qbvar.get_ref_variable(value)
@@ -242,11 +242,11 @@ class Arguments(BaseModel):
         ref_values = {'artifacts': [], 'parameters': []}
         if self.artifacts:
             ref_values['artifacts'] = [
-                {art.name: art.ref_vars} for art in self.artifacts
+                {art.name: art.ref_vars} for art in self.artifacts if art.ref_vars
             ]
         if self.parameters:
             ref_values['parameters'] = [
-                {par.name: par.ref_vars} for par in self.parameters
+                {par.name: par.ref_vars} for par in self.parameters if par.ref_vars
             ]
 
         return ref_values

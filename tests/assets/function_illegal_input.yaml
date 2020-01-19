@@ -1,3 +1,4 @@
+---
 name: generate-overcast-sky
 type: function
 inputs:
@@ -7,10 +8,10 @@ inputs:
     - name: sky-file
       description: full path to output sky file
 operator: radiance-operator
-command: gensky -c -B '{{ inputs.parameters.desired-irradiance }}' > '{{ inputs.parameters.sky_file }}'
+command: gensky -c -B "{{inputs.parameters.desired-irradiance}}" > "{{inputs.parameters.sky_file}}"
 outputs:
   artifacts:
     - name: sky
       location: project-folder
-      source_path: '{{ inputs.parameters.sky-file }}'
+      source_path: "{{inputs.parameters.sky-file}}"
 

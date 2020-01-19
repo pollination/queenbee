@@ -1,7 +1,8 @@
 """Queenbee Function class."""
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.parser import parse_double_quotes_vars as var_parser
-from pydantic import Field, validator, constr
+from queenbee.schema.variable import validate_function_ref_variables
+from pydantic import Field, validator, constr, root_validator
 from typing import List, Dict
 from enum import Enum
 from queenbee.schema.arguments import Arguments
@@ -28,9 +29,6 @@ class Function(BaseModel):
         description=u'Input arguments for this function.'
     )
 
-    # TODO: This will end up being an issue. command here is what args really are in
-    # docker. Changing this to args will be confusing. Keep it as command will also be
-    # confusing if one wants to match it with container
     command: str = Field(
         ...,
         description=u'Full shell command for this function. Each function accepts only '
@@ -54,118 +52,62 @@ class Function(BaseModel):
         description='List of output arguments.'
     )
 
-    def validate_all(self):
-        """Check that all the elements of the function are valid together"""
-        self.check_command_referenced_values()
-        self.check_output_referenced_values()
+    @root_validator
+    def validate_referenced_values(cls, values):
+        """Validate referenced values in function.
 
-    def check_command_referenced_values(self):
-        values = self.dict()
-        v = values.get('command')
-        # get references
-        match = var_parser(v)
-        if not match:
-            return values
-        # ensure referenced values are valid
-        func_name = values.get('name')
-        if 'inputs' in values and values['inputs'] != None:
-            input_names = [param.get('name')
-                           for param in values['inputs']['parameters']]
-        else:
-            input_names = []
-        # check inputs
-        self.validate_variable(match, func_name, input_names)
-        return values
-
-    def check_output_referenced_values(self):
-        values = self.dict()
-        v = values.get('outputs')
-
-        if v == None:
-            return values
-
-        output_paths = []
-        output_values = []
-
-        if v.get('parameters') is not None:
-            output_paths.extend([p['path'] for p in v['parameters']])
-            output_values.extend([p['value'] for p in v['parameters']])
-
-        if v.get('artifacts') is not None:
-            output_paths.extend([p['path'] for p in v['artifacts']])
-            output_paths.extend([p['source_path'] for p in v['artifacts']])
-
-        output_paths = filter(None, output_paths)
-        output_values = filter(None, output_values)
-
-        ref_params = []
-        for path in output_paths:
-            if 'workflow.' in path:
-                ref_params.append(path)
-        if len(ref_params) > 0:
-            warnings.warn(
-                'Referencing workflow parameters in a template function makes the'
-                ' function less reusable. Try using inputs / outputs of the function'
-                ' instead and assign workflow values in flow section when calling'
-                ' this function.\n\t- {}'.format('\n\t-'.join(ref_params))
-            )
-        # check the variables are fine
-        func_name = values.get('name')
-        if 'inputs' in values and values['inputs'] != None and values['inputs']['parameters'] != None:
-            input_names = [param.get('name')
-                           for param in values['inputs']['parameters']]
-        else:
-            input_names = []
-
-        for path in output_paths:
-            match = var_parser(path)
-            self.validate_variable(match, func_name, input_names)
-
-        for value in output_values:
-            match = var_parser(value)
-            self.validate_variable(match, func_name, input_names)
-
-        return values
-
-    @staticmethod
-    def validate_variable(variables, func_name, input_names):
-        """Validate referenced variables.
-
-        Referenced variables must follow x.y.z pattern and start with inputs, outputs or
-        workflow (e.g. inputs.parameters.filename).
-
-        This method is a helper that is used by other @validator classmethods.
+        The validation checks are:
+            * Reference to workflow values is not allowed in a function.
+            * Referenced values are allowed in command and outputs. These values must
+              reference to function inputs.
         """
-        for m in variables:
+        input_names = {'parameters': [], 'artifacts': []}
+        inputs = values.get('inputs')
+        if inputs:
+            irf = inputs.ref_vars
+            for key, value in irf.items():
+                if len(value) == 0:
+                    continue
+                raise ValueError(
+                    f'There is at least one referenced variable in inputs:\n'
+                    f'{key}: {value}.\n'
+                    f'Referenced values are not allowed in function inputs.'
+                )
+
+            if inputs.parameters:
+                input_names['parameters'] = [p.name for p in inputs.parameters]
+            if inputs.artifacts:
+                input_names['artifacts'] = [p.name for p in inputs.artifacts]
+        outputs = values.get('outputs')
+
+        if outputs:
+            # check output referenced values
+            orf = outputs.ref_vars
+            for rfv in orf.values():
+                if len(rfv) != 0:
+                    for vv in rfv:
+                        for ovs in vv.values():
+                            for ov_refs in ovs.values():
+                                for ov in ov_refs:
+                                    try:
+                                        names = input_names[ov.split('.')[1]]
+                                    except KeyError:
+                                        names = []
+                                    except:
+                                        raise ValueError(
+                                            f'Invalid referenced value: {ov}'
+                                        )
+                                validate_function_ref_variables(ov, names)
+        # check command
+        command = ' '.join(values.get('command').split())
+        ref_vars = var_parser(command)
+        for ref_var in ref_vars:
             try:
-                ref, typ, name = m.split('.')
-            except ValueError:
-                raise ValueError(
-                    '{{%s}} in %s function does not follow x.y.z pattern' % (
-                        m, func_name)
-                )
-
-            if not ref in ('inputs', 'outputs', 'workflow'):
-                raise ValueError(
-                    'Referenced values must start with inputs, outputs or workflow'
-                )
-            if ref == 'workflow':
-                warnings.warn(
-                    '[{}]: Referencing workflow parameters in a function '
-                    ' makes the function less reusable. Use inputs of the function'
-                    ' instead and assign workflow values in flow section when calling'
-                    ' this function. Reference: {}'.format(func_name, m)
-                )
-                continue
-
-            # now ensure input references are valid
-            if ref != 'inputs' or typ != 'parameters':
-                continue
-
-            assert name in input_names, \
-                'Illegal output parameter name in "%s": {{%s}}\n' \
-                'Valid inputs:\n\t- %s' % (func_name,
-                                           m, '\n\t- '.join(input_names))
+                names = input_names[ref_var.split('.')[1]]
+            except KeyError:
+                names = []  # invalid input. validate function will throw the error
+            validate_function_ref_variables(ref_var, names)
+        return values
 
     @property
     def artifacts(self):
