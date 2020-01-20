@@ -1,0 +1,173 @@
+---
+type: workflow
+name: daylight-factor-001
+
+inputs:
+  parameters:
+  - name: sensor-grid-name
+    value: room
+  - name: sensor-grid-count
+  - name: radiance-parameters
+    value: -I -ab 2 -h
+  - name: scene-rad-files
+    value: |
+      model/static/opaque/sample_case.mat model/static/opaque/sample_case.rad
+      model/static/opaque/outdoor/context.mat model/static/opaque/outdoor/context.rad
+      model/static/opaque/indoor/partition.mat model/static/opaque/indoor/partition.rad
+      model/static/nonopaque/indoor/partition_glass.mat model/static/nonopaque/indoor/partition_glass.rad
+  - name: worker
+    value: 1
+    description: "Maximum number of workers for executing this workflow."
+
+operators:
+  - name: honeybee-radiance
+    import_from: 'honeybee_radiance_operator.json'
+
+templates:
+- name: generate-sky
+  type: function
+  command: honeybee radiance sky illuminance 100000 --folder asset/sky/
+  outputs:
+    artifacts:
+    - name: sky
+      path: asset/sky/
+      location: sim-folder
+  operator: honeybee-radiance
+  description: generate a 100000 lux overcast sky
+- name: split-grid
+  type: function
+  inputs:
+    artifacts:
+    - name: input-grid-folder
+      path: asset/grid
+      location: source
+    parameters:
+    - name: grid-name
+    - name: sensor-count
+  command: |
+    honeybee radiance grid split "asset/grid/{{inputs.parameters.grid-name}}.pts"
+    "{{inputs.parameters.sensor-count}}" --folder "output/temp/"
+    --log-file "output/temp/{{inputs.parameters.grid-name}}_grids.txt"
+  outputs:
+    artifacts:
+    - name: output-grids-folder
+      path: output/temp/
+      location: simulation-folder
+    parameters:
+    - name: grid-list
+      path: output/temp/{{inputs.parameters.grid-name}}_grids.txt
+  operator: honeybee-radiance
+  description: Split the daylight sensor grid into multiple smaller files for parallel
+    simulation
+- name: create-octree
+  type: function
+  inputs:
+    artifacts:
+    - name: sky
+      path: asset/sky/100000_lux.sky
+      location: simulation-folder
+    - name: model-folder
+      path: model/
+      location: model-source
+    parameters:
+    - name: scene-files
+  command: |
+    mkdir output && mkdir output/octree && oconv -f asset/sky/100000_lux.sky
+    {{inputs.parameters.scene-files}} > output/octree/scene.oct
+  outputs:
+    artifacts:
+    - name: scene-file
+      path: output/octree/scene.oct
+      location: simulation-folder
+  operator: honeybee-radiance
+  description: Generate a radiance Octree from scene files
+- name: ray-tracing
+  type: function
+  inputs:
+    artifacts:
+    - name: scene-file
+      path: output/octree/scene.oct
+      location: simulation-folder
+    - name: grids-folder
+      path: output/temp
+      location: simulation-folder
+    parameters:
+    - name: radiance-parameters
+    - name: grid-name
+  command: mkdir output/raw && rtrace -I -h {{inputs.parameters.radiance-parameters}}
+    output/octree/scene.oct < output/temp/{{inputs.parameters.grid-name}}.pts > output/raw/{{inputs.parameters.grid-name}}.res
+  outputs:
+    artifacts:
+    - name: results-file
+      path: output/raw
+      location: simulation-folder
+  operator: honeybee-radiance
+  description: Run ray tracing for a given model, grid and sky
+- name: merge-results
+  type: function
+  inputs:
+    artifacts:
+    - name: raw-results-folder
+      path: output/raw/
+      location: simulation-folder
+    parameters:
+    - name: grid-name
+  command: honeybee radiance grid merge output/raw {{inputs.parameters.grid-name}}
+    .res --folder output/postprocess
+  outputs:
+    artifacts:
+    - name: post-process-folder
+      path: output/postprocess
+      location: simulation-folder
+  operator: honeybee-radiance
+  description: Merge all results files into 1 common output results file
+flow:
+  name: daylight-factor-flow
+  tasks:
+  - name: generate-sky
+    template: generate-sky
+  - name: split-grid
+    template: split-grid
+    arguments:
+      parameters:
+      - name: grid-name
+        value: "{{workflow.inputs.parameters.sensor-grid-name}}"
+      - name: sensor-count
+        value: "{{workflow.inputs.parameters.sensor-grid-count}}"
+        description: 
+  - name: create-octree
+    template: create-octree
+    arguments:
+      parameters:
+      - name: scene-files
+        value: "{{workflow.inputs.parameters.scene-rad-files}}"
+    dependencies:
+    - generate-sky
+  - loop: "{{tasks.split-grid.outputs.parameters.grid-list}}"
+    name: daylight-factor-simulation
+    template: ray-tracing
+    arguments:
+      parameters:
+      - name: grid-name
+        value: "{{item.name}}"
+      - name: radiance-parameters
+        value: "{{workflow.inputs.parameters.radiance-parameters}}"
+    dependencies:
+    - split-grid
+    - create-octree
+  - name: post-process
+    template: merge-results
+    arguments:
+      parameters:
+      - name: grid-name
+        value: "{{workflow.inputs.parameters.sensor-grid-name}}"
+    dependencies:
+    - daylight-factor-simulation
+  fail_fast: true
+artifact_locations:
+- name: model-source
+  root: project_folder
+  type: input-folder
+- name: simulation-folder
+  root: "./tmp"
+  type: run-folder
