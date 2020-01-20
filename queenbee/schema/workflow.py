@@ -7,7 +7,7 @@ from uuid import uuid4
 import collections
 import re
 from graphviz import Digraph
-from pydantic import Field, validator, constr
+from pydantic import Field, validator, constr, root_validator
 from typing import List, Union
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.dag import DAG
@@ -18,6 +18,7 @@ from queenbee.schema.artifact_location import RunFolderLocation, InputFolderLoca
     HTTPLocation, S3Location
 from queenbee.schema.parser import parse_double_quote_workflow_vars, \
     replace_double_quote_vars
+import queenbee.schema.variable as qbvar
 
 
 class Workflow(BaseModel):
@@ -57,10 +58,13 @@ class Workflow(BaseModel):
     )
 
     @validator('artifact_locations', each_item=False)
-    def check_duplicate_run_folders(cls, v):
+    def check_duplicate_artifact_folders(cls, v):
         count = sum(1 if location.type == 'run-folder' else 0 for location in v)
         assert count <= 1, \
             f'Workflow can only have 1 run-folder artifact location. Found {count}'
+        count = sum(1 if location.type == 'input-folder' else 0 for location in v)
+        assert count <= 1, \
+            f'Workflow can only have 1 input-folder artifact location. Found {count}'
         return v
 
     @validator('templates', each_item=False)
@@ -105,32 +109,68 @@ class Workflow(BaseModel):
                 f'Invalid dependency names in flow tasks: {invalid_names}')
         return v
 
-    # TODO: Remove validate_all and add it as a root_validator
-    def validate_all(self):
-        """Check that all elements of the workflow are valid together."""
-        self.check_artifact_references()
-
-    def check_artifact_references(self):
+    @validator('artifact_locations')
+    def check_artifact_references(cls, v, values):
         """Check artifact references.
 
         This method check weather any artifact location that is referenced in templates
         or flows exists in artifact_locations.
         """
-        values = self.dict()
-        v = values.get('artifact_locations')
-        if v is not None:
-            locations = [x.get('name') for x in v]
-            artifacts = self.artifacts
-            sources = set(artifact.location for artifact in artifacts)
-            for source in sources:
-                if source not in locations:
-                    raise ValueError(
-                        'Artifact with location \"{}\" is not valid because it is not'
-                        ' listed in the artifact_locations object.'.format(
-                            source)
-                    )
+        locations = [x.name for x in v]
+        # gat all artifacts
+        artifacts = cls._get_artifacts(values)
 
-        return values
+        sources = set(artifact.location for artifact in artifacts)
+        for source in sources:
+            if source not in locations:
+                raise ValueError(
+                    f'Artifact with location "{source}" is not valid because it is not'
+                    f' listed in the artifact_locations object.'
+                )
+
+        return v
+
+    @staticmethod
+    def _get_artifacts(values):
+        """Get artifacts from workflow values."""
+        artifacts = []
+
+        templates = values.get('templates')
+        flow = values.get('flow')
+
+        for template in templates:
+            artifacts.extend(template.artifacts)
+
+        for task in flow.tasks:
+            args = task.arguments
+            if not args:
+                continue
+            if not args.artifacts:
+                continue
+            artifacts.extend(args.artifacts)
+
+        inputs = values.get('inputs')
+        if inputs and inputs.artifacts:
+            artifacts.extend(inputs.artifacts)
+
+        outputs = values.get('outputs')
+        if outputs and outputs.artifacts:
+            artifacts.extend(outputs.artifacts)
+
+        return artifacts
+
+    # @root_validator(skip_on_failure=True)
+    # def check_referenced_values(cls, values):
+    #     """Cross-reference check for all the referenced values.
+
+    #     This method ensures:
+    #         * All workflow referenced values are available in workflow. This method
+    #           doesn't check if the value is assigned as it can be done later by updating
+    #           inputs.
+    #         * All tasks.TASKNAME.outputs references are valid references in task
+    #           template.
+    #     """
+    #     return values
 
     def to_diagraph(self, filename=None):
         """Return a graphviz instance of a diagraph from workflow."""
@@ -152,10 +192,13 @@ class Workflow(BaseModel):
         input_string and values are the fetched values from workflow.
         """
         references = parse_double_quote_workflow_vars(input_string)
+
         if not references:
             return {}
         values = {}
         for ref in references:
+            # validate formatting
+            qbvar.validate_ref_variable_format(ref)
             try:
                 _, attr, prop, name = ref.split('.')
             except ValueError:
@@ -171,6 +214,8 @@ class Workflow(BaseModel):
                     elif prop == 'artifacts':
                         values[ref] = self.inputs.get_artifact_value(name)
                 elif attr == 'operators':
+                    assert name == 'image', \
+                        'The only valid value for workflow.operators is image name.'
                     values[ref] = self.get_operator(prop).image
                 else:
                     raise ValueError(
@@ -181,7 +226,38 @@ class Workflow(BaseModel):
 
         return values
 
-    def hydrate_workflow_templates(self):
+    def update_inputs_values(self, values):
+        """Update workflow inputs values from a dictionary.
+
+        The dictionary should have two keys for ``parameters`` and ``artifacts``.
+        The values for each key is a dictionary where the key is the name of the
+        target variable and value is ``key: value`` that should be updated.
+
+        For instance this input updates the value for workers to 6 and grid-name to
+        classroom.
+
+        .. code-block:: python
+
+            {
+                'parameters': {
+                    'worker': {'value': 6},
+                    'grid-name': {'value': 'classroom'}
+                }
+            }
+
+        """
+        if not self.inputs:
+            raise ValueError(f'Workflow "{self.name}" has no inputs.')
+
+        if 'parameters' in values:
+            for k, v in values['parameters'].items():
+                self.inputs.set_parameter_value(k, v)
+
+        if 'artifacts' in values:
+            for k, v in values['artifacts'].items():
+                self.inputs.set_artifact_value(k, v)
+
+    def hydrate_workflow_templates(self, inputs=None):
         """Find and replace {{workflow.x.y.z}} variables with input values.
 
         This method returns the workflow as a dictionary with {{workflow.x.y.z}}
@@ -224,7 +300,7 @@ class Workflow(BaseModel):
         if self.outputs and self.outputs.artifacts:
             artifacts.extend(self.outputs.artifacts)
 
-        return list(artifacts)
+        return artifacts
 
     def get_operator(self, name):
         """Get operator by name."""

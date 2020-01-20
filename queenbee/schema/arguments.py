@@ -246,6 +246,28 @@ class Arguments(BaseModel):
         """Get an artifact value by name."""
         return self.get_artifact(name).current_value
 
+    def set_parameter_value(self, name, value):
+        """Set a parameter value.
+
+        Args:
+            name: Parameter name.
+            value: A dictionary ``{name_1: value_1, name_2: value_2}``.
+        """
+        parameter = self.get_parameter(name)
+        for k, v in value.items():
+            setattr(parameter, k, v)
+
+    def set_artifact_value(self, name, value):
+        """Set a artifact value.
+
+        Args:
+            name: Artifact name.
+            value: A dictionary ``{name_1: value_1, name_2: value_2}``.
+        """
+        artifact = self.get_artifact(name)
+        for k, v in value.items():
+            setattr(artifact, k, v)
+
     @property
     def ref_vars(self):
         """Get list of referenced values in parameters and artifacts."""

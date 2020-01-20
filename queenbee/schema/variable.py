@@ -30,8 +30,8 @@ def _validate_workflow_var_format(value: str):
             if prop not in ('parameters', 'artifacts'):
                 add_info = 'Workflow inputs and outputs variables must be ' \
                     '"parameters" or "artifacts".'
-        elif typ == 'operators':
-            if typ[-1] != 'image':
+        elif attr == 'operators':
+            if parts[-1] != 'image':
                 add_info = 'Workflow operator variable can only access ' \
                     'the image name.'
         else:

@@ -52,7 +52,7 @@ class DAGTask(BaseModel):
                 qbvar.validate_ref_variable_format(rv)
         return value
 
-    @root_validator
+    @root_validator(skip_on_failure=True)
     def check_item_ref(cls, values):
         loop = values.get('loop')
         if not loop:
