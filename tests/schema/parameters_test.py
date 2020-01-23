@@ -15,12 +15,12 @@ def test_wrong_referenced_parameters():
 
 def test_referenced_parameters():
     par = Parameter(name='new-param', value='"{{workflow.inputs.parameters.name}}"')
-    assert par.ref_vars == {'value': ['workflow.inputs.parameters.name']}
+    assert par.referenced_values == {'value': ['workflow.inputs.parameters.name']}
 
 
 def test_referenced_parameters_path():
     par = Parameter(name='new-param', path='"{{workflow.inputs.parameters.name}}"')
-    assert par.ref_vars == {'path': ['workflow.inputs.parameters.name']}
+    assert par.referenced_values == {'path': ['workflow.inputs.parameters.name']}
 
 
 def test_value_path_clash():

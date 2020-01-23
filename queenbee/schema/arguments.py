@@ -77,7 +77,7 @@ class Parameter(BaseModel):
         return self.value if self.value is not None else self.path
 
     @property
-    def ref_vars(self) -> Dict[str, List[str]]:
+    def referenced_values(self) -> Dict[str, List[str]]:
         """Get referenced variables if any.
 
         """
@@ -166,7 +166,7 @@ class Artifact(BaseModel):
         return self.path if self.path is not None else self.source_path
 
     @property
-    def ref_vars(self) -> Dict[str, List[str]]:
+    def referenced_values(self) -> Dict[str, List[str]]:
         """Get referenced variables if any."""
         ref_values = {}
         values = [
@@ -269,16 +269,18 @@ class Arguments(BaseModel):
             setattr(artifact, k, v)
 
     @property
-    def ref_vars(self):
+    def referenced_values(self):
         """Get list of referenced values in parameters and artifacts."""
         ref_values = {'artifacts': [], 'parameters': []}
         if self.artifacts:
             ref_values['artifacts'] = [
-                {art.name: art.ref_vars} for art in self.artifacts if art.ref_vars
+                {art.name: art.referenced_values} for art in self.artifacts
+                if art.referenced_values
             ]
         if self.parameters:
             ref_values['parameters'] = [
-                {par.name: par.ref_vars} for par in self.parameters if par.ref_vars
+                {par.name: par.referenced_values} for par in self.parameters
+                if par.referenced_values
             ]
 
         return ref_values

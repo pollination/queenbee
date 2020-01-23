@@ -63,7 +63,7 @@ class Function(BaseModel):
         input_names = {'parameters': [], 'artifacts': []}
         inputs = values.get('inputs')
         if inputs:
-            irf = inputs.ref_vars
+            irf = inputs.referenced_values
             for key, value in irf.items():
                 if len(value) == 0:
                     continue
@@ -81,7 +81,7 @@ class Function(BaseModel):
 
         if outputs:
             # check output referenced values
-            orf = outputs.ref_vars
+            orf = outputs.referenced_values
             for rfv in orf.values():
                 if len(rfv) == 0:
                     continue
@@ -100,8 +100,8 @@ class Function(BaseModel):
                             validate_function_ref_variables(ov, names)
         # check command
         command = ' '.join(values.get('command').split())
-        ref_vars = var_parser(command)
-        for ref_var in ref_vars:
+        referenced_values = var_parser(command)
+        for ref_var in referenced_values:
             try:
                 names = input_names[ref_var.split('.')[1]]
             except KeyError:
