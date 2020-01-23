@@ -40,6 +40,8 @@ class DAGTask(BaseModel):
 
     @validator('loop', each_item=False)
     def check_loop_ref(cls, value):
+        if value is None:
+            return None
         values = [value] if isinstance(value, str) else value
         for v in values:
             # check for referenced values and validate the format
