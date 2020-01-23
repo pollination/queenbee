@@ -62,7 +62,7 @@ class DAGTask(BaseModel):
         args = values.get('arguments')
         if not args:
             raise ValueError(f'Task "{name}" has a loop value by no arguments.')
-        ref_values = args.ref_vars
+        ref_values = args.referenced_values
         # ensure there is a reference to {{item}}
         for rv in ref_values['parameters']:
             for k, v in rv.items():
@@ -90,11 +90,11 @@ class DAGTask(BaseModel):
         return len(self.dependencies) == 0
 
     @property
-    def ref_vars(self):
+    def referenced_values(self):
         """Get list of referenced values in parameters and artifacts."""
-        ref_values = {'arguments': [], 'loop': []}
+        ref_values = {'arguments': {}, 'loop': []}
         if self.arguments:
-            ref_values['arguments'] = self.arguments.ref_vars
+            ref_values['arguments'] = self.arguments.referenced_values
         if self.loop:
             values = [self.loop] if isinstance(self.loop, str) else self.loop
             for v in values:
