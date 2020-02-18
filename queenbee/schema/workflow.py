@@ -7,7 +7,7 @@ from uuid import uuid4
 import collections
 import re
 from graphviz import Digraph
-from pydantic import Field, validator, constr, root_validator
+from pydantic import Field, validator, constr
 from typing import List, Union
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.dag import DAG
@@ -18,6 +18,7 @@ from queenbee.schema.artifact_location import RunFolderLocation, InputFolderLoca
     HTTPLocation, S3Location
 from queenbee.schema.parser import parse_double_quote_workflow_vars, \
     replace_double_quote_vars
+from queenbee.schema.info import Info
 import queenbee.schema.variable as qbvar
 
 
@@ -30,8 +31,14 @@ class Workflow(BaseModel):
 
     id: str = str(uuid4())
 
+    info: Info = Field(
+        None,
+        description='Workflow metadata information.'
+    )
+
     inputs: Arguments = Field(
-        None
+        None,
+        description='Workflow input arguments.'
     )
 
     operators: List[Operator]
@@ -47,7 +54,8 @@ class Workflow(BaseModel):
     )
 
     outputs: Arguments = Field(
-        None
+        None,
+        description='Workflow output arguments.'
     )
 
     artifact_locations: List[
