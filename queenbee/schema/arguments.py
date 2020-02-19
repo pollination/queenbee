@@ -191,9 +191,6 @@ class Arguments(BaseModel):
     Queenbee accepts two types of arguments: parameters and artifacts. A ``parameter``
     is a variable that can be passed to a task or a workflow. An ``artifact`` is a file
     or folder that can be identified by a url or a path.
-
-    There is a third field for ``user_data`` which can be used to assign arbitrary values
-    to a workflow.
     """
 
     parameters: List[Parameter] = Field(
@@ -207,12 +204,6 @@ class Arguments(BaseModel):
         None,
         description='Artifacts is the list of file and folder arguments to pass to the '
         'task or workflow.'
-    )
-
-    user_data: Dict = Field(
-        None,
-        description='Optional user data as a dictionary. User data is for user reference'
-        ' only and will not be used in the execution of the workflow.'
     )
 
     @root_validator
@@ -293,3 +284,16 @@ class Arguments(BaseModel):
             ]
 
         return ref_values
+
+
+class WorkflowArguments(Arguments):
+    """A workflow arguments object.
+
+    The difference between the workflow argument and a standard argument is the extra
+    field for user_data.
+    """
+    user_data: Dict = Field(
+        None,
+        description='Optional user data as a dictionary. User data is for user reference'
+        ' only and will not be used in the execution of the workflow.'
+    )
