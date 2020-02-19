@@ -11,7 +11,7 @@ from pydantic import Field, validator, constr
 from typing import List, Union
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.dag import DAG
-from queenbee.schema.arguments import Arguments
+from queenbee.schema.arguments import Arguments, WorkflowArguments
 from queenbee.schema.operator import Operator
 from queenbee.schema.function import Function
 from queenbee.schema.artifact_location import RunFolderLocation, InputFolderLocation, \
@@ -36,7 +36,7 @@ class Workflow(BaseModel):
         description='Workflow metadata information.'
     )
 
-    inputs: Arguments = Field(
+    inputs: WorkflowArguments = Field(
         None,
         description='Workflow input arguments.'
     )
