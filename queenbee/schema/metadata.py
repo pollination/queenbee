@@ -1,4 +1,4 @@
-"""Queenbee Info class.
+"""Queenbee MetaData class.
 
 This object provides metadata information for a workflow.
 
@@ -41,8 +41,8 @@ class License(BaseModel):
     )
 
 
-class Info(BaseModel):
-    """Workflow meta data information."""
+class MetaData(BaseModel):
+    """Workflow metadata information."""
     description: str = Field(
         None,
         description='A short description of the workflow.'
