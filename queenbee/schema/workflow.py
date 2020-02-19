@@ -18,7 +18,7 @@ from queenbee.schema.artifact_location import RunFolderLocation, InputFolderLoca
     HTTPLocation, S3Location
 from queenbee.schema.parser import parse_double_quote_workflow_vars, \
     replace_double_quote_vars
-from queenbee.schema.info import Info
+from queenbee.schema.metadata import MetaData
 import queenbee.schema.variable as qbvar
 
 
@@ -31,7 +31,7 @@ class Workflow(BaseModel):
 
     id: str = str(uuid4())
 
-    info: Info = Field(
+    metadata: MetaData = Field(
         None,
         description='Workflow metadata information.'
     )
