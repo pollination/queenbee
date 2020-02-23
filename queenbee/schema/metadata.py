@@ -8,23 +8,24 @@ https://swagger.io/specification/#infoObject
 
 from queenbee.schema.qutil import BaseModel
 from pydantic import Field
+from typing import List, Union
 
 
-class Contact(BaseModel):
-    """Contact information."""
+class Author(BaseModel):
+    """Author information."""
     name: str = Field(
         ...,
-        description='The name of the contact person or organization.'
+        description='The name of the author person or organization.'
     )
 
     url: str = Field(
         None,
-        description='The url pointing to the contact information.'
+        description='The url pointing to the author information.'
     )
 
     email: str = Field(
         None,
-        description='The email address of the contact person or organization.'
+        description='The email address of the author person or organization.'
     )
 
 
@@ -48,9 +49,9 @@ class MetaData(BaseModel):
         description='A short description of the workflow.'
     )
 
-    contact: Contact = Field(
+    author: Union[Author, List[Author]] = Field(
         None,
-        description='The contact information.'
+        description='A single author or list of workflow authors.'
     )
 
     license: License = Field(
