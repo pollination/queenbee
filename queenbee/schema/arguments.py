@@ -293,7 +293,7 @@ class WorkflowArguments(Arguments):
     field for user_data.
     """
     user_data: Dict = Field(
-        {},
+        None,
         description='Optional user data as a dictionary. User data is for user reference'
         ' only and will not be used in the execution of the workflow.'
     )
@@ -305,17 +305,17 @@ class WorkflowInputs(BaseModel):
     """
 
     artifacts: Dict[str, dict] = Field(
-        {},
+        None,
         description='A dictionary containing the workflow input argument name as a key and a dictonary of key value pairs to update'
     )
 
     parameters: Dict[str, dict] = Field(
-        {},
+        None,
         description='A dictionary containing the workflow input argument name as a key and a dictonary of key value pairs to update'
     )
 
     user_data: Dict = Field(
-        {},
+        None,
         description='Optional user data as a dictionary. User data is for user reference'
         ' only and will not be used in the execution of the workflow.'
     )

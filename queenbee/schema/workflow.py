@@ -363,15 +363,15 @@ class Workflow(BaseModel):
         if not self.inputs:
             raise ValueError(f'Workflow "{self.name}" has no inputs.')
 
-        if 'parameters' in values:
+        if values.get('parameters') is not None:
             for k, v in values['parameters'].items():
                 self.inputs.set_parameter_value(k, v)
 
-        if 'artifacts' in values:
+        if values.get('artifacts') is not None:
             for k, v in values['artifacts'].items():
                 self.inputs.set_artifact_value(k, v)
 
-        if 'user_data' in values:
+        if values.get('user_data') is not None:
             self.inputs.user_data.update(values['user_data'])
 
     def hydrate_workflow_templates(self, inputs: WorkflowInputs = None):
