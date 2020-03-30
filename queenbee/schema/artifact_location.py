@@ -15,22 +15,6 @@ from typing import Dict, List
 from enum import Enum
 
 
-def referenced_values(values) -> Dict[str, List[str]]:
-    """Get referenced variables if any"""
-    ref_values = {}
-    
-    if not values:
-        return ref_values
-
-    for value in values:
-        if value is None:
-            continue
-        ref_var = qbvar.get_ref_variable(value)
-        if ref_var:
-            ref_values[value] = ref_var
-
-    return ref_values
-
 class VerbEnum(str, Enum):
     get = 'GET'
     post = 'POST'
@@ -55,14 +39,31 @@ class ArtifactLocation(BaseModel):
         description='The root path to the artifacts.'
     )
 
+    @staticmethod
+    def _referenced_values(values) -> Dict[str, List[str]]:
+        """Get referenced variables if any"""
+        ref_values = {}
+        
+        if not values:
+            return ref_values
+
+        for value in values:
+            if value is None:
+                continue
+            ref_var = qbvar.get_ref_variable(value)
+            if ref_var:
+                ref_values[value] = ref_var
+
+        return ref_values
+
     @property
     def referenced_values(self) -> Dict[str, List[str]]:
         values = [self.root]
 
-        return referenced_values(values)
+        return self._referenced_values(values)
 
 
-class InputFolderLocation(BaseModel):
+class InputFolderLocation(ArtifactLocation):
     """Input Folder Location
 
     This is a folder that the workflow can use to pull input artifacts from.
@@ -86,11 +87,11 @@ class InputFolderLocation(BaseModel):
     def referenced_values(self) -> Dict[str, List[str]]:
         values = [self.root]
 
-        return referenced_values(values)
+        return self._referenced_values(values)
 
 
 
-class RunFolderLocation(BaseModel):
+class RunFolderLocation(ArtifactLocation):
     """Run Folder Location
 
     This is the folder a workflow will use as it's root path when running a simulation.
@@ -116,9 +117,9 @@ class RunFolderLocation(BaseModel):
     def referenced_values(self) -> Dict[str, List[str]]:
         values = [self.root]
 
-        return referenced_values(values)
+        return self._referenced_values(values)
 
-class HTTPLocation(BaseModel):
+class HTTPLocation(ArtifactLocation):
     """HTTPLocation
 
     A web HTTP to an FTP server or an API for example.
@@ -153,13 +154,13 @@ class HTTPLocation(BaseModel):
         for k, v in self.headers:
             values.append(v)
 
-        return referenced_values(values)
+        return self._referenced_values(values)
 
     class Config:
         use_enum_value = True
 
 
-class S3Location(BaseModel):
+class S3Location(ArtifactLocation):
     """S3Location
 
     An S3 bucket
@@ -197,4 +198,4 @@ class S3Location(BaseModel):
     def referenced_values(self) -> Dict[str, List[str]]:
         values = [self.root, self.endpoint, self.bucket, self.credentials_path]
 
-        return referenced_values(values)
+        return self._referenced_values(values)
