@@ -1,13 +1,12 @@
-import yaml
 from tests.base.io_test import BaseIOTest
 from tests.base.value_error import BaseValueErrorTest
 
-from queenbee.schema.operator import Operator
+from queenbee.schema.metadata import MetaData
 
 class TestIO(BaseIOTest):
 
-    klass = Operator
+    klass = MetaData
 
 class TestValueError(BaseValueErrorTest):
 
-    klass = Operator
+    klass = MetaData

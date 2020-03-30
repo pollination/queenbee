@@ -1,21 +1,14 @@
 import pytest
+from tests.base.io_test import BaseIOTest
+from tests.base.value_error import BaseValueErrorTest
+
 from queenbee.schema.dag import DAG
 
 
-def test_load_from_file():
-    fp = './tests/assets/flow.yaml'
-    dag = DAG.from_file(fp)
-    assert dag.name == 'arrival'
-    assert len(dag.tasks) == 4
+class TestIO(BaseIOTest):
 
+    klass = DAG
 
-def test_load_wrong_target():
-    fp = './tests/assets/flow_with_wrong_target.yaml'
-    with pytest.raises(ValueError, match=r'Invalid target.*put-on-shoes'):
-        DAG.from_file(fp)
+class TestValueError(BaseValueErrorTest):
 
-
-def test_load_invalid_loop():
-    fp = './tests/assets/flow_invalid_loop.yaml'
-    with pytest.raises(ValueError, match=r'loop.*no argument'):
-        DAG.from_file(fp)
+    klass = DAG

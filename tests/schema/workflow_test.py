@@ -1,18 +1,22 @@
 import pytest
-from queenbee.schema.workflow import Workflow
+from tests.base.io_test import BaseIOTest
+from tests.base.value_error import BaseValueErrorTest
+
 from pydantic.error_wrappers import ValidationError
 
+from queenbee.schema.workflow import Workflow
 
-def test_load_workflow():
-    # this import tests all the parts of workflow schema
-    # not necessarily the best practice but it is fine since this
-    # is the test for the schema and every other part has been already tested.
-    fp = './tests/assets/workflow_example/daylightfactor.yaml'
-    Workflow.from_file(fp)
 
+class TestIO(BaseIOTest):
+
+    klass = Workflow
+
+class TestValueError(BaseValueErrorTest):
+
+    klass = Workflow
 
 def test_get_parameter():
-    fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    fp = './tests/assets/Workflow/valid/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
     par = wf.get_inputs_parameter('sensor-grid-name')
     assert par.value == 'room'
@@ -21,14 +25,14 @@ def test_get_parameter():
 
 
 def test_get_artifact():
-    fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    fp = './tests/assets/Workflow/valid/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
     with pytest.raises(ValueError, match='Arguments has no artifacts'):
         wf.get_inputs_artifact('sensor-grid-name')
 
 
 def test_get_operator():
-    fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    fp = './tests/assets/Workflow/valid/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
     opt = wf.get_operator('honeybee-radiance')
     assert opt.image == 'ladybugtools/honeybee-radiance'
@@ -37,7 +41,7 @@ def test_get_operator():
 
 
 def test_get_template():
-    fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    fp = './tests/assets/Workflow/valid/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
     template = wf.get_template('generate-sky')
     assert template.type == 'function'
@@ -45,7 +49,7 @@ def test_get_template():
 
 
 def test_get_task():
-    fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    fp = './tests/assets/Workflow/valid/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
     t = wf.get_task('daylight-factor-simulation')
     assert t.template == 'ray-tracing'
@@ -53,7 +57,7 @@ def test_get_task():
 
 
 def test_workflow_fetch_value():
-    fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    fp = './tests/assets/Workflow/valid/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
 
     output = wf.fetch_workflow_values('{{workflow.inputs.parameters.worker}}')
@@ -62,7 +66,7 @@ def test_workflow_fetch_value():
 
 
 def test_workflow_fetch_multi():
-    fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    fp = './tests/assets/Workflow/valid/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
 
     output = wf.fetch_workflow_values(
@@ -76,7 +80,7 @@ def test_workflow_fetch_multi():
 
 
 def test_update_input_parameters_values():
-    fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    fp = './tests/assets/Workflow/valid/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
     values = {
         'parameters': {
@@ -90,7 +94,7 @@ def test_update_input_parameters_values():
 
 
 def test_hydrate_templates():
-    fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    fp = './tests/assets/Workflow/valid/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
 
     wf.id = 'some-test-id'
@@ -111,27 +115,11 @@ def test_hydrate_templates():
 
 
 def test_hydrate_missing_value_error():
-    fp = './tests/assets/workflow_example/daylightfactor.yaml'
+    fp = './tests/assets/Workflow/valid/daylightfactor.yaml'
     wf = Workflow.from_file(fp)
 
     err_msg = '{{workflow.inputs.parameters.sensor-grid-count}} cannot reference an' \
         ' empty or null value'
-    # with pytest.raises(AssertionError, match=err_msg):
-    #     wf.hydrate_workflow_templates()
+    with pytest.raises(AssertionError, match=err_msg):
+        wf.hydrate_workflow_templates()
 
-
-def test_workflow_single_run_folder():
-    """A workflow artifact locations should only contain one run folder"""
-    fp = './tests/assets/workflow_example/double_run_folder.yaml'
-    msg = 'Workflow can only have 1 run-folder artifact location'
-    with pytest.raises(ValidationError, match=msg):
-        Workflow.from_file(fp)
-
-
-def test_workflow_artifact_location():
-    """An invalid workflow with invalid artifact locations."""
-    fp = './tests/assets/workflow_example/daylightfactor_invalid_location.yaml'
-    msg = 'Artifact with location ".*" is not valid because it is not listed' \
-        ' in the artifact_locations object.'
-    with pytest.raises(ValidationError, match=msg):
-        Workflow.from_file(fp)
