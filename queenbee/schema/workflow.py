@@ -167,6 +167,62 @@ class Workflow(BaseModel):
 
         return artifacts
 
+    @staticmethod
+    def _assert_workflow_values(values, references):
+
+        # references = parse_double_quote_workflow_vars(input_string)
+        if not references:
+            return True # If parser doesn't return refs then string is not a workflow var
+
+        for ref in references:
+            # validate formatting
+            qbvar.validate_ref_variable_format(ref)
+            
+            # No need to check if it's not a workflow level variable
+            if not ref.startswith('workflow.'):
+                continue
+
+            try:
+                _, attr, prop, name = ref.split('.')
+            except ValueError:
+                *_, name = ref.split('.')
+
+                assert name in ['id', 'name'], ValueError(
+                    f'Invalid workflow variable: {ref}. '
+                    f'Variable type must be "workflow.id", "workflow.name" '
+                    f'not "{attr}"'
+                )
+            else:
+                if attr in ('inputs'):
+                    inputs = values.get('inputs')
+                    if prop == 'parameters':
+                        try:
+                            inputs.get_parameter_value(name)
+                        except ValueError as err:
+                            raise ValueError(f'Referenced value does not exist: {ref}')
+                    elif prop == 'artifacts':
+                        try:
+                            inputs.get_artifact_value(name)
+                        except ValueError as err:
+                            raise ValueError(f'Referenced value does not exist: {ref}')
+                elif attr == 'operators':
+                    assert name == 'image', \
+                        ValueError('The only valid value for workflow.operators is image name.')
+                    operator = [op for op in values.get('operators') if op.name == name]
+                    if not operator:
+                        raise ValueError(
+                            'Invalid operator name. Operator does not exist in '
+                            f'the workflow definition: {name}'
+                        )
+                else:
+                    raise ValueError(
+                        f'Invalid workflow variable: {ref}. '
+                        f'Variable type must be "parameters", "artifacts" '
+                        f'or "operators" not "{attr}"'
+                    )
+
+        return True
+
     @root_validator(skip_on_failure=True)
     def check_referenced_values(cls, values):
         """Cross-reference check for all the referenced values.
@@ -202,7 +258,7 @@ class Workflow(BaseModel):
             for location in artifact_locations:
                 loc_rf = location.referenced_values
                 for k, v in loc_rf.items():
-                    assert_workflow_values(values, v)
+                    cls._assert_workflow_values(values, v)
 
 
         # Check DAG tasks for referenced values
@@ -216,17 +272,17 @@ class Workflow(BaseModel):
                 for artifact in arguments['artifacts']:
                     for key, value in artifact.items():
                         for k, v in value.items():
-                            assert_workflow_values(values, v)
+                            cls._assert_workflow_values(values, v)
             if 'parameters' in arguments:
                 for parameter in arguments['parameters']:
                     for key, value in parameter.items():
                         for k, v in value.items():
-                            assert_workflow_values(values, v)
+                            cls._assert_workflow_values(values, v)
 
             if 'loop' in task_rf:
                 for loop in task_rf['loop']:
                     for k, v in loop.items():
-                        assert_workflow_values(values, v)
+                        cls._assert_workflow_values(values, v)
                 
         return values
 
@@ -480,56 +536,6 @@ def hydrate_templates(workflow, wf_value=None):
 
     return wf_value
 
-
-def assert_workflow_values(values, references):
-
-    # references = parse_double_quote_workflow_vars(input_string)
-    if not references:
-        return True # If parser doesn't return refs then string is not a workflow var
-
-    for ref in references:
-        # validate formatting
-        qbvar.validate_ref_variable_format(ref)
-        
-        # No need to check if it's not a workflow level variable
-        if not ref.startswith('workflow.'):
-            continue
-
-        try:
-            _, attr, prop, name = ref.split('.')
-        except ValueError:
-            *_, name = ref.split('.')
-
-            assert name in ['id', 'name'], ValueError(
-                f'Invalid workflow variable: {ref}',
-            )
-        else:
-            if attr in ('inputs'):
-                inputs = values.get('inputs')
-                if prop == 'parameters':
-                    try:
-                        inputs.get_parameter_value(name)
-                    except ValueError as err:
-                        raise ValueError(f'Referenced value does not exist: {ref}')
-                elif prop == 'artifacts':
-                    try:
-                        inputs.get_artifact_value(name)
-                    except ValueError as err:
-                        raise ValueError(f'Referenced value does not exist: {ref}')
-            elif attr == 'operators':
-                assert name == 'image', \
-                    'The only valid value for workflow.operators is image name.'
-                operator = [op for op in values.get('operators') if op.name == name]
-                if not operator:
-                    raise ValueError(f'Invalid operator name: {name}')
-            else:
-                raise ValueError(
-                    f'Invalid workflow variable: {ref}. '
-                    f'Variable type must be "parameters", "artifacts" '
-                    f'or "operators" not "{attr}"'
-                )
-
-    return True
 
 # required for self.referencing model
 # see https://pydantic-docs.helpmanual.io/#self-referencing-models
