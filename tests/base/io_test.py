@@ -46,7 +46,6 @@ class BaseIOTest(BaseTestClass):
         assert obj == valid_instance.to_dict()
 
     def test_to_json(self, valid_instance):
-        # for valid_instance in valid_instances:
 
         loc_file = self.generate_test_file('valid.json')
 
@@ -61,8 +60,6 @@ class BaseIOTest(BaseTestClass):
     def test_from_json(self, valid_dict):
         test_file_path = self.generate_test_file('valid.json')
 
-        # for valid_dict in valid_dicts:
-    
         with open(test_file_path, 'w') as f:
             json.dump(valid_dict, f)
 
@@ -73,8 +70,6 @@ class BaseIOTest(BaseTestClass):
     def test_from_yaml(self, valid_dict):
         test_file_path = self.generate_test_file('valid.yaml')
 
-        # for valid_dict in valid_dicts:
-    
         with open(test_file_path, 'w') as f:
             yaml.dump(valid_dict, f)
 

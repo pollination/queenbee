@@ -13,8 +13,8 @@ class BaseValueErrorTest(BaseTestClass):
 
         parametrized = []
 
-        for file in invalid_files:
-            parametrized.append((file, file))
+        for f in invalid_files:
+            parametrized.append((f, f))
 
         if 'invalid_file' in metafunc.fixturenames and 'error_message' in metafunc.fixturenames:
             
