@@ -1,4 +1,3 @@
----
 parameters:
   - name: grid-name
     value: grid

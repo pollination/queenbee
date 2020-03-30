@@ -31,9 +31,9 @@ inputs:
 
 operators:
   - name: radiance-operator
-    import_from: 'radiance_operator.yaml'
+    import_from: '../../Operator/valid/radiance_operator.yaml'
   - name: honeybee-radiance
-    import_from: 'honeybee_radiance_operator.json'
+    import_from: '../../Operator/valid/honeybee_radiance_operator.json'
 
 templates:
 

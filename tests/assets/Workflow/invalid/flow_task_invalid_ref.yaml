@@ -1,0 +1,36 @@
+type: workflow
+name: flow-incorrect-reference
+
+inputs:
+  parameters:
+  - name: input-folder
+    value: some/path
+
+artifact_locations:
+- type: run-folder
+  name: run-folder
+
+operators:
+- type: operator
+  name: test
+  image: test
+
+templates:
+- type: function
+  name: test-template
+  operator: test
+  command: echo 'woop'
+  inputs:
+    parameters:
+      - name: foo
+        value: bar
+
+flow:
+  name: flow-incorrect-reference
+  tasks:
+  - name: test
+    template: test-template
+    arguments:
+      parameters:
+      - name: foo
+        value: '{{workflow.inputs.parameters.does-not-exist}}'

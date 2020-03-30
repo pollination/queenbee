@@ -21,7 +21,8 @@ inputs:
 
 operators:
   - name: honeybee-radiance
-    import_from: 'honeybee_radiance_operator.json'
+    import_from: '../../Operator/valid/honeybee_radiance_operator.json'
+
 
 templates:
 - name: generate-sky

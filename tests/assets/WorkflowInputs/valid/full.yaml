@@ -1,0 +1,10 @@
+artifacts:
+  test-artifact:
+    value: stuff
+  other-test-artifact:
+    randomKey: things
+parameters:
+  hype:
+    value: 90000
+user_data:
+  foo: bar

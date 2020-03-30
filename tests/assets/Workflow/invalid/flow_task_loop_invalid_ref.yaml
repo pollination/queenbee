@@ -1,0 +1,37 @@
+type: workflow
+name: flow-incorrect-loop-reference
+
+inputs:
+  parameters:
+  - name: loop-array
+    value: ['stuff', 'things']
+
+artifact_locations:
+- type: run-folder
+  name: run-folder
+
+operators:
+- type: operator
+  name: test
+  image: test
+
+templates:
+- type: function
+  name: test-template
+  operator: test
+  command: echo 'woop'
+  inputs:
+    parameters:
+      - name: foo
+        value: bar
+
+flow:
+  name: flow-incorrect-loop-reference
+  tasks:
+  - name: test
+    template: test-template
+    arguments:
+      parameters:
+      - name: looped-param
+        value: '{{item}}'
+    loop: '{{workflow.inputs.parameters.does-not-exist}}'

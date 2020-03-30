@@ -1,0 +1,9 @@
+description: A test metadata object
+author:
+- name: test
+  url: http://some.url.com
+  email: test@test.com
+license:
+  name: MIT
+  url: http://some.license.com
+version: v0.3.2

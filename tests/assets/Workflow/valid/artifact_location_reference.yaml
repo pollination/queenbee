@@ -1,0 +1,31 @@
+type: workflow
+name: artifact-location-reference
+
+inputs:
+  parameters:
+  - name: input-folder
+    value: some/path
+
+artifact_locations:
+- type: run-folder
+  name: run-folder
+- type: input-folder
+  name: input-folder
+  root: '{{workflow.inputs.parameters.input-folder}}'
+
+operators:
+- type: operator
+  name: test
+  image: test
+
+templates:
+- type: function
+  name: test-template
+  operator: test
+  command: echo 'woop'
+
+flow:
+  name: artifact-location-reference
+  tasks:
+  - name: test
+    template: test-template

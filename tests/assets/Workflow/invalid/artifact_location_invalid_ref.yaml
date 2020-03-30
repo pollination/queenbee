@@ -1,0 +1,26 @@
+type: workflow
+name: daylight-factor
+
+inputs:
+  parameters:
+  - name: radiance-parameters
+    value: -I -b 2
+
+artifact_locations:
+- type: run-folder
+  name: run-folder
+- type: input-folder
+  name: input-folder
+  root: '{{workflow.inputs.parameters.input-folder}}'
+
+operators: []
+
+templates: []
+
+flow:
+  name: daylight-factor
+  tasks: []
+
+outputs:
+  parameters: []
+  artifacts: []
