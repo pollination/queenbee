@@ -9,10 +9,27 @@ Queenbee accepts three types of locations:
     3. S3: An S3 bucket
 """
 from queenbee.schema.qutil import BaseModel
+import queenbee.schema.variable as qbvar
 from pydantic import Field, constr
-from typing import Dict
+from typing import Dict, List
 from enum import Enum
 
+
+def referenced_values(values) -> Dict[str, List[str]]:
+    """Get referenced variables if any"""
+    ref_values = {}
+    
+    if not values:
+        return ref_values
+
+    for value in values:
+        if value is None:
+            continue
+        ref_var = qbvar.get_ref_variable(value)
+        if ref_var:
+            ref_values[value] = ref_var
+
+    return ref_values
 
 class VerbEnum(str, Enum):
     get = 'GET'
@@ -38,6 +55,12 @@ class ArtifactLocation(BaseModel):
         description='The root path to the artifacts.'
     )
 
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        values = [self.root]
+
+        return referenced_values(values)
+
 
 class InputFolderLocation(BaseModel):
     """Input Folder Location
@@ -58,6 +81,13 @@ class InputFolderLocation(BaseModel):
         description="For a local filesystem this can be \"C:\\Users\\me\\simulations\\test\".\
             Will be ignored when running on the Pollination platform."
     )
+
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        values = [self.root]
+
+        return referenced_values(values)
+
 
 
 class RunFolderLocation(BaseModel):
@@ -82,6 +112,11 @@ class RunFolderLocation(BaseModel):
             Will be ignored when running on the Pollination platform."
     )
 
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        values = [self.root]
+
+        return referenced_values(values)
 
 class HTTPLocation(BaseModel):
     """HTTPLocation
@@ -102,7 +137,7 @@ class HTTPLocation(BaseModel):
     )
 
     headers: Dict[str, str] = Field(
-        None,
+        {},
         description="An object with Key Value pairs of HTTP headers"
     )
 
@@ -110,6 +145,15 @@ class HTTPLocation(BaseModel):
         'GET',
         description="The HTTP verb to use when making the request."
     )
+
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        values = [self.root, self.verb]
+
+        for k, v in self.headers:
+            values.append(v)
+
+        return referenced_values(values)
 
     class Config:
         use_enum_value = True
@@ -148,3 +192,9 @@ class S3Location(BaseModel):
         description="Path to the file holding the AccessKey and SecretAccessKey to "
         "authenticate to the bucket"
     )
+
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        values = [self.root, self.endpoint, self.bucket, self.credentials_path]
+
+        return referenced_values(values)
