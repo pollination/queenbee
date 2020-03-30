@@ -11,7 +11,7 @@ from pydantic import Field, validator, constr, root_validator
 from typing import List, Union
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.dag import DAG
-from queenbee.schema.arguments import Arguments, WorkflowArguments
+from queenbee.schema.arguments import Arguments, WorkflowArguments, WorkflowInputs
 from queenbee.schema.operator import Operator
 from queenbee.schema.function import Function
 from queenbee.schema.artifact_location import RunFolderLocation, InputFolderLocation, \
@@ -315,12 +315,21 @@ class Workflow(BaseModel):
             for k, v in values['artifacts'].items():
                 self.inputs.set_artifact_value(k, v)
 
-    def hydrate_workflow_templates(self, inputs=None):
+        if 'user_data' in values:
+            self.inputs.user_data.update(values['user_data'])
+
+    def hydrate_workflow_templates(self, inputs: WorkflowInputs = None):
         """Find and replace {{workflow.x.y.z}} variables with input values.
 
         This method returns the workflow as a dictionary with {{workflow.x.y.z}}
         variables replaced by workflow input values.
         """
+
+        if inputs is None:
+            inputs = WorkflowInputs()
+
+        self.update_inputs_values(inputs.dict())
+
         return hydrate_templates(self, wf_value=self.dict(exclude_unset=True))
 
     @property
