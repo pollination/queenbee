@@ -372,7 +372,14 @@ class Workflow(BaseModel):
                 self.inputs.set_artifact_value(k, v)
 
         if values.get('user_data') is not None:
-            self.inputs.user_data.update(values['user_data'])
+            user_data = self.inputs.user_data
+
+            if user_data is None:
+                user_data = {}
+
+            user_data.update(values['user_data'])
+
+            self.inputs.user_data = user_data
 
     def hydrate_workflow_templates(self, inputs: WorkflowInputs = None):
         """Find and replace {{workflow.x.y.z}} variables with input values.
