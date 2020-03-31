@@ -7,11 +7,11 @@ from uuid import uuid4
 import collections
 import re
 from graphviz import Digraph
-from pydantic import Field, validator, constr
+from pydantic import Field, validator, constr, root_validator
 from typing import List, Union
 from queenbee.schema.qutil import BaseModel
 from queenbee.schema.dag import DAG
-from queenbee.schema.arguments import Arguments, WorkflowArguments
+from queenbee.schema.arguments import Arguments, WorkflowArguments, WorkflowInputs
 from queenbee.schema.operator import Operator
 from queenbee.schema.function import Function
 from queenbee.schema.artifact_location import RunFolderLocation, InputFolderLocation, \
@@ -167,18 +167,124 @@ class Workflow(BaseModel):
 
         return artifacts
 
-    # @root_validator(skip_on_failure=True)
-    # def check_referenced_values(cls, values):
-    #     """Cross-reference check for all the referenced values.
+    @staticmethod
+    def _assert_workflow_values(values, references):
 
-    #     This method ensures:
-    #         * All workflow referenced values are available in workflow. This method
-    #           doesn't check if the value is assigned as it can be done later by updating
-    #           inputs.
-    #         * All tasks.TASKNAME.outputs references are valid references in task
-    #           template.
-    #     """
-    #     return values
+        # references = parse_double_quote_workflow_vars(input_string)
+        if not references:
+            return True # If parser doesn't return refs then string is not a workflow var
+
+        for ref in references:
+            # validate formatting
+            qbvar.validate_ref_variable_format(ref)
+            
+            # No need to check if it's not a workflow level variable
+            if not ref.startswith('workflow.'):
+                continue
+
+            try:
+                _, attr, prop, name = ref.split('.')
+            except ValueError:
+                *_, name = ref.split('.')
+
+                assert name in ['id', 'name'], ValueError(
+                    f'Invalid workflow variable: {ref}. '
+                    f'Variable type must be "workflow.id", "workflow.name" '
+                    f'not "{attr}"'
+                )
+            else:
+                if attr in ('inputs'):
+                    inputs = values.get('inputs')
+                    if prop == 'parameters':
+                        try:
+                            inputs.get_parameter_value(name)
+                        except ValueError as err:
+                            raise ValueError(f'Referenced value does not exist: {ref}')
+                    elif prop == 'artifacts':
+                        try:
+                            inputs.get_artifact_value(name)
+                        except ValueError as err:
+                            raise ValueError(f'Referenced value does not exist: {ref}')
+                elif attr == 'operators':
+                    assert name == 'image', \
+                        ValueError('The only valid value for workflow.operators is image name.')
+                    operator = [op for op in values.get('operators') if op.name == name]
+                    if not operator:
+                        raise ValueError(
+                            'Invalid operator name. Operator does not exist in '
+                            f'the workflow definition: {name}'
+                        )
+                else:
+                    raise ValueError(
+                        f'Invalid workflow variable: {ref}. '
+                        f'Variable type must be "parameters", "artifacts" '
+                        f'or "operators" not "{attr}"'
+                    )
+
+        return True
+
+    @root_validator(skip_on_failure=True)
+    def check_referenced_values(cls, values):
+        """Cross-reference check for all the referenced values.
+
+        This method ensures:
+            * All workflow referenced values are available in workflow. This method
+              doesn't check if the value is assigned as it can be done later by updating
+              inputs.
+            * All tasks.TASKNAME.outputs references are valid references in task
+              template.
+        """
+
+        # Don't need to check Templates as they are already checked and self contained
+
+        # Check Workflow Inputs for referenced values (There should be none!)
+        inputs = values.get('inputs')
+        
+        if inputs:
+            irf = inputs.referenced_values
+
+            for key, value in irf.items():
+                if len(value) == 0:
+                    continue
+                raise ValueError(
+                    f'There is at least one referenced variable in inputs:\n'
+                    f'{key}: {value}.\n'
+                    f'Referenced values are not allowed in workflow inputs.'
+                )
+            
+        # Check Artifact Locations for referenced values
+        artifact_locations = values.get('artifact_locations')
+        if artifact_locations is not None:
+            for location in artifact_locations:
+                loc_rf = location.referenced_values
+                for k, v in loc_rf.items():
+                    cls._assert_workflow_values(values, v)
+
+
+        # Check DAG tasks for referenced values
+        flow = values.get('flow')
+
+        for task in flow.tasks:
+            task_rf = task.referenced_values
+            arguments = task_rf.get('arguments', {})
+
+            if 'artifacts' in arguments:
+                for artifact in arguments['artifacts']:
+                    for key, value in artifact.items():
+                        for k, v in value.items():
+                            cls._assert_workflow_values(values, v)
+            if 'parameters' in arguments:
+                for parameter in arguments['parameters']:
+                    for key, value in parameter.items():
+                        for k, v in value.items():
+                            cls._assert_workflow_values(values, v)
+
+            if 'loop' in task_rf:
+                for loop in task_rf['loop']:
+                    for k, v in loop.items():
+                        cls._assert_workflow_values(values, v)
+                
+        return values
 
     def to_diagraph(self, filename=None):
         """Return a graphviz instance of a diagraph from workflow."""
@@ -257,20 +363,36 @@ class Workflow(BaseModel):
         if not self.inputs:
             raise ValueError(f'Workflow "{self.name}" has no inputs.')
 
-        if 'parameters' in values:
+        if values.get('parameters') is not None:
             for k, v in values['parameters'].items():
                 self.inputs.set_parameter_value(k, v)
 
-        if 'artifacts' in values:
+        if values.get('artifacts') is not None:
             for k, v in values['artifacts'].items():
                 self.inputs.set_artifact_value(k, v)
 
-    def hydrate_workflow_templates(self, inputs=None):
+        if values.get('user_data') is not None:
+            user_data = self.inputs.user_data
+
+            if user_data is None:
+                user_data = {}
+
+            user_data.update(values['user_data'])
+
+            self.inputs.user_data = user_data
+
+    def hydrate_workflow_templates(self, inputs: WorkflowInputs = None):
         """Find and replace {{workflow.x.y.z}} variables with input values.
 
         This method returns the workflow as a dictionary with {{workflow.x.y.z}}
         variables replaced by workflow input values.
         """
+
+        if inputs is None:
+            inputs = WorkflowInputs()
+
+        self.update_inputs_values(inputs.dict())
+
         return hydrate_templates(self, wf_value=self.dict(exclude_unset=True))
 
     @property

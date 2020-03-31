@@ -9,8 +9,9 @@ Queenbee accepts three types of locations:
     3. S3: An S3 bucket
 """
 from queenbee.schema.qutil import BaseModel
+import queenbee.schema.variable as qbvar
 from pydantic import Field, constr
-from typing import Dict
+from typing import Dict, List
 from enum import Enum
 
 
@@ -38,8 +39,31 @@ class ArtifactLocation(BaseModel):
         description='The root path to the artifacts.'
     )
 
+    @staticmethod
+    def _referenced_values(values) -> Dict[str, List[str]]:
+        """Get referenced variables if any"""
+        ref_values = {}
+        
+        if not values:
+            return ref_values
 
-class InputFolderLocation(BaseModel):
+        for value in values:
+            if value is None:
+                continue
+            ref_var = qbvar.get_ref_variable(value)
+            if ref_var:
+                ref_values[value] = ref_var
+
+        return ref_values
+
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        values = [self.root]
+
+        return self._referenced_values(values)
+
+
+class InputFolderLocation(ArtifactLocation):
     """Input Folder Location
 
     This is a folder that the workflow can use to pull input artifacts from.
@@ -59,8 +83,15 @@ class InputFolderLocation(BaseModel):
             Will be ignored when running on the Pollination platform."
     )
 
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        values = [self.root]
 
-class RunFolderLocation(BaseModel):
+        return self._referenced_values(values)
+
+
+
+class RunFolderLocation(ArtifactLocation):
     """Run Folder Location
 
     This is the folder a workflow will use as it's root path when running a simulation.
@@ -82,8 +113,13 @@ class RunFolderLocation(BaseModel):
             Will be ignored when running on the Pollination platform."
     )
 
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        values = [self.root]
 
-class HTTPLocation(BaseModel):
+        return self._referenced_values(values)
+
+class HTTPLocation(ArtifactLocation):
     """HTTPLocation
 
     A web HTTP to an FTP server or an API for example.
@@ -102,7 +138,7 @@ class HTTPLocation(BaseModel):
     )
 
     headers: Dict[str, str] = Field(
-        None,
+        {},
         description="An object with Key Value pairs of HTTP headers"
     )
 
@@ -111,11 +147,20 @@ class HTTPLocation(BaseModel):
         description="The HTTP verb to use when making the request."
     )
 
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        values = [self.root, self.verb]
+
+        for k, v in self.headers:
+            values.append(v)
+
+        return self._referenced_values(values)
+
     class Config:
         use_enum_value = True
 
 
-class S3Location(BaseModel):
+class S3Location(ArtifactLocation):
     """S3Location
 
     An S3 bucket
@@ -148,3 +193,9 @@ class S3Location(BaseModel):
         description="Path to the file holding the AccessKey and SecretAccessKey to "
         "authenticate to the bucket"
     )
+
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        values = [self.root, self.endpoint, self.bucket, self.credentials_path]
+
+        return self._referenced_values(values)

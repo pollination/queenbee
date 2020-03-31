@@ -66,6 +66,7 @@ import webbrowser
 import urllib.parse
 from pkg_resources import iter_entry_points
 from queenbee.schema.workflow import Workflow
+from queenbee.schema.arguments import WorkflowInputs
 
 # TODO: Comment out and use for logging once we are adding commands to this file.
 # import logging
@@ -78,8 +79,25 @@ class Context():
     def parse_workflow(filepath):
         try:
             wf = Workflow.from_file(filepath)
-            wf.validate_all()
             return wf
+        except AssertionError as e:
+            raise click.UsageError(e)
+        except Exception as e:
+            raise click.ClickException(e)
+
+    @staticmethod
+    def parse_and_hydrate_workflow(wf_filepath: str, inputs_filepath: str = None):
+        try:
+            wf = Workflow.from_file(wf_filepath)
+            inputs = None
+
+            if inputs_filepath is not None:
+                inputs = WorkflowInputs.from_file(inputs_filepath)
+            
+            return Workflow.parse_obj(
+                wf.hydrate_workflow_templates(inputs=inputs)
+            )
+        
         except AssertionError as e:
             raise click.UsageError(e)
         except Exception as e:
@@ -136,6 +154,39 @@ def validate(ctx, file, display):
 Valid Workflow!        <\\\\
 
     """)
+
+    if display:
+        query = urllib.parse.quote(dot.pipe(format='xdot'))
+        url = 'https://dreampuf.github.io/GraphvizOnline/#{}'.format(query)
+        webbrowser.open(url)
+
+
+@main.command('hydrate')
+@click.option('-f', '--file', help='path to the workflow file to validate', required=True)
+@click.option('-i', '--inputs', help='path to the inputs file inject into the workflow', required=False)
+@click.option('-o', '--output', help='path to file to save the hydrated workflow to', required=False)
+@click.option('-d', '--display', help='boolean flag to display the workflow in your browser', default=False, type=bool, is_flag=True)
+@click.pass_context
+def hydrate(ctx, file, inputs, output, display):
+    """Hydrate a workflow and optionally add inputs"""
+
+    wf = ctx.obj.parse_and_hydrate_workflow(file, inputs)
+
+    dot = wf.to_diagraph(filename=file.split('.')[0])
+
+#     click.echo("""
+#                        _   _
+#                       ( | / )
+#                     \\\\ \\|/,'_
+#                     (")(_)()))=-
+# Valid Workflow!        <\\\\
+
+#     """)
+
+    if output:
+        wf.to_yaml(output)
+    else:
+        print(wf.yaml())
 
     if display:
         query = urllib.parse.quote(dot.pipe(format='xdot'))

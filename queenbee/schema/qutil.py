@@ -24,7 +24,7 @@ class BaseModel(PydanticBaseModel):
 
     def yaml(self, exclude_unset=False):
         return yaml.dump(
-            self.dict(exclude_unset=exclude_unset),
+            json.loads(self.json(exclude_unset=exclude_unset)),
             default_flow_style=False
         )
 
