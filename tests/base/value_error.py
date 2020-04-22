@@ -5,6 +5,7 @@ import json
 from ._base import BaseTestClass
 
 
+@pytest.mark.err
 class BaseValueErrorTest(BaseTestClass):
 
     def pytest_generate_tests(self, metafunc):
