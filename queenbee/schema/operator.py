@@ -26,3 +26,9 @@ class Operator(BaseModel):
         ...,
         description='Docker image name.'
     )
+
+    workdir: str = Field(
+        ...,
+        description='The working directory the entrypoint command of the container runs in.'
+        'This is used to determine where to load artifacts when running in the container.'
+    )

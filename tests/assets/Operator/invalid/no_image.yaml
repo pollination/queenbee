@@ -1,2 +1,3 @@
 version: v1.2.3
 name: some-name
+workdir: /opt/run-folder

@@ -63,13 +63,12 @@ def _validate_tasks_var_format(value: str):
 def _validate_inputs_outputs_var_format(value: str):
     add_info = ''
     parts = value.split('.')
-    if len(parts) != 3:
+    if len(parts) > 0 and parts[0] != 'inputs':
+        add_info = f'Inputs and outputs variables can only refer to an input value not: {parts[0]}'
+    elif len(parts)> 1 and parts[1] != 'parameters':
+        add_info = f'Inputs and outputs variables can only refer to an input parameter not: {parts[1]}'
+    elif len(parts) != 3:
         add_info = 'Inputs and outputs variables must have 3 segments.'
-    else:
-        prop = parts[1]
-        if prop not in ('parameters', 'artifacts'):
-            add_info = 'Inputs and outputs variables must be "parameters" or' \
-                ' "artifacts".'
     return add_info
 
 

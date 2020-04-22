@@ -4,8 +4,9 @@ from .parser import parse_file
 import yaml
 import json
 import collections
-from typing import List
+from typing import List, Dict
 
+import queenbee.schema.variable as qbvar
 
 # set up yaml.dump to keep the order of the input dictionary
 # from https://stackoverflow.com/a/31609484/4394669
@@ -24,12 +25,12 @@ class BaseModel(PydanticBaseModel):
 
     def yaml(self, exclude_unset=False):
         return yaml.dump(
-            json.loads(self.json(exclude_unset=exclude_unset)),
+            json.loads(self.json(by_alias=True, exclude_unset=exclude_unset)),
             default_flow_style=False
         )
 
-    def to_dict(self):
-        return self.dict(exclude_unset=False)
+    def to_dict(self, by_alias=True):
+        return self.dict(exclude_unset=False, by_alias=by_alias)
 
     def to_json(self, filepath, indent=None):
         """Write workflow to a JSON file.
@@ -37,7 +38,7 @@ class BaseModel(PydanticBaseModel):
         Args:
             filepath(str): Full path to JSON file.
         """
-        workflow = self.to_dict()
+        workflow = self.to_dict(by_alias=True)
         with open(filepath, 'w') as outf:
             json.dump(workflow, outf, indent=indent)
 
@@ -59,6 +60,22 @@ class BaseModel(PydanticBaseModel):
 
     def __repr__(self):
         return self.yaml()
+
+
+    def _referenced_values(self, var_names: List[str]) -> Dict[str, List[str]]:
+        """Get all referenced values specified by var name"""
+        ref_values = {}
+
+        for name in var_names:
+            value = getattr(self, name, None)
+
+            if isinstance(value, str):
+                ref_var = qbvar.get_ref_variable(value)
+
+                if ref_var != []:
+                    ref_values[name] = ref_var
+        
+        return ref_values
 
 
 def find_dup_items(values: List) -> List:

@@ -1,11 +1,121 @@
 """Queenbee Function class."""
-from queenbee.schema.qutil import BaseModel
+from queenbee.schema.qutil import BaseModel, find_dup_items
 from queenbee.schema.parser import parse_double_quotes_vars as var_parser
 from queenbee.schema.variable import validate_function_ref_variables
-from pydantic import Field, constr, root_validator
-from typing import Dict
-from queenbee.schema.arguments import Arguments
+from pydantic import Field, constr, root_validator, validator
+from typing import Dict, List
+import queenbee.schema.variable as qbvar
 
+
+class FunctionArtifact(BaseModel):
+
+    name: str = Field(
+        ...,
+        description='Name of the artifact. Must be unique within a task\'s '
+        'inputs / outputs.'
+    )
+
+    description: str = Field(
+        None,
+        description='Optional description for input parameter.'
+    )      
+
+    path: str = Field(
+        ...,
+        description='Path to the artifact relative to the run-folder artifact location.'
+    )
+  
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        """Get referenced variables if any."""
+        return self._referenced_values(['path'])
+
+
+class FunctionParameterIn(BaseModel):
+    """Parameter.
+
+    Parameter indicate a passed string parameter to a service template with an optional
+    default value.
+    """
+
+    name: str = Field(
+        ...,
+        description='Name is the parameter name. must be unique within a task\'s '
+        'inputs.'
+    )
+
+    default: str = Field(
+        None,
+        description='Default value to use for an input parameter if a value was not'
+        ' supplied.'
+    )
+
+    description: str = Field(
+        None,
+        description='Optional description for input parameter.'
+    )
+
+    required: bool = Field(
+        False,
+        description='Whether this value must be specified in a task argument.'
+    )
+
+    @validator('required')
+    def validate_required(cls,v,  values):
+        """Ensure parameter with no default value is marked as required"""
+        default = values.get('default')
+
+        if default is None and v is False:
+            raise ValueError(
+                'required should be true if no default is provided'
+            )
+
+        return v
+
+
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        """Get referenced variables if any"""
+        return self._referenced_values(['default'])
+
+
+
+class FunctionParameterOut(FunctionArtifact):
+    
+    pass
+
+class FunctionInputs(BaseModel):
+
+    parameters: List[FunctionParameterIn] = Field(
+        [],
+        description=''
+    )
+
+    artifacts: List[FunctionArtifact] = Field(
+        [],
+        description=''
+    )
+
+    @validator('parameters', 'artifacts')
+    def parameter_unique_names(cls, v):
+        names = [value.name for value in v]
+        duplicates = find_dup_items(names)
+        if len(duplicates) != 0:
+            raise ValueError(f'Duplicate names: {duplicates}')
+        return v
+
+
+class FunctionOutputs(FunctionInputs):
+
+    parameters: List[FunctionParameterOut] = Field(
+        [],
+        description=''
+    )
+
+    artifacts: List[FunctionArtifact] = Field(
+        [],
+        description=''
+    )
 
 class Function(BaseModel):
     """A function with a single command."""
@@ -22,92 +132,123 @@ class Function(BaseModel):
         ' this function.'
     )
 
-    inputs: Arguments = Field(
-        None,
+    operator: str = Field(
+        ...,
+        description='Function operator name.'
+    )
+    
+    inputs: FunctionInputs = Field(
+        FunctionInputs(),
         description=u'Input arguments for this function.'
     )
 
     command: str = Field(
-        ...,
+        '...',
         description=u'Full shell command for this function. Each function accepts only '
         'one command. The command will be executed as a shell command in operator. '
         'For running several commands after each other use && between the commands '
         'or pipe data from one to another using |'
     )
 
-    operator: str = Field(
-        ...,
-        description='Function operator name.'
-    )
-
-    # TODO: check for referenced variables
-    env: Dict[str, str] = Field(
-        None,
-        description='A dictionary of key:values for environmental variables.'
-    )
-
-    outputs: Arguments = Field(
-        None,
+    outputs: FunctionOutputs = Field(
+        FunctionOutputs(),
         description='List of output arguments.'
     )
 
-    @root_validator
-    def validate_referenced_values(cls, values):
-        """Validate referenced values in function.
+    @classmethod
+    def validate_referenced_values(cls, input_names: List[str], variables: List):
+        """Validate referenced values"""
 
-        The validation checks are:
-            * Reference to workflow values is not allowed in a function.
-            * Referenced values are allowed in command and outputs. These values must
-              reference to function inputs.
-        """
-        input_names = {'parameters': [], 'artifacts': []}
+        for ref in variables:
+            add_info = ''
+            ref = ref.replace('{{', '').replace('}}', '').strip()
+            add_info = qbvar._validate_inputs_outputs_var_format(ref)
+
+            if not add_info:
+                # check the value exist in inputs
+                name = ref.split('.')[-1]
+                if name not in input_names:
+                    add_info = f'Invalid reference: {ref}. Cannot find {name} in inputs.'
+            
+            msg = f'Invalid Queenbee variable for functions: {ref}. ' \
+                f'{add_info} ' \
+                'See https://github.com/ladybug-tools/queenbee#variables' \
+                ' for more information.'
+            
+            if add_info != '':
+                raise ValueError(msg)
+
+
+    @validator('inputs')
+    def validate_input_refs(cls, v):
+        """Validate referenced variables in inputs"""
+
+        input_names = [param.name for param in v.parameters]
+
+        variables = v.artifacts + v.parameters
+
+        referenced_values = []
+
+        for var in variables:
+            ref_values = var.referenced_values
+            for _, refs in ref_values.items():
+                referenced_values.extend(refs)
+
+        cls.validate_referenced_values(
+            input_names=input_names, 
+            variables=referenced_values
+            )
+
+        return v
+
+    @validator('command')
+    def validate_command_refs(cls, v, values):
+        """Validate referenced variables in the command"""
+
+        ref_var = qbvar.get_ref_variable(v)
+
+        # If inputs is not in values it has failed validation
+        # and we cannot check/validate output refs
+        if 'inputs' not in values:
+            return v
+
         inputs = values.get('inputs')
-        if inputs:
-            irf = inputs.referenced_values
-            for key, value in irf.items():
-                if len(value) == 0:
-                    continue
-                raise ValueError(
-                    f'There is at least one referenced variable in inputs:\n'
-                    f'{key}: {value}.\n'
-                    f'Referenced values are not allowed in function inputs.'
-                )
 
-            if inputs.parameters:
-                input_names['parameters'] = [p.name for p in inputs.parameters]
-            if inputs.artifacts:
-                input_names['artifacts'] = [p.name for p in inputs.artifacts]
-        outputs = values.get('outputs')
+        input_names = [param.name for param in inputs.parameters]
 
-        if outputs:
-            # check output referenced values
-            orf = outputs.referenced_values
-            for rfv in orf.values():
-                if len(rfv) == 0:
-                    continue
-                for vv in rfv:
-                    for ovs in vv.values():
-                        for ov_refs in ovs.values():
-                            for ov in ov_refs:
-                                try:
-                                    names = input_names[ov.split('.')[1]]
-                                except KeyError:
-                                    names = []
-                                except Exception:
-                                    raise ValueError(
-                                        f'Invalid referenced value: {ov}'
-                                    )
-                            validate_function_ref_variables(ov, names)
-        # check command
-        command = ' '.join(values.get('command').split())
-        referenced_values = var_parser(command)
-        for ref_var in referenced_values:
-            try:
-                names = input_names[ref_var.split('.')[1]]
-            except KeyError:
-                names = []  # invalid input. validate function will throw the error
-            validate_function_ref_variables(ref_var, names)
-        return values
+        cls.validate_referenced_values(
+            input_names=input_names,
+            variables=ref_var
+        )
+
+    @validator('outputs')
+    def validate_output_refs(cls, v, values):
+        """Validate referenced variables in outputs"""
+
+        # If inputs is not in values it has failed validation
+        # and we cannot check/validate output refs
+        if 'inputs' not in values:
+            return v
+
+        inputs = values.get('inputs')
+
+        input_names = [param.name for param in inputs.parameters]
+
+        variables = v.artifacts + v.parameters
+
+        referenced_values = []
+
+        for var in variables:
+            ref_values = var.referenced_values
+            for _, refs in ref_values.items():
+                referenced_values.extend(refs)
+
+        cls.validate_referenced_values(
+            input_names=input_names, 
+            variables=referenced_values
+            )
+
+        return v
 
     @property
     def artifacts(self):

@@ -1,2 +1,4 @@
+type: operator
 name: radiance-operator
 image: ladybugtools/radiance:5.2
+workdir: /opt/run-folder
