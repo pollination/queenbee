@@ -1,6 +1,0 @@
-type: s3
-name: s3-location
-root: some/key/path
-bucket: some-bucket
-credentials_path: s3-secrets
-endpoint: http://s3.example.com
