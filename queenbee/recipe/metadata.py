@@ -6,10 +6,10 @@ The specification is designed based on openapi info object:
 https://swagger.io/specification/#infoObject
 """
 
-from queenbee.schema.qutil import BaseModel
-from pydantic import Field
 from typing import List, Union
+from pydantic import Field
 
+from ..base.basemodel import BaseModel
 
 class Author(BaseModel):
     """Author information."""

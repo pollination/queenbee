@@ -38,9 +38,10 @@ class BaseModel(PydanticBaseModel):
         Args:
             filepath(str): Full path to JSON file.
         """
-        workflow = self.to_dict(by_alias=True)
+        # workflow = self.to_dict(by_alias=True)
         with open(filepath, 'w') as outf:
-            json.dump(workflow, outf, indent=indent)
+            outf.write(self.json(by_alias=True, exclude_unset=False, indent=indent))
+            # json.dump(workflow, outf, indent=indent)
 
     def to_yaml(self, filepath):
         """Write workflow to a yaml file."""

@@ -2,12 +2,12 @@
 based on Pydantic implementation.
 """
 from pkg_resources import get_distribution
-from pydantic.schema import schema
 from typing import Dict
+from pydantic.schema import schema
 
-from .schema.workflow import Workflow
+from .workflow import Workflow
 
-_base_open_api = {
+BASE_OPEN_API = {
     "openapi": "3.0.2",
     "servers": [],
     "info": {
@@ -52,7 +52,7 @@ def get_openapi(
     description: str = None,
 ) -> Dict:
     """Return Queenbee Workflow Schema as an openapi compatible dictionary."""
-    open_api = dict(_base_open_api)
+    open_api = dict(BASE_OPEN_API)
 
     open_api['openapi'] = openapi_version
 

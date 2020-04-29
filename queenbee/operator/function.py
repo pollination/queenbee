@@ -1,10 +1,10 @@
 """Queenbee Function class."""
-from queenbee.schema.qutil import BaseModel, find_dup_items
-from queenbee.schema.parser import parse_double_quotes_vars as var_parser
-from queenbee.schema.variable import validate_function_ref_variables
-from pydantic import Field, constr, root_validator, validator
 from typing import Dict, List
-import queenbee.schema.variable as qbvar
+from pydantic import Field, validator
+
+from ..base.basemodel import BaseModel
+from ..base.io import IOBase
+from ..schema.variable import _validate_inputs_outputs_var_format, get_ref_variable
 
 
 class FunctionArtifact(BaseModel):
@@ -18,7 +18,7 @@ class FunctionArtifact(BaseModel):
     description: str = Field(
         None,
         description='Optional description for input parameter.'
-    )      
+    )  
 
     path: str = Field(
         ...,
@@ -60,6 +60,7 @@ class FunctionParameterIn(BaseModel):
         description='Whether this value must be specified in a task argument.'
     )
 
+    @classmethod
     @validator('required')
     def validate_required(cls,v,  values):
         """Ensure parameter with no default value is marked as required"""
@@ -84,7 +85,7 @@ class FunctionParameterOut(FunctionArtifact):
     
     pass
 
-class FunctionInputs(BaseModel):
+class FunctionInputs(IOBase):
 
     parameters: List[FunctionParameterIn] = Field(
         [],
@@ -96,16 +97,8 @@ class FunctionInputs(BaseModel):
         description=''
     )
 
-    @validator('parameters', 'artifacts')
-    def parameter_unique_names(cls, v):
-        names = [value.name for value in v]
-        duplicates = find_dup_items(names)
-        if len(duplicates) != 0:
-            raise ValueError(f'Duplicate names: {duplicates}')
-        return v
 
-
-class FunctionOutputs(FunctionInputs):
+class FunctionOutputs(IOBase):
 
     parameters: List[FunctionParameterOut] = Field(
         [],
@@ -119,11 +112,10 @@ class FunctionOutputs(FunctionInputs):
 
 class Function(BaseModel):
     """A function with a single command."""
-    type: constr(regex='^function$')
 
     name: str = Field(
         ...,
-        description='Function name. Must be unique within a workflow.'
+        description='Function name. Must be unique within an operator.'
     )
 
     description: str = Field(
@@ -132,11 +124,6 @@ class Function(BaseModel):
         ' this function.'
     )
 
-    operator: str = Field(
-        ...,
-        description='Function operator name.'
-    )
-    
     inputs: FunctionInputs = Field(
         FunctionInputs(),
         description=u'Input arguments for this function.'
@@ -155,14 +142,14 @@ class Function(BaseModel):
         description='List of output arguments.'
     )
 
-    @classmethod
-    def validate_referenced_values(cls, input_names: List[str], variables: List):
+    @staticmethod
+    def validate_referenced_values(input_names: List[str], variables: List):
         """Validate referenced values"""
 
         for ref in variables:
             add_info = ''
             ref = ref.replace('{{', '').replace('}}', '').strip()
-            add_info = qbvar._validate_inputs_outputs_var_format(ref)
+            add_info = _validate_inputs_outputs_var_format(ref)
 
             if not add_info:
                 # check the value exist in inputs
@@ -179,6 +166,7 @@ class Function(BaseModel):
                 raise ValueError(msg)
 
 
+    @classmethod
     @validator('inputs')
     def validate_input_refs(cls, v):
         """Validate referenced variables in inputs"""
@@ -201,11 +189,12 @@ class Function(BaseModel):
 
         return v
 
+    @classmethod
     @validator('command')
     def validate_command_refs(cls, v, values):
         """Validate referenced variables in the command"""
 
-        ref_var = qbvar.get_ref_variable(v)
+        ref_var = get_ref_variable(v)
 
         # If inputs is not in values it has failed validation
         # and we cannot check/validate output refs
@@ -221,6 +210,7 @@ class Function(BaseModel):
             variables=ref_var
         )
 
+    @classmethod
     @validator('outputs')
     def validate_output_refs(cls, v, values):
         """Validate referenced variables in outputs"""

@@ -6,9 +6,13 @@ A task status keeps track of the outcome of a given workflow task.
 from datetime import datetime
 from pydantic import Field, validator
 from typing import List, Dict
-from queenbee.schema.qutil import BaseModel
-from queenbee.schema.arguments import Arguments
-from queenbee.schema.operator import Operator
+
+# from queenbee.schema.qutil import BaseModel
+# from queenbee.schema.arguments import Arguments
+# from queenbee.schema.operator import Operator
+
+from ..base.basemodel import BaseModel
+from .arguments import Arguments
 
 
 class BaseStatus(BaseModel):
@@ -62,11 +66,6 @@ class TaskStatus(BaseStatus):
         description='The name of the template that spawned this task'
     )
 
-    operator: Operator = Field(
-        None,
-        description='The operator used to run this task. Only applies to Function tasks.'
-    )
-
     command: str = Field(
         None,
         description='The command used to run this task. Only applies to Function tasks.'
@@ -101,6 +100,7 @@ class TaskStatus(BaseStatus):
         'been executed. It will remain empty for functions.'
     )
 
+    @classmethod
     @validator('type')
     def check_config(cls, v,):
         assert v in ['Function', 'DAG', 'Workflow',

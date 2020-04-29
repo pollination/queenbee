@@ -1,1 +1,0 @@
-"""queenbee library schema objects."""
