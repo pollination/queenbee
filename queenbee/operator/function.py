@@ -18,13 +18,13 @@ class FunctionArtifact(BaseModel):
     description: str = Field(
         None,
         description='Optional description for input parameter.'
-    )  
+    )
 
     path: str = Field(
         ...,
         description='Path to the artifact relative to the run-folder artifact location.'
     )
-  
+
     @property
     def referenced_values(self) -> Dict[str, List[str]]:
         """Get referenced variables if any."""
@@ -60,9 +60,9 @@ class FunctionParameterIn(BaseModel):
         description='Whether this value must be specified in a task argument.'
     )
 
-    @classmethod
+
     @validator('required')
-    def validate_required(cls,v,  values):
+    def validate_required(cls, v, values):
         """Ensure parameter with no default value is marked as required"""
         default = values.get('default')
 
@@ -80,10 +80,10 @@ class FunctionParameterIn(BaseModel):
         return self._referenced_values(['default'])
 
 
-
 class FunctionParameterOut(FunctionArtifact):
-    
+
     pass
+
 
 class FunctionInputs(IOBase):
 
@@ -110,6 +110,7 @@ class FunctionOutputs(IOBase):
         description=''
     )
 
+
 class Function(BaseModel):
     """A function with a single command."""
 
@@ -130,7 +131,7 @@ class Function(BaseModel):
     )
 
     command: str = Field(
-        '...',
+        ...,
         description=u'Full shell command for this function. Each function accepts only '
         'one command. The command will be executed as a shell command in operator. '
         'For running several commands after each other use && between the commands '
@@ -145,9 +146,11 @@ class Function(BaseModel):
     @staticmethod
     def validate_referenced_values(input_names: List[str], variables: List):
         """Validate referenced values"""
+        if not variables:
+            return
 
+        warns = []
         for ref in variables:
-            add_info = ''
             ref = ref.replace('{{', '').replace('}}', '').strip()
             add_info = _validate_inputs_outputs_var_format(ref)
 
@@ -155,18 +158,14 @@ class Function(BaseModel):
                 # check the value exist in inputs
                 name = ref.split('.')[-1]
                 if name not in input_names:
-                    add_info = f'Invalid reference: {ref}. Cannot find {name} in inputs.'
-            
-            msg = f'Invalid Queenbee variable for functions: {ref}. ' \
-                f'{add_info} ' \
-                'See https://github.com/ladybug-tools/queenbee#variables' \
-                ' for more information.'
-            
-            if add_info != '':
-                raise ValueError(msg)
+                    warns.append(f'\t- {{{{{ref}}}}}: Cannot find "{name}" in inputs.')
+
+        if warns != []:
+            info = '\n'.join(warns)
+            msg = f'Invalid referenced value(s) in function:\n{info}'
+            raise ValueError(msg)
 
 
-    @classmethod
     @validator('inputs')
     def validate_input_refs(cls, v):
         """Validate referenced variables in inputs"""
@@ -183,13 +182,12 @@ class Function(BaseModel):
                 referenced_values.extend(refs)
 
         cls.validate_referenced_values(
-            input_names=input_names, 
+            input_names=input_names,
             variables=referenced_values
             )
 
         return v
 
-    @classmethod
     @validator('command')
     def validate_command_refs(cls, v, values):
         """Validate referenced variables in the command"""
@@ -210,7 +208,8 @@ class Function(BaseModel):
             variables=ref_var
         )
 
-    @classmethod
+        return v
+
     @validator('outputs')
     def validate_output_refs(cls, v, values):
         """Validate referenced variables in outputs"""
@@ -234,7 +233,7 @@ class Function(BaseModel):
                 referenced_values.extend(refs)
 
         cls.validate_referenced_values(
-            input_names=input_names, 
+            input_names=input_names,
             variables=referenced_values
             )
 

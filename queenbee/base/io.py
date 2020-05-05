@@ -4,10 +4,12 @@ from pydantic import validator
 
 from .basemodel import BaseModel
 
+
 def find_dup_items(values: List) -> List:
     """Find duplicate items in a list."""
     dup = [t for t, c in collections.Counter(values).items() if c > 1]
     return dup
+
 
 class IOItem(BaseModel):
 
@@ -32,12 +34,12 @@ class IOBase(BaseModel):
     @staticmethod
     def _by_name(
         input_list: list,
-        name: str, 
+        name: str,
     ):
-        res = list(filter(lambda x: x.name == name, input_list))
+        res = [x for x in input_list if x.name == name]
         if res == []:
             raise KeyError(f'no input with name {name} exists')
-        
+
         return res[0]
 
     def artifact_by_name(self, name: str):

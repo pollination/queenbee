@@ -3,7 +3,7 @@ import os
 import json
 import yaml
 
-from queenbee.schema.parser import _import_dict_data
+from queenbee.base.parser import _import_dict_data
 
 class BaseTestClass:
     
