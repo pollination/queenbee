@@ -14,6 +14,7 @@ from pydantic import Field
 
 from ..base.basemodel import BaseModel
 from ..base.variable import get_ref_variable
+from .reference import references_from_string
 
 class ArtifactSource(BaseModel):
     """ArtifactSource
@@ -32,7 +33,7 @@ class ArtifactSource(BaseModel):
         for value in values:
             if value is None:
                 continue
-            ref_var = get_ref_variable(value)
+            ref_var = references_from_string(value)
             if ref_var:
                 ref_values[value] = ref_var
 

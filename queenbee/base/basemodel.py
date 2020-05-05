@@ -1,12 +1,14 @@
 """Queenbee utility functions."""
-from pydantic import BaseModel as PydanticBaseModel
-from .parser import parse_file
-import yaml
+import hashlib
 import json
 import collections
 from typing import List, Dict
 
-import queenbee.schema.variable as qbvar
+import yaml
+from pydantic import BaseModel as PydanticBaseModel
+
+from .parser import parse_file
+from .variable import get_ref_variable
 
 # set up yaml.dump to keep the order of the input dictionary
 # from https://stackoverflow.com/a/31609484/4394669
@@ -39,9 +41,8 @@ class BaseModel(PydanticBaseModel):
             filepath(str): Full path to JSON file.
         """
         # workflow = self.to_dict(by_alias=True)
-        with open(filepath, 'w') as outf:
-            outf.write(self.json(by_alias=True, exclude_unset=False, indent=indent))
-            # json.dump(workflow, outf, indent=indent)
+        with open(filepath, 'w') as file:
+            file.write(self.json(by_alias=True, exclude_unset=False, indent=indent))
 
     def to_yaml(self, filepath):
         """Write workflow to a yaml file."""
@@ -62,6 +63,11 @@ class BaseModel(PydanticBaseModel):
     def __repr__(self):
         return self.yaml()
 
+    @property
+    def __hash__(self):
+        return hashlib.sha256(
+            self.json(by_alias=True, exclude_unset=False).encode('utf-8')
+            ).hexdigest()
 
     def _referenced_values(self, var_names: List[str]) -> Dict[str, List[str]]:
         """Get all referenced values specified by var name"""
@@ -71,7 +77,7 @@ class BaseModel(PydanticBaseModel):
             value = getattr(self, name, None)
 
             if isinstance(value, str):
-                ref_var = qbvar.get_ref_variable(value)
+                ref_var = get_ref_variable(value)
 
                 if ref_var != []:
                     ref_values[name] = ref_var

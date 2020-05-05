@@ -23,46 +23,39 @@ class Maintainer(BaseModel):
         description='The email address of the author person or organization.'
     )
 
-
-class License(BaseModel):
-    """License information for the workflow."""
-    name: str = Field(
-        ...,
-        description='The license name used for the workflow.'
-    )
-
-    url: str = Field(
-        None,
-        description='A URL to the license used for the workflow.'
-    )
-
-
 class MetaData(BaseModel):
     """Workflow metadata information."""
 
+    
     name: str = Field(
         ...,
-        description='Workflow name. Make it descriptive and helpful ;)'
+        description='Operator name. This name should be unique among all the operators'
+        ' in your workflow.'
     )
 
     version: str = Field(
         ...,
-        description='The version of the workflow'
+        description='The version of the operator'
+    )
+
+    appVersion: str = Field(
+        None,
+        description='The version of the app binary backing the operator (CLI tool or container)'
     )
 
     keywords: List[str] = Field(
         None,
-        description='A list of keywords to search the workflow by'
+        description='A list of keywords to search the operator by'
     )
 
     maintainers: List[Maintainer] = Field(
         None,
-        description='A list of maintainers for the workflow'
+        description='A list of maintainers for the operator'
     )
 
     home: str = Field(
         None,
-        description='The URL of this workflow\'s home page'
+        description='The URL of this projects home page'
     )
 
     sources: List[str] = Field(
@@ -77,15 +70,10 @@ class MetaData(BaseModel):
 
     deprecated: bool = Field(
         None,
-        description='Whether this workflow is deprecated'
+        description='Whether this chart is deprecated'
     )
 
     description: str = Field(
         None,
-        description='A description of what this workflow does'
-    )
-
-    license: License = Field(
-        None,
-        description='The license information.'
+        description='A description of what this operator does'
     )

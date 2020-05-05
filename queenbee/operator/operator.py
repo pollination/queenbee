@@ -1,21 +1,12 @@
 """Queenbee Task Operator class."""
+import os
+import yaml
 from typing import List
-from pydantic import Field, constr
+from pydantic import Field
 
 from ..base.basemodel import BaseModel
 from .function import Function
-
-class Maintainer(BaseModel):
-
-    name: str = Field(
-        ...,
-        description='The name of the maintainer'
-    )
-
-    email: str = Field(
-        ...,
-        description='The email address of the maintainer'
-    )
+from .metadata import MetaData
 
 
 class DockerConfig(BaseModel):
@@ -61,15 +52,9 @@ class Operator(BaseModel):
     or in a container.
     """
     
-    name: str = Field(
+    metadata: MetaData = Field(
         ...,
-        description='Operator name. This name should be unique among all the operators'
-        ' in your workflow.'
-    )
-
-    version: str = Field(
-        ...,
-        description='The version of the operator'
+        description='The Operator metadata information'
     )
 
     config: Config = Field(
@@ -77,44 +62,43 @@ class Operator(BaseModel):
         description='The configuration information to run this operator'
     )
 
-    appVersion: str = Field(
-        None,
-        description='The version of the app binary backing the operator (CLI tool or container)'
+
+    functions: List[Function] = Field(
+        ...,
+        description='List of Operator functions'
     )
 
-    keywords: List[str] = Field(
-        None,
-        description='A list of keywords to search the operator by'
-    )
+    @classmethod
+    def from_folder(cls, folder_path: str):
+        meta_path = os.path.join(folder_path, 'operator.yaml')
+        config_path = os.path.join(folder_path, 'config.yaml')
+        functions_path = os.path.join(folder_path, 'functions')       
 
-    maintainers: List[Maintainer] = Field(
-        None,
-        description='A list of maintainers for the operator'
-    )
+        operator = {}
+        functions = []
 
-    home: str = Field(
-        None,
-        description='The URL of this projects home page'
-    )
+        with open(meta_path, 'r') as f:
+            metadata = yaml.load(f, yaml.FullLoader)
 
-    sources: List[str] = Field(
-        None,
-        description='A list of URLs to source code for this project'
-    )
+        with open(config_path, 'r') as f:
+            config = yaml.load(f, yaml.FullLoader)
 
-    icon: str = Field(
-        None,
-        description='A URL to an SVG or PNG image to be used as an icon'
-    )
+        for function in os.listdir(functions_path):
+            with open(os.path.join(functions_path, function), 'r') as f:
+                functions.append(yaml.load(f, yaml.FullLoader))
+        
+        operator['metadata'] = metadata
+        operator['config'] = config
+        operator['functions'] = functions
 
-    deprecated: bool = Field(
-        None,
-        description='Whether this chart is deprecated'
-    )
+        return cls.parse_obj(operator)
 
-    description: str = Field(
-        None,
-        description='A description of what this operator does'
-    )
 
-    functions: List[Function]
+    def to_folder(self, folder_path: str):
+        self.metadata.to_yaml(os.path.join(folder_path, 'operator.yaml'))
+        self.config.to_yaml(os.path.join(folder_path, 'config.yaml'))
+
+        os.mkdir(os.path.join(folder_path, 'functions'))
+
+        for function in self.functions:
+            function.to_yaml(os.path.join(folder_path, 'functions', f'{function.name}.yaml'))

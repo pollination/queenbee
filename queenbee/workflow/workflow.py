@@ -1,5 +1,5 @@
 from typing import Dict
-from pydantic import Field
+from pydantic import Field, validator
 
 from ..recipe import BakedRecipe
 from .arguments import Arguments
@@ -17,3 +17,23 @@ class Workflow(BakedRecipe):
         None,
         description='Input arguments for this workflow'
     )
+
+    @validator('arguments')
+    def check_entrypoint_inputs(cls, v, values):
+        flow = values.get('flow')
+        digest = values.get('digest')
+
+        dag = cls.dag_by_name(flow, f'{digest}/main')
+
+        artifacts = v.get('artifacts')
+        parameters = v.get('parameters')
+
+        for param in parameters:
+            if param.required:
+                Arguments._by_name(parameters, param.name)
+
+        for art in artifacts:
+            if art.required:
+                Arguments._by_name(artifacts, art.name)
+
+        return v

@@ -100,7 +100,6 @@ class TaskStatus(BaseStatus):
         'been executed. It will remain empty for functions.'
     )
 
-    @classmethod
     @validator('type')
     def check_config(cls, v,):
         assert v in ['Function', 'DAG', 'Workflow',

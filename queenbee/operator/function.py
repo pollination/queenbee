@@ -4,7 +4,7 @@ from pydantic import Field, validator
 
 from ..base.basemodel import BaseModel
 from ..base.io import IOBase
-from ..schema.variable import _validate_inputs_outputs_var_format, get_ref_variable
+from ..base.variable import _validate_inputs_outputs_var_format, get_ref_variable
 
 
 class FunctionArtifact(BaseModel):
