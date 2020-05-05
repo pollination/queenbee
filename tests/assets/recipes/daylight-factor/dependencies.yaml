@@ -1,0 +1,6 @@
+dependencies:
+- type: operator
+  name: honeybee-radiance
+  version: 1.2.3
+  owner: ladybug-tools
+  source: file:tests/assets/repository

@@ -1,0 +1,17 @@
+name: ray-tracing
+description: Run ray tracing using some input data!
+inputs:
+  parameters:
+  - name: radiance-parameters
+    description: a string of radiance parameters
+    default: -b 5
+  artifacts:
+  - name: grid
+    path: grid.pts
+  - name: scene-file
+    path: scene.oct
+command: rtrace -I -h {{inputs.parameters.radiance-parameters}} scene.oct < grid.pts > grid.res
+outputs:
+  artifacts:
+  - name: result-file
+    path: grid.res

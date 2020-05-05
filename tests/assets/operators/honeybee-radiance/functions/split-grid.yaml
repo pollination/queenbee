@@ -1,0 +1,17 @@
+name: split-grid
+inputs:
+  parameters:
+  - name: grid-count
+    required: true
+  artifacts:
+  - name: grid
+    description: The input grid to split
+    path: grid.pts
+command: honeybee radiance grid split grid.pts --folder output --log-file output/grids.txt
+outputs:
+  parameters:
+  - name: grid-list
+    path: output/grids.txt
+  artifacts:
+  - name: output-grids-folder
+    path: output

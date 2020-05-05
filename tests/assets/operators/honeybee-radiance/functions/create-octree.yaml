@@ -1,0 +1,13 @@
+name: create-octree
+description: Generate an octree
+inputs:
+  artifacts:
+  - name: model
+    path: model.json
+  - name: sky
+    path: sky.sky
+command: honeybee radiance oconv -s sky.sky -m model.json --output scene.oct
+outputs:
+  artifacts:
+  - name: scene-file
+    path: scene.oct

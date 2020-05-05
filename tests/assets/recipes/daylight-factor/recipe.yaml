@@ -1,0 +1,13 @@
+name: daylight-factor
+description: An awesome workflow to run daylight factor!
+icon: https://www.ladybug.tools/assets/img/logo.png
+
+version: 0.0.1
+
+keywords:
+- ladybug-tools
+- radiance
+
+maintainers:
+- name: mostapha
+  email: mostapha@ladybug.tools
