@@ -89,13 +89,15 @@ class Recipe(BaseModel):
 
         return cls.parse_obj(recipe)
 
-    # @validator('flow')
-    # def check_entrypoint(cls, v):
-    #     for dag in v:
-    #         if dag.name == 'main':
-    #             return v
+    @validator('flow')
+    def check_entrypoint(cls, v):
+        for dag in v:
+            if dag.name == 'main':
+                return v
+            elif dag.name.split('/')[-1] == 'main':
+                return v
 
-    #     raise ValueError('No DAG with name "main" found in flow')    
+        raise ValueError('No DAG with name "main" found in flow')    
 
     @property
     def inputs(self):
