@@ -1,0 +1,13 @@
+artifacts:
+  - name: models-folder
+    source:
+      type: project-folder
+      path: path/to/models
+parameters:
+  - name: model-names
+    value: |
+      [
+        "model-1",
+        "model-2",
+        "model-3"
+      ]

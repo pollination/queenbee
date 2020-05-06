@@ -90,7 +90,7 @@ tasks:
         name: split-grid
         variable: output-grids-folder
       subpath: '{{item.name}}'
-    - name: scene-files
+    - name: scene-file
       from:
         type: tasks
         name: create-octree
@@ -98,11 +98,11 @@ tasks:
   outputs:
     artifacts:
     # This file is persisted in a loop sub-folder so the name won't clash
-    - name: results-file
+    - name: result-file
       path: grid.res
 
 - name: post-process
-  template: honeybee-radiance/merge-results
+  template: honeybee-radiance/post-process
   dependencies:
   - daylight-factor-simulation
   arguments:
@@ -111,7 +111,7 @@ tasks:
       from:
         type: tasks
         name: daylight-factor-simulation
-        variable: results-file
+        variable: result-file
   outputs:
     artifacts:
     - name: post-process-folder

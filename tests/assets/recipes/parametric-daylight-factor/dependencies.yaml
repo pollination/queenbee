@@ -1,0 +1,5 @@
+dependencies:
+- type: recipe
+  name: daylight-factor
+  version: 0.0.1
+  source: file:tests/assets/repository

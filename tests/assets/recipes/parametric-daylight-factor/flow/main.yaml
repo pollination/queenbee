@@ -1,0 +1,47 @@
+name: main
+inputs:
+  parameters:
+  - name: model-names
+    descriptions: a list of model folder names
+  artifacts:
+  - name: models-folder
+    description: A folder full of honeybee models
+
+tasks:
+
+- name: daylight-factor
+  template: daylight-factor
+  loop:
+    from:
+      type: inputs
+      variable: model-names
+  arguments:
+    artifacts:
+    - name: model
+      from:
+        type: inputs
+        variable: models-folder
+      subpath: '{{item}}/model'
+    - name: input-grid
+      from:
+        type: inputs
+        variable: models-folder
+      subpath: '{{item}}/grid'
+  outputs:
+    parameters:
+    - name: average
+    artifacts:
+    # This file is persisted in a loop sub-folder so the name won't clash
+    - name: data
+      path: daylight-factor.res
+
+outputs:
+  artifacts:
+  - name: daylight-factor-grids
+    from:
+      type: tasks
+      name: daylight-factor
+      variable: data
+  
+
+      
