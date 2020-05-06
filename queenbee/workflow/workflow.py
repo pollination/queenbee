@@ -2,7 +2,7 @@ from typing import Dict
 from pydantic import Field, validator
 
 from ..recipe import BakedRecipe
-from .arguments import Arguments
+from .arguments import Arguments, ArgumentParameter, ArgumentArtifact
 
 
 class Workflow(BakedRecipe):
@@ -18,22 +18,40 @@ class Workflow(BakedRecipe):
         description='Input arguments for this workflow'
     )
 
-    @validator('arguments')
+    @validator('arguments', always=True)
     def check_entrypoint_inputs(cls, v, values):
         flow = values.get('flow')
         digest = values.get('digest')
 
         dag = cls.dag_by_name(flow, f'{digest}/main')
 
-        artifacts = v.get('artifacts')
-        parameters = v.get('parameters')
+        artifacts = v.artifacts
+        parameters = v.parameters
 
-        for param in parameters:
-            if param.required:
-                Arguments._by_name(parameters, param.name)
-
-        for art in artifacts:
-            if art.required:
-                Arguments._by_name(artifacts, art.name)
+        if dag.inputs is not None:
+            for parameter in dag.inputs.parameters:
+                if parameter.required:
+                    exists = next(filter(lambda x: x.name == parameter.name, parameters), None)
+                    assert exists is not None, ValueError(f'Workflow must provide argument for parameter {parameter.name}')
+            
+            for artifact in dag.inputs.artifacts:
+                exists = next(filter(lambda x: x.name == artifact.name, artifacts), None)
+                assert exists is not None, ValueError(f'Workflow must provide argument for artifact {artifact.name}')
 
         return v
+
+
+    @classmethod
+    def from_baked_recipe(
+        cls,
+        recipe: BakedRecipe,
+        arguments: Arguments = Arguments(),
+        labels: Dict = {}
+    ):
+        input_dict = recipe.to_dict()
+        input_dict['arguments'] = arguments.to_dict()
+        input_dict['labels'] = labels
+
+        return cls.parse_obj(input_dict)
+
+

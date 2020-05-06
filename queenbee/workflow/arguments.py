@@ -35,11 +35,11 @@ class ArgumentParameter(BaseModel):
 class Arguments(IOBase):
 
     artifacts: List[ArgumentArtifact] = Field(
-        None,
+        [],
         description='A list of input artifacts'
     )
 
     parameters: List[ArgumentParameter] = Field(
-        None,
+        [],
         description='A list of input parameters'
     )
