@@ -135,7 +135,10 @@ class Dependency(BaseModel):
 
                 if verifydigest:
                     assert hashlib.sha256(file_bytes).hexdigest() == self.digest, \
-                        ValueError('Hash of resource.json file is different from the one expected from the index')
+                        ValueError(
+                            'Hash of resource.json file is different from the one expected from the index'
+                            f'Expected {self.digest} and got {hashlib.sha256(file_bytes).hexdigest()}'
+                            )
 
                 return file_bytes, self.digest
 

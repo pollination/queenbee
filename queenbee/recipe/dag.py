@@ -5,7 +5,7 @@ used and maps inputs and outputs for the specific task.
 """
 from enum import Enum
 from typing import List, Any, Union, Dict
-from pydantic import Field, root_validator, validator, constr
+from pydantic import Field, validator, ValidationError
 
 from ..base.basemodel import BaseModel
 from ..base.io import IOBase, find_dup_items
@@ -39,7 +39,7 @@ class DAGInputParameter(BaseModel):
     )
 
     required: bool = Field(
-        False,
+        None,
         description='Whether this value must be specified in a task argument.'
     )
 
@@ -52,6 +52,8 @@ class DAGInputParameter(BaseModel):
             raise ValueError(
                 'required should be true if no default is provided'
             )
+        elif default is None:
+            v = True
 
         return v
 
@@ -80,14 +82,14 @@ class DAGInputArtifact(BaseModel):
         None,
         description='If no artifact is specified then pull it from this source location.'
     )
-
+    
     required: bool = Field(
-        False,
+        None,
         description='Whether this value must be specified in a task argument.'
     )
 
     @validator('required')
-    def validate_required(cls,v,  values):
+    def validate_required(cls, v, values):
         """Ensure parameter with no default value is marked as required"""
         default = values.get('default')
 
@@ -95,19 +97,22 @@ class DAGInputArtifact(BaseModel):
             raise ValueError(
                 'required should be true if no default is provided'
             )
+        elif default is None:
+            v = True
 
         return v
+
 
 
 class DAGInputs(IOBase):
 
     parameters: List[DAGInputParameter] = Field(
-        None,
+        [],
         description='A list of parameters the DAG will use as input values'
     )
 
     artifacts: List[DAGInputArtifact] = Field(
-        None,
+        [],
         description='A list of artifacts the DAG will use'
     )
 
@@ -141,12 +146,12 @@ class DAGOutputArtifact(BaseModel):
 class DAGOutputs(IOBase):
 
     parameters: List[DAGOutputParameter] = Field(
-        None,
+        [],
         description='A list of output parameters exposed by this DAG'
     )
 
     artifacts: List[DAGOutputArtifact] = Field(
-        None,
+        [],
         description='A list of output artifacts exposed by this DAG'
     )
 
@@ -190,25 +195,28 @@ class DAGTaskParameterArgument(BaseModel):
 
     @validator('value')
     def check_value_exists(cls, v):
-        if v is None:
-            assert cls.from_ is not None, \
+        if v is not None:
+            assert v.from_ is not None, \
                 ValueError('value must be specified if no "from" source is specified for argument parameter')
         return v
 
 class DAGTaskArgument(IOBase):
 
     artifacts: List[DAGTaskArtifactArgument] = Field(
-        None,
+        [],
         description='A list of input artifacts to pass to the task'
     )
 
     parameters: List[DAGTaskParameterArgument] = Field(
-        None,
+        [],
         description='A list of input parameters to pass to the task'
     )
 
 
     def artifacts_by_ref_source(self, source) -> List[DAGTaskArtifactArgument]:
+        if self.artifacts is None:
+            return []
+
         source_class = None
         
         if source == 'dag':
@@ -218,9 +226,12 @@ class DAGTaskArgument(IOBase):
         else:
             raise ValueError('reference source string should be one of ["dag", "task"], not {source}')
 
-        return list(filter(lambda x: isinstance(x.from_, source_class), self.artifacts))
+        return  [x for x in self.artifacts if isinstance(x.from_, source_class)]
 
     def parameters_by_ref_source(self, source) -> List[DAGTaskParameterArgument]:
+        if self.parameters is None:
+            return []
+        
         source_class = None
         
         if source == 'dag':
@@ -232,8 +243,7 @@ class DAGTaskArgument(IOBase):
         else:
             raise ValueError('reference source string should be one of ["dag", "task", "item"], not {source}')
 
-        return list(filter(lambda x: isinstance(x.from_, source_class), self.parameters))
-
+        return  [x for x in self.parameters if isinstance(x.from_, source_class)]
 
 class DAGTaskOutputArtifact(BaseModel):
 
@@ -259,12 +269,12 @@ class DAGTaskOutputParameter(BaseModel):
 class DAGTaskOutputs(IOBase):
 
     artifacts: List[DAGTaskOutputArtifact] = Field(
-        None,
+        [],
         description='A list of output artifacts to expose from the task'
     )
 
     parameters: List[DAGTaskOutputParameter] = Field(
-        None,
+        [],
         description='A list of output parameters to expose from the task'
     )
 
@@ -345,26 +355,51 @@ class DAGTask(BaseModel):
         return len(self.dependencies) == 0
 
     
-    # def check_template(self, template: Union[DAG, Function]):
     def check_template(self, template: IOBase):
         """A function to check the inputs and outputs of a DAG task match a certain template
 
         Arguments:
             template {Union[DAG, Function]} -- A DAG or Function template
         """
-        for param in template.inputs.parameters:
-            if param.required:
-                self.arguments.parameter_by_name(param.name)
+        if template.inputs is not None:
+            for param in template.inputs.parameters:
+                if param.required:
+                    try:
+                        self.arguments.parameter_by_name(param.name)
+                    except ValueError as error:
+                        raise ValueError(
+                                f'Validation Error for Task {self.name} and Template {template.name}: \n'
+                                f'\t{str(error)}'
+                            )
 
-        for param in self.outputs.parameters:
-            template.outputs.parameter_by_name(param.name)
+            for art in template.inputs.artifacts:
+                # if art.required:
+                try:
+                    self.arguments.artifact_by_name(art.name)
+                except ValueError as error:
+                    raise ValueError(
+                            f'Validation Error for Task {self.name} and Template {template.name}: \n'
+                            f'\t{str(error)}'
+                        )
 
-        for art in template.inputs.artifacts:
-            if art.required:
-                self.arguments.artifact_by_name(param.name)
+        if self.outputs is not None:
+            for param in self.outputs.parameters:
+                try:
+                    template.outputs.parameter_by_name(param.name)
+                except ValueError as error:
+                    raise ValueError(
+                            f'Validation Error for Task {self.name} and Template {template.name}: \n'
+                            f'{str(error)}'
+                        )
 
-        for art in self.outputs.artifacts:
-            template.outputs.artifact_by_name(art.name)
+            for art in self.outputs.artifacts:
+                try:
+                    template.outputs.artifact_by_name(art.name)
+                except ValueError as error:
+                    raise ValueError(
+                            f'Validation Error for Task {self.name} and Template {template.name}: \n'
+                            f'{str(error)}'
+                        )
 
 
 
@@ -380,14 +415,6 @@ class DAG(BaseModel):
         None,
         description='Inputs for the DAG.'
     )
-
-    # target: str = Field(
-    #     None,
-    #     description='Target are one or more names of target tasks to execute in a DAG. '
-    #     'Multiple targets can be specified as space delimited inputs. When a target '
-    #     'is provided only a subset of tasks in DAG that are required to generate '
-    #     'the target(s) will be executed.'
-    # )
 
     fail_fast: bool = Field(
         True,
@@ -411,7 +438,7 @@ class DAG(BaseModel):
         tasks: List[DAGTask],
         reference: Union[TaskArtifactReference, TaskParameterReference]
     ):
-        filtered_tasks = list(filter(lambda x: x.name == reference.name), tasks)
+        filtered_tasks = [x for x in tasks if x.name == reference.name]
 
         if len(filtered_tasks) != 1:
             raise ValueError(
@@ -421,9 +448,9 @@ class DAG(BaseModel):
         task = filtered_tasks[0]
 
         if isinstance(reference, TaskArtifactReference):
-            return task.artifact_by_name(reference.variable)
+            return task.outputs.artifact_by_name(reference.variable)
         elif isinstance(reference, TaskParameterReference):
-            return task.parameter_by_name(reference.variable)
+            return task.outputs.parameter_by_name(reference.variable)
         else:
             raise ValueError(f'Unexpected output_type "{type(reference)}". Wanted one of "TaskArtifactReference" or "TaskParameterReference".')
 
@@ -443,6 +470,9 @@ class DAG(BaseModel):
         exceptions = []
 
         for task in v:
+            if task.dependencies is None:
+                continue
+
             if not all(dep in task_names  for dep in task.dependencies):
                 exceptions.append(
                     ValueError(f'DAG Task "{task.name}" has unresolved dependencies: {task.dependencies}')
@@ -456,21 +486,25 @@ class DAG(BaseModel):
 
     @validator('tasks')
     def check_inputs(cls, v, values):
+        dag_inputs = values.get('inputs', DAGInputs())
         
         exceptions = []
 
         for task in v:
+            if task.arguments is None:
+                continue
+
             # Check all DAG input refs exist
             for artifact in task.arguments.artifacts_by_ref_source('dag'):
                 try:
-                    values.get('inputs').artifact_by_name(artifact.from_.variable)
-                except KeyError as error:
+                    dag_inputs.artifact_by_name(artifact.from_.variable)
+                except ValueError as error:
                     exceptions.append(error)
 
             for parameter in task.arguments.parameters_by_ref_source('dag'):
                 try:
-                    values.get('inputs').parameter_by_name(parameter.from_.variable)
-                except KeyError as error:
+                    dag_inputs.parameter_by_name(parameter.from_.variable)
+                except ValueError as error:
                     exceptions.append(error)
 
             # Check all task output refs exist
@@ -480,7 +514,7 @@ class DAG(BaseModel):
                         tasks=v,
                         reference=artifact.from_,
                     )
-                except KeyError as error:
+                except ValueError as error:
                     exceptions.append(error)
 
             for parameter in task.arguments.parameters_by_ref_source('task'):
@@ -489,7 +523,7 @@ class DAG(BaseModel):
                         tasks=v,
                         reference=parameter.from_,
                     )
-                except KeyError as error:
+                except ValueError as error:
                     exceptions.append(error)
 
         if exceptions != []:
@@ -510,7 +544,7 @@ class DAG(BaseModel):
                     tasks=tasks,
                     reference=artifact.from_,
                     )
-            except KeyError as error:
+            except ValueError as error:
                 exceptions.append(error)
 
         for parameter in v.parameters:
@@ -519,7 +553,7 @@ class DAG(BaseModel):
                     tasks=tasks,
                     reference=parameter.from_,
                     )
-            except KeyError as error:
+            except ValueError as error:
                 exceptions.append(error)
 
         if exceptions != []:

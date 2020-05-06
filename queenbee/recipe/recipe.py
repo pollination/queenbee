@@ -89,13 +89,13 @@ class Recipe(BaseModel):
 
         return cls.parse_obj(recipe)
 
-    @validator('flow')
-    def check_entrypoint(cls, v):
-        for dag in v:
-            if dag.name == 'main':
-                return v
+    # @validator('flow')
+    # def check_entrypoint(cls, v):
+    #     for dag in v:
+    #         if dag.name == 'main':
+    #             return v
 
-        raise ValueError('No DAG with name "main" found in flow')    
+    #     raise ValueError('No DAG with name "main" found in flow')    
 
     @property
     def inputs(self):
@@ -177,8 +177,11 @@ class BakedRecipe(Recipe):
         description='A list of templates. Templates can be Function or a DAG.'
     )
 
+
     @classmethod
     def from_recipe(cls, recipe: Recipe):
+
+        digest = recipe.__hash__
 
         templates = []
 
@@ -187,7 +190,7 @@ class BakedRecipe(Recipe):
 
             if dependency.type == 'recipe':
                 dep = Recipe.parse_raw(dep_bytes)
-                sub_recipe = cls.from_recipe(Recipe.parse_raw(dep))
+                sub_recipe = cls.from_recipe(dep)
 
                 templates.extend(sub_recipe.templates)
                 templates.extend(sub_recipe.flow)
@@ -200,11 +203,20 @@ class BakedRecipe(Recipe):
             else:
                 raise ValueError(f'Dependency of type {dependency.type} not recognized')
 
+        flow = cls.replace_template_refs(
+            dependencies=recipe.dependencies,
+            dags=recipe.flow,
+            digest=digest,
+            # templates=templates,
+        )
+
         input_dict = recipe.to_dict()
-        input_dict['digest'] = recipe.__hash__
-        input_dict['templates'] = templates
+        input_dict['digest'] = digest
+        input_dict['flow'] = [dag.to_dict() for dag in flow]
+        input_dict['templates'] = [template.to_dict() for template in templates]
 
         return cls.parse_obj(input_dict)
+
 
     @classmethod
     def from_folder(cls, folder_path: str, refresh_deps: bool = True):
@@ -212,7 +224,9 @@ class BakedRecipe(Recipe):
         dependencies_folder = os.path.join(folder_path, '.dependencies')
 
         recipe = Recipe.from_folder(folder_path)
-
+        
+        digest = recipe.__hash__
+        
         if refresh_deps:
             if os.path.exists(dependencies_folder) and os.path.isdir(dependencies_folder):
                 shutil.rmtree(dependencies_folder)
@@ -225,26 +239,33 @@ class BakedRecipe(Recipe):
             templates.extend(TemplateFunction.from_operator(operator))
 
         for sub_recipe_path in os.listdir(os.path.join(dependencies_folder, 'recipes')):
-            sub_recipe = Recipe.from_file(os.path.join(dependencies_folder, 'recipes', sub_recipe_path))
-            digest = sub_recipe.__hash__
-            for dag in sub_recipe.flow:
-                dag.name = f'{digest}/{dag.name}'
-                templates.append(dag)
-                
+            sub_recipe = cls.from_folder(os.path.join(dependencies_folder, 'recipes', sub_recipe_path))
+            templates.extend(sub_recipe.templates)
+            templates.extend(sub_recipe.flow)
+
+        flow = cls.replace_template_refs(
+            dependencies=recipe.dependencies,
+            dags=recipe.flow,
+            digest=digest,
+            # templates=templates,
+        )
+
         input_dict = recipe.to_dict()
-        input_dict['digest'] = recipe.__hash__
-        input_dict['templates'] = templates
+        input_dict['digest'] = digest
+        input_dict['flow'] = [dag.to_dict() for dag in flow]
+        input_dict['templates'] = [template.to_dict() for template in templates]
 
         return cls.parse_obj(input_dict)
 
 
-    @root_validator
-    def replace_template_refs(cls, values):
-        dependencies = values.get('dependencies')
-        dags = values.get('flow')
-        digest = values.get('digest')
-        templates = values.get('templates')
-
+    @classmethod
+    def replace_template_refs(
+        cls,
+        dependencies: List[Dependency],
+        dags: List[DAG],
+        digest: str,
+        # templates: List[Union[TemplateFunction, DAG]]
+    ):
         dag_names = [dag.name for dag in dags]
 
         if dependencies is None:
@@ -261,8 +282,8 @@ class BakedRecipe(Recipe):
                 # Template name is another DAG in the Recipe Flow
                 if template_dep_list[0] in dag_names:
                     task.template = f'{digest}/{template_dep_list[0]}'
-                    template = cls.template_by_name(dags, task.template)
-                    task.check_template(template)
+                    # template = cls.template_by_name(dags, task.template)
+                    # task.check_template(template)
                     continue
 
                 dep = cls.dependency_by_name(dependencies, template_dep_list[0])
@@ -281,10 +302,10 @@ class BakedRecipe(Recipe):
 
 
                 task.template = template_dep
-                template = cls.template_by_name(templates, task.template)
-                task.check_template(template)
 
-        return values
+                # template = cls.template_by_name(templates, task.template)
+                # task.check_template(template)
+        return dags
 
 
     @validator('templates')
@@ -297,6 +318,20 @@ class BakedRecipe(Recipe):
                 templates.append(template)
 
         return templates
+
+    @root_validator
+    def check_inputs(cls, values):
+        flow = values.get('flow')
+        templates = values.get('templates')
+
+        all_templates = templates + flow
+
+        for dag in flow:
+            for task in dag.tasks:
+                template = cls.template_by_name(all_templates, task.template)
+                task.check_template(template)
+        
+        return values
 
 
     @staticmethod

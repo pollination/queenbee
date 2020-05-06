@@ -36,9 +36,13 @@ class IOBase(BaseModel):
         input_list: list,
         name: str,
     ):
+        if input_list is None:
+            raise ValueError(f'no value with name {name} exists in: \n'
+                f'{input_list}')
         res = [x for x in input_list if x.name == name]
         if res == []:
-            raise KeyError(f'no input with name {name} exists')
+            raise ValueError(f'no value with name {name} exists in: \n'
+                f'{input_list}')
 
         return res[0]
 
