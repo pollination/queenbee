@@ -10,46 +10,8 @@ from ..recipe.metadata import MetaData as RecipeMetadata
 from ..operator import Operator
 from ..recipe import Recipe
 
-from .package import package_resource, resource_from_package, resource_bytes_from_package
+from .package import OperatorVersion, RecipeVersion
 
-class ResourceVersion(BaseModel):
-
-    url: str
-
-    created: datetime
-
-    digest: str
-
-    @classmethod
-    def from_resource(cls, resource: Union[Operator, Recipe], package_path: str = None):
-
-        if package_path is None:
-            if isinstance(Operator, resource):
-                base_url = 'operators'
-            elif isinstance(Recipe, resource):
-                base_url = 'recipes'
-            else:
-                raise ValueError(f'resource should be an instance of Operator or Recipe, not: {type(resource)}')
-
-            full_name = f'{resource.metadata.name}-{resource.metadata.version}.tgz'
-            package_path = os.path.join(base_url, full_name)
-
-        input_dict = resource.metadata.to_dict()
-        input_dict['digest'] = resource.__hash__
-        input_dict['created'] = datetime.utcnow()
-        input_dict['url'] = package_path
-
-        return cls.parse_obj(input_dict)
-
-
-class OperatorVersion(ResourceVersion, OperatorMetadata):
-
-    pass
-
-
-class RecipeVersion(ResourceVersion, RecipeMetadata):
-
-    pass
 
 class RepositoryIndex(BaseModel):
     
@@ -75,17 +37,13 @@ class RepositoryIndex(BaseModel):
         index = cls.parse_obj({})
         
         for package in os.listdir(os.path.join(folder_path, 'operators')):
-            rel_path = os.path.join('operators', package)
-            resource_raw = resource_bytes_from_package(rel_path, folder_path)
-            resource = Operator.parse_raw(resource_raw)
-            resource_version = OperatorVersion.from_resource(resource, rel_path)
+            package_path = os.path.join(folder_path, 'operators', package)
+            resource_version = OperatorVersion.from_package(package_path)
             index.index_operator_version(resource_version)
 
         for package in os.listdir(os.path.join(folder_path, 'recipes')):
-            rel_path = os.path.join('recipes', package)
-            resource_raw = resource_bytes_from_package(rel_path, folder_path)
-            resource = Recipe.parse_raw(resource_raw)
-            resource_version = RecipeVersion.from_resource(resource, rel_path)
+            package_path = os.path.join(folder_path, 'recipes', package)
+            resource_version = RecipeVersion.from_package(package_path)
             index.index_recipe_version(resource_version)
 
         return index
@@ -98,7 +56,7 @@ class RepositoryIndex(BaseModel):
         path_to_readme: str = None,
         overwrite: bool = False,
     ):
-        """Package an Operator or Workflow and add it to an existing index.yaml file
+        """Package an Operator or Workflow and add it to an existing index.json file
 
         Arguments:
             index_folder {str} -- The folder where the repository index is located
@@ -112,9 +70,9 @@ class RepositoryIndex(BaseModel):
         """
         index_folder = os.path.abspath(index_folder)
 
-        index_path = os.path.join(index_folder, 'index.yaml')
+        index_path = os.path.join(index_folder, 'index.json')
 
-        index = cls.from_file(os.path.join(index_folder, 'index.yaml'))
+        index = cls.from_file(os.path.join(index_folder, 'index.json'))
 
         if isinstance(resource, Operator):
             type_path = 'operators'
@@ -125,22 +83,10 @@ class RepositoryIndex(BaseModel):
         else:
             raise ValueError(f"Resource should be an Operator or a Recipe")
         
-
-        package_abs_path = package_resource(
+        resource_version = resource_version_class.package_resource(
             resource=resource,
-            folder_path=os.path.join(index_folder, type_path),
+            repo_folder=index_folder,
             path_to_readme=path_to_readme,
-            overwrite=overwrite
-        )
-
-        package_path = os.path.relpath(
-            path=package_abs_path,
-            start=os.path.commonprefix([index_folder, package_abs_path])    
-        )
-
-        resource_version = resource_version_class.from_resource(
-            resource=resource,
-            package_path=package_path
         )
 
         try:        
@@ -149,10 +95,10 @@ class RepositoryIndex(BaseModel):
             elif isinstance(resource, Recipe):
                 index.index_recipe_version(resource_version, overwrite)
         except ValueError as error:
-            os.remove(package_abs_path)
+            # os.remove(package_abs_path)
             raise error
 
-        index.to_yaml(index_path)
+        index.to_json(index_path)
 
 
     @staticmethod
@@ -160,14 +106,16 @@ class RepositoryIndex(BaseModel):
         resource_dict: Dict[str, List[Union[RecipeVersion, OperatorVersion]]],
         resource_version: Union[RecipeVersion, OperatorVersion],
         overwrite: bool = False,
+        skip: bool = False
     ):
         resource_list = resource_dict.get(resource_version.name, [])
 
         if not overwrite:
             match = filter(lambda x: x.version == resource_version.version, resource_list)
-
             if next(match, None) is not None:
-                raise ValueError(f'Resource {resource_version.name} already has a version {resource_version.index} in the index')
+                raise ValueError(f'Resource {resource_version.name} already has a version {resource_version.version} in the index')
+
+        resource_list = list(filter(lambda x: x.version != resource_version.version, resource_list))
 
         resource_list.append(resource_version)
         resource_dict[resource_version.name] = resource_list
@@ -181,6 +129,31 @@ class RepositoryIndex(BaseModel):
     def index_operator_version(self, operator_version: OperatorVersion, overwrite: bool = False):
         self.operator = self._index_resource_version(self.operator, operator_version, overwrite)
         self.generated = datetime.utcnow()
+
+
+    def merge_folder(self, folder_path, overwrite: bool = False, skip: bool = False):
+        
+        for package in os.listdir(os.path.join(folder_path, 'operators')):
+            package_path = os.path.join(folder_path, 'operators', package)
+            resource_version = OperatorVersion.from_package(package_path)
+            try:
+                self.index_operator_version(resource_version, overwrite)
+            except ValueError as error:
+                if 'already has a version ' in str(error):
+                    if skip:
+                        continue
+                raise error
+
+        for package in os.listdir(os.path.join(folder_path, 'recipes')):
+            package_path = os.path.join(folder_path, 'recipes', package)
+            resource_version = RecipeVersion.from_package(package_path)
+            try:
+                self.index_recipe_version(resource_version, overwrite)
+            except ValueError as error:
+                if 'already has a version ' in str(error):
+                    if skip:
+                        continue
+                raise error
 
 
     def package_by_version(
