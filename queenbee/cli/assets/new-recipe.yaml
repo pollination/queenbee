@@ -1,0 +1,34 @@
+metadata:
+  version: 0.1.0
+dependencies:
+- type: operator
+  name: whalesay
+  version: 0.1.0
+  source: https://pollination.github.io/shed # Replace with name of repo
+flow:
+- name: main
+  inputs:
+    parameters:
+    - name: thing-to-say
+      default: hi
+      description: What the whale will say
+  tasks:
+  - name: say-something
+    template: whalesay/say-hi
+    arguments:
+      parameters:
+      - name: message
+        from:
+          type: inputs
+          variable: thing-to-say
+    outputs:
+      parameters:
+      - name: whale-said
+
+  outputs:
+    parameters:
+    - name: what-the-whale-said
+      from:
+        type: tasks
+        name: say-something
+        variable: whale-said

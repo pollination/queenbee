@@ -1,0 +1,22 @@
+metadata:
+  version: 0.1.0
+config:
+  docker:
+    image: docker/whalesay:latest
+    workdir: /cowsay
+functions:
+- name: say-hi
+  description: Make the whale say something!
+  inputs:
+    parameters:
+    - name: message
+      default: hi
+      description: What the whale will say
+  command: 'cowsay {{inputs.parameters.message}} | tee /tmp/hello_world.txt'
+  outputs:
+    parameters:
+    - name: whale-said
+      path: /tmp/hello_world.txt
+    artifacts:
+    - name: whale-said-file
+      path: /tmp/hello_world.txt
