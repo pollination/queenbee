@@ -18,3 +18,4 @@ tests/assets/temp/*.*
 *.gv
 NOTES.md
 docs/openapi.json
+.dependencies
