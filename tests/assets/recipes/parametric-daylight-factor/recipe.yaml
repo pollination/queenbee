@@ -2,7 +2,7 @@ name: parametric-daylight-factor
 description: An awesome workflow to run daylight factor!
 icon: https://www.ladybug.tools/assets/img/logo.png
 
-version: 0.0.1
+version: 0.2.0
 
 keywords:
 - ladybug-tools

@@ -1,4 +1,4 @@
-name: honeybee-radiance
+# name: honeybee-radiance
 description: An operator to run all things honeybee and radiance!
 icon: https://www.ladybug.tools/assets/img/logo.png
 home: https://ladybug.tools/honeybee-radiance/docs

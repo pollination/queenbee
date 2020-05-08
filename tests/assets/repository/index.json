@@ -1,5 +1,5 @@
 {
-  "generated": "2020-05-06T20:30:58.581950",
+  "generated": "2020-05-08T12:30:05.044500",
   "operator": {
     "honeybee-radiance": [
       {
@@ -25,7 +25,7 @@
         "deprecated": null,
         "description": "An operator to run all things honeybee and radiance!",
         "url": "operators/honeybee-radiance-1.2.3.tgz",
-        "created": "2020-05-06T20:30:58.576675",
+        "created": "2020-05-08T05:32:51.336044",
         "digest": "e8215c80cede7eed5d5447634661ed01fc15485fd5374d3ec574456eb96ae289"
       }
     ]
@@ -52,8 +52,8 @@
         "description": "An awesome workflow to run daylight factor!",
         "license": null,
         "url": "recipes/daylight-factor-0.0.1.tgz",
-        "created": "2020-05-06T20:30:58.581874",
-        "digest": "dfe964ce20bca8a1685b52cfce2b810d10cc31fb9ac15daa1128f3d712228d48"
+        "created": "2020-05-08T10:49:32.528945",
+        "digest": "5a9b9f28ec0a5681f926f761b397694382688b4e5f2c32e11a1cf2bc99d4865a"
       }
     ]
   }
