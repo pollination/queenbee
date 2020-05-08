@@ -78,10 +78,12 @@ class Dependency(BaseModel):
 
         if self.source.startswith('file:'):
             rel_path = self.source.split('file:')[1]
-            abs_path = os.path.join(os.getcwd(), rel_path, 'index.yaml')
+
+            abs_path = os.path.join(os.getcwd(), rel_path, 'index.json')
+
             url = f'file:{abs_path}'
         else:
-            url = os.path.join(self.source, 'index.yaml')
+            url = os.path.join(self.source, 'index.json')
 
         res = request.urlopen(url)
         raw_bytes = res.read()

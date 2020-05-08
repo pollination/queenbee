@@ -5,6 +5,7 @@ end steps for the workflow.
 """
 import os
 import shutil
+import json
 from typing import List, Union
 
 import yaml
@@ -105,7 +106,7 @@ class Recipe(BaseModel):
 
     @property
     def is_locked(self):
-        return all(map(lambda x: x.is_locked() ,self.dependencies))
+        return all(map(lambda x: x.is_locked(), self.dependencies))
     
     @staticmethod
     def dependency_by_name(dependencies: List[Dependency], name: str) -> Dependency:
@@ -131,9 +132,19 @@ class Recipe(BaseModel):
         for dependency in self.dependencies:
             dependency.fetch()
 
+    def write_dependency_lock(self, folder_path: str):
+        self_dict = json.loads(self.json(by_alias=True, exclude_unset=True))
+
+        with open(os.path.join(folder_path, 'dependencies.yaml'), 'w') as f:
+            f.write(yaml.dump({'dependencies': self_dict['dependencies']}, default_flow_style=False))
+
     def to_folder(self, folder_path: str):
+
+        os.mkdir(os.path.join(folder_path, 'flow'))
+
         self.metadata.to_yaml(os.path.join(folder_path, 'recipe.yaml'))
-        self.dependencies.to_yaml(os.path.join(folder_path, 'dependencies.yaml'))
+        
+        self.write_dependency_lock(folder_path)
 
         for dag in self.flow:
             dag.to_yaml(os.path.join(folder_path, 'flow', f'{dag.name}.yaml'))
@@ -182,6 +193,8 @@ class BakedRecipe(Recipe):
 
     @classmethod
     def from_recipe(cls, recipe: Recipe):
+
+        recipe = recipe.copy(deep=True)
 
         digest = recipe.__hash__
 
@@ -241,9 +254,10 @@ class BakedRecipe(Recipe):
             templates.extend(TemplateFunction.from_operator(operator))
 
         for sub_recipe_path in os.listdir(os.path.join(dependencies_folder, 'recipes')):
-            sub_recipe = cls.from_folder(os.path.join(dependencies_folder, 'recipes', sub_recipe_path))
-            templates.extend(sub_recipe.templates)
-            templates.extend(sub_recipe.flow)
+            sub_recipe = Recipe.from_file(os.path.join(dependencies_folder, 'recipes', sub_recipe_path))
+            sub_baked_recipe = cls.from_recipe(sub_recipe)
+            templates.extend(sub_baked_recipe.templates)
+            templates.extend(sub_baked_recipe.flow)
 
         flow = cls.replace_template_refs(
             dependencies=recipe.dependencies,
