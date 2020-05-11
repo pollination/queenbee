@@ -105,6 +105,31 @@ class Recipe(BaseModel):
         v.sort(key=lambda x: x.name)
         return v
 
+
+    @validator('flow')
+    def check_dag_names(cls, v, values):
+        op_names = [dep.ref_name for dep in values.get('dependencies')]
+
+        for dag in v:
+            assert dag.name not in op_names, \
+                ValueError(f'DAG name {dag.name} cannot be used because a recipe dependency already uses it')
+
+        return v
+
+    @validator('flow')
+    def check_template_dependency_names(cls, v, values):
+
+        op_names = [dep.ref_name for dep in values.get('dependencies')]
+        op_names.extend([dag.name for dag in v])
+
+        for dag in v:
+            for template in dag.templates:
+                operator = template.split('/')[0]
+                assert operator in op_names, \
+                    ValueError(f'Cannot use template {template} from DAG {dag.name} because no dependency or other DAG matching that name was found')
+
+        return v
+
     @property
     def inputs(self):
         return self.flow.root_dag.inputs
@@ -268,7 +293,6 @@ class BakedRecipe(Recipe):
             dependencies=recipe.dependencies,
             dags=recipe.flow,
             digest=digest,
-            # templates=templates,
         )
 
         input_dict = recipe.to_dict()

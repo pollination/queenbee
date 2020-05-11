@@ -531,15 +531,27 @@ class DAG(BaseModel):
 
         return v
 
+    @validator('tasks', each_item=True)
+    def check_template_name(cls, v, values):
+        name = values.get('name')
 
+        operator = v.template.split('/')[0]
+
+        assert operator != name, ValueError(f'Task cannot refer to its own DAG as a template')
+
+        return v
 
     @validator('tasks')
     def sort_list(cls, v):
         v.sort(key=lambda x: x.name)
         return v
         
+
     @validator('outputs')
     def check_task_outputs(cls, v, values):
+
+        if v is None:
+            return v
 
         tasks = values.get('tasks')
         exceptions = []
@@ -574,3 +586,9 @@ class DAG(BaseModel):
         if not task:
             raise ValueError(f'Invalid task name: {name}')
         return task[0]
+
+    @property
+    def templates(self):
+        return set([task.template for task in self.tasks])
+
+        
