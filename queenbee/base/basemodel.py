@@ -33,7 +33,7 @@ class BaseModel(PydanticBaseModel):
         )
 
     def to_dict(self, exclude_unset=False, by_alias=True):
-        return self.dict(exclude_unset=exclude_unset, by_alias=by_alias)
+        return json.loads(self.json(by_alias=by_alias, exclude_unset=exclude_unset))
 
     def to_json(self, filepath, indent=None):
         """Write workflow to a JSON file.
@@ -45,9 +45,9 @@ class BaseModel(PydanticBaseModel):
         with open(filepath, 'w') as file:
             file.write(self.json(by_alias=True, exclude_unset=False, indent=indent))
 
-    def to_yaml(self, filepath):
+    def to_yaml(self, filepath, exclude_unset=False):
         """Write workflow to a yaml file."""
-        content = self.yaml(exclude_unset=True)
+        content = self.yaml(exclude_unset=exclude_unset)
 
         with open(filepath, 'w') as out_file:
             out_file.write(content)
