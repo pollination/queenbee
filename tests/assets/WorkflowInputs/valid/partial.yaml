@@ -1,5 +1,0 @@
-parameters:
-  hype:
-    value: 90000
-user_data:
-  foo: bar

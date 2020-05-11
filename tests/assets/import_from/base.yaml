@@ -1,5 +1,0 @@
-type: workflow
-name: daylight-factor
-operators:
-  - name: radiance-operator
-    import_from: 'radiance_operator.yaml'

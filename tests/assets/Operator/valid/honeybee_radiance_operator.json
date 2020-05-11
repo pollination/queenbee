@@ -1,6 +1,0 @@
-{
-    "type": "operator",
-    "name": "honeybee-radiance-operator",
-    "image": "ladybugtools/honeybee-radiance",
-    "workdir": "/opt/run-folder"
-}

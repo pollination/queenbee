@@ -1,3 +1,0 @@
-docker:
-  image: ladybugtools/honeybee-radiance:2.3.2
-  workdir: /opt/run/

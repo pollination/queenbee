@@ -1,4 +1,0 @@
-artifacts:
-  - name: input-grid-folder
-    location: model-source
-    path: asset/grid

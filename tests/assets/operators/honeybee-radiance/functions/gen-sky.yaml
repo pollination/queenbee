@@ -1,8 +1,0 @@
-name: 10000-lux-sky
-description: Generates a 10000 lux sky
-command: honeybee radiance sky illuminance 100000
-outputs:
-  artifacts:
-  - name: sky
-    description: The resulting sky object
-    path: sky.sky
