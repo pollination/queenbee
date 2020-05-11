@@ -1,0 +1,25 @@
+metadata:
+  name: full-operator
+  version: 0.0.1
+  appVersion: 3.4.3
+  description: A test operator with every possible bit of metadata included
+  keywords:
+  - test
+  - full
+  maintainers:
+  - name: ladybugbot
+    email: ladybugbot@ladybug.tools
+  home: https://ladybug.tools/full-operator
+  sources:
+  - https://github.com/ladybug-tools/full-operator
+  - https://gihtub.com/ladybug-tools/queenbee
+  icon: https://www.ladybug.tools/assets/img/logo.png
+  deprecated: false
+config:
+  docker:
+    image: some/docker-image:latest
+    registry: https://docker.pkg.github.com # Github Registry
+    workdir: /some/absolute/directory
+functions:
+- name: minimum-function
+  command: echo woop

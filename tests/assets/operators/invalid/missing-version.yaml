@@ -1,0 +1,7 @@
+metadata:
+  name: minimum-viable-operator
+config:
+  docker:
+    image: some/docker-image:latest
+    workdir: /some/absolute/directory
+functions: []

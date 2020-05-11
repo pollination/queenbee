@@ -1,0 +1,7 @@
+metadata:
+  version: 0.0.1
+config:
+  docker:
+    image: some/docker-image:latest
+    workdir: /some/absolute/directory
+functions: []

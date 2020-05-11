@@ -1,0 +1,16 @@
+name: post-process
+description: Post process your results and $$$
+inputs:
+  artifacts:
+  - name: raw-results-folder
+    path: raw
+command: honeybee radiance grid merge raw --folder output
+outputs:
+  artifacts:
+  - name: post-process-folder
+    path: output
+  parameters:
+  - name: daylight-factor-max
+    path: output/max
+  - name: daylight-factor-average
+    path: output/avg

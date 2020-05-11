@@ -1,0 +1,19 @@
+name: honeybee-radiance
+description: An operator to run all things honeybee and radiance!
+icon: https://www.ladybug.tools/assets/img/logo.png
+home: https://ladybug.tools/honeybee-radiance/docs
+sources:
+- https://github.com/ladybug-tools/honeybee-radiance
+
+version: 1.2.3
+appVersion: 2.3.2
+
+keywords:
+- honeybee
+- radiance
+- ladybug-tools
+
+maintainers:
+- name: mostapha
+  email: mostapha@ladybug.tools
+

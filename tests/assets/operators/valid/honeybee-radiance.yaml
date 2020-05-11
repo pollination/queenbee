@@ -1,0 +1,97 @@
+metadata:
+  name: honeybee-radiance
+  description: An operator to run all things honeybee and radiance!
+  icon: https://www.ladybug.tools/assets/img/logo.png
+  home: https://ladybug.tools/honeybee-radiance/docs
+  sources:
+  - https://github.com/ladybug-tools/honeybee-radiance
+
+  version: 1.2.3
+  appVersion: 2.3.2
+
+  keywords:
+  - honeybee
+  - radiance
+  - ladybug-tools
+
+  maintainers:
+  - name: mostapha
+    email: mostapha@ladybug.tools
+
+config:
+  docker:
+    image: ladybugtools/honeybee-radiance:2.3.2
+    workdir: /opt/run/
+
+functions:
+- name: create-octree
+  description: Generate an octree
+  inputs:
+    artifacts:
+    - name: model
+      path: model.json
+    - name: sky
+      path: sky.sky
+  command: honeybee radiance oconv -s sky.sky -m model.json --output scene.oct
+  outputs:
+    artifacts:
+    - name: scene-file
+      path: scene.oct
+- name: 10000-lux-sky
+  description: Generates a 10000 lux sky
+  command: honeybee radiance sky illuminance 100000
+  outputs:
+    artifacts:
+    - name: sky
+      description: The resulting sky object
+      path: sky.sky
+- name: post-process
+  description: Post process your results and $$$
+  inputs:
+    artifacts:
+    - name: raw-results-folder
+      path: raw
+  command: honeybee radiance grid merge raw --folder output
+  outputs:
+    artifacts:
+    - name: post-process-folder
+      path: output
+    parameters:
+    - name: daylight-factor-max
+      path: output/max
+    - name: daylight-factor-average
+      path: output/avg
+- name: ray-tracing
+  description: Run ray tracing using some input data!
+  inputs:
+    parameters:
+    - name: radiance-parameters
+      description: a string of radiance parameters
+      default: -b 5
+    artifacts:
+    - name: grid
+      path: grid.pts
+    - name: scene-file
+      path: scene.oct
+  command: rtrace -I -h {{inputs.parameters.radiance-parameters}} scene.oct < grid.pts > grid.res
+  outputs:
+    artifacts:
+    - name: result-file
+      path: grid.res
+- name: split-grid
+  inputs:
+    parameters:
+    - name: grid-count
+      required: true
+    artifacts:
+    - name: grid
+      description: The input grid to split
+      path: grid.pts
+  command: honeybee radiance grid split grid.pts --folder output --log-file output/grids.txt
+  outputs:
+    parameters:
+    - name: grid-list
+      path: output/grids.txt
+    artifacts:
+    - name: output-grids-folder
+      path: output
