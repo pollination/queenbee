@@ -52,7 +52,7 @@ class BaseIOTest(BaseTestClass):
 
     def test_to_yaml(self, valid_dict):
         valid_instance = self.klass.parse_obj(valid_dict)
-        # for valid_instance in valid_instances:
+
         loc_file = self.generate_test_file('valid.yaml')
 
         valid_instance.to_yaml(loc_file)
@@ -61,6 +61,7 @@ class BaseIOTest(BaseTestClass):
             obj = yaml.safe_load(inf.read())
 
         assert obj == valid_instance.to_dict()
+        assert self.klass.from_file(loc_file).__hash__ == valid_instance.__hash__
 
     def test_to_json(self, valid_dict):
         valid_instance = self.klass.parse_obj(valid_dict)
@@ -73,4 +74,5 @@ class BaseIOTest(BaseTestClass):
             obj = json.load(inf)
 
         assert obj == valid_instance.to_dict()
+        assert self.klass.from_file(loc_file).__hash__ == valid_instance.__hash__
 

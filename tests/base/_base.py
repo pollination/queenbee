@@ -9,15 +9,31 @@ class BaseTestClass:
     
     test_folder ='./tests/assets/temp'
 
+    asset_folder = None
+
     klass = None
 
     def generate_test_file(self, name):
         return os.path.join(self.test_folder, name)
 
+
+    def fixture_folders(self, path):
+        class_name = self.klass.__name__
+
+        if self.asset_folder is None:
+            folder_path = os.path.join('tests/assets', class_name, path)
+        else:
+            folder_path = os.path.join(self.asset_folder, path)
+
+        return [os.path.join(folder_path, folder) for folder in os.listdir(folder_path)]
+
     def fixture_files(self, path):
         class_name = self.klass.__name__
 
-        folder_path = os.path.join('tests/assets', class_name, path)
+        if self.asset_folder is None:
+            folder_path = os.path.join('tests/assets', class_name, path)
+        else:
+            folder_path = os.path.join(self.asset_folder, path)
 
         files = []
 
