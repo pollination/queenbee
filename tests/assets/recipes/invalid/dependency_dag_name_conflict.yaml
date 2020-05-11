@@ -1,0 +1,23 @@
+metadata:
+  name: minimal-recipe
+  version: 0.2.1
+
+dependencies:
+- type: operator
+  name: whale-operator
+  version: 1.2.3
+  source: https://ladybug.tools/queenbee-repo
+- type: recipe
+  name: some-recipe
+  version: 2.3.2
+  source: https://ladybug.tools/queenbee-repo
+
+flow:
+- name: main
+  tasks:
+  - name: minimal-task
+    template: whale-operator
+- name: whale-operator
+  tasks:
+  - name: minimal-task
+    template: som-recipe/whalesay

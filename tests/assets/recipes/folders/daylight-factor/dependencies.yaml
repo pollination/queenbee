@@ -1,0 +1,6 @@
+dependencies:
+- type: operator
+  name: honeybee-radiance
+  hash: e8215c80cede7eed5d5447634661ed01fc15485fd5374d3ec574456eb96ae289
+  version: 1.2.3
+  source: file:../../repository

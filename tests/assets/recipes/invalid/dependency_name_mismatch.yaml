@@ -1,0 +1,15 @@
+metadata:
+  name: minimal-recipe
+  version: 0.2.1
+
+dependencies:
+- type: operator
+  name: not-whale-operator
+  version: 1.2.3
+  source: https://ladybug.tools/queenbee-reppo
+
+flow:
+- name: main
+  tasks:
+  - name: minimal-task
+    template: whale-operator/whalesay

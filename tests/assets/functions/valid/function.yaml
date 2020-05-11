@@ -1,0 +1,17 @@
+name: generate-overcast-sky
+type: function
+inputs:
+  parameters:
+    - name: desired-irradiance
+      description: desired sky horizontal irradiance
+      required: true
+    - name: sky-file
+      description: full path to output sky file
+      required: true
+operator: radiance-operator
+command: gensky -c -B "{{ inputs.parameters.desired-irradiance }}" > "{{ inputs.parameters.sky-file }}"
+outputs:
+  artifacts:
+    - name: sky
+      path: file.sky
+

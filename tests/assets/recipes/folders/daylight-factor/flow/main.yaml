@@ -1,0 +1,135 @@
+name: main
+inputs:
+  parameters:
+  - name: sensor-grid-count
+    description: The maximum number of grid points per parallel execution
+    default: 100
+  - name: radiance-parameters
+    description: The radiance parameters for ray tracing
+    default: -I -ab 2 -h
+  
+  artifacts:
+  - name: model
+    description: A Honeybee model with radiance properties
+    required: true
+  - name: input-grid
+    description: A grid file
+    required: true
+
+tasks:
+
+- name: generate-sky
+  template: honeybee-radiance/10000-lux-sky
+  outputs:
+    artifacts:
+    - name: sky
+      path: asset/sky/10000_lux.sky
+
+- name: split-grid
+  template: honeybee-radiance/split-grid
+  arguments:
+    parameters:
+    - name: grid-count
+      from:
+        type: inputs
+        variable: sensor-grid-count
+    artifacts:
+    - name: grid
+      from:
+        type: inputs
+        variable: input-grid
+  outputs:
+    parameters:
+    - name: grid-list
+    artifacts:
+    - name: output-grids-folder
+      path: output/temp
+
+- name: create-octree
+  template: honeybee-radiance/create-octree
+  dependencies:
+  - generate-sky
+  arguments:
+    artifacts:
+    - name: model
+      from:
+        type: inputs
+        variable: model
+    - name: sky
+      from:
+        type: tasks
+        name: generate-sky
+        variable: sky
+  outputs:
+    artifacts:
+    - name: scene-file
+      path: output/octree/scene.oct
+  
+- name: daylight-factor-simulation
+  template: honeybee-radiance/ray-tracing
+  dependencies:
+  - split-grid
+  - create-octree
+  loop:
+    from:
+      type: tasks
+      name: split-grid
+      variable: grid-list
+    sub_folder:
+    - item.name
+  arguments:
+    parameters:
+    - name: radiance-parameters
+      from:
+        type: inputs
+        variable: radiance-parameters
+    artifacts:
+    - name: grid
+      from:
+        type: tasks
+        name: split-grid
+        variable: output-grids-folder
+      subpath: '{{item.name}}'
+    - name: scene-file
+      from:
+        type: tasks
+        name: create-octree
+        variable: scene-file
+  outputs:
+    artifacts:
+    # This file is persisted in a loop sub-folder so the name won't clash
+    - name: result-file
+      path: grid.res
+
+- name: post-process
+  template: honeybee-radiance/post-process
+  dependencies:
+  - daylight-factor-simulation
+  arguments:
+    artifacts:
+    - name: raw-results-folder
+      from:
+        type: tasks
+        name: daylight-factor-simulation
+        variable: result-file
+  outputs:
+    artifacts:
+    - name: post-process-folder
+      path: output/post-process
+    parameters:
+    - name: daylight-factor-average
+
+
+outputs:
+  artifacts:
+  - name: data
+    from:
+      type: tasks
+      name: post-process
+      variable: post-process-folder
+  parameters:
+  - name: average
+    from:
+      type: tasks
+      name: post-process
+      variable: daylight-factor-average
