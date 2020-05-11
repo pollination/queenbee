@@ -16,7 +16,7 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 
 @click.command('package')
 @click.argument('path', type=click.Path(exists=True))
-@click.option('-r', '--repository', help='Path to the repository hosting this package', default='.', type=click.Path(exists=True))
+@click.option('-r', '--repository', help='Path to the repository hosting this package', show_default=True, default='.', type=click.Path(exists=True))
 @click.option('-f', '--force', help='Boolean toggle to overwrite existing package with same name and version', default=False, type=bool, is_flag=True)
 def package(path, repository, force):
     """package an operator"""

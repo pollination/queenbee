@@ -18,7 +18,7 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 @click.option(
     '-p',
     '--path',
-    help='The path at which to create the new operator'
+    help='The path at which to create the new operator. Defaults to the current directory if not specified.'
 )
 def new(name, path):
     """create a new operator folder"""
@@ -33,7 +33,7 @@ def new(name, path):
     if os.path.exists(folder_path):
         raise click.ClickException(f'Cannot create new operator at path {folder_path} because there is already something there')
 
-    path = os.path.join(MODULE_PATH, "../assets/new-operator.yaml")
+    path = os.path.join(MODULE_PATH, '../assets/new-operator.yaml')
     input_dict = parse_file(path)
     input_dict['metadata']['name'] = name
 

@@ -69,6 +69,10 @@ class ResourceVersion(BaseModel):
             resource_version.url
         )
 
+        tar_dir = os.path.dirname(tar_path)
+
+        os.makedirs(tar_dir, exist_ok=True)
+
         if not overwrite:
             if os.path.isfile(tar_path):
                 os.remove('resource.json')
@@ -87,9 +91,6 @@ class ResourceVersion(BaseModel):
         # Delete original resource file
         os.remove('resource.json')
         os.remove('version.json')
-
-        if os.path.isfile('README.md'):
-            os.remove('README.md')
 
         return resource_version
 
