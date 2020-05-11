@@ -100,6 +100,11 @@ class Recipe(BaseModel):
 
         raise ValueError('No DAG with name "main" found in flow')    
 
+    @validator('flow')
+    def sort_list(cls, v):
+        v.sort(key=lambda x: x.name)
+        return v
+
     @property
     def inputs(self):
         return self.flow.root_dag.inputs

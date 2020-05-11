@@ -2,7 +2,7 @@
 import os
 import yaml
 from typing import List
-from pydantic import Field
+from pydantic import Field, validator
 
 from ..base.basemodel import BaseModel
 from .function import Function
@@ -67,6 +67,11 @@ class Operator(BaseModel):
         ...,
         description='List of Operator functions'
     )
+
+    @validator('functions')
+    def sort_list(cls, v):
+        v.sort(key=lambda x: x.name)
+        return v
 
     @classmethod
     def from_folder(cls, folder_path: str):

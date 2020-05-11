@@ -530,8 +530,14 @@ class DAG(BaseModel):
             raise ValueError(exceptions)
 
         return v
-        
 
+
+
+    @validator('tasks')
+    def sort_list(cls, v):
+        v.sort(key=lambda x: x.name)
+        return v
+        
     @validator('outputs')
     def check_task_outputs(cls, v, values):
 

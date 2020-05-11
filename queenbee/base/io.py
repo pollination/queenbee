@@ -31,6 +31,11 @@ class IOBase(BaseModel):
             raise ValueError(f'Duplicate names: {duplicates}')
         return v
 
+    @validator('parameters', 'artifacts')
+    def sort_list(cls, v):
+        v.sort(key=lambda x: x.name)
+        return v
+
     @staticmethod
     def _by_name(
         input_list: list,
