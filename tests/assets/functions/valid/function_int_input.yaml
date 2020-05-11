@@ -1,0 +1,28 @@
+type: function
+name: split-grid
+description: Split the daylight sensor grid into multiple smaller files for parallel
+  simulation
+operator: honeybee-radiance
+inputs:
+  parameters:
+  - name: grid-name
+    default: grid
+    description: Name of the grid
+  - name: sensor-count
+    default: 250
+    description: Number of sensors per split grid
+  artifacts:
+  - name: input-grid-folder
+    description: The folder containing the grids to split # this is important for copying the files.
+    path: asset/grid  # can we reference this as a parameter?
+command: |
+  honeybee radiance grid split "asset/grid/{{inputs.parameters.grid-name}}.pts"
+  "{{inputs.parameters.sensor-count}}" --folder "output/temp/"
+  --log-file "output/temp/{{inputs.parameters.grid-name}}_grids.txt"
+outputs:
+  parameters:
+  - name: grid-list
+    path: "output/temp/{{inputs.parameters.grid-name}}_grids.txt"
+  artifacts:
+  - name: output-grids-folder
+    path: output/temp/
