@@ -159,6 +159,8 @@ class Function(BaseModel):
                 name = ref.split('.')[-1]
                 if name not in input_names:
                     warns.append(f'\t- {{{{{ref}}}}}: Cannot find "{name}" in inputs.')
+            else:
+                warns.append(add_info)
 
         if warns != []:
             info = '\n'.join(warns)
