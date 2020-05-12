@@ -364,6 +364,13 @@ class DAGTask(BaseModel):
         if template.inputs is not None:
             for param in template.inputs.parameters:
                 if param.required:
+
+                    if self.arguments is None:
+                        raise ValueError(
+                            f'Validation Error for Task {self.name} and Template {template.name}: \n'
+                            '\tMissing task arguments'
+                        )
+
                     try:
                         self.arguments.parameter_by_name(param.name)
                     except ValueError as error:
@@ -373,7 +380,13 @@ class DAGTask(BaseModel):
                             )
 
             for art in template.inputs.artifacts:
-                # if art.required:
+                
+                if self.arguments is None:
+                    raise ValueError(
+                        f'Validation Error for Task {self.name} and Template {template.name}: \n'
+                        '\tMissing task arguments'
+                    )                
+
                 try:
                     self.arguments.artifact_by_name(art.name)
                 except ValueError as error:
@@ -383,6 +396,11 @@ class DAGTask(BaseModel):
                         )
 
         if self.outputs is not None:
+            if template.outputs is None:
+                raise ValueError(
+                    f'Validation Error for Task {self.name} and Template {template.name}: \n'
+                    '\tTask expects outputs but template does not have any'
+                )
             for param in self.outputs.parameters:
                 try:
                     template.outputs.parameter_by_name(param.name)

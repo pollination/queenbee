@@ -352,6 +352,10 @@ class BakedRecipe(Recipe):
                 # task.check_template(template)
         return dags
 
+    @validator('flow')
+    def check_template_dependency_names(cls, v, values):
+        # Overwrite test function from inherited class
+        return v
 
     @validator('templates')
     def remove_duplicates(cls, v):
