@@ -1,0 +1,301 @@
+metadata:
+  name: daylight-factor
+  version: 0.0.1
+  keywords:
+  - ladybug-tools
+  - radiance
+  maintainers:
+  - name: mostapha
+    email: mostapha@ladybug.tools
+  home: null
+  sources: null
+  icon: https://www.ladybug.tools/assets/img/logo.png
+  deprecated: null
+  description: An awesome workflow to run daylight factor!
+  license: null
+dependencies:
+- type: operator
+  name: honeybee-radiance
+  hash: 72f50b844894fea1f15d694ac83dc9e6156a1e355692973aceb71c6facc2accd
+  alias: null
+  version: 1.2.3
+  source: https://example.com/test-repo
+flow:
+- name: 9e300273d00c5d0d1d85862a0d668412dfd2962d1888afaede9b9a530239cca0/main
+  inputs:
+    parameters:
+    - name: radiance-parameters
+      default: -I -ab 2 -h
+      description: The radiance parameters for ray tracing
+      required: null
+    - name: sensor-grid-count
+      default: '100'
+      description: The maximum number of grid points per parallel execution
+      required: null
+    artifacts:
+    - name: input-grid
+      description: A grid file
+      default: null
+      required: true
+    - name: model
+      description: A Honeybee model with radiance properties
+      default: null
+      required: true
+  fail_fast: true
+  tasks:
+  - name: create-octree
+    template: 72f50b844894fea1f15d694ac83dc9e6156a1e355692973aceb71c6facc2accd/create-octree
+    arguments:
+      parameters: []
+      artifacts:
+      - name: model
+        from:
+          type: inputs
+          variable: model
+        subpath: null
+      - name: sky
+        from:
+          type: tasks
+          name: generate-sky
+          variable: sky
+        subpath: null
+    dependencies:
+    - generate-sky
+    loop: null
+    outputs:
+      parameters: []
+      artifacts:
+      - name: scene-file
+        path: output/octree/scene.oct
+  - name: daylight-factor-simulation
+    template: 72f50b844894fea1f15d694ac83dc9e6156a1e355692973aceb71c6facc2accd/ray-tracing
+    arguments:
+      parameters:
+      - name: radiance-parameters
+        from:
+          type: inputs
+          variable: radiance-parameters
+        value: null
+      artifacts:
+      - name: grid
+        from:
+          type: tasks
+          name: split-grid
+          variable: output-grids-folder
+        subpath: '{{item.name}}'
+      - name: scene-file
+        from:
+          type: tasks
+          name: create-octree
+          variable: scene-file
+        subpath: null
+    dependencies:
+    - split-grid
+    - create-octree
+    loop:
+      from:
+        type: tasks
+        name: split-grid
+        variable: grid-list
+      value: null
+      sub_folders:
+      - item
+    outputs:
+      parameters: []
+      artifacts:
+      - name: result-file
+        path: grid.res
+  - name: generate-sky
+    template: 72f50b844894fea1f15d694ac83dc9e6156a1e355692973aceb71c6facc2accd/10000-lux-sky
+    arguments: null
+    dependencies: null
+    loop: null
+    outputs:
+      parameters: []
+      artifacts:
+      - name: sky
+        path: asset/sky/10000_lux.sky
+  - name: post-process
+    template: 72f50b844894fea1f15d694ac83dc9e6156a1e355692973aceb71c6facc2accd/post-process
+    arguments:
+      parameters: []
+      artifacts:
+      - name: raw-results-folder
+        from:
+          type: tasks
+          name: daylight-factor-simulation
+          variable: result-file
+        subpath: null
+    dependencies:
+    - daylight-factor-simulation
+    loop: null
+    outputs:
+      parameters:
+      - name: daylight-factor-average
+      artifacts:
+      - name: post-process-folder
+        path: output/post-process
+  - name: split-grid
+    template: 72f50b844894fea1f15d694ac83dc9e6156a1e355692973aceb71c6facc2accd/split-grid
+    arguments:
+      parameters:
+      - name: grid-count
+        from:
+          type: inputs
+          variable: sensor-grid-count
+        value: null
+      artifacts:
+      - name: grid
+        from:
+          type: inputs
+          variable: input-grid
+        subpath: null
+    dependencies: null
+    loop: null
+    outputs:
+      parameters:
+      - name: grid-list
+      artifacts:
+      - name: output-grids-folder
+        path: output/temp
+  outputs:
+    parameters:
+    - name: average
+      from:
+        type: tasks
+        name: post-process
+        variable: daylight-factor-average
+    artifacts:
+    - name: data
+      from:
+        type: tasks
+        name: post-process
+        variable: post-process-folder
+digest: 9e300273d00c5d0d1d85862a0d668412dfd2962d1888afaede9b9a530239cca0
+templates:
+- name: 72f50b844894fea1f15d694ac83dc9e6156a1e355692973aceb71c6facc2accd/10000-lux-sky
+  description: Generates a 10000 lux sky
+  inputs:
+    parameters: []
+    artifacts: []
+  command: honeybee radiance sky illuminance 100000
+  outputs:
+    parameters: []
+    artifacts:
+    - name: sky
+      description: The resulting sky object
+      path: sky.sky
+  config:
+    docker:
+      image: ladybugtools/honeybee-radiance:2.3.2
+      registry: null
+      workdir: /opt/run/
+    local: null
+- name: 72f50b844894fea1f15d694ac83dc9e6156a1e355692973aceb71c6facc2accd/create-octree
+  description: Generate an octree
+  inputs:
+    parameters: []
+    artifacts:
+    - name: model
+      description: null
+      path: model.json
+    - name: sky
+      description: null
+      path: sky.sky
+  command: honeybee radiance oconv -s sky.sky -m model.json --output scene.oct
+  outputs:
+    parameters: []
+    artifacts:
+    - name: scene-file
+      description: null
+      path: scene.oct
+  config:
+    docker:
+      image: ladybugtools/honeybee-radiance:2.3.2
+      registry: null
+      workdir: /opt/run/
+    local: null
+- name: 72f50b844894fea1f15d694ac83dc9e6156a1e355692973aceb71c6facc2accd/post-process
+  description: Post process your results and $$$
+  inputs:
+    parameters: []
+    artifacts:
+    - name: raw-results-folder
+      description: null
+      path: raw
+  command: honeybee radiance grid merge raw --folder output
+  outputs:
+    parameters:
+    - name: daylight-factor-average
+      description: null
+      path: output/avg
+    - name: daylight-factor-max
+      description: null
+      path: output/max
+    artifacts:
+    - name: post-process-folder
+      description: null
+      path: output
+  config:
+    docker:
+      image: ladybugtools/honeybee-radiance:2.3.2
+      registry: null
+      workdir: /opt/run/
+    local: null
+- name: 72f50b844894fea1f15d694ac83dc9e6156a1e355692973aceb71c6facc2accd/ray-tracing
+  description: Run ray tracing using some input data!
+  inputs:
+    parameters:
+    - name: radiance-parameters
+      default: -b 5
+      description: a string of radiance parameters
+      required: false
+    artifacts:
+    - name: grid
+      description: null
+      path: grid.pts
+    - name: scene-file
+      description: null
+      path: scene.oct
+  command: rtrace -I -h {{inputs.parameters.radiance-parameters}} scene.oct < grid.pts
+    > grid.res
+  outputs:
+    parameters: []
+    artifacts:
+    - name: result-file
+      description: null
+      path: grid.res
+  config:
+    docker:
+      image: ladybugtools/honeybee-radiance:2.3.2
+      registry: null
+      workdir: /opt/run/
+    local: null
+- name: 72f50b844894fea1f15d694ac83dc9e6156a1e355692973aceb71c6facc2accd/split-grid
+  description: null
+  inputs:
+    parameters:
+    - name: grid-count
+      default: null
+      description: null
+      required: true
+    artifacts:
+    - name: grid
+      description: The input grid to split
+      path: grid.pts
+  command: honeybee radiance grid split grid.pts --folder output --log-file output/grids.txt
+  outputs:
+    parameters:
+    - name: grid-list
+      description: null
+      path: output/grids.txt
+    artifacts:
+    - name: output-grids-folder
+      description: null
+      path: output
+  config:
+    docker:
+      image: ladybugtools/honeybee-radiance:2.3.2
+      registry: null
+      workdir: /opt/run/
+    local: null

@@ -3,4 +3,4 @@ dependencies:
   name: daylight-factor
   hash: 5a9b9f28ec0a5681f926f761b397694382688b4e5f2c32e11a1cf2bc99d4865a
   version: 0.0.1
-  source: file:../../repository
+  source: https://example.com/test-repo

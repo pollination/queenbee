@@ -12,4 +12,4 @@ flow:
 - name: main
   tasks:
   - name: minimal-task
-    template: honeybee-radiance/10000-lux-sky
+    template: honeybee-radiance/create-octree

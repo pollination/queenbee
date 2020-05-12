@@ -1,0 +1,60 @@
+{
+  "generated": "2020-05-12T09:08:55.632900",
+  "operator": {
+    "honeybee-radiance": [
+      {
+        "name": "honeybee-radiance",
+        "version": "1.2.3",
+        "appVersion": "2.3.2",
+        "keywords": [
+          "honeybee",
+          "radiance",
+          "ladybug-tools"
+        ],
+        "maintainers": [
+          {
+            "name": "mostapha",
+            "email": "mostapha@ladybug.tools"
+          }
+        ],
+        "home": "https://ladybug.tools/honeybee-radiance/docs",
+        "sources": [
+          "https://github.com/ladybug-tools/honeybee-radiance"
+        ],
+        "icon": "https://www.ladybug.tools/assets/img/logo.png",
+        "deprecated": null,
+        "description": "An operator to run all things honeybee and radiance!",
+        "url": "operators/honeybee-radiance-1.2.3.tgz",
+        "created": "2020-05-12T08:41:11.211497",
+        "digest": "72f50b844894fea1f15d694ac83dc9e6156a1e355692973aceb71c6facc2accd"
+      }
+    ]
+  },
+  "recipe": {
+    "daylight-factor": [
+      {
+        "name": "daylight-factor",
+        "version": "0.0.1",
+        "keywords": [
+          "ladybug-tools",
+          "radiance"
+        ],
+        "maintainers": [
+          {
+            "name": "mostapha",
+            "email": "mostapha@ladybug.tools"
+          }
+        ],
+        "home": null,
+        "sources": null,
+        "icon": "https://www.ladybug.tools/assets/img/logo.png",
+        "deprecated": null,
+        "description": "An awesome workflow to run daylight factor!",
+        "license": null,
+        "url": "recipes/daylight-factor-0.0.1.tgz",
+        "created": "2020-05-12T09:07:45.848063",
+        "digest": "9e300273d00c5d0d1d85862a0d668412dfd2962d1888afaede9b9a530239cca0"
+      }
+    ]
+  }
+}

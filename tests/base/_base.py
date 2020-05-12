@@ -18,9 +18,9 @@ class BaseTestClass:
 
 
     def fixture_folders(self, path):
-        class_name = self.klass.__name__
 
         if self.asset_folder is None:
+            class_name = self.klass.__name__
             folder_path = os.path.join('tests/assets', class_name, path)
         else:
             folder_path = os.path.join(self.asset_folder, path)
@@ -28,9 +28,9 @@ class BaseTestClass:
         return [os.path.join(folder_path, folder) for folder in os.listdir(folder_path)]
 
     def fixture_files(self, path):
-        class_name = self.klass.__name__
 
         if self.asset_folder is None:
+            class_name = self.klass.__name__
             folder_path = os.path.join('tests/assets', class_name, path)
         else:
             folder_path = os.path.join(self.asset_folder, path)
@@ -73,13 +73,16 @@ class BaseTestClass:
 
         return dicts
 
-    def fixture_instances(self, path):
+    def fixture_instances(self, path, klass=None):
         paths = self.fixture_files(path)
+
+        if klass is None:
+            klass = self.klass
 
         instances = []
 
         for path in paths:
-            instances.append(self.klass.from_file(path))
+            instances.append(klass.from_file(path))
 
         return instances
 
