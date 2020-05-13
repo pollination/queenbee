@@ -2,17 +2,31 @@
 
 See README.md for a human readable version of valid variables.
 """
+from typing import Union
 from .parser import parse_double_quotes_vars
-from typing import List, Union
 
 
-def get_ref_variable(value: Union[bytes, str]) -> List:
-    """Get referenced variable if any."""
+def get_ref_variable(value: Union[bytes, str]) -> list:
+    """Get referenced variable if any
+
+    Arguments:
+        value {Union[bytes, str]} -- input to parse double quoted variables ("{{some.double.quoted.var}}") from
+
+    Returns:
+        list -- A list of matched substrings (empty list if None)
+    """
     return parse_double_quotes_vars(value)
 
 
-def _validate_workflow_var_format(value: str):
-    """Validate workflow vars."""
+def _validate_workflow_var_format(value: str) -> str:
+    """Validate workflow vars
+
+    Arguments:
+        value {str} -- A '.' seperated string to be checked for workflow variable formatting
+
+    Returns:
+        str -- A string with validation error messages
+    """
     add_info = ''
     parts = value.split('.')
     if len(parts) == 2:
@@ -43,7 +57,15 @@ def _validate_workflow_var_format(value: str):
     return add_info
 
 
-def _validate_tasks_var_format(value: str):
+def _validate_tasks_var_format(value: str) -> str:
+    """Validate task variables
+
+    Arguments:
+        value {str} -- A '.' seperated string to be checked for task variable formatting
+
+    Returns:
+        str -- A string with validation error messages
+    """
     add_info = ''
     parts = value.split('.')
     if len(parts) != 5:
@@ -60,7 +82,15 @@ def _validate_tasks_var_format(value: str):
     return add_info
 
 
-def _validate_inputs_outputs_var_format(value: str):
+def _validate_inputs_outputs_var_format(value: str) -> str:
+    """Validate inputs/outputs variables
+
+    Arguments:
+        value {str} -- A '.' seperated string to be checked for inputs/outputs variable formatting
+
+    Returns:
+        str -- A string with validation error messages
+    """
     add_info = ''
     parts = value.split('.')
     if len(parts) > 0 and parts[0] != 'inputs':
@@ -72,8 +102,18 @@ def _validate_inputs_outputs_var_format(value: str):
     return add_info
 
 
-def validate_ref_variable_format(value: str):
-    """Ensure referenced values are formatted correctly."""
+def validate_ref_variable_format(value: str) -> bool:
+    """Ensure referenced values are formatted correctly
+
+    Arguments:
+        value {str} -- A '.' seperated string to be checked for reference formatting
+
+    Raises:
+        ValueError: The input string does not correspond to a valid reference format
+
+    Returns:
+        bool -- The input string corresponds to a valid reference format
+    """
     add_info = ''
     if value.startswith('workflow.'):
         add_info = _validate_workflow_var_format(value)

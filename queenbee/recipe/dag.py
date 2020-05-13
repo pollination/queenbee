@@ -1,9 +1,8 @@
 """Queenbee DAG steps.
 
-A DAG step defines a single step in the workflow. Each step indicates what task should be
+A DAG step defines a single step in a Recipe. Each step indicates what function template should be
 used and maps inputs and outputs for the specific task.
 """
-from enum import Enum
 from typing import List, Any, Union, Dict
 from pydantic import Field, validator, ValidationError
 
@@ -15,11 +14,7 @@ from .reference import InputArtifactReference, InputParameterReference, \
     TaskArtifactReference, TaskParameterReference, ItemParameterReference
 
 class DAGInputParameter(BaseModel):
-    """Parameter.
-
-    Parameter indicate a passed string parameter to a service template with an optional
-    default value.
-    """
+    """An input parameter used within the DAG"""
 
     name: str = Field(
         ...,
@@ -60,13 +55,18 @@ class DAGInputParameter(BaseModel):
 
     @property
     def referenced_values(self) -> Dict[str, List[str]]:
-        """Get referenced variables if any"""
+        """Get all referenced values specified by var name
+
+        Returns:
+            Dict[str, List[str]] -- A dictionary where each key corresponds to a class attribute indexing a list of referenced values
+        """
         return self._referenced_values(['default'])
 
 
 
 
 class DAGInputArtifact(BaseModel):
+    """An artifact used within the DAG"""
 
     name: str = Field(
         ...,
@@ -105,6 +105,7 @@ class DAGInputArtifact(BaseModel):
 
 
 class DAGInputs(IOBase):
+    """Inputs of a DAG"""
 
     parameters: List[DAGInputParameter] = Field(
         [],
@@ -118,6 +119,7 @@ class DAGInputs(IOBase):
 
 
 class DAGOutputParameter(BaseModel):
+    """A parameter sourced from within the DAG that is exposed as an output"""
 
     name: str = Field(
         ...,
@@ -131,6 +133,7 @@ class DAGOutputParameter(BaseModel):
     )
 
 class DAGOutputArtifact(BaseModel):
+    """An artifact sourced from within the DAG that is exposed as an output"""
 
     name: str = Field(
         ...,
@@ -144,6 +147,7 @@ class DAGOutputArtifact(BaseModel):
     )
 
 class DAGOutputs(IOBase):
+    """Artifacts and Parameters exposed by the DAG"""
 
     parameters: List[DAGOutputParameter] = Field(
         [],
@@ -156,6 +160,8 @@ class DAGOutputs(IOBase):
     )
 
 class DAGTaskArtifactArgument(BaseModel):
+    """Input argument for a DAG task. The name must correspond to an input artifact from the
+    template function the task refers to."""
 
     name: str = Field(
         ...,
@@ -176,6 +182,8 @@ class DAGTaskArtifactArgument(BaseModel):
 
 
 class DAGTaskParameterArgument(BaseModel):
+    """Input argument for a DAG task. The name must correspond to an input parameter from the
+    template function the task refers to."""
 
     name: str = Field(
         ...,
@@ -201,6 +209,7 @@ class DAGTaskParameterArgument(BaseModel):
         return v
 
 class DAGTaskArgument(IOBase):
+    """These arguments should match the inputs from the template referenced in the task"""
 
     artifacts: List[DAGTaskArtifactArgument] = Field(
         [],
@@ -214,6 +223,17 @@ class DAGTaskArgument(IOBase):
 
 
     def artifacts_by_ref_source(self, source) -> List[DAGTaskArtifactArgument]:
+        """Retrieve an list of argument artifacts by their source type
+
+        Arguments:
+            source {str} -- The source type, one of: 'dag', 'task'
+
+        Raises:
+            ValueError: The source type is not recognized
+
+        Returns:
+            List[DAGTaskArtifactArgument] -- A list of Argument Artifacts
+        """
         if self.artifacts is None:
             return []
 
@@ -229,6 +249,17 @@ class DAGTaskArgument(IOBase):
         return  [x for x in self.artifacts if isinstance(x.from_, source_class)]
 
     def parameters_by_ref_source(self, source) -> List[DAGTaskParameterArgument]:
+        """Retrieve an list of argument parameters by their source type
+
+        Arguments:
+            source {str} -- The source type, one of: 'dag', 'task', 'item'
+
+        Raises:
+            ValueError: The source type is not recognized
+
+        Returns:
+            List[DAGTaskParameterArgument] -- A list of Argument Parameters
+        """
         if self.parameters is None:
             return []
         
@@ -246,6 +277,8 @@ class DAGTaskArgument(IOBase):
         return  [x for x in self.parameters if isinstance(x.from_, source_class)]
 
 class DAGTaskOutputArtifact(BaseModel):
+    """Output artifact for a DAG task. The name must correspond to an output artifact from the
+    template function the task refers to."""
 
     name: str = Field(
         ...,
@@ -259,6 +292,8 @@ class DAGTaskOutputArtifact(BaseModel):
 
 
 class DAGTaskOutputParameter(BaseModel):
+    """Output parameter for a DAG task. The name must correspond to an output parameter from the
+    template function the task refers to."""
 
     name: str = Field(
         ...,
@@ -267,6 +302,7 @@ class DAGTaskOutputParameter(BaseModel):
 
 
 class DAGTaskOutputs(IOBase):
+    """These outputs should match the outputs from the template referenced in the task"""
 
     artifacts: List[DAGTaskOutputArtifact] = Field(
         [],
@@ -279,7 +315,8 @@ class DAGTaskOutputs(IOBase):
     )
 
 class DAGTaskLoop(BaseModel):
-
+    """Loop configuration for the task. This will run the template provided multiple times and
+    in parallel relative to an input or task parameter which should be a list."""
 
     from_: Union[InputParameterReference, TaskParameterReference] = Field(
         None,
@@ -304,7 +341,7 @@ class DAGTaskLoop(BaseModel):
 
 
 class DAGTask(BaseModel):
-    """DAGTask defines a single step in a Directed Acyclic Graph (DAG) workflow."""
+    """The instance of a function template matched with DAG inputs and outputs"""
 
     name: str = Field(
         ...,
@@ -348,9 +385,10 @@ class DAGTask(BaseModel):
 
     @property
     def is_root(self) -> bool:
-        """Return true if this function is a root function.
+        """A root task does not have any dependencies
 
-        A root function does not have any dependencies.
+        Returns:
+            bool -- True if the task has no dependencies
         """
         return len(self.dependencies) == 0
 
@@ -360,6 +398,9 @@ class DAGTask(BaseModel):
 
         Arguments:
             template {Union[DAG, Function]} -- A DAG or Function template
+
+        Raises:
+            ValueError: The task input and output values do not match the task template
         """
         if template.inputs is not None:
             for param in template.inputs.parameters:
@@ -422,7 +463,7 @@ class DAGTask(BaseModel):
 
 
 class DAG(BaseModel):
-    """DAG includes different steps of a directed acyclic graph."""
+    """A Directed Acyclic Graph containing a list of tasks"""
 
     name: str = Field(
         ...,
@@ -455,7 +496,19 @@ class DAG(BaseModel):
     def find_task_output(
         tasks: List[DAGTask],
         reference: Union[TaskArtifactReference, TaskParameterReference]
-    ):
+    ) -> Union[DAGTaskOutputArtifact, DAGTaskOutputParameter]:
+        """Find a task output within the DAG from a reference
+
+        Arguments:
+            tasks {List[DAGTask]} -- A list of DAG Tasks
+            reference {Union[TaskArtifactReference, TaskParameterReference]} -- A reference to a DAG Task output
+
+        Raises:
+            ValueError: The task output reference cannot be found
+
+        Returns:
+            Union[DAGTaskOutputArtifact, DAGTaskOutputParameter] -- A task output parameter or artifact
+        """
         filtered_tasks = [x for x in tasks if x.name == reference.name]
 
         if len(filtered_tasks) != 1:
@@ -475,6 +528,7 @@ class DAG(BaseModel):
 
     @validator('tasks')
     def check_unique_names(cls, v):
+        """Check that all tasks have unique names"""
         names = [task.name for task in v]
         duplicates = find_dup_items(names)
         if len(duplicates) != 0:
@@ -483,6 +537,7 @@ class DAG(BaseModel):
 
     @validator('tasks')
     def check_dependencies(cls, v):
+        """Check that all task dependencies exist"""
         task_names = [task.name for task in v]
 
         exceptions = []
@@ -503,7 +558,8 @@ class DAG(BaseModel):
 
 
     @validator('tasks')
-    def check_inputs(cls, v, values):
+    def check_references(cls, v, values):
+        """Check that input and output references exist"""
         dag_inputs = values.get('inputs', DAGInputs())
         
         exceptions = []
@@ -551,6 +607,7 @@ class DAG(BaseModel):
 
     @validator('tasks', each_item=True)
     def check_template_name(cls, v, values):
+        """Check that a task name does not refer to itself in a template"""
         name = values.get('name')
 
         operator = v.template.split('/')[0]
@@ -561,13 +618,14 @@ class DAG(BaseModel):
 
     @validator('tasks')
     def sort_list(cls, v):
+        """Sort the list of tasks by name"""
         v.sort(key=lambda x: x.name)
         return v
         
 
     @validator('outputs')
-    def check_task_outputs(cls, v, values):
-
+    def check_dag_outputs(cls, v, values):
+        """Check DAG outputs refer to existing Task outputs"""
         if v is None:
             return v
 
@@ -599,14 +657,29 @@ class DAG(BaseModel):
 
 
     def get_task(self, name):
-        """Get task by name."""
+        """Get task by name
+
+        Arguments:
+            name {str} -- The name of a task
+
+        Raises:
+            ValueError: The task name does not exist
+
+        Returns:
+            DAGTask -- A DAG Task
+        """
         task = [t for t in self.tasks if t.name == name]
         if not task:
             raise ValueError(f'Invalid task name: {name}')
         return task[0]
 
     @property
-    def templates(self):
+    def templates(self) -> List[str]:
+        """A list of unique templates referred to in the DAG
+
+        Returns:
+            List[str] -- A list of task name
+        """
         return set([task.template for task in self.tasks])
 
         

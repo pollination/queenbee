@@ -14,7 +14,8 @@ from .package import OperatorVersion, RecipeVersion
 
 
 class RepositoryIndex(BaseModel):
-    
+    """A searchable index for a Queenbee Operator and Recipe repository"""
+
     generated: datetime = Field(
         None,
         description='The timestamp at which the index was generated'
@@ -33,7 +34,17 @@ class RepositoryIndex(BaseModel):
 
     @classmethod
     def from_folder(cls, folder_path):
+        """Generate a Repository Index from a folder
 
+        This will scrape the folder for operator and recipe packages and
+        add their version information to the index.
+
+        Arguments:
+            folder_path {str} -- Path to a repository folder
+
+        Returns:
+            RepositoryIndex -- An index generated from packages in the folder
+        """
         index = cls.parse_obj({})
         
         for package in os.listdir(os.path.join(folder_path, 'operators')):
@@ -107,7 +118,22 @@ class RepositoryIndex(BaseModel):
         resource_version: Union[RecipeVersion, OperatorVersion],
         overwrite: bool = False,
         skip: bool = False
-    ):
+    ) -> Dict[str, List[Union[RecipeVersion, OperatorVersion]]]:
+        """Add a resource version to an index of resource versions
+
+        Arguments:
+            resource_dict {Dict[str, List[Union[RecipeVersion, OperatorVersion]]]} -- An index of resource versions
+            resource_version {Union[RecipeVersion, OperatorVersion]} -- The resource version to add
+
+        Keyword Arguments:
+            overwrite {bool} -- Overwrite a resource version if it already exists (default: {False})
+
+        Raises:
+            ValueError: Resource version already exists
+
+        Returns:
+            Dict[str, List[Union[RecipeVersion, OperatorVersion]]] -- A resource version index
+        """
         resource_list = resource_dict.get(resource_version.name, [])
 
         if not overwrite:
@@ -123,16 +149,43 @@ class RepositoryIndex(BaseModel):
         return resource_dict
 
     def index_recipe_version(self, recipe_version: RecipeVersion, overwrite: bool = False):
+        """Add a Recipe Version to an Index of Recipes
+
+        Arguments:
+            recipe_version {RecipeVersion} -- A recipe version object
+
+        Keyword Arguments:
+            overwrite {bool} -- Overwrite the Recipe Version if it already exists in the index (default: {False})
+        """
         self.recipe = self._index_resource_version(self.recipe, recipe_version, overwrite)
         self.generated = datetime.utcnow()
 
     def index_operator_version(self, operator_version: OperatorVersion, overwrite: bool = False):
+        """Add a Operator Version to an Index of Operators
+
+        Arguments:
+            operator_version {OperatorVersion} -- A operator version object
+
+        Keyword Arguments:
+            overwrite {bool} -- Overwrite the Operator Version if it already exists in the index (default: {False})
+        """
         self.operator = self._index_resource_version(self.operator, operator_version, overwrite)
         self.generated = datetime.utcnow()
 
 
     def merge_folder(self, folder_path, overwrite: bool = False, skip: bool = False):
-        
+        """Merge the contents of an repository folder with the index
+
+        Arguments:
+            folder_path {str} -- The path to the repository folder
+
+        Keyword Arguments:
+            overwrite {bool} -- Overwrite any Resource Version (default: {False})
+            skip {bool} -- [description] (default: {False})
+
+        Raises:
+            ValueError: Resource version already exists or is invalid
+        """
         for package in os.listdir(os.path.join(folder_path, 'operators')):
             package_path = os.path.join(folder_path, 'operators', package)
             resource_version = OperatorVersion.from_package(package_path)
@@ -162,6 +215,19 @@ class RepositoryIndex(BaseModel):
         package_name: str,
         package_version: str
     ) -> Union[OperatorVersion, RecipeVersion]:
+        """Retrieve a Resource Version by its version
+
+        Arguments:
+            package_type {str} -- The type of package (operator or recipe)
+            package_name {str} -- The name of the package
+            package_version {str} -- The package version
+
+        Raises:
+            ValueError: The package was not found
+
+        Returns:
+            Union[OperatorVersion, RecipeVersion] -- A resource version object
+        """
         package_dict = getattr(self, package_type)
 
         package_list = package_dict.get(package_name)
@@ -182,6 +248,19 @@ class RepositoryIndex(BaseModel):
         package_name: str,
         package_digest: str
     ) -> Union[OperatorVersion, RecipeVersion]:
+        """Retrieve a Resource Version by its hash digest
+
+        Arguments:
+            package_type {str} -- The type of package (operator or recipe)
+            package_name {str} -- The name of the package
+            package_digest {str} -- The package digest
+
+        Raises:
+            ValueError: The package was not found
+
+        Returns:
+            Union[OperatorVersion, RecipeVersion] -- A resource version object
+        """
         package_dict = getattr(self, package_type)
 
         package_list = package_dict.get(package_name)

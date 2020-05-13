@@ -1,6 +1,6 @@
-"""Queenbee MetaData class.
+"""Queenbee Recipe MetaData class.
 
-This object provides metadata information for a workflow.
+This object provides metadata information for a recipe.
 
 The specification is designed based on openapi info object:
 https://swagger.io/specification/#infoObject
@@ -12,20 +12,20 @@ from pydantic import Field
 from ..base.basemodel import BaseModel
 
 class Maintainer(BaseModel):
-    """Author information."""
+    """Maintainer information"""
     name: str = Field(
         ...,
-        description='The name of the author person or organization.'
+        description='The name of the author/maintainer person or organization.'
     )
 
     email: str = Field(
         None,
-        description='The email address of the author person or organization.'
+        description='The email address of the author/maintainer person or organization.'
     )
 
 
 class License(BaseModel):
-    """License information for the workflow."""
+    """License information for the Recipe"""
     name: str = Field(
         ...,
         description='The license name used for the workflow.'
@@ -38,7 +38,7 @@ class License(BaseModel):
 
 
 class MetaData(BaseModel):
-    """Workflow metadata information."""
+    """Recipe metadata information."""
 
     name: str = Field(
         ...,

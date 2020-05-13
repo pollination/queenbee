@@ -2,18 +2,22 @@
 
 A task status keeps track of the outcome of a given workflow task.
 """
-
+from enum import Enum
 from datetime import datetime
 from pydantic import Field, validator
 from typing import List, Dict
 
-# from queenbee.schema.qutil import BaseModel
-# from queenbee.schema.arguments import Arguments
-# from queenbee.schema.operator import Operator
-
 from ..base.basemodel import BaseModel
 from .arguments import Arguments
 
+
+class StatusType(str, Enum):
+    
+    Function = 'function'
+    
+    DAG = 'dag'
+    
+    Loop = 'loop'
 
 class BaseStatus(BaseModel):
     """Base Status model"""
@@ -41,7 +45,7 @@ class BaseStatus(BaseModel):
 
 
 class TaskStatus(BaseStatus):
-    """A Task Status"""
+    """The Status of a Workflow Task"""
 
     id: str = Field(
         ...,
@@ -55,10 +59,9 @@ class TaskStatus(BaseStatus):
         'This name is unique within the boundary of the DAG/Workflow that generated it.'
     )
 
-    type: str = Field(
+    type: StatusType = Field(
         ...,
-        description='The type of task this status is for. Can be "Function", "DAG", '
-        '"Workflow" or "Loop"'
+        description='The type of task this status is for. Can be "function", "dag" or "loop"'
     )
 
     template_ref: str = Field(
@@ -99,12 +102,6 @@ class TaskStatus(BaseStatus):
         'task. In the case of a DAG or a workflow this will be the last task that has '
         'been executed. It will remain empty for functions.'
     )
-
-    @validator('type')
-    def check_config(cls, v,):
-        assert v in ['Function', 'DAG', 'Workflow',
-                     'Loop'], "Type must be one of Function, DAG, Workflow or Loop"
-        return v
 
 
 class WorkflowStatus(BaseStatus):

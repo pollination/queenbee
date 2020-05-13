@@ -5,10 +5,19 @@ from pydantic import Field
 
 from ..base.basemodel import BaseModel
 
-def template_string(keys: list) -> str:
+def template_string(keys: List[str]) -> str:
+    """Generate a template string from a list of key
+
+    Arguments:
+        keys {List[str]} -- A list of keys
+
+    Returns:
+        str -- A template string
+    """
     return f'{{{{{".".join(keys)}}}}}'
 
 class BaseReference(BaseModel):
+    """A Base reference model"""
 
     @property
     def source(self):
@@ -19,6 +28,7 @@ class BaseReference(BaseModel):
 
 
 class InputBaseReference(BaseReference):
+    """An Input Reference"""
 
     type: Enum('InputReference', {'type': 'inputs'}) = 'inputs'
 
@@ -27,11 +37,17 @@ class InputBaseReference(BaseReference):
         description='The name of the DAG input variable'
     )
 
-    def to_ref_string(self):
+    def to_ref_string(self) -> str:
+        """Generate a reference string from an input reference
+
+        Returns:
+            str -- A reference string
+        """
         template = [self.type, self.source, self.variable]
         return template_string(template)
 
 class InputArtifactReference(InputBaseReference):
+    """An Input Artifact Reference"""
 
     @property
     def source(self):
@@ -39,6 +55,7 @@ class InputArtifactReference(InputBaseReference):
 
 
 class InputParameterReference(InputBaseReference):
+    """An Input Parameter Reference"""
 
     @property
     def source(self):
@@ -46,6 +63,7 @@ class InputParameterReference(InputBaseReference):
 
 
 class TaskBaseReference(BaseReference):
+    """A Task Reference"""
 
     type: Enum('TaskReference', {'type': 'tasks'}) = 'tasks'
 
@@ -59,12 +77,18 @@ class TaskBaseReference(BaseReference):
         description='The name of the task output variable'
     )
 
-    def to_ref_string(self):
+    def to_ref_string(self) -> str:
+        """Generate a reference string from a task reference
+
+        Returns:
+            str -- A reference string
+        """
         template = [self.type, self.source, self.name, self.variable]
         return template_string(template)
 
 
 class TaskArtifactReference(TaskBaseReference):
+    """A Task Artifact Reference"""
 
     @property
     def source(self):
@@ -72,6 +96,7 @@ class TaskArtifactReference(TaskBaseReference):
 
 
 class TaskParameterReference(TaskBaseReference):
+    """A Task Parameter Reference"""
 
     @property
     def source(self):
@@ -80,6 +105,7 @@ class TaskParameterReference(TaskBaseReference):
 
 
 class ItemBaseReference(BaseReference):
+    """An Item Reference"""
 
     type: Enum('ItemReference', {'type': 'item'}) = 'item'
 
@@ -89,11 +115,17 @@ class ItemBaseReference(BaseReference):
     )
 
     def to_ref_string(self):
+        """Generate a reference string from an item reference
+
+        Returns:
+            str -- A reference string
+        """
         template = [self.type, self.source, self.variable]
         return template_string(template)
 
 
 class ItemParameterReference(ItemBaseReference):
+    """An Item Parameter Reference"""
 
     @property
     def source(self):
@@ -102,6 +134,17 @@ class ItemParameterReference(ItemBaseReference):
 
 
 def references_from_string(string: str) -> List[Union[InputParameterReference, TaskParameterReference, ItemParameterReference]]:
+    """Generate a reference object from a reference string
+
+    Arguments:
+        string {str} -- A reference string (eg: `{{inputs.parameters.example}}`)
+
+    Raises:
+        ValueError: Input string cannot be parsed as a reference object
+
+    Returns:
+        List[Union[InputParameterReference, TaskParameterReference, ItemParameterReference]] -- A list of reference objects
+    """
     pattern = r"{{\s*([_a-zA-Z0-9.\-\$#\?]*)\s*}}"
     match = re.findall(pattern, string, flags=re.MULTILINE)
 

@@ -8,6 +8,11 @@ from ..base.variable import _validate_inputs_outputs_var_format, get_ref_variabl
 
 
 class FunctionArtifact(BaseModel):
+    """A Function Artifact object
+
+    This indicates the path within the function context at which a certain file or folder
+    (ie: artifact) can be found.
+    """
 
     name: str = Field(
         ...,
@@ -27,12 +32,16 @@ class FunctionArtifact(BaseModel):
 
     @property
     def referenced_values(self) -> Dict[str, List[str]]:
-        """Get referenced variables if any."""
+        """Get referenced variables if any
+
+        Returns:
+            Dict[str, List[str]] -- A dictionary where keys are attributes and lists contain referenced value string
+        """
         return self._referenced_values(['path'])
 
 
 class FunctionParameterIn(BaseModel):
-    """Parameter.
+    """A Function Parameter
 
     Parameter indicate a passed string parameter to a service template with an optional
     default value.
@@ -86,6 +95,7 @@ class FunctionParameterOut(FunctionArtifact):
 
 
 class FunctionInputs(IOBase):
+    """The Inputs of a Function"""
 
     parameters: List[FunctionParameterIn] = Field(
         [],
@@ -99,6 +109,7 @@ class FunctionInputs(IOBase):
 
 
 class FunctionOutputs(IOBase):
+    """The Outputs of a Function"""
 
     parameters: List[FunctionParameterOut] = Field(
         [],
@@ -112,7 +123,7 @@ class FunctionOutputs(IOBase):
 
 
 class Function(BaseModel):
-    """A function with a single command."""
+    """A Function with a single command"""
 
     name: str = Field(
         ...,
@@ -145,7 +156,15 @@ class Function(BaseModel):
 
     @staticmethod
     def validate_referenced_values(input_names: List[str], variables: List):
-        """Validate referenced values"""
+        """Validate referenced values
+
+        Arguments:
+            input_names {List[str]} -- A list of acceptable names to reference
+            variables {List} -- A list of referenced value strings ("x.y.z")
+
+        Raises:
+            ValueError: One of the reference variables is invalid
+        """
         if not variables:
             return
 
@@ -242,8 +261,12 @@ class Function(BaseModel):
         return v
 
     @property
-    def artifacts(self):
-        """List of workflow artifacts."""
+    def artifacts(self) -> List[FunctionArtifact]:
+        """List of workflow artifacts
+
+        Returns:
+            List[FunctionArtifact] -- A list of Input and Output artifacts from a function
+        """
         artifacts = []
 
         if self.inputs and self.inputs.artifacts:

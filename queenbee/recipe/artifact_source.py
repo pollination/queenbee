@@ -2,11 +2,6 @@
 
 ArtifactSource is a configuration to a source system to acquire artifacts from.
 
-Queenbee accepts three types of locations:
-
-    1. Local: The machine where the workflow is running on local file system
-    2. HTTP: A web http to a website or an API for example
-    3. S3: An S3 bucket
 """
 from typing import Dict, List
 from enum import Enum
@@ -47,11 +42,10 @@ class ArtifactSource(BaseModel):
 class ProjectFolderSource(ArtifactSource):
     """Project Folder Source
 
-    This is the folder a workflow will use as it's root path when running a simulation.
-    When run on a local machine (using queenbee-luigi for example) the root path should
-    be a path on the user's machine.
-    If running on the Pollination platform the `root` value is ignored and the data is
-    persisted to a run specific folder in S3 within the Pollination backend.
+    This is the path to a folder where files and folders can be sourced. In the context
+    of a desktop run Workflow this folder will correspond to a local folder. In the 
+    context of a workflow run on Pollination this folder will correspond to a Project scoped
+    folder.
     """
     type: Enum('ProjectFolderSource', {'type': 'project-folder'})
 

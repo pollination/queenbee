@@ -5,7 +5,8 @@ import os
 import re
 
 
-def _check_list(lst, folder):
+def _check_list(lst: list, folder: str):
+    # TODO: Ask Mostapha for docs
     for item in lst:
         if isinstance(item, list):
             _check_list(item, folder)
@@ -13,12 +14,15 @@ def _check_list(lst, folder):
             _import_dict_data(item, folder)
 
 
-def _import_dict_data(dictionary, folder):
-    """find import_from keys if any.
+def _import_dict_data(dictionary: dict, folder: str) -> dict:
+    """find import_from keys if any
 
-    Args:
-        dictionary: Input dictionary to be parsed.
-        folder: Starting folder for relative paths in dictionary.
+    Arguments:
+        dictionary {dict} -- Input dictionary to be parsed
+        folder {str} -- Starting folder for relative paths in dictionary
+
+    Returns:
+        dict -- a dictionary with imported pointed data
     """
 
     for key, value in dictionary.items():
@@ -43,16 +47,16 @@ def _import_dict_data(dictionary, folder):
     return dictionary
 
 
-def parse_file(input_file):
+def parse_file(input_file: str) -> dict:
     """Parse queenbee objects from an input JSON or YAML file.
 
     This method will replace 'import_from' keys with the content from files recursively.
 
     Args:
-        input_file: A YAML or JSON input file.
+        input_file {str} -- A YAML or JSON input file.
 
     Returns:
-        The content of the input file as a dictionary.
+        dict -- The content of the input file as a dictionary.
     """
     input_file = os.path.abspath(input_file)
 
@@ -75,21 +79,44 @@ def parse_file(input_file):
     return _import_dict_data(data, folder)
 
 
-def parse_double_quotes_vars(input):
-    """Parse values between {{ }}."""
+def parse_double_quotes_vars(input: str) -> list:
+    """Parse values between {{ }}
+
+    Arguments:
+        input {str} -- A string to parse doubled quoted vars from
+
+    Returns:
+        list -- A list of matched substrings (empty list if None)
+    """
     pattern = r"{{\s*([_a-zA-Z0-9.\-\$#\?]*)\s*}}"
     match = re.findall(pattern, input, flags=re.MULTILINE)
     return match
 
 
-def parse_double_quote_workflow_vars(input):
-    """Parse values between {{ workflow. }}."""
+def parse_double_quote_workflow_vars(input: str) -> list:
+    """Parse values between {{workflow.*}}
+
+    Arguments:
+        input {str} -- A string to parse doubled quoted vars from
+
+    Returns:
+        list -- A list of matched substrings (empty list if None)
+    """ 
     pattern = r"{{\s*(workflow\.[_a-zA-Z0-9.\-\$#\?]*)\s*}}"
     match = re.findall(pattern, input, flags=re.MULTILINE)
     return match
 
 
-def replace_double_quote_vars(text, key, replace):
-    """Take an input string with template keys and replace them"""
+def replace_double_quote_vars(text: str, key: str, replace: str) -> str:
+    """Take an input string with template keys and replace them
+
+    Arguments:
+        text {str} -- The string to replace values from
+        key {str} -- The key to match and replace
+        replace {str} -- The value to replace the matched key with
+
+    Returns:
+        str -- A string with replaced substrings
+    """
     pattern = r"{{\s*" + key + r"\s*}}"
     return re.sub(pattern, replace, text)

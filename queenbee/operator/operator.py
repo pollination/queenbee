@@ -10,6 +10,7 @@ from .metadata import MetaData
 
 
 class DockerConfig(BaseModel):
+    """Operator Configuration to run in a Docker container"""
 
     image: str = Field(
         ...,
@@ -29,11 +30,13 @@ class DockerConfig(BaseModel):
 
 
 class LocalConfig(BaseModel):
+    """Operator Configuration to run on a desktop"""
 
     pass
 
 
 class Config(BaseModel):
+    """Operator configuration to schedule functions on a desktop or in other contexts (ie: Docker)"""
 
     docker: DockerConfig = Field(
         ...,
@@ -46,10 +49,10 @@ class Config(BaseModel):
     )
 
 class Operator(BaseModel):
-    """Task operator.
+    """A Queenbee Operator
 
-    A task operator includes the information for executing tasks from command line
-    or in a container.
+    An Operator contains runtime configuration for a Command Line Interface (CLI) and
+    a list of functions that can be executed using this CLI tool.
     """
     
     metadata: MetaData = Field(
@@ -69,12 +72,41 @@ class Operator(BaseModel):
     )
 
     @validator('functions')
-    def sort_list(cls, v):
+    def sort_list(cls, v: list) -> list:
+        """Sort functions list by name
+
+        Arguments:
+            v {list} -- Unsorted list of functions
+
+        Returns:
+            list -- Sorted list of functions
+        """
         v.sort(key=lambda x: x.name)
         return v
 
     @classmethod
     def from_folder(cls, folder_path: str):
+        """Generate an Operator from a folder
+
+        Note:
+            Here is an example of an Operator folder:
+            ::
+
+                .
+                ├── functions
+                │   ├── function-1.yaml
+                │   ├── function-2.yaml
+                │   ├── ....yaml
+                │   └── function-n.yaml
+                ├── config.yaml
+                └── operator.yaml
+
+        Arguments:
+            folder_path {str} -- Path to the folder
+
+        Returns:
+            Operator -- An operator
+        """
         meta_path = os.path.join(folder_path, 'operator.yaml')
         config_path = os.path.join(folder_path, 'config.yaml')
         functions_path = os.path.join(folder_path, 'functions')       
@@ -100,6 +132,24 @@ class Operator(BaseModel):
 
 
     def to_folder(self, folder_path: str):
+        """Write an Operator to a folder
+
+        Note:
+            Here is an example of an Operator folder:
+            ::
+
+                .
+                ├── functions
+                │   ├── function-1.yaml
+                │   ├── function-2.yaml
+                │   ├── ....yaml
+                │   └── function-n.yaml
+                ├── config.yaml
+                └── operator.yaml
+
+        Arguments:
+            folder_path {str} -- Path to write the folder to
+        """
         self.metadata.to_yaml(os.path.join(folder_path, 'operator.yaml'))
         self.config.to_yaml(os.path.join(folder_path, 'config.yaml'))
 

@@ -3,9 +3,10 @@ from pydantic import Field, validator
 
 from ..recipe import BakedRecipe
 from .arguments import Arguments, ArgumentParameter, ArgumentArtifact
-
+from .status import WorkflowStatus
 
 class Workflow(BakedRecipe):
+    """A Workflow is a Baked Recipe with some arguments that will be used to execute the recipe"""
 
     labels: Dict = Field(
         None,
@@ -18,17 +19,28 @@ class Workflow(BakedRecipe):
         description='Input arguments for this workflow'
     )
 
+    status: WorkflowStatus = Field(
+        None,
+        description='The status of the workflow'
+    )
+
     @validator('arguments', always=True)
     def check_entrypoint_inputs(cls, v, values):
+        """Check the arguments match the recipe entrypoint inputs"""
         flow = values.get('flow')
         digest = values.get('digest')
 
         dag = cls.dag_by_name(flow, f'{digest}/main')
 
-        artifacts = v.artifacts
-        parameters = v.parameters
-
         if dag.inputs is not None:
+
+            artifacts = []
+            parameters = []
+
+            if v is not None:
+                artifacts = v.artifacts
+                parameters = v.parameters
+
             for parameter in dag.inputs.parameters:
                 if parameter.required:
                     exists = next(filter(lambda x: x.name == parameter.name, parameters), None)
@@ -48,6 +60,18 @@ class Workflow(BakedRecipe):
         arguments: Arguments = Arguments(),
         labels: Dict = {}
     ):
+        """Generate a workflow from a Baked Recipe
+
+        Arguments:
+            recipe {BakedRecipe} -- A Baked Recipe
+
+        Keyword Arguments:
+            arguments {Arguments} -- Workflow arguments (default: {Arguments()})
+            labels {Dict} -- A dictionary of labels used to mark/differentiate a workflow (default: {{}})
+
+        Returns:
+            Workflow -- A workflow object
+        """
         input_dict = recipe.to_dict()
         input_dict['arguments'] = arguments.to_dict()
         input_dict['labels'] = labels

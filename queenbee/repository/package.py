@@ -22,6 +22,7 @@ def reset_tar(tarinfo: TarInfo) -> TarInfo:
 
 
 class ResourceVersion(BaseModel):
+    """A Metadata object to distinguish a specific resource version within a repository index"""
 
     url: str
 
@@ -31,7 +32,21 @@ class ResourceVersion(BaseModel):
 
     @classmethod
     def from_resource(cls, resource: Union[Operator, Recipe], package_path: str = None, created: datetime = None):
+        """Generate a Resource Version from a resource
 
+        Arguments:
+            resource {Union[Operator, Recipe]} -- A resource to be versioned (operator or recipe)
+
+        Keyword Arguments:
+            package_path {str} -- The path to the packaged resource manifest, will be `<resource-name>-<resource_version>.tgz` if not specified (default: {None})
+            created {datetime} -- When version was generated (default: {None})
+
+        Raises:
+            ValueError: The resource is invalid
+
+        Returns:
+            ResourceVersion -- A resource version object
+        """
         if package_path is None:
             if isinstance(resource, Operator):
                 base_url = 'operators'
@@ -55,8 +70,23 @@ class ResourceVersion(BaseModel):
 
 
     @classmethod
-    def _package_resource(cls, resource, repo_folder: str, path_to_readme: str = None, overwrite: bool = False):
-        
+    def _package_resource(cls, resource: Union[Operator, Recipe], repo_folder: str, path_to_readme: str = None, overwrite: bool = False):
+        """Package a resource into a gzipped tar archive
+
+        Arguments:
+            resource {Union[Operator, Recipe]} -- A resource to be packaged (operator or recipe)
+            repo_folder {str} -- Path to the repository folder
+
+        Keyword Arguments:
+            path_to_readme {str} -- Path to the resource README.md file if it exists (default: {None})
+            overwrite {bool} -- Overwrite a package with the same name (default: {False})
+
+        Raises:
+            ValueError: Failed to create the package
+
+        Returns:
+            ResourceVersion -- A resource version object
+        """
         resource_version = cls.from_resource(resource)
 
         resource.to_json('resource.json')
@@ -96,6 +126,14 @@ class ResourceVersion(BaseModel):
 
     @classmethod
     def from_package(cls, package_path: str):
+        """Generate a resource version from a packaged resource
+
+        Arguments:
+            package_path {str} -- Path to the package
+
+        Returns:
+            ResourceVersion -- A resource version object
+        """
         file_path = os.path.abspath(package_path)
 
         tar_file = TarFile.open(file_path)
@@ -107,7 +145,15 @@ class ResourceVersion(BaseModel):
         return cls.parse_raw(version_bytes)
 
     @staticmethod
-    def path_to_readme(folder_path: str):
+    def path_to_readme(folder_path: str) -> str:
+        """Infer the path to the readme within a folder
+
+        Arguments:
+            folder_path {str} -- Path to the folder where a readme should be found
+
+        Returns:
+            str -- Path to the found readme (or None if no readme is found)
+        """
         path_to_readme = None
 
         readme_pattern = r'^readme\.md$'
@@ -121,13 +167,39 @@ class ResourceVersion(BaseModel):
 
 
 class OperatorVersion(ResourceVersion, OperatorMetadata):
+    """A version of an Operator"""
 
     @classmethod
     def package_resource(cls, resource: Operator, repo_folder: str, path_to_readme: str = None, overwrite: bool = False):
+        """Package an Operator into a gzipped tar file
+
+        Arguments:
+            resource {Operator} -- An operator
+            repo_folder {str} -- Path to the repository folder where the operator package is saved
+
+        Keyword Arguments:
+            path_to_readme {str} -- Path to the operator README.md file if it exists (default: {None})
+            overwrite {bool} -- Overwrite an operator with the same name (default: {False})
+
+        Returns:
+            OperatorVersion -- An operator version object
+        """
         return cls._package_resource(resource=resource, repo_folder=repo_folder, path_to_readme=path_to_readme, overwrite=overwrite)
 
     @classmethod
     def package_folder(cls, folder_path: str, repo_folder: str, overwrite: bool = True):
+        """Package an Operator from its folder into a gzipped tar file
+
+        Arguments:
+            folder_path {str} -- Path to the folder where the Operator is defined
+            repo_folder {str} -- Path to the repository folder where the operator package is saved
+
+        Keyword Arguments:
+            overwrite {bool} -- Overwrite an operator with the same name (default: {False})
+
+        Returns:
+            OperatorVersion -- An operator version object
+        """
         resource = Operator.from_folder(folder_path=folder_path)
 
         return cls.package_resource(
@@ -143,6 +215,20 @@ class RecipeVersion(ResourceVersion, RecipeMetadata):
 
     @classmethod
     def package_resource(cls, resource: Recipe, repo_folder: str, check_deps: bool = True, path_to_readme: str = None, overwrite: bool = False):
+        """Package an Recipe into a gzipped tar file
+
+        Arguments:
+            resource {Recipe} -- An recipe
+            repo_folder {str} -- Path to the repository folder where the recipe package is saved
+
+        Keyword Arguments:
+            check_deps {bool} -- Fetch the dependencies from their source and validate the recipe by baking it (default: {True})
+            path_to_readme {str} -- Path to the recipe README.md file if it exists (default: {None})
+            overwrite {bool} -- Overwrite an recipe with the same name (default: {False})
+
+        Returns:
+            RecipeVersion -- An recipe version object
+        """
         if check_deps:
             BakedRecipe.from_recipe(resource)
         
@@ -150,6 +236,19 @@ class RecipeVersion(ResourceVersion, RecipeMetadata):
 
     @classmethod
     def package_folder(cls, folder_path: str, repo_folder: str, check_deps: bool = True, overwrite: bool = True):
+        """Package an Recipe from its folder into a gzipped tar file
+
+        Arguments:
+            folder_path {str} -- Path to the folder where the Recipe is defined
+            repo_folder {str} -- Path to the repository folder where the Recipe package is saved
+
+        Keyword Arguments:
+            check_deps {bool} -- Fetch the dependencies from their source and validate the recipe by baking it (default: {True})
+            overwrite {bool} -- Overwrite an recipe with the same name (default: {False})
+
+        Returns:
+            RecipeVersion -- An recipe version object
+        """
         resource = Recipe.from_folder(folder_path=folder_path)
 
         return cls.package_resource(

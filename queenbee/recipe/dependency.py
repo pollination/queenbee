@@ -20,6 +20,7 @@ class DependencyType(str, Enum):
 
 
 class Dependency(BaseModel):
+    """Configuration to fetch a Recipe or Operator that a Recipe depends on"""
     
     type: DependencyType = Field(
         ...,
@@ -61,12 +62,22 @@ class Dependency(BaseModel):
 
 
     @property
-    def is_locked(self):
+    def is_locked(self) -> bool:
+        """Indicates whether the dependency is locked to a specific digest
+
+        Returns:
+            bool -- Boolean value to indicate whether the dependency is locked
+        """
         return self.digest is not None
 
 
     @property
-    def ref_name(self):
+    def ref_name(self) -> str:
+        """The name by which this dependency is referred to in the Recipe
+
+        Returns:
+            str -- Either the dependency name or its alias
+        """
         if self.alias is not None:
             return self.alias
         return self.name
@@ -74,6 +85,11 @@ class Dependency(BaseModel):
     
 
     def _fetch_index(self):
+        """Fetch the source repository index object
+
+        Returns:
+            RepositoryIndex -- A repository index
+        """
         from ..repository.index import RepositoryIndex
 
         if self.source.startswith('file:'):
@@ -90,6 +106,17 @@ class Dependency(BaseModel):
         return RepositoryIndex.parse_raw(raw_bytes)
     
     def fetch(self, verifydigest: bool = True) -> Tuple[bytes, str]:
+        """Fetch the dependency from its source
+
+        Keyword Arguments:
+            verifydigest {bool} -- If the dependency is locked, ensure the found manifest matches the saved digest (default: {True})
+
+        Raises:
+            ValueError: The dependency could not be found or was invalid
+
+        Returns:
+            Tuple[bytes, str] -- A JSON manifest of the dependency
+        """
 
         index = self._fetch_index()
 

@@ -8,6 +8,7 @@ from ..recipe.artifact_source import HTTPSource, S3Source, ProjectFolderSource
 
 
 class ArgumentArtifact(BaseModel):
+    """A workflow Artifact Argument"""
 
     name: str = Field(
         ...,
@@ -21,6 +22,7 @@ class ArgumentArtifact(BaseModel):
 
 
 class ArgumentParameter(BaseModel):
+    """A workflow Parameter Argument"""
 
     name: str = Field(
         ...,
@@ -33,6 +35,7 @@ class ArgumentParameter(BaseModel):
     )
 
 class Arguments(IOBase):
+    """Workflow Arguments"""
 
     artifacts: List[ArgumentArtifact] = Field(
         [],

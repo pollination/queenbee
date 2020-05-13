@@ -24,29 +24,57 @@ _keep_name_order_in_yaml()
 
 
 class BaseModel(PydanticBaseModel):
-    """BaseModel with functionality to return the object as a yaml string."""
+    """BaseModel with functionality to return the object as a yaml string
+
+    """
 
     def yaml(self, exclude_unset=False):
+        """Get a YAML string from the model
+
+        Keyword Arguments:
+            exclude_unset {bool} -- Boolean toggle to add or remove any unset/None values (default: {False})
+
+        Returns:
+            str -- A yaml string representing the model
+        """
         return yaml.dump(
             json.loads(self.json(by_alias=True, exclude_unset=exclude_unset)),
             default_flow_style=False
         )
 
     def to_dict(self, exclude_unset=False, by_alias=True):
+        """Get a dictionary from the model
+
+        Keyword Arguments:
+            exclude_unset {bool} -- Boolean toggle to add or remove any unset/None values (default: {False})
+            by_alias {bool} -- Boolean toggle to use attribute alias or attribute names as key (default: {True})
+
+        Returns:
+            dict -- A python dictionary representing the model
+        """
         return json.loads(self.json(by_alias=by_alias, exclude_unset=exclude_unset))
 
     def to_json(self, filepath, indent=None):
-        """Write workflow to a JSON file.
+        """Write a JSON file of the model
 
-        Args:
-            filepath(str): Full path to JSON file.
+        Arguments:
+            filepath {str} -- Path to the file to be written
+
+        Keyword Arguments:
+            indent {int} -- indent amount (default: {None})
         """
-        # workflow = self.to_dict(by_alias=True)
         with open(filepath, 'w') as file:
             file.write(self.json(by_alias=True, exclude_unset=False, indent=indent))
 
     def to_yaml(self, filepath, exclude_unset=False):
-        """Write workflow to a yaml file."""
+        """Write a YAML file of the model
+
+        Arguments:
+            filepath {str} -- Path to the file to be written
+
+        Keyword Arguments:
+            exclude_unset {bool} -- Boolean toggle to add or remove any unset/None values (default: {False})
+        """
         content = self.yaml(exclude_unset=exclude_unset)
 
         with open(filepath, 'w') as out_file:
@@ -54,10 +82,15 @@ class BaseModel(PydanticBaseModel):
 
     @classmethod
     def from_file(cls, filepath):
-        """Create an object from YAML or JSON file."""
-        # load file with place_holders
+        """Create a model from a file
+
+        Arguments:
+            filepath {str} -- Path to the file to read (can be JSON or YAML)
+
+        Returns:
+            cls -- An instance of the pydantic class
+        """
         data = parse_file(filepath)
-        # now use pydantic to load all the info
         return cls.parse_obj(data)
 
     def __repr__(self):
@@ -65,12 +98,24 @@ class BaseModel(PydanticBaseModel):
 
     @property
     def __hash__(self):
+        """Return a model hash
+
+        Returns:
+            str -- A hash/digest of the model
+        """
         return hashlib.sha256(
             self.json(by_alias=True, exclude_unset=False).encode('utf-8')
             ).hexdigest()
 
     def _referenced_values(self, var_names: List[str]) -> Dict[str, List[str]]:
-        """Get all referenced values specified by var name"""
+        """Get all referenced values specified by var name
+
+        Arguments:
+            var_names {List[str]} -- List of class attribute names to check for referenced values
+
+        Returns:
+            Dict[str, List[str]] -- A dictionary where each key corresponds to a class attribute indexing a list of referenced values
+        """
         ref_values = {}
 
         for name in var_names:
@@ -83,9 +128,3 @@ class BaseModel(PydanticBaseModel):
                     ref_values[name] = ref_var
         
         return ref_values
-
-
-def find_dup_items(values: List) -> List:
-    """Find duplicate items in a list."""
-    dup = [t for t, c in collections.Counter(values).items() if c > 1]
-    return dup
