@@ -62,33 +62,6 @@ class ProjectFolderSource(ArtifactSource):
         return self._referenced_values(values)
 
 
-class SimulationFolder(ArtifactSource):
-    """Simulation Folder Source to pull artifacts from
-
-    Refer to another simulation on pollination cloud and pull data from its
-    project folder. This can be used to loosely chain workflows together.
-    """
-
-
-    type: Enum('SimulationFolder', {'type': 'simulation-folder'})
-
-
-    workflow_id: str = Field(
-        ...,
-        description='The ID of the workflow to pull artifacts from'
-    )
-
-    path: str = Field(
-        ...,
-        description='The path to the artifact within the project folder of the referenced workflow'
-    )
-
-    @property
-    def referenced_values(self) -> Dict[str, List[str]]:
-        values = [self.workflow_id, self.path]
-
-        return self._referenced_values(values)
-
 class HTTPSource(ArtifactSource):
     """HTTPSource
 

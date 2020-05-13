@@ -132,24 +132,3 @@ def validate_ref_variable_format(value: str) -> bool:
             ' for more information.'
         raise ValueError(msg)
     return True
-
-
-def validate_function_ref_variables(value, input_names):
-    """Validate referenced values in functions."""
-    # check formatting is correct
-    add_info = ''
-    value = value.replace('{{', '').replace('}}', '').strip()
-    if value.startswith('inputs.'):
-        add_info = _validate_inputs_outputs_var_format(value)
-        if not add_info:
-            # check the value exist in inputs
-            name = value.split('.')[-1]
-            if name not in input_names:
-                add_info = f'Invalid reference: {value}. Cannot find {name} in inputs.'
-    else:
-        add_info = 'Only "inputs" variables are allowed in functions.'
-    msg = f'Invalid Queenbee variable for functions: {value}.\n{add_info} ' \
-        'See https://github.com/ladybug-tools/queenbee#variables' \
-        ' for more information.'
-    if add_info != '':
-        raise ValueError(msg)
