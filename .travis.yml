@@ -33,11 +33,13 @@ jobs:
     script:
     - pip install -U .
     - python ./docs.py
+    - sphinx-apidoc -f -e -d 4 -o ./docs/modules ./queenbee
+    - sphinx-build -b html ./docs ./docs/_build
     deploy:
       provider: pages
       skip_cleanup: true
       github-token: $GH_TOKEN
       keep-history: false
-      local_dir: docs/
+      local_dir: docs/_build/
       on:
         branch: master
