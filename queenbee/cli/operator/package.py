@@ -19,7 +19,19 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 @click.option('-r', '--repository', help='Path to the repository hosting this package', show_default=True, default='.', type=click.Path(exists=True))
 @click.option('-f', '--force', help='Boolean toggle to overwrite existing package with same name and version', default=False, type=bool, is_flag=True)
 def package(path, repository, force):
-    """package an operator"""
+    """package an operator
+
+    This command helps your package operators and add them to repository folders. A packaged
+    operator is essentially a gzipped version of its folder.
+
+    You can package an operator in a specific folder or repository by using the ``--repository``
+    flag::
+
+        queenbee operator package path/to/my/operator --repository path/to/my/repository
+
+    If you do not specify a ``--repository`` the command will package the operator in the
+    directory the command is invoked from (ie: ``.``)
+    """
 
     try:
         OperatorVersion.package_folder(

@@ -17,7 +17,10 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 @click.command('lint')
 @click.argument('path', type=click.Path(exists=True))
 def lint(path):
-    """lint an operator"""
+    """lint an operator
+    
+    Use this command to check that an operator folder is valid.
+    """
 
     try:
         Operator.from_folder(path)
@@ -27,3 +30,5 @@ def lint(path):
         raise click.ClickException(error)
     except Exception as error:
         raise error
+
+    click.echo('Your operator\'s looking good!')

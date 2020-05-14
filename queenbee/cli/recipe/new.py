@@ -21,8 +21,51 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
     help='The path at which to create the new recipe. Defaults to the current directory if not specified.'
 )
 def new(name, path):
-    """create a new recipe folder"""
+    """create a new recipe folder
+    
+    Use this command to create a new recipe. The folder will compile to the following
+    recipe definition::
 
+        \b
+        metadata:
+            name: <input-name>
+            version: 0.1.0
+        dependencies:
+        - type: operator
+        name: whalesay
+        version: 0.1.0
+        source: https://pollination.github.io/shed # Replace with name of repo
+        flow:
+        - name: main
+        inputs:
+            parameters:
+            - name: thing-to-say
+            default: hi
+            description: What the whale will say
+        tasks:
+        - name: say-something
+            template: whalesay/say-hi
+            arguments:
+            parameters:
+            - name: message
+                from:
+                type: inputs
+                variable: thing-to-say
+            outputs:
+            parameters:
+            - name: whale-said
+
+        outputs:
+            parameters:
+            - name: what-the-whale-said
+            from:
+                type: tasks
+                name: say-something
+                variable: whale-said  
+
+    You can indicate where you want to create the recipe folder by
+    specifying the ``--path`` option.
+    """
     folder_path = name
 
     if path is not None:

@@ -19,7 +19,11 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 @click.option('-f', '--force', help='Overwrite existing package entries is digest hash does not match', default=False, type=bool, is_flag=True)
 @click.option('-s', '--skip', help='Skip any packages that would otherwise be overwritten', default=False, type=bool, is_flag=True)
 def index(path, index_path, merge, force, skip):
-    """index the repository folder"""
+    """index the repository folder
+    
+    Use this command to crawl a repository folder and update/regenerate an
+    ``index.json`` file. 
+    """
 
     if index_path is None:
         index_path = os.path.join(path, 'index.json')

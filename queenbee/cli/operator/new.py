@@ -21,7 +21,39 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
     help='The path at which to create the new operator. Defaults to the current directory if not specified.'
 )
 def new(name, path):
-    """create a new operator folder"""
+    """create a new operator folder
+    
+    Use this command to create a new operator. The folder will compile to the following
+    operator definition::
+
+        \b
+        metadata:
+            name: <input-name>
+            version: 0.1.0
+        config:
+        docker:
+            image: docker/whalesay:latest
+            workdir: /cowsay
+        functions:
+        - name: say-hi
+        description: Make the whale say something!
+        inputs:
+            parameters:
+            - name: message
+            default: hi
+            description: What the whale will say
+        command: 'cowsay {{inputs.parameters.message}} | tee /tmp/hello_world.txt'
+        outputs:
+            parameters:
+            - name: whale-said
+            path: /tmp/hello_world.txt
+            artifacts:
+            - name: whale-said-file
+            path: /tmp/hello_world.txt   
+
+    You can indicate where you want to create the operator folder by
+    specifying the ``--path`` option.
+    """
 
     folder_path = name
 

@@ -19,8 +19,27 @@ except ImportError:
 @click.option('-f', '--force', help='Boolean toggle to overwrite existing package with same name and version', default=False, type=bool, is_flag=True)
 @click.option('--no-update', help='Do not fetch fresh versions of dependencies before packaging', default=False, type=bool, is_flag=True)
 def package(path, repository, force, no_update):
-    """package a recipe"""
+    """package an recipe
 
+    This command helps your package recipes and add them to repository folders. A packaged
+    recipe is essentially a gzipped version of its folder.
+
+    You can package an recipe in a specific folder or repository by using the ``--repository``
+    flag::
+
+        queenbee recipe package path/to/my/recipe --repository path/to/my/repository
+
+    If you do not specify a ``--repository`` the command will package the recipe in the
+    directory the command is invoked from (ie: ``.``)
+
+    You can also decide to not pull fresh dependencies in your ``.dependencies`` folder::
+
+        queenbee recipe package path/to/my/recipe --no-update
+
+    This will ensure that when compiling dependencies into a Baked Recipe to validate your
+    recipe, the command will not wipe your ``.dependencies`` folder and overwrite with fresh
+    dependencies.
+    """
     path = os.path.abspath(path)
     repository = os.path.abspath(repository)
     os.chdir(path)

@@ -15,7 +15,17 @@ except ImportError:
 @click.argument('path', type=click.Path(exists=True))
 @click.option('-u', '--dependency-update', help='Fetch fresh dependencies from remote sources before running checks', default=False, type=bool, is_flag=True)
 def lint(path, dependency_update):
-    """lint a recipe"""
+    """lint a recipe
+
+    Use this command to check that a recipe folder is valid.
+
+    You can choose to refresh the dependencies saved in you ``.dependencies`` folder by
+    using the ``--dependency-update`` or ``-u`` flag::
+
+        queenbee recipe lint path/to/my/recipe -u
+
+    Note that if you have not run the ``install`` command this operation will fail.
+    """
 
     # TODO: add an exception catch for cases where some dependencies are missing from the deps folder
 

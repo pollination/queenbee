@@ -11,7 +11,28 @@ except ImportError:
 @click.group('repository')
 @click.pass_context
 def main(ctx):
-    """manage package repositories"""
+    """manage package repositories
+    
+    A Queenbee repository is a folder containing packaged Operators and Recipes.
+    This folder contains an Index file (``index.json``) that can be used to find specific packages
+    as well as track some metadata such as version, creation date and most importantly
+    the ``hash digest`` of the package.
+
+    A repository folder should be written using a specific folder structure as
+    shown below::
+
+        \b
+        .
+        ├── operators
+        │   ├── some-operator-1.0.0.tgz
+        │   ├── some-operator-1.3.5.tgz
+        │   └── another-operator-1.2.3.tgz
+        ├── recipes
+        │   └── my-recipe-0.0.1.tgz
+        └── index.json
+        
+    You can use the commands documented below to help you manage a repository
+    """
     pass
 
 main.add_command(index)
