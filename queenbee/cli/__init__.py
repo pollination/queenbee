@@ -15,6 +15,8 @@ from .operator import main as operator
 from .recipe import main as recipe
 from .repository import main as repository
 
+MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
+
 class Context():
 
     @property
@@ -25,22 +27,31 @@ class Context():
 
 
 @with_plugins(iter_entry_points('queenbee.plugins'))
-@click.group()
+@click.group(invoke_without_command=True)
 @click.version_option()
 @click.pass_context
 def main(ctx):
-    """
-    \b
-                   ____                        ____            
-    _  _          / __ \\                      |  _ \\           
-   | )/ )        | |  | |_   _  ___  ___ _ __ | |_) | ___  ___ 
-\\\\ |//,' __      | |  | | | | |/ _ \\/ _ \\ '_ \\|  _ < / _ \\/ _ \\
-(")(_)-"()))=-   | |__| | |_| |  __/  __/ | | | |_) |  __/  __/
-   (\\\\            \\___\\_\\\\__,_|\\___|\\___|_| |_|____/ \\___|\\___|
+    """ The Queenbee Resource Manager
+    
+    Making new things:\n
+        - queenbee operator new\n
+        - queenbee recipe new\n
+    
+    Packaging things:\n
+        - queenbee operator package PATH/TO/OPERATOR\n
+        - queenbee recipe package PATH/TO/RECIPE\n
 
-
+    Checking things are ok:\n
+        - queenbee operator lint PATH/TO/OPERATOR\n
+        - queenbee recipe lint PATH/TO/RECIPE\n
+   
+    
     """
-    ctx.obj = Context()
+    if ctx.invoked_subcommand is None:
+        with open(os.path.join(MODULE_PATH, 'assets/queenbee-art.txt'), 'r') as f:
+            queenbee_art = f.read()
+        click.echo(queenbee_art)
+        click.echo(ctx.command.get_help(ctx))
 
 
 @main.command('viz')
