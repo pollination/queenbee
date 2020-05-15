@@ -37,6 +37,7 @@ functions:
     artifacts:
     - name: scene-file
       path: scene.oct
+
 - name: 10000-lux-sky
   description: Generates a 10000 lux sky
   command: honeybee radiance sky illuminance 100000
@@ -45,6 +46,7 @@ functions:
     - name: sky
       description: The resulting sky object
       path: sky.sky
+
 - name: post-process
   description: Post process your results and $$$
   inputs:
@@ -61,6 +63,7 @@ functions:
       path: output/max
     - name: daylight-factor-average
       path: output/avg
+
 - name: ray-tracing
   description: Run ray tracing using some input data!
   inputs:
@@ -78,6 +81,7 @@ functions:
     artifacts:
     - name: result-file
       path: grid.res
+      
 - name: split-grid
   inputs:
     parameters:
