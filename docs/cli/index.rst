@@ -13,18 +13,13 @@ You can install the `queenbee` cli tool using the following command::
 
       pip install -u queenbee\[cli\]
 
-CLI
-----
-.. click:: queenbee.cli:main
-   :prog: queenbee
-
-
 Commands
---------
-
+------------
 .. toctree::
    :maxdepth: 1
 
+   main
    operator
    recipe
    repository
+
