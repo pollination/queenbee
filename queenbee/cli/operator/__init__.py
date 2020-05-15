@@ -41,7 +41,7 @@ def main(ctx):
 
         queenbee operator new test-operator
 
-    Make some changes to the operator, add new dependencies etc... and finally
+    Make some changes to the operator, change container config etc... and finally
     Check everything is working as expected::
 
         queenbee operator lint test-operator

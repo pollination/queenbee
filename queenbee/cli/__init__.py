@@ -33,19 +33,32 @@ class Context():
 def main(ctx):
     """ The Queenbee Resource Manager
     
-    Making new things:\n
-        - queenbee operator new\n
-        - queenbee recipe new\n
-    
-    Packaging things:\n
-        - queenbee operator package PATH/TO/OPERATOR\n
-        - queenbee recipe package PATH/TO/RECIPE\n
+    Making new things::
 
-    Checking things are ok:\n
-        - queenbee operator lint PATH/TO/OPERATOR\n
-        - queenbee recipe lint PATH/TO/RECIPE\n
-   
+        queenbee operator new
+        
+
+        queenbee recipe new
     
+    
+    Packaging things::
+
+        queenbee operator package PATH/TO/OPERATOR
+        
+
+        queenbee recipe package PATH/TO/RECIPE
+
+
+    Checking things are ok::
+
+        queenbee operator lint PATH/TO/OPERATOR
+        
+
+        queenbee recipe lint PATH/TO/RECIPE
+   
+
+    You can use the commands documented below to help you manage queenbee objects
+
     """
     if ctx.invoked_subcommand is None:
         with open(os.path.join(MODULE_PATH, 'assets/queenbee-art.txt'), 'r') as f:
