@@ -15,7 +15,7 @@ except ImportError:
 
 @click.command('package')
 @click.argument('path', type=click.Path(exists=True))
-@click.option('-r', '--repository', help='Path to the repository hosting this package', show_default=True, default='.', type=click.Path(exists=True))
+@click.option('-r', '--repository', help='Path to the repository hosting this package', show_default=True, default='.', type=click.Path(exists=False))
 @click.option('-f', '--force', help='Boolean toggle to overwrite existing package with same name and version', default=False, type=bool, is_flag=True)
 @click.option('--no-update', help='Do not fetch fresh versions of dependencies before packaging', default=False, type=bool, is_flag=True)
 def package(path, repository, force, no_update):

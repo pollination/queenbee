@@ -46,16 +46,23 @@ class RepositoryIndex(BaseModel):
             RepositoryIndex -- An index generated from packages in the folder
         """
         index = cls.parse_obj({})
-        
-        for package in os.listdir(os.path.join(folder_path, 'operators')):
-            package_path = os.path.join(folder_path, 'operators', package)
-            resource_version = OperatorVersion.from_package(package_path)
-            index.index_operator_version(resource_version)
 
-        for package in os.listdir(os.path.join(folder_path, 'recipes')):
-            package_path = os.path.join(folder_path, 'recipes', package)
-            resource_version = RecipeVersion.from_package(package_path)
-            index.index_recipe_version(resource_version)
+        operators_folder = os.path.join(folder_path, 'operators')
+        recipes_folder = os.path.join(folder_path, 'recipes')
+
+        if os.path.exists(operators_folder):
+            for package in os.listdir(operators_folder):
+                package_path = os.path.join(folder_path, 'operators', package)
+                resource_version = OperatorVersion.from_package(package_path)
+                resource_version.url = os.path.join('operators', package)
+                index.index_operator_version(resource_version)
+
+        if os.path.exists(recipes_folder):
+            for package in os.listdir(recipes_folder):
+                package_path = os.path.join(folder_path, 'recipes', package)
+                resource_version = RecipeVersion.from_package(package_path)
+                resource_version.url = os.path.join('recipes', package)
+                index.index_recipe_version(resource_version)
 
         return index
 
@@ -137,9 +144,11 @@ class RepositoryIndex(BaseModel):
         resource_list = resource_dict.get(resource_version.name, [])
 
         if not overwrite:
-            match = filter(lambda x: x.version == resource_version.version, resource_list)
-            if next(match, None) is not None:
-                raise ValueError(f'Resource {resource_version.name} already has a version {resource_version.version} in the index')
+            match = next(filter(lambda x: x.version == resource_version.version, resource_list), None)
+            if match is not None:
+                if match.digest != resource_version.digest:
+                    raise ValueError(f'Resource {resource_version.name} already has a version {resource_version.version} in the index')
+                return resource_dict
 
         resource_list = list(filter(lambda x: x.version != resource_version.version, resource_list))
 

@@ -48,15 +48,7 @@ class ResourceVersion(BaseModel):
             ResourceVersion -- A resource version object
         """
         if package_path is None:
-            if isinstance(resource, Operator):
-                base_url = 'operators'
-            elif isinstance(resource, Recipe):
-                base_url = 'recipes'
-            else:
-                raise ValueError(f'resource should be an instance of Operator or Recipe, not: {type(resource)}')
-
-            full_name = f'{resource.metadata.name}-{resource.metadata.version}.tgz'
-            package_path = os.path.join(base_url, full_name)
+            package_path = f'{resource.metadata.name}-{resource.metadata.version}.tgz'
 
         if created is None:
             created = datetime.utcnow()
@@ -93,6 +85,8 @@ class ResourceVersion(BaseModel):
         resource_version.to_json('version.json')
 
         folder_path = os.path.abspath(repo_folder)
+
+        os.makedirs(folder_path, exist_ok=True)
 
         tar_path = os.path.join(
             folder_path,
