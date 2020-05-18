@@ -38,8 +38,17 @@ Schema
 
    <html close>
 
+OpenAPI Docs 
+-------------
+You can find the Open API Docs formatted by redoc `here </_static/redoc-operator.html#tag/operator_model>`_.
 
-You can find a link to the json schema definition `here </_static/schemas/operator-schema.json>`_
+OpenAPI Definition 
+-------------------
+You can find the OpenAPI JSON definition `here </_static/schemas/operator-openapi.json>`_.
+
+JSON Schema Definition 
+-----------------------
+You can find the JSON Schema definition `here </_static/schemas/operator-schema.json>`_.
 
 Examples
 --------
@@ -61,15 +70,24 @@ The operator below shows example values for every possible key in the Operator o
     :language: yaml
 
 
+Energy Plus
+^^^^^^^^^^^
+This operator is the one created when following the `Operator Creation Guide </guides/operator.html>`_. 
+
+
+..  literalinclude:: ../../tests/assets/operators/valid/energy-plus.yaml
+    :language: yaml
+
+
 Honeybee Radiance
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 This is an example operator called ``honeybee-radiance``. This operator uses the ``honeybee-radiance`` CLI in a Docker container
 which has radiance installed on it. Each function is templated with parameter inputs and explicitely indicates the artifacts (files)
 it expects to find at a certain path.
 
 .. Note::
 
-  The ``appVersion`` matches the docker container release tag.
+  The ``app_version`` matches the docker container release tag.
 
 ..  literalinclude:: ../../tests/assets/operators/valid/honeybee-radiance.yaml
     :language: yaml

@@ -77,7 +77,7 @@ language = None
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
-html_extra_path = ['redoc.html']
+html_extra_path = []
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = None
@@ -242,11 +242,34 @@ import json
 from queenbee._openapi import get_openapi
 from queenbee.operator import Operator
 from queenbee.recipe import Recipe
+from queenbee.workflow import Workflow
 
-openapi = get_openapi()
 
-with open('_static/schemas/openapi.json', 'w') as out_file:
-    json.dump(openapi, out_file, indent=2)
+with open('_static/schemas/workflow-openapi.json', 'w') as out_file:
+    json.dump(
+        get_openapi(schema_class=Workflow, title='Queenbee Workflow Schema', description='Schema documentation for Queenbee Workflows'),
+        out_file,
+        indent=2
+    )
+
+with open('_static/schemas/operator-openapi.json', 'w') as out_file:
+    json.dump(
+        get_openapi(schema_class=Operator, title='Queenbee Operator Schema', description='Schema documentation for Queenbee Operators'),
+        out_file,
+        indent=2
+    )
+
+with open('_static/schemas/recipe-openapi.json', 'w') as out_file:
+    json.dump(
+        get_openapi(schema_class=Recipe, title='Queenbee Recipe Schema', description='Schema documentation for Queenbee Recipes'),
+        out_file,
+        indent=2
+    )
+    json.dump(get_openapi(schema_class=Recipe), out_file, indent=2)
+
+
+with open('_static/schemas/workflow-schema.json', 'w') as out_file:
+    out_file.write(Workflow.schema_json())
 
 with open('_static/schemas/operator-schema.json', 'w') as out_file:
     out_file.write(Operator.schema_json())

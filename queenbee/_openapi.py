@@ -46,6 +46,7 @@ BASE_OPEN_API = {
 
 def get_openapi(
     *,
+    schema_class,
     title: str = None,
     version: str = None,
     openapi_version: str = "3.0.2",
@@ -65,7 +66,7 @@ def get_openapi(
     if description:
         open_api['info']['description'] = description
 
-    definitions = schema([Workflow], ref_prefix='#/components/schemas/')
+    definitions = schema([schema_class], ref_prefix='#/components/schemas/')
 
     # goes to tags
     tags = []

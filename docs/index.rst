@@ -11,8 +11,6 @@
    guides/index
    schemas/index
    cli/index
-   OpenAPI Docs </redoc.html#http://>
-   OpenAPI Definition </_static/schemas/openapi.json#http://>
    modules
 
 .. include:: welcome.rst

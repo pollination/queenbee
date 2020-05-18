@@ -720,7 +720,7 @@ if (typeof JSV === 'undefined') {
                 all.anyOf = s.anyOf;
             }
             
-            console.log(s);
+            // console.log(s);
 
             node = {
                 description: schema.description || s.description,
@@ -941,7 +941,7 @@ if (typeof JSV === 'undefined') {
          */
         click: function (d) {
             if(!JSV.labels[d.name]) {
-                console.log("clicked", d);
+                // console.log("clicked", d);
                 if (d3.event && d3.event.defaultPrevented) {return;} // click suppressed
                 d = JSV.toggleChildren(d);
                 JSV.update(d);

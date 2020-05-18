@@ -37,10 +37,25 @@ Schema
 
    <html close>
 
-You can find a link to the json schema definition `here </_static/schemas/recipe-schema.json>`_
+
+OpenAPI Docs 
+-------------
+You can find the Open API Docs formatted by redoc `here </_static/redoc-recipe.html#tag/recipe_model>`_.
+
+OpenAPI Definition 
+-------------------
+You can find the OpenAPI JSON definition `here </_static/schemas/recipe-openapi.json>`_.
+
+JSON Schema Definition 
+-----------------------
+You can find the JSON Schema definition `here </_static/schemas/recipe-schema.json>`_.
+
+
+Examples
+--------
 
 Minimal
--------
+^^^^^^^
 The minimal configuration for an recipe can be found below. The keys indicated here are the ones
 you **absolutely** have to fill in for this recipe to be validated by Queenbee.
 
@@ -49,7 +64,7 @@ you **absolutely** have to fill in for this recipe to be validated by Queenbee.
 
 
 Daylight-Factor Recipe
-----------------------
+^^^^^^^^^^^^^^^^^^^^^^
 This is an example recipe called ``daylight-factor``. It is used to run a daylight factor simulation and takes
 a ``model`` and an ``input-grid`` as artifact (file) inputs. A user can also optionally set the ``sensor-grid-count``
 and ``radiance-parameters`` parameters.
