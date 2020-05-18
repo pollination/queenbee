@@ -67,10 +67,10 @@ You can also access the [Schema Documentation](https://ladybug.tools/queenbee/re
     sphinx-build -b html ./docs ./docs/_build
     ```
 
-5. Preview Documentation. Run the following command from the `docs/_build/` directory:
+5. Preview Documentation:
 
     ```console
-    python -m http.server
+    python -m http.server --directory ./docs/_build/
     ```
 
-You can the see the documentation [here](http://localhost:8000)
+    Now you can see the documentation preview [here](http://localhost:8000)
