@@ -16,7 +16,7 @@ metadata:
 dependencies:
 - type: operator
   name: honeybee-radiance
-  hash: 72f50b844894fea1f15d694ac83dc9e6156a1e355692973aceb71c6facc2accd
+  hash: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048
   version: 1.2.3
   source: https://example.com/test-repo
 

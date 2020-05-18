@@ -1,11 +1,11 @@
 {
-  "generated": "2020-05-12T09:08:55.632900",
+  "generated": "2020-05-18T12:43:04.406184",
   "operator": {
     "honeybee-radiance": [
       {
         "name": "honeybee-radiance",
         "version": "1.2.3",
-        "appVersion": "2.3.2",
+        "app_version": "2.3.2",
         "keywords": [
           "honeybee",
           "radiance",
@@ -25,8 +25,8 @@
         "deprecated": null,
         "description": "An operator to run all things honeybee and radiance!",
         "url": "operators/honeybee-radiance-1.2.3.tgz",
-        "created": "2020-05-12T08:41:11.211497",
-        "digest": "72f50b844894fea1f15d694ac83dc9e6156a1e355692973aceb71c6facc2accd"
+        "created": "2020-05-18T12:40:19.074516",
+        "digest": "4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048"
       }
     ]
   },
@@ -52,8 +52,8 @@
         "description": "An awesome workflow to run daylight factor!",
         "license": null,
         "url": "recipes/daylight-factor-0.0.1.tgz",
-        "created": "2020-05-12T09:07:45.848063",
-        "digest": "9e300273d00c5d0d1d85862a0d668412dfd2962d1888afaede9b9a530239cca0"
+        "created": "2020-05-18T12:42:41.625401",
+        "digest": "f4056c9449190d09a3dc100d3a12ac7efc938a0c2e3e97a44bfc2665186e43ba"
       }
     ]
   }

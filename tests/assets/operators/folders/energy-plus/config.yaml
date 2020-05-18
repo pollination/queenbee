@@ -1,0 +1,3 @@
+docker:
+  image: nrel/energyplus:9.0.1
+  workdir: /var/simdata

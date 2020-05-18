@@ -1,0 +1,13 @@
+name: run-simulation
+description: Run an EnergyPlus simulation using a weather file and an idf
+inputs:
+  artifacts:
+  - name: weather
+    path: weather.epw
+  - name: idf
+    path: input.idf
+command: energyplus -w weather.epw -x -d simulation-outputs input.idf
+outputs:
+  artifacts:
+  - name: outputs
+    path: simulation-outputs

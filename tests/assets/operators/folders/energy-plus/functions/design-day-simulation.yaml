@@ -1,0 +1,11 @@
+name: design-day-simulation
+description: Run an EnergyPlus Design Day simulation using a weather file and an idf
+inputs:
+  artifacts:
+  - name: idf
+    path: input.idf
+command: energyplus -D -x -d simulation-outputs input.idf
+outputs:
+  artifacts:
+  - name: outputs
+    path: simulation-outputs
