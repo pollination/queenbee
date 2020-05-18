@@ -63,7 +63,14 @@ You can also access the [Schema Documentation](https://ladybug.tools/queenbee/re
 4. Generate Documentation:
 
     ```python
-    python ./docs.py
     sphinx-apidoc -f -e -d 4 -o ./docs/modules ./queenbee
     sphinx-build -b html ./docs ./docs/_build
     ```
+
+5. Preview Documentation. Run the following command from the `docs/_build/` directory:
+
+    ```console
+    python -m http.server
+    ```
+
+You can the see the documentation [here](http://localhost:8000)
