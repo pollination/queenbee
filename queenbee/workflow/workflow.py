@@ -1,12 +1,18 @@
 from typing import Dict
 from pydantic import Field, validator
 
+from ..base.basemodel import BaseModel
 from ..recipe import BakedRecipe
 from .arguments import Arguments, ArgumentParameter, ArgumentArtifact
 from .status import WorkflowStatus
 
-class Workflow(BakedRecipe):
+class Workflow(BaseModel):
     """A Workflow is a Baked Recipe with some arguments that will be used to execute the recipe"""
+
+    recipe: BakedRecipe = Field(
+        ...,
+        description='The baked recipe to be used by the execution engine to generate a worklow'
+    )
 
     labels: Dict = Field(
         None,
@@ -27,12 +33,12 @@ class Workflow(BakedRecipe):
     @validator('arguments', always=True)
     def check_entrypoint_inputs(cls, v, values):
         """Check the arguments match the recipe entrypoint inputs"""
-        flow = values.get('flow')
-        digest = values.get('digest')
 
-        dag = cls.dag_by_name(flow, f'{digest}/main')
+        recipe = values.get('recipe')
 
-        if dag.inputs is not None:
+        recipe_inputs = recipe.inputs
+
+        if recipe_inputs is not None:
 
             artifacts = []
             parameters = []
@@ -41,12 +47,12 @@ class Workflow(BakedRecipe):
                 artifacts = v.artifacts
                 parameters = v.parameters
 
-            for parameter in dag.inputs.parameters:
+            for parameter in recipe_inputs.parameters:
                 if parameter.required:
                     exists = next(filter(lambda x: x.name == parameter.name, parameters), None)
                     assert exists is not None, ValueError(f'Workflow must provide argument for parameter {parameter.name}')
             
-            for artifact in dag.inputs.artifacts:
+            for artifact in recipe_inputs.artifacts:
                 exists = next(filter(lambda x: x.name == artifact.name, artifacts), None)
                 assert exists is not None, ValueError(f'Workflow must provide argument for artifact {artifact.name}')
 
