@@ -25,6 +25,7 @@ setuptools.setup(
     entry_points={
         "console_scripts": ["queenbee = queenbee.cli:main"]
     },
+    include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: Implementation :: CPython",
