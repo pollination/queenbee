@@ -38,7 +38,7 @@ class MetaData(BaseModel):
         description='The version of the operator'
     )
 
-    appVersion: str = Field(
+    app_version: str = Field(
         None,
         description='The version of the app binary backing the operator (CLI tool or container)'
     )
