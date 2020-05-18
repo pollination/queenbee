@@ -20,7 +20,7 @@ New users will benefit from being familiar with the following:
 
 - Terminals/command prompts to debug potential issues
 - YAML (`official spec <https://yaml.org/spec/1.2/spec.html>`_ or a `human friendly explainer <https://rollout.io/blog/yaml-tutorial-everything-you-need-get-started/>`_)
-- `Docker <https://www.docker.com/>`_ and containers are in general will help but is not essential
+- `Docker <https://www.docker.com/>`_ and containers are in general helpful but is not essential
 
 Guides
 ------
