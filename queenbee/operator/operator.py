@@ -150,10 +150,10 @@ class Operator(BaseModel):
         Arguments:
             folder_path {str} -- Path to write the folder to
         """
-        self.metadata.to_yaml(os.path.join(folder_path, 'operator.yaml'))
-        self.config.to_yaml(os.path.join(folder_path, 'config.yaml'))
+        self.metadata.to_yaml(os.path.join(folder_path, 'operator.yaml'), exclude_unset=True)
+        self.config.to_yaml(os.path.join(folder_path, 'config.yaml'), exclude_unset=True)
 
         os.mkdir(os.path.join(folder_path, 'functions'))
 
         for function in self.functions:
-            function.to_yaml(os.path.join(folder_path, 'functions', f'{function.name}.yaml'))
+            function.to_yaml(os.path.join(folder_path, 'functions', f'{function.name}.yaml'), exclude_unset=True)

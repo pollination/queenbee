@@ -269,12 +269,12 @@ class Recipe(BaseModel):
 
         os.mkdir(os.path.join(folder_path, 'flow'))
 
-        self.metadata.to_yaml(os.path.join(folder_path, 'recipe.yaml'))
+        self.metadata.to_yaml(os.path.join(folder_path, 'recipe.yaml'), exclude_unset=True)
         
         self.write_dependency_lock(folder_path)
 
         for dag in self.flow:
-            dag.to_yaml(os.path.join(folder_path, 'flow', f'{dag.name}.yaml'))
+            dag.to_yaml(os.path.join(folder_path, 'flow', f'{dag.name}.yaml'), exclude_unset=True)
         
     def write_dependencies(self, folder_path: str):
         """Fetch dependencies manifests and write them to the `.dependencies` folder
@@ -299,7 +299,10 @@ class Recipe(BaseModel):
         for dependency in self.dependencies:
             if dependency.type == DependencyType.operator:
                 raw_dep, digest = dependency.fetch()
+                print(digest)
+                print(raw_dep)
                 dep = Operator.parse_raw(raw_dep)
+                print(dep.__hash__)
                 dep.to_yaml(os.path.join(folder_path, '.dependencies', 'operators', f'{digest}.yaml'))
 
             elif dependency.type == DependencyType.recipe:
