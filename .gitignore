@@ -22,3 +22,4 @@ docs/_build
 docs/modules
 docs/_static/schemas
 .dependencies
+build/

@@ -244,6 +244,9 @@ from queenbee.operator import Operator
 from queenbee.recipe import Recipe
 from queenbee.workflow import Workflow
 
+folder = os.path.join(os.path.dirname(__file__), '_static/schemas')
+if not os.path.isdir(folder):
+    os.mkdir(folder)
 
 with open('_static/schemas/workflow-openapi.json', 'w') as out_file:
     json.dump(
