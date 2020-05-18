@@ -27,7 +27,7 @@ class FunctionArtifact(BaseModel):
 
     path: str = Field(
         ...,
-        description='Path to the artifact relative to the run-folder artifact location.'
+        description='Path to the artifact relative to the working directory where the command is executed.'
     )
 
     @property
