@@ -4,9 +4,9 @@ Create and Manage a Repository
 Queenbee repositories are essential to store and share Operators and Recipes that can be executed as Workflows.
 
 A Repository is a folder that consists of an ``index.json`` index file and a series of packaged Operators and Recipes.
-It is used to manager Recipe dependencies (which can be Operators or other Recipes).
+It is used to manage Recipe dependencies (which can be Operators or other Recipes).
 
-In this section we will show you how to create a repository folder on you machine. You can then user this
+In this section we will show you how to create a repository folder on your machine. You can then use this
 folder to develop multiple Operators and Recipes that depend on each other.
 
 Getting Started
