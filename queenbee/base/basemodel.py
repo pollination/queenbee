@@ -1,7 +1,6 @@
 """Queenbee utility functions."""
 import hashlib
 import json
-import collections
 from typing import List, Dict
 
 import yaml
@@ -32,7 +31,8 @@ class BaseModel(PydanticBaseModel):
         """Get a YAML string from the model
 
         Keyword Arguments:
-            exclude_unset {bool} -- Boolean toggle to add or remove any unset/None values (default: {False})
+            exclude_unset {bool} -- Boolean toggle to add or remove any unset/None values
+            (default: {False})
 
         Returns:
             str -- A yaml string representing the model
@@ -46,8 +46,10 @@ class BaseModel(PydanticBaseModel):
         """Get a dictionary from the model
 
         Keyword Arguments:
-            exclude_unset {bool} -- Boolean toggle to add or remove any unset/None values (default: {False})
-            by_alias {bool} -- Boolean toggle to use attribute alias or attribute names as key (default: {True})
+            exclude_unset {bool} -- Boolean toggle to add or remove any unset/None values
+                (default: {False})
+            by_alias {bool} -- Boolean toggle to use attribute alias or attribute names
+                as key (default: {True})
 
         Returns:
             dict -- A python dictionary representing the model
@@ -73,7 +75,8 @@ class BaseModel(PydanticBaseModel):
             filepath {str} -- Path to the file to be written
 
         Keyword Arguments:
-            exclude_unset {bool} -- Boolean toggle to add or remove any unset/None values (default: {False})
+            exclude_unset {bool} -- Boolean toggle to add or remove any unset/None values
+            (default: {False})
         """
         content = self.yaml(exclude_unset=exclude_unset)
 
@@ -111,10 +114,12 @@ class BaseModel(PydanticBaseModel):
         """Get all referenced values specified by var name
 
         Arguments:
-            var_names {List[str]} -- List of class attribute names to check for referenced values
+            var_names {List[str]} -- List of class attribute names to check for
+                referenced values
 
         Returns:
-            Dict[str, List[str]] -- A dictionary where each key corresponds to a class attribute indexing a list of referenced values
+            Dict[str, List[str]] -- A dictionary where each key corresponds to a class
+                attribute indexing a list of referenced values
         """
         ref_values = {}
 
@@ -126,5 +131,5 @@ class BaseModel(PydanticBaseModel):
 
                 if ref_var != []:
                     ref_values[name] = ref_var
-        
+
         return ref_values

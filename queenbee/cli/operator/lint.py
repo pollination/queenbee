@@ -14,11 +14,12 @@ except ImportError:
 
 MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 
+
 @click.command('lint')
 @click.argument('path', type=click.Path(exists=True))
 def lint(path):
     """lint an operator
-    
+
     Use this command to check that an operator folder is valid.
     """
 
@@ -31,4 +32,4 @@ def lint(path):
     except Exception as error:
         raise error
 
-    click.echo('Your operator\'s looking good!')
+    click.echo('Your operator is looking good!')

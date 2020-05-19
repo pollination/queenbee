@@ -13,7 +13,6 @@ from pydantic import Field, validator, root_validator
 
 
 from ..base.basemodel import BaseModel
-from ..base.io import IOBase
 from ..operator import Operator
 from ..operator.function import Function
 from ..operator.operator import Config
@@ -24,7 +23,7 @@ from .dependency import Dependency, DependencyType
 
 
 class TemplateFunction(Function):
-    """Function template"""
+    """Function template."""
 
     config: Config = Field(
         ...,
@@ -57,17 +56,17 @@ class Recipe(BaseModel):
 
     metadata: MetaData = Field(
         None,
-        description='Workflow metadata information.'
+        description='Recipe metadata information.'
     )
 
     dependencies: List[Dependency] = Field(
         None,
-        description='A list of operators and other workflows this workflow depends on.'
+        description='A list of operators and other recipes this recipe depends on.'
     )
 
     flow: List[DAG] = Field(
         ...,
-        description='A list of tasks to create a DAG workflow.'
+        description='A list of tasks to create a DAG recipe.'
     )
 
     @classmethod
@@ -99,9 +98,9 @@ class Recipe(BaseModel):
         meta_path = os.path.join(folder_path, 'recipe.yaml')
         dependencies_path = os.path.join(folder_path, 'dependencies.yaml')
         flow_path = os.path.join(folder_path, 'flow')
-        
+
         recipe = {}
-        
+
         with open(meta_path, 'r') as f:
             recipe['metadata'] = yaml.load(f, yaml.FullLoader)
 
@@ -116,7 +115,7 @@ class Recipe(BaseModel):
 
             with open(os.path.join(flow_path, dag_path), 'r') as f:
                 flow.append(yaml.load(f, yaml.FullLoader))
-      
+
         recipe['flow'] = flow
 
         return cls.parse_obj(recipe)
@@ -130,7 +129,7 @@ class Recipe(BaseModel):
             elif dag.name.split('/')[-1] == 'main':
                 return v
 
-        raise ValueError('No DAG with name "main" found in flow')    
+        raise ValueError('No DAG with name "main" found in flow')
 
     @validator('flow')
     def sort_list(cls, v):
@@ -138,15 +137,17 @@ class Recipe(BaseModel):
         v.sort(key=lambda x: x.name)
         return v
 
-
     @validator('flow')
     def check_dag_names(cls, v, values):
-        """Check DAG names do not overlap dependency names"""
+        """Check DAG names do not overlap with dependency names"""
         op_names = [dep.ref_name for dep in values.get('dependencies')]
 
         for dag in v:
             assert dag.name not in op_names, \
-                ValueError(f'DAG name {dag.name} cannot be used because a recipe dependency already uses it')
+                ValueError(
+                    f'DAG name {dag.name} cannot be used because a recipe dependency'
+                    f' already uses it'
+                )
 
         return v
 
@@ -160,7 +161,10 @@ class Recipe(BaseModel):
             for template in dag.templates:
                 operator = template.split('/')[0]
                 assert operator in op_names, \
-                    ValueError(f'Cannot use template {template} from DAG {dag.name} because no dependency or other DAG matching that name was found')
+                    ValueError(
+                        f'Cannot use template {template} from DAG {dag.name} because no'
+                        f' dependency or other DAG matching that name was found.'
+                    )
 
         return v
 
@@ -181,7 +185,7 @@ class Recipe(BaseModel):
             bool -- True if all dependencies are locked
         """
         return all(map(lambda x: x.is_locked(), self.dependencies))
-    
+
     @staticmethod
     def dependency_by_name(dependencies: List[Dependency], name: str) -> Dependency:
         """Retrieve a dependency by its reference name (name or alias)
@@ -203,7 +207,6 @@ class Recipe(BaseModel):
 
         return res
 
-
     @staticmethod
     def dag_by_name(flow: List[DAG], name: str) -> DAG:
         """Retrieve a DAG from a list by its name
@@ -224,7 +227,7 @@ class Recipe(BaseModel):
             raise ValueError(f'No DAG with reference name {name} found in flow')
 
         return res
-    
+
     def lock_dependencies(self):
         """Lock the dependencies by fetching them and storing their digest"""
         for dependency in self.dependencies:
@@ -242,7 +245,12 @@ class Recipe(BaseModel):
         self_dict = json.loads(self.json(by_alias=True, exclude_unset=True))
 
         with open(os.path.join(folder_path, 'dependencies.yaml'), 'w') as f:
-            f.write(yaml.dump({'dependencies': self_dict['dependencies']}, default_flow_style=False))
+            f.write(
+                yaml.dump(
+                    {'dependencies': self_dict['dependencies']},
+                    default_flow_style=False
+                )
+            )
 
     def to_folder(self, folder_path: str):
         """Write a Recipe to a folder
@@ -269,13 +277,18 @@ class Recipe(BaseModel):
 
         os.mkdir(os.path.join(folder_path, 'flow'))
 
-        self.metadata.to_yaml(os.path.join(folder_path, 'recipe.yaml'), exclude_unset=True)
-        
+        self.metadata.to_yaml(
+            os.path.join(folder_path, 'recipe.yaml'), exclude_unset=True
+        )
+
         self.write_dependency_lock(folder_path)
 
         for dag in self.flow:
-            dag.to_yaml(os.path.join(folder_path, 'flow', f'{dag.name}.yaml'), exclude_unset=True)
-        
+            dag.to_yaml(
+                os.path.join(folder_path, 'flow', f'{dag.name}.yaml'),
+                exclude_unset=True
+            )
+
     def write_dependencies(self, folder_path: str):
         """Fetch dependencies manifests and write them to the `.dependencies` folder
 
@@ -286,15 +299,14 @@ class Recipe(BaseModel):
         operator_folder = os.path.join(dependencies_folder, 'operators')
         recipes_folder = os.path.join(dependencies_folder, 'recipes')
 
-        if not os.path.exists(dependencies_folder) or not os.path.isdir(dependencies_folder):
+        if not os.path.isdir(dependencies_folder):
             os.mkdir(dependencies_folder)
 
-        if not os.path.exists(operator_folder) or not os.path.isdir(operator_folder):
+        if not os.path.isdir(operator_folder):
             os.mkdir(operator_folder)
 
-        if not os.path.exists(recipes_folder) or not os.path.isdir(recipes_folder):
+        if not os.path.isdir(recipes_folder):
             os.mkdir(recipes_folder)
-
 
         for dependency in self.dependencies:
             if dependency.type == DependencyType.operator:
@@ -303,28 +315,37 @@ class Recipe(BaseModel):
                 print(raw_dep)
                 dep = Operator.parse_raw(raw_dep)
                 print(dep.__hash__)
-                dep.to_yaml(os.path.join(folder_path, '.dependencies', 'operators', f'{digest}.yaml'))
+                dep.to_yaml(
+                    os.path.join(
+                        folder_path, '.dependencies', 'operators', f'{digest}.yaml'
+                    )
+                )
 
             elif dependency.type == DependencyType.recipe:
                 raw_dep, digest = dependency.fetch()
                 dep = self.__class__.parse_raw(raw_dep)
                 dep.write_dependencies(folder_path)
-                dep.to_yaml(os.path.join(folder_path, '.dependencies', 'recipes', f'{digest}.yaml'))
-
-
+                dep.to_yaml(
+                    os.path.join(
+                        folder_path, '.dependencies', 'recipes', f'{digest}.yaml'
+                    )
+                )
 
 
 class BakedRecipe(Recipe):
-    """A Baked Recipe contains all the templates referred to in the DAG within a templates list"""
+    """Baked Recipe.
+
+    A Baked Recipe contains all the templates referred to in the DAG within a templates
+    list.
+    """
 
     digest: str
 
-    # templates only exist in the compiled version of a workflow
+    # templates only exist in the compiled version of a recipe
     templates: List[Union[TemplateFunction, DAG]] = Field(
         ...,
         description='A list of templates. Templates can be Function or a DAG.'
     )
-
 
     @classmethod
     def from_recipe(cls, recipe: Recipe):
@@ -356,7 +377,6 @@ class BakedRecipe(Recipe):
                 templates.extend(sub_recipe.templates)
                 templates.extend(sub_recipe.flow)
 
-
             elif dependency.type == 'operator':
                 dep = Operator.parse_raw(dep_bytes)
                 templates.extend(TemplateFunction.from_operator(dep))
@@ -376,7 +396,6 @@ class BakedRecipe(Recipe):
         input_dict['templates'] = [template.to_dict() for template in templates]
 
         return cls.parse_obj(input_dict)
-
 
     @classmethod
     def from_folder(cls, folder_path: str, refresh_deps: bool = True):
@@ -403,7 +422,8 @@ class BakedRecipe(Recipe):
             folder_path {str} -- The path to the folder to read
 
         Keyword Arguments:
-            refresh_deps {bool} -- Fetch the dependencies from their source instead of the `.dependencies` folder (default: {True})
+            refresh_deps {bool} -- Fetch the dependencies from their source instead of
+                the ``.dependencies`` folder (default: {True})
 
         Returns:
             BakedRecipe -- A baked recipe
@@ -411,22 +431,27 @@ class BakedRecipe(Recipe):
         dependencies_folder = os.path.join(folder_path, '.dependencies')
 
         recipe = Recipe.from_folder(folder_path)
-        
+
         digest = recipe.__hash__
 
         if refresh_deps:
-            if os.path.exists(dependencies_folder) and os.path.isdir(dependencies_folder):
+            if os.path.exists(dependencies_folder) and \
+                    os.path.isdir(dependencies_folder):
                 shutil.rmtree(dependencies_folder)
             recipe.write_dependencies(folder_path)
 
         templates = []
 
         for operator_path in os.listdir(os.path.join(dependencies_folder, 'operators')):
-            operator = Operator.from_file(os.path.join(dependencies_folder, 'operators', operator_path))
+            operator = Operator.from_file(
+                os.path.join(dependencies_folder, 'operators', operator_path)
+            )
             templates.extend(TemplateFunction.from_operator(operator))
 
         for sub_recipe_path in os.listdir(os.path.join(dependencies_folder, 'recipes')):
-            sub_recipe = Recipe.from_file(os.path.join(dependencies_folder, 'recipes', sub_recipe_path))
+            sub_recipe = Recipe.from_file(
+                os.path.join(dependencies_folder, 'recipes', sub_recipe_path)
+            )
             sub_baked_recipe = cls.from_recipe(sub_recipe)
             templates.extend(sub_baked_recipe.templates)
             templates.extend(sub_baked_recipe.flow)
@@ -443,7 +468,6 @@ class BakedRecipe(Recipe):
         input_dict['templates'] = [template.to_dict() for template in templates]
 
         return cls.parse_obj(input_dict)
-
 
     @classmethod
     def replace_template_refs(
@@ -488,15 +512,19 @@ class BakedRecipe(Recipe):
                 # Template name is another Recipe
                 if dep.type == DependencyType.recipe:
                     assert len(template_dep_list) == 1, \
-                        ValueError(f'Unresolvable Recipe template dependency {task.template}')
+                        ValueError(
+                            f'Unresolvable Recipe template dependency {task.template}'
+                        )
                     template_dep = f'{dep.digest}/main'
 
                 # Template name is an Operator Function
                 elif dep.type == DependencyType.operator:
                     assert len(template_dep_list) == 2, \
-                        ValueError(f'Unresolvable Operator function template dependency {task.template}')
+                        ValueError(
+                            f'Unresolvable Operator function template dependency'
+                            f' {task.template}'
+                        )
                     template_dep = f'{dep.digest}/{template_dep_list[1]}'
-
 
                 task.template = template_dep
 
@@ -531,9 +559,8 @@ class BakedRecipe(Recipe):
             for task in dag.tasks:
                 template = cls.template_by_name(all_templates, task.template)
                 task.check_template(template)
-        
-        return values
 
+        return values
 
     @staticmethod
     def template_by_name(templates: List[Union[DAG, TemplateFunction]], name: str) -> Union[DAG, TemplateFunction]:

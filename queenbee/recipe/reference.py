@@ -5,6 +5,7 @@ from pydantic import Field
 
 from ..base.basemodel import BaseModel
 
+
 def template_string(keys: List[str]) -> str:
     """Generate a template string from a list of key
 
@@ -15,6 +16,7 @@ def template_string(keys: List[str]) -> str:
         str -- A template string
     """
     return f'{{{{{".".join(keys)}}}}}'
+
 
 class BaseReference(BaseModel):
     """A Base reference model"""
@@ -45,6 +47,7 @@ class InputBaseReference(BaseReference):
         """
         template = [self.type, self.source, self.variable]
         return template_string(template)
+
 
 class InputArtifactReference(InputBaseReference):
     """An Input Artifact Reference"""
@@ -103,15 +106,15 @@ class TaskParameterReference(TaskBaseReference):
         return 'parameters'
 
 
-
 class ItemBaseReference(BaseReference):
-    """An Item Reference"""
+    """An Item Reference."""
 
     type: Enum('ItemReference', {'type': 'item'}) = 'item'
 
     variable: str = Field(
         None,
-        description='The name of the looped item variable (use dot notation for nested json values)'
+        description='The name of the looped item variable (use dot notation for nested'
+        ' json values)'
     )
 
     def to_ref_string(self):
@@ -130,7 +133,6 @@ class ItemParameterReference(ItemBaseReference):
     @property
     def source(self):
         return 'parameters'
-
 
 
 def references_from_string(string: str) -> List[Union[InputParameterReference, TaskParameterReference, ItemParameterReference]]:
@@ -154,22 +156,26 @@ def references_from_string(string: str) -> List[Union[InputParameterReference, T
         split_ref = ref.split('.')
         ref_type = split_ref[0]
 
-
         if ref_type == 'input':
             assert len(split_ref) == 2, \
-                ValueError(f'Input Reference should be in format "input.variable" but found : {ref}')
+                ValueError(
+                    f'Input Reference should be in format "input.variable" but found:'
+                    f' {ref}'
+                )
             ref = InputParameterReference(variable=split_ref[1])
         elif ref_type == 'tasks':
             assert len(split_ref) == 3, \
-                ValueError(f'Task Reference should be in format "tasks.task-name.variable" but found : {ref}')
+                ValueError(
+                    f'Task Reference should be in format "tasks.task-name.variable" but'
+                    f' found: {ref}'
+                )
             ref = TaskParameterReference(name=split_ref[1], variable=split_ref[2])
         elif ref_type == 'item':
             variable = '.'.join(split_ref[1:])
             ref = ItemParameterReference(variable=variable)
         else:
             raise ValueError(f'Ref of type {ref_type} not recognized: {ref}')
-        
+
         refs.append(ref)
 
-    
     return refs

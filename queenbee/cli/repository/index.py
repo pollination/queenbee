@@ -12,6 +12,7 @@ except ImportError:
 
 MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 
+
 @click.command('index')
 @click.argument('path', type=click.Path(exists=True))
 @click.option('-i', '--index', 'index_path', help='Path to the index file to read/write to')
@@ -20,16 +21,15 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 @click.option('-s', '--skip', help='Skip any packages that would otherwise be overwritten', default=False, type=bool, is_flag=True)
 def index(path, index_path, new, force, skip):
     """index the repository folder
-    
+
     Use this command to crawl a repository folder and update/regenerate an
-    ``index.json`` file. 
+    ``index.json`` file.
     """
 
     if index_path is None:
         index_path = os.path.join(path, 'index.json')
 
     index_path = os.path.abspath(index_path)
-
 
     try:
         if new:

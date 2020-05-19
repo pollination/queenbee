@@ -1,4 +1,4 @@
-"""Queenbee Task Operator class."""
+"""Queenbee dependency class."""
 import os
 import hashlib
 import tarfile
@@ -20,8 +20,8 @@ class DependencyType(str, Enum):
 
 
 class Dependency(BaseModel):
-    """Configuration to fetch a Recipe or Operator that a Recipe depends on"""
-    
+    """Configuration to fetch a Recipe or Operator that another Recipe depends on."""
+
     type: DependencyType = Field(
         ...,
         description='The type of dependency'
@@ -42,8 +42,8 @@ class Dependency(BaseModel):
 
     alias: str = Field(
         None,
-        description='An optional alias to refer to this dependency. Useful if the name is'
-        ' already used somewhere else.'
+        description='An optional alias to refer to this dependency. Useful if the name'
+        ' is already used somewhere else.'
     )
 
     version: str = Field(
@@ -60,20 +60,18 @@ class Dependency(BaseModel):
         ]
     )
 
-
     @property
     def is_locked(self) -> bool:
-        """Indicates whether the dependency is locked to a specific digest
+        """Indicates whether the dependency is locked to a specific digest.
 
         Returns:
             bool -- Boolean value to indicate whether the dependency is locked
         """
         return self.digest is not None
 
-
     @property
     def ref_name(self) -> str:
-        """The name by which this dependency is referred to in the Recipe
+        """The name by which this dependency is referred to in the Recipe.
 
         Returns:
             str -- Either the dependency name or its alias
@@ -82,10 +80,8 @@ class Dependency(BaseModel):
             return self.alias
         return self.name
 
-    
-
     def _fetch_index(self):
-        """Fetch the source repository index object
+        """Fetch the source repository index object.
 
         Returns:
             RepositoryIndex -- A repository index
@@ -104,12 +100,13 @@ class Dependency(BaseModel):
         res = request.urlopen(url)
         raw_bytes = res.read()
         return RepositoryIndex.parse_raw(raw_bytes)
-    
+
     def fetch(self, verifydigest: bool = True) -> Tuple[bytes, str]:
         """Fetch the dependency from its source
 
         Keyword Arguments:
-            verifydigest {bool} -- If the dependency is locked, ensure the found manifest matches the saved digest (default: {True})
+            verifydigest {bool} -- If the dependency is locked, ensure the found
+                manifest matches the saved digest (default: {True})
 
         Raises:
             ValueError: The dependency could not be found or was invalid
@@ -120,7 +117,7 @@ class Dependency(BaseModel):
 
         index = self._fetch_index()
 
-        if self.digest is None:  
+        if self.digest is None:
             package_meta = index.package_by_version(
                 package_type=self.type,
                 package_name=self.name,
@@ -139,7 +136,8 @@ class Dependency(BaseModel):
                 # If hash does not exist then try to download
                 # by version. This is in the case where some package
                 # owner overwrote the version of the dependency
-                if str(error) == f'No {self.type} package with name {self.name} and digest {self.digest} exists in this index':  
+                if str(error) == f'No {self.type} package with name {self.name} ' \
+                        'and digest {self.digest} exists in this index':
                     package_meta = index.package_by_version(
                         package_type=self.type,
                         package_name=self.name,
@@ -165,10 +163,15 @@ class Dependency(BaseModel):
                 if verifydigest:
                     assert hashlib.sha256(file_bytes).hexdigest() == self.digest, \
                         ValueError(
-                            'Hash of resource.json file is different from the one expected from the index'
-                            f'Expected {self.digest} and got {hashlib.sha256(file_bytes).hexdigest()}'
+                            f'Hash of resource.json file is different from the one'
+                            f' expected from the index Expected {self.digest} and got'
+                            f' {hashlib.sha256(file_bytes).hexdigest()}'
                             )
+                break
+        else:
+            raise ValueError(
+                'package tar file did not contain a resource.json file so could not be'
+                ' decoded.'
+            )
 
-                return file_bytes, self.digest
-
-        raise ValueError(f'package tar file did not contain a resource.json file so could not be decoded')
+        return file_bytes, self.digest

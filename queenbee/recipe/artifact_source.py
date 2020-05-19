@@ -8,11 +8,11 @@ from enum import Enum
 from pydantic import Field
 
 from ..base.basemodel import BaseModel
-from ..base.variable import get_ref_variable
 from .reference import references_from_string
 
+
 class ArtifactSource(BaseModel):
-    """ArtifactSource
+    """ArtifactSource.
 
     An Artifact Source System.
     """
@@ -21,7 +21,7 @@ class ArtifactSource(BaseModel):
     def _referenced_values(values: list = []) -> Dict[str, List[str]]:
         """Get referenced variables if any"""
         ref_values = {}
-        
+
         if values == []:
             return ref_values
 
@@ -43,16 +43,17 @@ class ProjectFolderSource(ArtifactSource):
     """Project Folder Source
 
     This is the path to a folder where files and folders can be sourced. In the context
-    of a desktop run Workflow this folder will correspond to a local folder. In the 
-    context of a workflow run on Pollination this folder will correspond to a Project scoped
-    folder.
+    of a desktop run Workflow this folder will correspond to a local folder. In the
+    context of a workflow run on Pollination this folder will correspond to a Project
+    scoped folder.
     """
     type: Enum('ProjectFolderSource', {'type': 'project-folder'})
 
     path: str = Field(
         None,
-        description="For a local filesystem this can be \"C:\\Users\\me\\simulations\\test\".\
-            This will correspond to the run specific folder ."
+        description='For a local filesystem this can be'
+        ' \"C:\\Users\\me\\simulations\\test\".'
+        ' This will correspond to the run specific folder .'
     )
 
     @property
@@ -70,7 +71,6 @@ class HTTPSource(ArtifactSource):
 
     type: Enum('HTTPSource', {'type': 'http'})
 
-
     url: str = Field(
         ...,
         description="For a HTTP endpoint this can be http://climate.onebuilding.org."
@@ -86,11 +86,10 @@ class HTTPSource(ArtifactSource):
 class S3Source(ArtifactSource):
     """S3Source
 
-    An S3 bucket artifact Source
+    An S3 bucket artifact Source.
     """
 
     type: Enum('S3Source', {'type': 's3'})
-
 
     key: str = Field(
         ...,

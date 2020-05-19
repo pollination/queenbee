@@ -13,16 +13,18 @@ except ImportError:
 
 MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 
+
 @click.command('new')
 @click.argument('name')
 @click.option(
     '-p',
     '--path',
-    help='The path at which to create the new operator. Defaults to the current directory if not specified.'
+    help='The path at which to create the new operator. Defaults to the current'
+    ' directory if not specified.'
 )
 def new(name, path):
     """create a new operator folder
-    
+
     Use this command to create a new operator. The folder will compile to the following
     operator definition::
 
@@ -49,7 +51,7 @@ def new(name, path):
             path: /tmp/hello_world.txt
             artifacts:
             - name: whale-said-file
-            path: /tmp/hello_world.txt   
+            path: /tmp/hello_world.txt
 
     You can indicate where you want to create the operator folder by
     specifying the ``--path`` option.
@@ -63,14 +65,17 @@ def new(name, path):
     folder_path = os.path.abspath(folder_path)
 
     if os.path.exists(folder_path):
-        raise click.ClickException(f'Cannot create new operator at path {folder_path} because there is already something there')
+        raise click.ClickException(
+            f'Cannot create new operator at path {folder_path} because there is'
+            f' already something there'
+        )
 
     path = os.path.join(MODULE_PATH, '../assets/new-operator.yaml')
     input_dict = parse_file(path)
     input_dict['metadata']['name'] = name
 
     operator = Operator.parse_obj(input_dict)
-    
+
     # Create entire path to folder if it does not exist
     os.makedirs(folder_path, exist_ok=True)
 

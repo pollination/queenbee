@@ -1,3 +1,4 @@
+"""Input and Output (IO) objects."""
 import collections
 from typing import List
 from pydantic import validator
@@ -17,13 +18,17 @@ def find_dup_items(values: List) -> List:
     dup = [t for t, c in collections.Counter(values).items() if c > 1]
     return dup
 
+
 class IOItem(BaseModel):
 
     name: str
 
 
 class IOBase(BaseModel):
-    """A reusable model for Input and Output (IO) objects within Operators, Recipes and Workflows"""
+    """A reusable model for Input and Output (IO) objects.
+
+    IOBase is used within Operators, Recipes and Workflows.
+    """
 
     parameters: List[IOItem]
 
@@ -80,12 +85,10 @@ class IOBase(BaseModel):
             IOItem -- An IO Item with the input name
         """
         if input_list is None:
-            raise ValueError(f'no value with name {name} exists in: \n'
-                f'{input_list}')
+            raise ValueError(f'no value with name {name} exists in: \n{input_list}')
         res = [x for x in input_list if x.name == name]
         if res == []:
-            raise ValueError(f'no value with name {name} exists in: \n'
-                f'{input_list}')
+            raise ValueError(f'no value with name {name} exists in: \n{input_list}')
 
         return res[0]
 

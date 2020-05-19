@@ -10,7 +10,8 @@ def get_ref_variable(value: Union[bytes, str]) -> list:
     """Get referenced variable if any
 
     Arguments:
-        value {Union[bytes, str]} -- input to parse double quoted variables ("{{some.double.quoted.var}}") from
+        value {Union[bytes, str]} -- input to parse double quoted variables
+            ("{{some.double.quoted.var}}") from.
 
     Returns:
         list -- A list of matched substrings (empty list if None)
@@ -22,7 +23,8 @@ def _validate_workflow_var_format(value: str) -> str:
     """Validate workflow vars
 
     Arguments:
-        value {str} -- A '.' seperated string to be checked for workflow variable formatting
+        value {str} -- A '.' seperated string to be checked for workflow variable
+            formatting.
 
     Returns:
         str -- A string with validation error messages
@@ -86,7 +88,8 @@ def _validate_inputs_outputs_var_format(value: str) -> str:
     """Validate inputs/outputs variables
 
     Arguments:
-        value {str} -- A '.' seperated string to be checked for inputs/outputs variable formatting
+        value {str} -- A '.' seperated string to be checked for inputs/outputs variable
+            formatting
 
     Returns:
         str -- A string with validation error messages
@@ -94,9 +97,11 @@ def _validate_inputs_outputs_var_format(value: str) -> str:
     add_info = ''
     parts = value.split('.')
     if len(parts) > 0 and parts[0] != 'inputs':
-        add_info = f'Inputs and outputs variables can only refer to an input value not: {parts[0]}'
-    elif len(parts)> 1 and parts[1] != 'parameters':
-        add_info = f'Inputs and outputs variables can only refer to an input parameter not: {parts[1]}'
+        add_info = f'Inputs and outputs variables can only refer to an input value' \
+                   f' not: {parts[0]}'
+    elif len(parts) > 1 and parts[1] != 'parameters':
+        add_info = f'Inputs and outputs variables can only refer to an input parameter' \
+                   f' not: {parts[1]}'
     elif len(parts) != 3:
         add_info = 'Inputs and outputs variables must have 3 segments.'
     return add_info

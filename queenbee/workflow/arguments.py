@@ -34,6 +34,7 @@ class ArgumentParameter(BaseModel):
         description='The value of the parameter'
     )
 
+
 class Arguments(IOBase):
     """Workflow Arguments"""
 

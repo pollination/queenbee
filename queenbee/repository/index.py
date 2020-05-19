@@ -1,11 +1,9 @@
 import os
 from typing import List, Union, Dict
 from datetime import datetime
-from pydantic import Field, validator
+from pydantic import Field
 
 from ..base.basemodel import BaseModel
-from ..operator.metadata import MetaData as OperatorMetadata
-from ..recipe.metadata import MetaData as RecipeMetadata
 
 from ..operator import Operator
 from ..recipe import Recipe
@@ -23,14 +21,15 @@ class RepositoryIndex(BaseModel):
 
     operator: Dict[str, List[OperatorVersion]] = Field(
         {},
-        description='A dict of operators accessible by name. Each name key points to a list of operator versions'
+        description='A dict of operators accessible by name. Each name key points to'
+        ' a list of operator versions'
     )
 
     recipe: Dict[str, List[RecipeVersion]] = Field(
         {},
-        description='A dict of recipes accessible by name. Each name key points to a list of recipesversions'
+        description='A dict of recipes accessible by name. Each name key points to a'
+        ' list of recipesversions'
     )
-
 
     @classmethod
     def from_folder(cls, folder_path):
@@ -83,10 +82,12 @@ class RepositoryIndex(BaseModel):
             resource {Union[Operator, Recipe]} -- The Operator or Recipe to package
 
         Keyword Arguments:
-            overwrite {bool} -- Indicate whether overwriting an existing package or index entry is allowed (default: {False})
+            overwrite {bool} -- Indicate whether overwriting an existing package or
+                index entry is allowed (default: {False})
 
         Raises:
-            ValueError: Error raised if the package already exists in the index file or directory
+            ValueError: Error raised if the package already exists in the index file or
+                directory
         """
         index_folder = os.path.abspath(index_folder)
 
@@ -95,21 +96,21 @@ class RepositoryIndex(BaseModel):
         index = cls.from_file(os.path.join(index_folder, 'index.json'))
 
         if isinstance(resource, Operator):
-            type_path = 'operators'
+            # type_path = 'operators'
             resource_version_class = OperatorVersion
         elif isinstance(resource, Recipe):
-            type_path = 'recipes'
+            # type_path = 'recipes'
             resource_version_class = RecipeVersion
         else:
             raise ValueError(f"Resource should be an Operator or a Recipe")
-        
+
         resource_version = resource_version_class.package_resource(
             resource=resource,
             repo_folder=index_folder,
             path_to_readme=path_to_readme,
         )
 
-        try:        
+        try:
             if isinstance(resource, Operator):
                 index.index_operator_version(resource_version, overwrite)
             elif isinstance(resource, Recipe):
@@ -119,7 +120,6 @@ class RepositoryIndex(BaseModel):
             raise error
 
         index.to_json(index_path)
-
 
     @staticmethod
     def _index_resource_version(
@@ -131,58 +131,78 @@ class RepositoryIndex(BaseModel):
         """Add a resource version to an index of resource versions
 
         Arguments:
-            resource_dict {Dict[str, List[Union[RecipeVersion, OperatorVersion]]]} -- An index of resource versions
-            resource_version {Union[RecipeVersion, OperatorVersion]} -- The resource version to add
+            resource_dict {Dict[str, List[Union[RecipeVersion, OperatorVersion]]]} -- An
+                index of resource versions
+            resource_version {Union[RecipeVersion, OperatorVersion]} -- The resource
+                version to add
 
         Keyword Arguments:
-            overwrite {bool} -- Overwrite a resource version if it already exists (default: {False})
+            overwrite {bool} -- Overwrite a resource version if it already exists
+                (default: {False})
 
         Raises:
             ValueError: Resource version already exists
 
         Returns:
-            Dict[str, List[Union[RecipeVersion, OperatorVersion]]] -- A resource version index
+            Dict[str, List[Union[RecipeVersion, OperatorVersion]]] -- A resource version
+                index
         """
         resource_list = resource_dict.get(resource_version.name, [])
 
         if not overwrite:
-            match = next(filter(lambda x: x.version == resource_version.version, resource_list), None)
+            match = next(
+                filter(
+                    lambda x: x.version == resource_version.version, resource_list
+                ), None
+            )
             if match is not None:
                 if match.digest != resource_version.digest:
-                    raise ValueError(f'Resource {resource_version.name} already has a version {resource_version.version} in the index')
+                    raise ValueError(
+                        f'Resource {resource_version.name} already has a version'
+                        f' {resource_version.version} in the index'
+                    )
                 return resource_dict
 
-        resource_list = list(filter(lambda x: x.version != resource_version.version, resource_list))
+        resource_list = list(
+            filter(lambda x: x.version != resource_version.version, resource_list)
+        )
 
         resource_list.append(resource_version)
         resource_dict[resource_version.name] = resource_list
 
         return resource_dict
 
-    def index_recipe_version(self, recipe_version: RecipeVersion, overwrite: bool = False):
+    def index_recipe_version(self, recipe_version: RecipeVersion,
+                             overwrite: bool = False):
         """Add a Recipe Version to an Index of Recipes
 
         Arguments:
             recipe_version {RecipeVersion} -- A recipe version object
 
         Keyword Arguments:
-            overwrite {bool} -- Overwrite the Recipe Version if it already exists in the index (default: {False})
+            overwrite {bool} -- Overwrite the Recipe Version if it already exists in the
+                index (default: {False})
         """
-        self.recipe = self._index_resource_version(self.recipe, recipe_version, overwrite)
+        self.recipe = self._index_resource_version(
+            self.recipe, recipe_version, overwrite
+        )
         self.generated = datetime.utcnow()
 
-    def index_operator_version(self, operator_version: OperatorVersion, overwrite: bool = False):
+    def index_operator_version(self, operator_version: OperatorVersion,
+                               overwrite: bool = False):
         """Add a Operator Version to an Index of Operators
 
         Arguments:
             operator_version {OperatorVersion} -- A operator version object
 
         Keyword Arguments:
-            overwrite {bool} -- Overwrite the Operator Version if it already exists in the index (default: {False})
+            overwrite {bool} -- Overwrite the Operator Version if it already exists in
+                the index (default: {False})
         """
-        self.operator = self._index_resource_version(self.operator, operator_version, overwrite)
+        self.operator = self._index_resource_version(
+            self.operator, operator_version, overwrite
+        )
         self.generated = datetime.utcnow()
-
 
     def merge_folder(self, folder_path, overwrite: bool = False, skip: bool = False):
         """Merge the contents of an repository folder with the index
@@ -219,7 +239,6 @@ class RepositoryIndex(BaseModel):
                         continue
                 raise error
 
-
     def package_by_version(
         self,
         package_type: str,
@@ -244,12 +263,18 @@ class RepositoryIndex(BaseModel):
         package_list = package_dict.get(package_name)
 
         if package_list is None:
-            raise ValueError(f'No {package_type} package with name {package_name} exists in this index')
+            raise ValueError(
+                f'No {package_type} package with name {package_name} exists'
+                f' in this index'
+            )
 
         res = next(filter(lambda x: x.version == package_version, package_list), None)
 
         if res is None:
-            raise ValueError(f'No {package_type} package with name {package_name} and version {package_version} exists in this index')
+            raise ValueError(
+                f'No {package_type} package with name {package_name} and version '
+                f'{package_version} exists in this index'
+            )
 
         return res
 
@@ -277,11 +302,17 @@ class RepositoryIndex(BaseModel):
         package_list = package_dict.get(package_name)
 
         if package_list is None:
-            raise ValueError(f'No {package_type} package with name {package_name} exists in this index')
+            raise ValueError(
+                f'No {package_type} package with name {package_name} exists'
+                f' in this index'
+            )
 
         res = next(filter(lambda x: x.digest == package_digest, package_list), None)
 
         if res is None:
-            raise ValueError(f'No {package_type} package with name {package_name} and digest {package_digest} exists in this index')
+            raise ValueError(
+                f'No {package_type} package with name {package_name} and digest '
+                f'{package_digest} exists in this index'
+            )
 
         return res
