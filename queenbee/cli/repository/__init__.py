@@ -1,4 +1,6 @@
 from .index import index
+from .serve import serve
+from .initialise import initialise
 
 try:
     import click
@@ -36,3 +38,5 @@ def main(ctx):
     pass
 
 main.add_command(index)
+main.add_command(serve)
+main.add_command(initialise)
