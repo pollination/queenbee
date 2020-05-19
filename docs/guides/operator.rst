@@ -120,9 +120,20 @@ Your folder should now look something like this::
 
 Packaging and Sharing
 ---------------------
+You can package an operator by running the following command::
+
+  queenbee operator package energy-plus
+
+
+You should see a file called ``energy-plus-0.1.0.tgz`` appear in your local
+directory. This is a packaged Operator file which can be saved in a Queenbee
+Repository to share with others or be used in a Recipe.
 
 You should go to the `Repository Guide <repository.html>`_ section to understand
 how Operators are packaged and shared. 
 
+
+Using Operators
+---------------
 You should move to the `Recipe Guide <recipe.html>`_ section to understand how
 Operators are used by recipes.
