@@ -14,6 +14,7 @@ except ImportError:
 
 MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 
+
 @click.command('package')
 @click.argument('path', type=click.Path(exists=True))
 @click.option('-d', '--destination', help='location to write the package', show_default=True, default='.', type=click.Path(exists=False))
@@ -21,10 +22,12 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 def package(path, destination, force):
     """package an operator
 
-    This command helps your package operators and add them to repository folders. A packaged
-    operator is essentially a gzipped version of its folder.
+    This command helps your package operators and add them to repository folders. A
+    packaged operator is essentially a gzipped version of its folder.
 
-    You can package an operator in a specific folder or repository by using the ``--destination``
+    You can package an operator in a specific folder or repository by using the
+    ``--destination``
+
     flag::
 
         queenbee operator package path/to/my/operator --destination path/to/my/repository/operators

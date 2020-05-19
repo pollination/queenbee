@@ -6,10 +6,11 @@ The specification is designed based on openapi info object:
 https://swagger.io/specification/#infoObject
 """
 
-from typing import List, Union
+from typing import List
 from pydantic import Field
 
 from ..base.basemodel import BaseModel
+
 
 class Maintainer(BaseModel):
     """Maintainer information"""
@@ -28,12 +29,12 @@ class License(BaseModel):
     """License information for the Recipe"""
     name: str = Field(
         ...,
-        description='The license name used for the workflow.'
+        description='The license name used for the recipe.'
     )
 
     url: str = Field(
         None,
-        description='A URL to the license used for the workflow.'
+        description='A URL to the license used for the recipe.'
     )
 
 
@@ -42,27 +43,27 @@ class MetaData(BaseModel):
 
     name: str = Field(
         ...,
-        description='Workflow name. Make it descriptive and helpful ;)'
+        description='Recipe name. Make it descriptive and helpful ;)'
     )
 
     version: str = Field(
         ...,
-        description='The version of the workflow'
+        description='The version of the recipe'
     )
 
     keywords: List[str] = Field(
         None,
-        description='A list of keywords to search the workflow by'
+        description='A list of keywords to search the recipe by'
     )
 
     maintainers: List[Maintainer] = Field(
         None,
-        description='A list of maintainers for the workflow'
+        description='A list of maintainers for the recipe'
     )
 
     home: str = Field(
         None,
-        description='The URL of this workflow\'s home page'
+        description='The URL of this recipe\'s home page'
     )
 
     sources: List[str] = Field(
@@ -77,12 +78,12 @@ class MetaData(BaseModel):
 
     deprecated: bool = Field(
         None,
-        description='Whether this workflow is deprecated'
+        description='Whether this recipe is deprecated'
     )
 
     description: str = Field(
         None,
-        description='A description of what this workflow does'
+        description='A description of what this recipe does'
     )
 
     license: License = Field(

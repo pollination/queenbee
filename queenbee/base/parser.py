@@ -1,4 +1,4 @@
-"""Parse workflow files from JSON / YAML files with support for import_from key."""
+"""Parse workflow files from JSON / YAML files with support for ``import_from`` key."""
 import json
 import yaml
 import os
@@ -6,7 +6,7 @@ import re
 
 
 def _check_list(lst: list, folder: str):
-    # TODO: Ask Mostapha for docs
+    """Recursive function to handle import_from inside nested lists."""
     for item in lst:
         if isinstance(item, list):
             _check_list(item, folder)
@@ -15,7 +15,7 @@ def _check_list(lst: list, folder: str):
 
 
 def _import_dict_data(dictionary: dict, folder: str) -> dict:
-    """find import_from keys if any
+    """Find import_from keys if any.
 
     Arguments:
         dictionary {dict} -- Input dictionary to be parsed
@@ -101,7 +101,7 @@ def parse_double_quote_workflow_vars(input: str) -> list:
 
     Returns:
         list -- A list of matched substrings (empty list if None)
-    """ 
+    """
     pattern = r"{{\s*(workflow\.[_a-zA-Z0-9.\-\$#\?]*)\s*}}"
     match = re.findall(pattern, input, flags=re.MULTILINE)
     return match

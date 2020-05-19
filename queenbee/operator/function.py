@@ -27,7 +27,8 @@ class FunctionArtifact(BaseModel):
 
     path: str = Field(
         ...,
-        description='Path to the artifact relative to the working directory where the command is executed.'
+        description='Path to the artifact relative to the working directory where the'
+        ' command is executed.'
     )
 
     @property
@@ -35,7 +36,8 @@ class FunctionArtifact(BaseModel):
         """Get referenced variables if any
 
         Returns:
-            Dict[str, List[str]] -- A dictionary where keys are attributes and lists contain referenced value string
+            Dict[str, List[str]] -- A dictionary where keys are attributes and lists '
+                'contain referenced value string
         """
         return self._referenced_values(['path'])
 
@@ -69,7 +71,6 @@ class FunctionParameterIn(BaseModel):
         description='Whether this value must be specified in a task argument.'
     )
 
-
     @validator('required')
     def validate_required(cls, v, values):
         """Ensure parameter with no default value is marked as required"""
@@ -81,7 +82,6 @@ class FunctionParameterIn(BaseModel):
             )
 
         return v
-
 
     @property
     def referenced_values(self) -> Dict[str, List[str]]:
@@ -186,7 +186,6 @@ class Function(BaseModel):
             msg = f'Invalid referenced value(s) in function:\n{info}'
             raise ValueError(msg)
 
-
     @validator('inputs')
     def validate_input_refs(cls, v):
         """Validate referenced variables in inputs"""
@@ -265,7 +264,8 @@ class Function(BaseModel):
         """List of workflow artifacts
 
         Returns:
-            List[FunctionArtifact] -- A list of Input and Output artifacts from a function
+            List[FunctionArtifact] -- A list of Input and Output artifacts from a
+                function
         """
         artifacts = []
 

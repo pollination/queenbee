@@ -4,7 +4,7 @@ A task status keeps track of the outcome of a given workflow task.
 """
 from enum import Enum
 from datetime import datetime
-from pydantic import Field, validator
+from pydantic import Field
 from typing import List, Dict
 
 from ..base.basemodel import BaseModel
@@ -12,12 +12,13 @@ from .arguments import Arguments
 
 
 class StatusType(str, Enum):
-    
+
     Function = 'function'
-    
+
     DAG = 'dag'
-    
+
     Loop = 'loop'
+
 
 class BaseStatus(BaseModel):
     """Base Status model"""
@@ -61,7 +62,8 @@ class TaskStatus(BaseStatus):
 
     type: StatusType = Field(
         ...,
-        description='The type of task this status is for. Can be "function", "dag" or "loop"'
+        description='The type of task this status is for. Can be "function", "dag" or '
+        '"loop"'
     )
 
     template_ref: str = Field(

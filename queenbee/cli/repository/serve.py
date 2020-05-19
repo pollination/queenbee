@@ -11,6 +11,7 @@ except ImportError:
 
 MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 
+
 @click.command('serve')
 @click.argument('path', type=click.Path(exists=True))
 @click.option('-p', '--port', 'port', help='The port to expose', default=8000)
@@ -18,8 +19,8 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 def serve(port, address, path):
     """serve a local repository folder
 
-    Use this command to serve a local repository. You can then use "http://localhost:8000" as a 
-    source url to resolve your recipe dependencies.
+    Use this command to serve a local repository. You can then use
+    "http://localhost:8000" as a source url to resolve your recipe dependencies.
     """
 
     os.chdir(path)

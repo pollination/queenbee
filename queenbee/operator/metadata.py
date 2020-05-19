@@ -6,10 +6,11 @@ The specification is designed based on openapi info object:
 https://swagger.io/specification/#infoObject
 """
 
-from typing import List, Union
+from typing import List
 from pydantic import Field
 
 from ..base.basemodel import BaseModel
+
 
 class Maintainer(BaseModel):
     """Maintainer information"""
@@ -23,10 +24,10 @@ class Maintainer(BaseModel):
         description='The email address of the author/maintainer person or organization.'
     )
 
+
 class MetaData(BaseModel):
     """Operator metadata information"""
 
-    
     name: str = Field(
         ...,
         description='Operator name. This name should be unique among all the operators'
@@ -40,7 +41,8 @@ class MetaData(BaseModel):
 
     app_version: str = Field(
         None,
-        description='The version of the app binary backing the operator (CLI tool or container)'
+        description='The version of the app binary backing the operator (CLI tool or'
+        ' container)'
     )
 
     keywords: List[str] = Field(
@@ -55,12 +57,12 @@ class MetaData(BaseModel):
 
     home: str = Field(
         None,
-        description='The URL of this projects home page'
+        description='The URL of this operator home page'
     )
 
     sources: List[str] = Field(
         None,
-        description='A list of URLs to source code for this project'
+        description='A list of URLs to source code for this operator'
     )
 
     icon: str = Field(
@@ -70,7 +72,7 @@ class MetaData(BaseModel):
 
     deprecated: bool = Field(
         None,
-        description='Whether this chart is deprecated'
+        description='Whether this operator is deprecated'
     )
 
     description: str = Field(
