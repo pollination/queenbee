@@ -15,10 +15,10 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 @click.command('index')
 @click.argument('path', type=click.Path(exists=True))
 @click.option('-i', '--index', 'index_path', help='Path to the index file to read/write to')
-@click.option('-m', '--merge', help='Merge an existing index with the contents of the folder', default=False, type=bool, is_flag=True)
+@click.option('-n', '--new', help='Delete previous index and generate a new one from scratch', default=False, type=bool, is_flag=True)
 @click.option('-f', '--force', help='Overwrite existing package entries is digest hash does not match', default=False, type=bool, is_flag=True)
 @click.option('-s', '--skip', help='Skip any packages that would otherwise be overwritten', default=False, type=bool, is_flag=True)
-def index(path, index_path, merge, force, skip):
+def index(path, index_path, new, force, skip):
     """index the repository folder
     
     Use this command to crawl a repository folder and update/regenerate an
@@ -32,7 +32,7 @@ def index(path, index_path, merge, force, skip):
 
 
     try:
-        if not merge:
+        if new:
             repo_index = RepositoryIndex.from_folder(path)
         else:
             repo_index = RepositoryIndex.parse_file(index_path)

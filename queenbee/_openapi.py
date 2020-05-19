@@ -93,7 +93,3 @@ def get_openapi(
     open_api['components']['schemas'] = schemas
 
     return open_api
-
-
-if __name__ == '__main__':
-    get_openapi()

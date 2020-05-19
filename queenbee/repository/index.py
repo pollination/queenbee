@@ -64,6 +64,8 @@ class RepositoryIndex(BaseModel):
                 resource_version.url = os.path.join('recipes', package)
                 index.index_recipe_version(resource_version)
 
+        index.generated = datetime.utcnow()
+
         return index
 
     @classmethod

@@ -16,18 +16,18 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 
 @click.command('package')
 @click.argument('path', type=click.Path(exists=True))
-@click.option('-r', '--repository', help='Path to the repository hosting this package', show_default=True, default='.', type=click.Path(exists=False))
+@click.option('-d', '--destination', help='location to write the package', show_default=True, default='.', type=click.Path(exists=False))
 @click.option('-f', '--force', help='Boolean toggle to overwrite existing package with same name and version', default=False, type=bool, is_flag=True)
-def package(path, repository, force):
+def package(path, destination, force):
     """package an operator
 
     This command helps your package operators and add them to repository folders. A packaged
     operator is essentially a gzipped version of its folder.
 
-    You can package an operator in a specific folder or repository by using the ``--repository``
+    You can package an operator in a specific folder or repository by using the ``--destination``
     flag::
 
-        queenbee operator package path/to/my/operator --repository path/to/my/repository
+        queenbee operator package path/to/my/operator --destination path/to/my/repository/operators
 
     If you do not specify a ``--repository`` the command will package the operator in the
     directory the command is invoked from (ie: ``.``)
@@ -36,7 +36,7 @@ def package(path, repository, force):
     try:
         OperatorVersion.package_folder(
             folder_path=path,
-            repo_folder=repository,
+            repo_folder=destination,
             overwrite=force
         )
     except ValidationError as error:

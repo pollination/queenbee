@@ -15,19 +15,19 @@ except ImportError:
 
 @click.command('package')
 @click.argument('path', type=click.Path(exists=True))
-@click.option('-r', '--repository', help='Path to the repository hosting this package', show_default=True, default='.', type=click.Path(exists=False))
+@click.option('-d', '--destination', help='location to write the package', show_default=True, default='.', type=click.Path(exists=False))
 @click.option('-f', '--force', help='Boolean toggle to overwrite existing package with same name and version', default=False, type=bool, is_flag=True)
 @click.option('--no-update', help='Do not fetch fresh versions of dependencies before packaging', default=False, type=bool, is_flag=True)
-def package(path, repository, force, no_update):
+def package(path, destination, force, no_update):
     """package an recipe
 
     This command helps your package recipes and add them to repository folders. A packaged
     recipe is essentially a gzipped version of its folder.
 
-    You can package an recipe in a specific folder or repository by using the ``--repository``
+    You can package an recipe in a specific folder or repository by using the ``--destination``
     flag::
 
-        queenbee recipe package path/to/my/recipe --repository path/to/my/repository
+        queenbee recipe package path/to/my/recipe --destination path/to/my/repository/recipes
 
     If you do not specify a ``--repository`` the command will package the recipe in the
     directory the command is invoked from (ie: ``.``)
@@ -41,7 +41,7 @@ def package(path, repository, force, no_update):
     dependencies.
     """
     path = os.path.abspath(path)
-    repository = os.path.abspath(repository)
+    repository = os.path.abspath(destination)
     os.chdir(path)
 
     # Check valid recipe
