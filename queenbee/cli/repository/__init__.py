@@ -1,6 +1,6 @@
 from .index import index
 from .serve import serve
-from .initialise import initialise
+from .init import init
 
 try:
     import click
@@ -14,7 +14,7 @@ except ImportError:
 @click.pass_context
 def main(ctx):
     """manage package repositories
-    
+
     A Queenbee repository is a folder containing packaged Operators and Recipes.
     This folder contains an Index file (``index.json``) that can be used to find specific packages
     as well as track some metadata such as version, creation date and most importantly
@@ -32,11 +32,12 @@ def main(ctx):
         ├── recipes
         │   └── my-recipe-0.0.1.tgz
         └── index.json
-        
+
     You can use the commands documented below to help you manage a repository
     """
     pass
 
+
 main.add_command(index)
 main.add_command(serve)
-main.add_command(initialise)
+main.add_command(init)

@@ -11,10 +11,11 @@ except ImportError:
 
 MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 
+
 @click.command('init')
 @click.argument('path', type=click.Path(exists=False))
-def initialise(path):
-    """initialise an empty repository
+def init(path):
+    """initialize an empty repository
 
     Use this command to create a new repository folder.
     """
@@ -29,5 +30,3 @@ def initialise(path):
     index.to_json(os.path.join(path, 'index.json'), indent=2)
 
     click.echo(f'Created new repository at {path}')
-
-    
