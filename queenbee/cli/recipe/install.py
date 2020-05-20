@@ -33,7 +33,7 @@ def install(path):
 
     recipe.lock_dependencies()
     
-    recipe.write_dependency_lock('.')
+    recipe.write_dependency_file('.')
 
     recipe.write_dependencies('.')
 

@@ -233,14 +233,12 @@ class Recipe(BaseModel):
         for dependency in self.dependencies:
             dependency.fetch()
 
-    def write_dependency_lock(self, folder_path: str):
+    def write_dependency_file(self, folder_path: str):
         """Write the locked dependencies to a Recipe folder
 
         Arguments:
             folder_path {str} -- The path to the recipe folder
         """
-        if not self.is_locked:
-            self.lock_dependencies()
 
         self_dict = json.loads(self.json(by_alias=True, exclude_unset=True))
 
@@ -281,7 +279,7 @@ class Recipe(BaseModel):
             os.path.join(folder_path, 'recipe.yaml'), exclude_unset=True
         )
 
-        self.write_dependency_lock(folder_path)
+        self.write_dependency_file(folder_path)
 
         for dag in self.flow:
             dag.to_yaml(
@@ -311,10 +309,7 @@ class Recipe(BaseModel):
         for dependency in self.dependencies:
             if dependency.type == DependencyType.operator:
                 raw_dep, digest = dependency.fetch()
-                print(digest)
-                print(raw_dep)
                 dep = Operator.parse_raw(raw_dep)
-                print(dep.__hash__)
                 dep.to_yaml(
                     os.path.join(
                         folder_path, '.dependencies', 'operators', f'{digest}.yaml'
