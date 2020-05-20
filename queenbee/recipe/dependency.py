@@ -97,6 +97,8 @@ class Dependency(BaseModel):
         else:
             url = os.path.join(self.source, 'index.json')
 
+        # replace \\ with / for the case of Windows
+        url = url.replace('\\', '/')
         res = request.urlopen(url)
         raw_bytes = res.read()
         return RepositoryIndex.parse_raw(raw_bytes)
@@ -148,8 +150,7 @@ class Dependency(BaseModel):
                 else:
                     raise error
 
-        package_url = os.path.join(self.source, package_meta.url)
-
+        package_url = os.path.join(self.source, package_meta.url).replace('\\', '/')
         res = request.urlopen(package_url)
 
         filebytes = BytesIO(res.read())

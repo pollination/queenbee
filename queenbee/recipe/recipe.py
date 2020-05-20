@@ -184,7 +184,7 @@ class Recipe(BaseModel):
         Returns:
             bool -- True if all dependencies are locked
         """
-        return all(map(lambda x: x.is_locked(), self.dependencies))
+        return all(map(lambda x: x.is_locked, self.dependencies))
 
     @staticmethod
     def dependency_by_name(dependencies: List[Dependency], name: str) -> Dependency:
