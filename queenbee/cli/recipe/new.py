@@ -13,6 +13,7 @@ except ImportError:
 
 MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 
+
 @click.command('new')
 @click.argument('name')
 @click.option(
@@ -22,7 +23,7 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 )
 def new(name, path):
     """create a new recipe folder
-    
+
     Use this command to create a new recipe. The folder will compile to the following
     recipe definition::
 
@@ -61,7 +62,7 @@ def new(name, path):
             from:
                 type: tasks
                 name: say-something
-                variable: whale-said  
+                variable: whale-said
 
     You can indicate where you want to create the recipe folder by
     specifying the ``--path`` option.
@@ -81,7 +82,7 @@ def new(name, path):
     input_dict['metadata']['name'] = name
 
     recipe = Recipe.parse_obj(input_dict)
-    
+
     # Create entire path to folder if it does not exist
     os.makedirs(folder_path, exist_ok=True)
 

@@ -19,7 +19,7 @@ Folder Structure
 We will create a new Queenbee repository in a folder called ``local-queenbee-repo``. To do
 so run the following command::
 
-    queenbee repository init local-queenbee-argo
+    queenbee repository init local-queenbee-repo
 
 
 This command will create the folders and initialize an empty ``index.json`` file. Here
@@ -48,6 +48,9 @@ created in the `Operator Guide <operator.html>`_ (or any other operator you migh
 created). ::
 
     queenbee operator package path/to/operator --destination local-queenbee-repo/operators
+
+If you are using the Operator we created in the `Operator Guide <operator.html>`_ the
+path/to/operator is the ``energy-plus`` Operator folder.
 
 You should now see a new file has been added to your repository.
 
@@ -115,7 +118,7 @@ If you open your ``index.json`` file you will see that is has changed to somethi
 There are a few interesting things going on here:
 
 - The operator package is nested under the ``operator`` key
-- The operator name key points to a list of **Operator Versions**
+- The operator name key points to a list of **Operator Versions**. In this example the key is ``energy-plus``.
 - The **Operator Version** ``url`` key points to the package file relative to the ``index.json`` file
 - A ``digest`` is generated for each **Operator Version** This is used to handle ``version`` overwrites
 
@@ -138,7 +141,13 @@ To work with a local repository you must expose it as a local server on your mac
 You should now be able to view your ``index.json`` file from your browser at the
 following address `http://localhost:8000/index.json <http://localhost:8000/index.json>`_.
 
-If we write a Recipe that depends on the ``energy-plus``operator used in the examples above
+..  note::
+    If the port 8000 is not available you can change the port using ``--port`` option.
+    For instance ``queenbee repository serve local-queenbee-repo --port 8080`` will view
+    your ``index.json`` file at the following address:
+    `http://localhost:8080/index.json <http://localhost:8080/index.json>`_.
+
+If we write a Recipe that depends on the ``energy-plus`` operator used in the examples above
 we can write the ``dependencies.yaml`` file as follows::
 
     dependencies:

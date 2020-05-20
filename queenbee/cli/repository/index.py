@@ -15,7 +15,7 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 
 @click.command('index')
 @click.argument('path', type=click.Path(exists=True))
-@click.option('-i', '--index', 'index_path', help='Path to the index file to read/write to')
+@click.option('-i', '--index', 'index_path', help='Path to the index file to read/write to', show_default=True)
 @click.option('-n', '--new', help='Delete previous index and generate a new one from scratch', default=False, type=bool, is_flag=True)
 @click.option('-f', '--force', help='Overwrite existing package entries is digest hash does not match', default=False, type=bool, is_flag=True)
 @click.option('-s', '--skip', help='Skip any packages that would otherwise be overwritten', default=False, type=bool, is_flag=True)

@@ -6,7 +6,9 @@ borrows a number of terms and expressions from
 [Apache Airflow](http://airflow.apache.org/) and [Ansible](https://docs.ansible.com/).
 
 Queenbee populates and validates the workflows but does not run them! For running the
-workflows see `ladybug-tools/workerbee` which converts Queenbee workflows to executable
+workflows see
+[`ladybug-tools/queenbee-luigi`](https://github.com/ladybug-tools/queenbee-luigi)
+which converts Queenbee workflows to executable
 [Luigi](https://luigi.readthedocs.io/en/stable/) pipelines.
 
 You can find more workflow samples in
@@ -41,7 +43,7 @@ You can also access the [Schema Documentation](https://ladybug.tools/queenbee/re
     ```
 
     or
- 
+
     ```console
     git clone https://github.com/ladybug-tools/queenbee
     ```
@@ -73,4 +75,4 @@ You can also access the [Schema Documentation](https://ladybug.tools/queenbee/re
     python -m http.server --directory ./docs/_build/
     ```
 
-    Now you can see the documentation preview [here](http://localhost:8000)
+    Now you can see the documentation preview at http://localhost:8000
