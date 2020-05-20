@@ -53,14 +53,16 @@ class RepositoryIndex(BaseModel):
             for package in os.listdir(operators_folder):
                 package_path = os.path.join(folder_path, 'operators', package)
                 resource_version = OperatorVersion.from_package(package_path)
-                resource_version.url = os.path.join('operators', package)
+                resource_version.url = \
+                    os.path.join('operators', package).replace('\\', '/')
                 index.index_operator_version(resource_version)
 
         if os.path.exists(recipes_folder):
             for package in os.listdir(recipes_folder):
                 package_path = os.path.join(folder_path, 'recipes', package)
                 resource_version = RecipeVersion.from_package(package_path)
-                resource_version.url = os.path.join('recipes', package)
+                resource_version.url = \
+                    os.path.join('recipes', package).replace('\\', '/')
                 index.index_recipe_version(resource_version)
 
         index.generated = datetime.utcnow()
