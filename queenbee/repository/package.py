@@ -137,7 +137,7 @@ class ResourceVersion(BaseModel):
         Returns:
             ResourceVersion -- A resource version object
         """
-        file_path = os.path.abspath(package_path)
+        file_path = os.path.normpath(os.path.abspath(package_path))
 
         tar_file = TarFile.open(file_path)
 
@@ -145,7 +145,12 @@ class ResourceVersion(BaseModel):
 
         version_bytes = tar_file.extractfile(member).read()
 
-        return cls.parse_raw(version_bytes)
+        cls_ = cls.parse_raw(version_bytes)
+
+        # add subfolder (e.g. operators, recipes ) to url
+        cls_.url = '/'.join(file_path.split(os.sep)[-2:])
+
+        return cls_
 
     @staticmethod
     def path_to_readme(folder_path: str) -> str:
