@@ -14,8 +14,8 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 
 @click.command('serve')
 @click.argument('path', type=click.Path(exists=True))
-@click.option('-p', '--port', 'port', help='The port to expose', default=8000)
-@click.option('-a', '--address', 'address', help='The host addres to use', default='0.0.0.0')
+@click.option('-p', '--port', 'port', help='The port to expose', default=8000, show_default=True)
+@click.option('-a', '--address', 'address', help='The host addres to use', default='0.0.0.0', show_default=True)
 def serve(port, address, path):
     """serve a local repository folder
 

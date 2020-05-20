@@ -16,11 +16,11 @@ except ImportError:
 @click.argument('path', type=click.Path(exists=True))
 def install(path):
     """download dependencies and save them to the .dependencies folder
-    
-    This subcommand interacts mostly with the ``dependencies.yaml`` file and 
+
+    This subcommand interacts mostly with the ``dependencies.yaml`` file and
     ``.dependencies`` folder in your recipe folder.
     """
-    
+
     try:
         recipe = Recipe.from_folder(path)
     except ValidationError as error:
