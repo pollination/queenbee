@@ -34,7 +34,6 @@ class IOBase(BaseModel):
 
     artifacts: List[IOItem]
 
-    @classmethod
     @validator('parameters', 'artifacts')
     def parameter_unique_names(cls, v):
         """Pydantic validator to check that IO item names are unique within their list
