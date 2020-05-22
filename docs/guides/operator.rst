@@ -35,7 +35,7 @@ Configuration
 The ``config.yaml`` file contains information to indicate what underlying software should execute
 the operator's functions. We will be focusing on the ``docker`` configuration.
 
-You can check the full schema definition for an Operator Config `here </_static/redoc-operator.html#tag/config_model>`_
+You can check the full schema definition for an Operator Config `here <../_static/redoc-operator.html#tag/config_model>`_
 
 Docker Config
 ^^^^^^^^^^^^^
@@ -78,7 +78,7 @@ The file currently contains name and version information:
   version: 0.1.0
 
 These are the two mandatory fields for this file. You can view a full list of other available 
-fields `here </_static/redoc-operator.html#tag/metadata_model>`_.
+fields `here <../_static/redoc-operator.html#tag/metadata_model>`_.
 
 We will be adding a few more fields for demonstration purposes. Overwrite the contents of
 ``operator.yaml`` with the YAML code block below.
@@ -91,7 +91,7 @@ Your First Function
 -------------------
 We are now finally ready to write a Function. Functions are the key ingredients of an Operator. A Function
 defines a parametrized command run in a terminal. You can refer to the 
-`function schema definition  </_static/redoc-operator.html#tag/function_model>`_ to understand the components of a function.
+`function schema definition  <../_static/redoc-operator.html#tag/function_model>`_ to understand the components of a function.
 
 
 We listed some function we wanted to create based on examples provided by the EneryPlus documentation. 

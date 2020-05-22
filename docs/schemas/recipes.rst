@@ -26,7 +26,7 @@ Schema
       NProgress.start();
     </script>
     <script>
-      jsonSchemaViewer(window, '/_static/schemas/recipe-schema.json')
+      jsonSchemaViewer(window, '../_static/schemas/recipe-schema.json')
     </script>
     <script>
       NProgress.done();
@@ -40,15 +40,15 @@ Schema
 
 OpenAPI Docs 
 -------------
-You can find the Open API Docs formatted by redoc `here </_static/redoc-recipe.html#tag/recipe_model>`_.
+You can find the Open API Docs formatted by redoc `here <../_static/redoc-recipe.html#tag/recipe_model>`_.
 
 OpenAPI Definition 
 -------------------
-You can find the OpenAPI JSON definition `here </_static/schemas/recipe-openapi.json>`_.
+You can find the OpenAPI JSON definition `here <../_static/schemas/recipe-openapi.json>`_.
 
 JSON Schema Definition 
 -----------------------
-You can find the JSON Schema definition `here </_static/schemas/recipe-schema.json>`_.
+You can find the JSON Schema definition `here <../_static/schemas/recipe-schema.json>`_.
 
 
 Examples
