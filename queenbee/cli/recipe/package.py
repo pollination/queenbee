@@ -21,7 +21,7 @@ except ImportError:
 def package(path, destination, force, no_update):
     """package an recipe
 
-    This command helps your package recipes and add them to repository folders. A packaged
+    This command helps you package recipes and add them to repository folders. A packaged
     recipe is essentially a gzipped version of its folder.
 
     You can package an recipe in a specific folder or repository by using the ``--destination``
