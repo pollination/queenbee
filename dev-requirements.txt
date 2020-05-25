@@ -1,5 +1,5 @@
 coverage==5.1
-coveralls==1.5.1
+coveralls==2.0.0
 pytest==5.4.2
 pytest-cov==2.9.0
 attrs~=19.3.0
