@@ -45,7 +45,7 @@ class InputBaseReference(BaseReference):
         Returns:
             str -- A reference string
         """
-        template = [self.type, self.source, self.variable]
+        template = [self.type.value, self.source, self.variable]
         return template_string(template)
 
 
@@ -86,7 +86,7 @@ class TaskBaseReference(BaseReference):
         Returns:
             str -- A reference string
         """
-        template = [self.type, self.source, self.name, self.variable]
+        template = [self.type.value, self.name, 'outputs', self.source, self.variable]
         return template_string(template)
 
 
@@ -123,7 +123,7 @@ class ItemBaseReference(BaseReference):
         Returns:
             str -- A reference string
         """
-        template = [self.type, self.source, self.variable]
+        template = [self.type.value, self.source, self.variable]
         return template_string(template)
 
 
