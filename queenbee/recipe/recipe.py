@@ -121,7 +121,7 @@ class Recipe(BaseModel):
 
         return cls.parse_obj(recipe)
 
-    @validator('flow')
+    @validator('flow', allow_reuse=True)
     def check_entrypoint(cls, v):
         """Check the `main` DAG exists in the flow"""
         for dag in v:
@@ -132,13 +132,13 @@ class Recipe(BaseModel):
 
         raise ValueError('No DAG with name "main" found in flow')
 
-    @validator('flow')
+    @validator('flow', allow_reuse=True)
     def sort_list(cls, v):
         """Sort the list of DAGs by name"""
         v.sort(key=lambda x: x.name)
         return v
 
-    @validator('flow')
+    @validator('flow', allow_reuse=True)
     def check_dag_names(cls, v, values):
         """Check DAG names do not overlap with dependency names"""
         op_names = [dep.ref_name for dep in values.get('dependencies')]
@@ -152,7 +152,7 @@ class Recipe(BaseModel):
 
         return v
 
-    @validator('flow')
+    @validator('flow', allow_reuse=True)
     def check_template_dependency_names(cls, v, values):
         """Check all DAG template names exist in dependencies or other DAGs"""
         op_names = [dep.ref_name for dep in values.get('dependencies')]
@@ -170,13 +170,17 @@ class Recipe(BaseModel):
         return v
 
     @property
+    def root_dag(self) -> DAG:
+        return self.dag_by_name(flow=self.flow, name='main')
+
+    @property
     def inputs(self) -> DAGInputs:
         """Get the Recipe's inputs
 
         Returns:
             DAGInputs -- The inputs of the entrypoint DAG
         """
-        return self.flow.root_dag.inputs
+        return self.root_dag.inputs
 
     @property
     def is_locked(self) -> bool:
@@ -549,7 +553,7 @@ class BakedRecipe(Recipe):
 
         return dags
 
-    @validator('flow')
+    @validator('flow', allow_reuse=True)
     def check_template_dependency_names(cls, v, values):
         """Overwrite test function from inherited class"""
         return v
@@ -580,6 +584,10 @@ class BakedRecipe(Recipe):
                 task.check_template(template)
 
         return values
+
+    @property
+    def root_dag(self) -> DAG:
+        return self.dag_by_name(flow=self.flow, name=f'{self.digest}/main')
 
     @staticmethod
     def template_by_name(templates: List[Union[DAG, TemplateFunction]], name: str) -> Union[DAG, TemplateFunction]:
