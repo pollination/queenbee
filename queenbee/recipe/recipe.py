@@ -6,7 +6,7 @@ end steps for the recipe.
 import os
 import shutil
 import json
-from typing import List, Union
+from typing import List, Union, Dict
 
 import yaml
 from pydantic import Field, validator, root_validator
@@ -95,6 +95,7 @@ class Recipe(BaseModel):
         Returns:
             Recipe -- A Recipe
         """
+        folder_path = os.path.realpath(folder_path)
         meta_path = os.path.join(folder_path, 'recipe.yaml')
         dependencies_path = os.path.join(folder_path, 'dependencies.yaml')
         flow_path = os.path.join(folder_path, 'flow')
@@ -259,12 +260,24 @@ class Recipe(BaseModel):
 
                 .
                 ├── .dependencies
-                │   ├── operators
-                │   │   └── <sha-256>.yaml
-                │   └── recipes
-                │       └── <sha-256>.yaml
+                │   ├── operator
+                │   │   └── operator-dep-name
+                │   │       ├── functions
+                │   │       │   ├── func-1.yaml
+                │   │       │   ├── ...
+                │   │       │   └── func-n.yaml
+                │   │       ├── config.yaml
+                │   │       └── operator.yaml
+                │   └── recipe
+                │       └── recipe-dep-name
+                │           ├── .dependencies
+                │           │   ├── operator
+                │           │   └── recipe
+                │           ├── flow
+                │           │   └── main.yaml
+                │           ├── dependencies.yaml
+                │           └── recipe.yaml
                 ├── flow
-                |   ├── sub-dag.yaml
                 │   └── main.yaml
                 ├── dependencies.yaml
                 └── recipe.yaml
@@ -273,7 +286,7 @@ class Recipe(BaseModel):
             folder_path {str} -- The path to the Recipe folder
         """
 
-        os.mkdir(os.path.join(folder_path, 'flow'))
+        os.makedirs(os.path.join(folder_path, 'flow'))
 
         self.metadata.to_yaml(
             os.path.join(folder_path, 'recipe.yaml'), exclude_unset=True
@@ -294,8 +307,8 @@ class Recipe(BaseModel):
             folder_path {str} -- Path to the recipe folder
         """
         dependencies_folder = os.path.join(folder_path, '.dependencies')
-        operator_folder = os.path.join(dependencies_folder, 'operators')
-        recipes_folder = os.path.join(dependencies_folder, 'recipes')
+        operator_folder = os.path.join(dependencies_folder, 'operator')
+        recipes_folder = os.path.join(dependencies_folder, 'recipe')
 
         if not os.path.isdir(dependencies_folder):
             os.mkdir(dependencies_folder)
@@ -310,21 +323,15 @@ class Recipe(BaseModel):
             if dependency.type == DependencyType.operator:
                 raw_dep, digest = dependency.fetch()
                 dep = Operator.parse_raw(raw_dep)
-                dep.to_yaml(
-                    os.path.join(
-                        folder_path, '.dependencies', 'operators', f'{digest}.yaml'
-                    )
-                )
 
             elif dependency.type == DependencyType.recipe:
                 raw_dep, digest = dependency.fetch()
                 dep = self.__class__.parse_raw(raw_dep)
                 dep.write_dependencies(folder_path)
-                dep.to_yaml(
-                    os.path.join(
-                        folder_path, '.dependencies', 'recipes', f'{digest}.yaml'
-                    )
-                )
+
+            dep.to_folder(
+                folder_path=os.path.join(folder_path, '.dependencies', dependency.type, dependency.ref_name)
+            )
 
 
 class BakedRecipe(Recipe):
@@ -360,6 +367,10 @@ class BakedRecipe(Recipe):
 
         digest = recipe.__hash__
 
+        digest_dict = {
+            '__self__': digest
+        }
+
         templates = []
 
         for dependency in recipe.dependencies:
@@ -371,10 +382,12 @@ class BakedRecipe(Recipe):
 
                 templates.extend(sub_recipe.templates)
                 templates.extend(sub_recipe.flow)
+                digest_dict[dependency.ref_name] = sub_recipe.digest
 
             elif dependency.type == 'operator':
                 dep = Operator.parse_raw(dep_bytes)
                 templates.extend(TemplateFunction.from_operator(dep))
+                digest_dict[dependency.ref_name] = dep.__hash__
 
             else:
                 raise ValueError(f'Dependency of type {dependency.type} not recognized')
@@ -382,7 +395,7 @@ class BakedRecipe(Recipe):
         flow = cls.replace_template_refs(
             dependencies=recipe.dependencies,
             dags=recipe.flow,
-            digest=digest,
+            digest_dict=digest_dict,
         )
 
         input_dict = recipe.to_dict()
@@ -429,6 +442,10 @@ class BakedRecipe(Recipe):
 
         digest = recipe.__hash__
 
+        digest_dict = {
+            '__self__': digest
+        }
+
         if refresh_deps:
             if os.path.exists(dependencies_folder) and \
                     os.path.isdir(dependencies_folder):
@@ -437,24 +454,27 @@ class BakedRecipe(Recipe):
 
         templates = []
 
-        for operator_path in os.listdir(os.path.join(dependencies_folder, 'operators')):
-            operator = Operator.from_file(
-                os.path.join(dependencies_folder, 'operators', operator_path)
+        for operator_dep_name in os.listdir(os.path.join(dependencies_folder, 'operator')):
+            operator = Operator.from_folder(
+                folder_path=os.path.join(dependencies_folder, 'operator', operator_dep_name)
             )
             templates.extend(TemplateFunction.from_operator(operator))
+            digest_dict[operator_dep_name] = operator.__hash__
 
-        for sub_recipe_path in os.listdir(os.path.join(dependencies_folder, 'recipes')):
-            sub_recipe = Recipe.from_file(
-                os.path.join(dependencies_folder, 'recipes', sub_recipe_path)
+        for recipe_dep_name in os.listdir(os.path.join(dependencies_folder, 'recipe')):
+            sub_baked_recipe = cls.from_folder(
+                folder_path=os.path.join(dependencies_folder, 'recipe', recipe_dep_name),
+                refresh_deps=refresh_deps
             )
-            sub_baked_recipe = cls.from_recipe(sub_recipe)
+
             templates.extend(sub_baked_recipe.templates)
             templates.extend(sub_baked_recipe.flow)
+            digest_dict[recipe_dep_name] = sub_baked_recipe.digest
 
         flow = cls.replace_template_refs(
             dependencies=recipe.dependencies,
             dags=recipe.flow,
-            digest=digest,
+            digest_dict=digest_dict,
         )
 
         input_dict = recipe.to_dict()
@@ -469,7 +489,7 @@ class BakedRecipe(Recipe):
         cls,
         dependencies: List[Dependency],
         dags: List[DAG],
-        digest: str,
+        digest_dict: Dict[str, str],
     ) -> List[DAG]:
         """Replace DAG Task template names with unique dependency digest based names
 
@@ -491,7 +511,8 @@ class BakedRecipe(Recipe):
 
         for dag in dags:
             # Replace name of DAG to "{digest}/{dag.name}"
-            dag.name = f'{digest}/{dag.name}'
+            dep_hash = digest_dict['__self__']
+            dag.name = f'{dep_hash}/{dag.name}'
 
         for dag in dags:
             for task in dag.tasks:
@@ -499,10 +520,13 @@ class BakedRecipe(Recipe):
 
                 # Template name is another DAG in the Recipe Flow
                 if template_dep_list[0] in dag_names:
-                    task.template = f'{digest}/{template_dep_list[0]}'
+                    dep_hash = digest_dict['__self__']
+                    task.template = f'{dep_hash}/{template_dep_list[0]}'
                     continue
 
                 dep = cls.dependency_by_name(dependencies, template_dep_list[0])
+
+                dep_hash = digest_dict[dep.ref_name]
 
                 # Template name is another Recipe
                 if dep.type == DependencyType.recipe:
@@ -510,7 +534,7 @@ class BakedRecipe(Recipe):
                         ValueError(
                             f'Unresolvable Recipe template dependency {task.template}'
                         )
-                    template_dep = f'{dep.digest}/main'
+                    template_dep = f'{dep_hash}/main'
 
                 # Template name is an Operator Function
                 elif dep.type == DependencyType.operator:
@@ -519,7 +543,7 @@ class BakedRecipe(Recipe):
                             f'Unresolvable Operator function template dependency'
                             f' {task.template}'
                         )
-                    template_dep = f'{dep.digest}/{template_dep_list[1]}'
+                    template_dep = f'{dep_hash}/{template_dep_list[1]}'
 
                 task.template = template_dep
 

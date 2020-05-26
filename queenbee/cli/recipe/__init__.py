@@ -2,6 +2,7 @@ from .new import new
 from .lint import lint
 from .package import package
 from .install import install
+from .link import link
 
 try:
     import click
@@ -23,14 +24,26 @@ def main(ctx):
     as shown below::
 
         \b
-        recipe-name
+        .
         ├── .dependencies
-        │   ├── operators
-        │   │   └── <sha-256>.yaml
-        │   └── recipes
-        │       └── <sha-256>.yaml
+        │   ├── operator
+        │   │   └── operator-dep-name
+        │   │       ├── functions
+        │   │       │   ├── func-1.yaml
+        │   │       │   ├── ...
+        │   │       │   └── func-n.yaml
+        │   │       ├── config.yaml
+        │   │       └── operator.yaml
+        │   └── recipe
+        │       └── recipe-dep-name
+        │           ├── .dependencies
+        │           │   ├── operator
+        │           │   └── recipe
+        │           ├── flow
+        │           │   └── main.yaml
+        │           ├── dependencies.yaml
+        │           └── recipe.yaml
         ├── flow
-        |   ├── sub-dag.yaml
         │   └── main.yaml
         ├── dependencies.yaml
         └── recipe.yaml
@@ -64,3 +77,5 @@ main.add_command(new)
 main.add_command(lint)
 main.add_command(package)
 main.add_command(install)
+main.add_command(link)
+

@@ -113,6 +113,7 @@ class Operator(BaseModel):
         Returns:
             Operator -- An operator
         """
+        folder_path = os.path.realpath(folder_path)
         meta_path = os.path.join(folder_path, 'operator.yaml')
         config_path = os.path.join(folder_path, 'config.yaml')
         functions_path = os.path.join(folder_path, 'functions')
@@ -155,13 +156,14 @@ class Operator(BaseModel):
         Arguments:
             folder_path {str} -- Path to write the folder to
         """
+        os.makedirs(os.path.join(folder_path, 'functions'))
+
         self.metadata.to_yaml(
             os.path.join(folder_path, 'operator.yaml'),
             exclude_unset=True
         )
         self.config.to_yaml(os.path.join(folder_path, 'config.yaml'), exclude_unset=True)
 
-        os.mkdir(os.path.join(folder_path, 'functions'))
 
         for function in self.functions:
             function.to_yaml(
