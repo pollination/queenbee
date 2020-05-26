@@ -93,8 +93,10 @@ class Workflow(BaseModel):
         Returns:
             Workflow -- A workflow object
         """
-        input_dict = recipe.to_dict()
-        input_dict['arguments'] = arguments.to_dict()
-        input_dict['labels'] = labels
+        input_dict = {
+            'recipe': recipe.to_dict(),
+            'arguments': arguments.to_dict(),
+            'labels': labels,
+        }
 
         return cls.parse_obj(input_dict)
