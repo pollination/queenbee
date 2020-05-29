@@ -1,0 +1,20 @@
+metadata:
+  name: minimal-recipe
+  version: 0.2.1
+
+dependencies:
+- type: operator
+  name: honeybee-radiance
+  version: 1.2.3
+  source: https://example.com/test-repo
+
+flow:
+- name: main
+  tasks:
+  - name: minimal-task
+    template: honeybee-radiance/10000-lux-sky
+    arguments:
+      parameters:
+      - name: foo
+      - name: bar
+    sub_folder: path/{{arguments.parameters.foo}}/{{arguments.parameters.bar}}

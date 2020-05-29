@@ -311,7 +311,7 @@ class DAGTaskOutputArtifact(BaseModel):
     )
 
     path: str = Field(
-        ...,
+        None,
         description='The path where the artifact should be saved relative to the DAG'
         ' folder.'
     )
@@ -396,16 +396,6 @@ class DAGTaskLoop(BaseModel):
         description='Parameters to control some loop behavior for this task'
     )
 
-    sub_folders: List[str] = Field(
-        ['item'],
-        description='An ordered list of the name of the item keys to loop over. Only '
-        'applies if the item is a JSON object.',
-        example=[
-            'item.country',
-            'item.region',
-            'item.city'
-        ]
-    )
 
 
 class DAGTask(BaseModel):
@@ -436,6 +426,13 @@ class DAGTask(BaseModel):
         description='List of inputs to loop over.'
     )
 
+    sub_folder: str = Field(
+        None,
+        description='A path relative to the current folder context where artifacts should '
+        'be saved. This is useful when performing a loop or invoking another workflow and '
+        'wanting to save results in a specific folder.'
+    )
+
     outputs: DAGTaskOutputs = Field(
         None,
         description='The outputs of this task'
@@ -453,6 +450,29 @@ class DAGTask(BaseModel):
                     ' "loop" is specified'
                 )
         return v
+
+    @validator('sub_folder')
+    def check_references(cls, v, values):
+        loop = values.get('loop')
+        arguments = values.get('arguments')
+
+        if v is None:
+            return v
+
+        refs = parse_double_quotes_vars(v)
+
+        for ref in refs:
+            if ref == 'item' or ref.startswith('item.'):
+                assert loop is not None, 'Cannot use `item` if no loop is specified'
+            else:
+                ref_list = ref.split('.')
+                assert ref.startswith('arguments.parameters.'), f'Sub folder ref must be from `item` or `arguments.parameters`. Not: {ref}'
+                assert len(ref_list) == 3, f'Sub folder ref must follow format `arguments.parameters.<var-name>`. Not {ref}'
+                # Check parameter is set
+                arguments.parameter_by_name(ref_list[2])
+
+        return v
+
 
     @validator('arguments', always=True)
     def set_default_args(cls, v):
