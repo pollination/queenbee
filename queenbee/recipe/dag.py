@@ -476,15 +476,11 @@ class DAGTask(BaseModel):
 
     @validator('arguments', always=True)
     def set_default_args(cls, v):
-        if v is None:
-            v = DAGTaskArgument()
-        return v
+         return DAGTaskArgument() if v is None else v
 
     @validator('outputs', always=True)
     def set_default_outputs(cls, v):
-        if v is None:
-            v = DAGTaskOutputs()
-        return v
+         return DAGTaskOutputs() if v is None else v
 
     @property
     def is_root(self) -> bool:
@@ -635,15 +631,11 @@ class DAG(BaseModel):
 
     @validator('inputs', always=True)
     def set_default_inputs(cls, v):
-        if v is None:
-            v = DAGInputs()
-        return v
+         return DAGInputs() if v is None else v
 
     @validator('outputs', always=True)
     def set_default_outputs(cls, v):
-        if v is None:
-            v = DAGOutputs()
-        return v
+         return DAGOutputs() if v is None else v
 
     @validator('tasks')
     def check_unique_names(cls, v):

@@ -55,9 +55,7 @@ class IOBase(BaseModel):
 
     @validator('parameters', 'artifacts', always=True)
     def empty_list(cls, v):
-        if v is None:
-            v = []
-        return v
+         return [] if v is None else v
 
     @validator('parameters', 'artifacts')
     def sort_list(cls, v):
