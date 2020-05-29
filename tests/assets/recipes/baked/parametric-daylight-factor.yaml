@@ -16,12 +16,12 @@ metadata:
 dependencies:
 - type: recipe
   name: daylight-factor
-  hash: f4056c9449190d09a3dc100d3a12ac7efc938a0c2e3e97a44bfc2665186e43ba
+  hash: e7ce5c90a183680f30a7439c762740ccb022200571233261b0bf648a700fa3fa
   alias: null
   version: 0.0.1
   source: https://example.com/test-repo
 flow:
-- name: ae583140abdf0958025ed88e1891d31981c44a9f67ecced282e8d0d997a94e73/main
+- name: 1f693cbd451d7006cda498b381cf5c910709c06aff02dfb1e59eff439fa14a29/main
   inputs:
     parameters:
     - name: model-names
@@ -36,7 +36,7 @@ flow:
   fail_fast: true
   tasks:
   - name: daylight-factor
-    template: f4056c9449190d09a3dc100d3a12ac7efc938a0c2e3e97a44bfc2665186e43ba/main
+    template: 442ba65f89455253f50b5a445e39b155702be1fa5dbaa77576c8841bbc359523/main
     arguments:
       parameters: []
       artifacts:
@@ -56,8 +56,8 @@ flow:
         type: inputs
         variable: model-names
       value: null
-      sub_folders:
-      - item
+      control: null
+    sub_folder: null
     outputs:
       parameters:
       - name: average
@@ -72,7 +72,7 @@ flow:
         type: tasks
         name: daylight-factor
         variable: data
-digest: ae583140abdf0958025ed88e1891d31981c44a9f67ecced282e8d0d997a94e73
+digest: 1f693cbd451d7006cda498b381cf5c910709c06aff02dfb1e59eff439fa14a29
 templates:
 - name: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048/10000-lux-sky
   description: Generates a 10000 lux sky
@@ -200,7 +200,7 @@ templates:
       registry: null
       workdir: /opt/run/
     local: null
-- name: f4056c9449190d09a3dc100d3a12ac7efc938a0c2e3e97a44bfc2665186e43ba/main
+- name: 442ba65f89455253f50b5a445e39b155702be1fa5dbaa77576c8841bbc359523/main
   inputs:
     parameters:
     - name: radiance-parameters
@@ -241,6 +241,7 @@ templates:
     dependencies:
     - generate-sky
     loop: null
+    sub_folder: null
     outputs:
       parameters: []
       artifacts:
@@ -277,8 +278,8 @@ templates:
         name: split-grid
         variable: grid-list
       value: null
-      sub_folders:
-      - item
+      control: null
+    sub_folder: null
     outputs:
       parameters: []
       artifacts:
@@ -286,9 +287,12 @@ templates:
         path: grid.res
   - name: generate-sky
     template: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048/10000-lux-sky
-    arguments: null
+    arguments:
+      parameters: []
+      artifacts: []
     dependencies: null
     loop: null
+    sub_folder: null
     outputs:
       parameters: []
       artifacts:
@@ -308,6 +312,7 @@ templates:
     dependencies:
     - daylight-factor-simulation
     loop: null
+    sub_folder: null
     outputs:
       parameters:
       - name: daylight-factor-average
@@ -331,6 +336,7 @@ templates:
         subpath: null
     dependencies: null
     loop: null
+    sub_folder: null
     outputs:
       parameters:
       - name: grid-list

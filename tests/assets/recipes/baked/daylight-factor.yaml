@@ -21,7 +21,7 @@ dependencies:
   version: 1.2.3
   source: https://example.com/test-repo
 flow:
-- name: f4056c9449190d09a3dc100d3a12ac7efc938a0c2e3e97a44bfc2665186e43ba/main
+- name: 442ba65f89455253f50b5a445e39b155702be1fa5dbaa77576c8841bbc359523/main
   inputs:
     parameters:
     - name: radiance-parameters
@@ -62,6 +62,7 @@ flow:
     dependencies:
     - generate-sky
     loop: null
+    sub_folder: null
     outputs:
       parameters: []
       artifacts:
@@ -98,8 +99,8 @@ flow:
         name: split-grid
         variable: grid-list
       value: null
-      sub_folders:
-      - item
+      control: null
+    sub_folder: null
     outputs:
       parameters: []
       artifacts:
@@ -107,9 +108,12 @@ flow:
         path: grid.res
   - name: generate-sky
     template: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048/10000-lux-sky
-    arguments: null
+    arguments:
+      parameters: []
+      artifacts: []
     dependencies: null
     loop: null
+    sub_folder: null
     outputs:
       parameters: []
       artifacts:
@@ -129,6 +133,7 @@ flow:
     dependencies:
     - daylight-factor-simulation
     loop: null
+    sub_folder: null
     outputs:
       parameters:
       - name: daylight-factor-average
@@ -152,6 +157,7 @@ flow:
         subpath: null
     dependencies: null
     loop: null
+    sub_folder: null
     outputs:
       parameters:
       - name: grid-list
@@ -171,7 +177,7 @@ flow:
         type: tasks
         name: post-process
         variable: post-process-folder
-digest: f4056c9449190d09a3dc100d3a12ac7efc938a0c2e3e97a44bfc2665186e43ba
+digest: 442ba65f89455253f50b5a445e39b155702be1fa5dbaa77576c8841bbc359523
 templates:
 - name: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048/10000-lux-sky
   description: Generates a 10000 lux sky
