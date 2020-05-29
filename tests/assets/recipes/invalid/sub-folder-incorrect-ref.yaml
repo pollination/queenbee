@@ -17,4 +17,4 @@ flow:
       parameters:
       - name: foo
       - name: bar
-    sub_folder: path/{{arguments.parameters.nottt-foo}}/{{arguments.parameters.bar}}
+    sub_folder: path/{{arguments.parameters.not-foo}}/{{arguments.parameters.bar}}
