@@ -3,14 +3,17 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+Queenbee
+========
+
+Welcome to Queenbee's Documention site! 
+
+
 .. toctree::
    :maxdepth: 1
-   :hidden:
 
-   welcome
+   README.md
    guides/index
    schemas/index
    cli/index
    modules
-
-.. include:: welcome.rst

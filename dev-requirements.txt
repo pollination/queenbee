@@ -8,7 +8,7 @@ sphinx-bootstrap-theme==0.7.1
 sphinxcontrib-fulltoc==1.2.0
 sphinxcontrib-websupport==1.2.2
 sphinx-click==2.3.2
-m2r==0.2.1
+recommonmark==0.6.0
 twine==3.1.1
 click>=7.0
 click-plugins==1.1.1
