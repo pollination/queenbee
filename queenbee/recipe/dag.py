@@ -502,6 +502,9 @@ class DAGTask(BaseModel):
         Raises:
             ValueError: The task input and output values do not match the task template
         """
+        from .dag import DAG
+        from .recipe import TemplateFunction
+
         if template.inputs is not None:
             for param in template.inputs.parameters:
                 if param.required:
@@ -560,6 +563,13 @@ class DAGTask(BaseModel):
                             f'Validation Error for Task {self.name} and'
                             f' Template {template.name}: \n{str(error)}'
                         )
+                
+                if art.path is not None and isinstance(template, DAG):
+                    print('WARNING: Setting a persistence path for a DAG template will have no effect.')
+
+                if art.path is None and isinstance(template, TemplateFunction):
+                    print('WARNING: Not setting a persistence path for a Function template '
+                    'means the artifact will be saved in an arbitrary folder.')
 
 
 class DAG(BaseModel):
