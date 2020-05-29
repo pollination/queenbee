@@ -419,6 +419,18 @@ class DAGTask(BaseModel):
                 )
         return v
 
+    @validator('arguments', always=True)
+    def set_default_args(cls, v):
+        if v is None:
+            v = DAGTaskArgument()
+        return v
+
+    @validator('outputs', always=True)
+    def set_default_outputs(cls, v):
+        if v is None:
+            v = DAGTaskOutputs()
+        return v
+
     @property
     def is_root(self) -> bool:
         """A root task does not have any dependencies
@@ -565,6 +577,18 @@ class DAG(BaseModel):
                 f'Unexpected output_type "{type(reference)}".'
                 f' Expected one of "TaskArtifactReference" or "TaskParameterReference".'
             )
+
+    @validator('inputs', always=True)
+    def set_default_inputs(cls, v):
+        if v is None:
+            v = DAGInputs()
+        return v
+
+    @validator('outputs', always=True)
+    def set_default_outputs(cls, v):
+        if v is None:
+            v = DAGOutputs()
+        return v
 
     @validator('tasks')
     def check_unique_names(cls, v):

@@ -53,6 +53,12 @@ class IOBase(BaseModel):
             raise ValueError(f'Duplicate names: {duplicates}')
         return v
 
+    @validator('parameters', 'artifacts', always=True)
+    def empty_list(cls, v):
+        if v is None:
+            v = []
+        return v
+
     @validator('parameters', 'artifacts')
     def sort_list(cls, v):
         """Pydantic validator to sort IO items by name

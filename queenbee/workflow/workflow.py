@@ -49,9 +49,11 @@ class Workflow(BaseModel):
             artifacts = []
             parameters = []
 
-            if v is not None:
-                artifacts = v.artifacts
-                parameters = v.parameters
+            if v is None:
+                return Arguments()
+
+            artifacts = v.artifacts
+            parameters = v.parameters
 
             for parameter in recipe_inputs.parameters:
                 if parameter.required:
