@@ -1,0 +1,1 @@
+Loop control template must be `{{item}}` or `{{item.<var-name>}}`. Not: `{{input.test}}`

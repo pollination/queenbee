@@ -8,6 +8,7 @@ from pydantic import Field, validator
 
 from ..base.basemodel import BaseModel
 from ..base.io import IOBase, find_dup_items
+from ..base.parser import parse_double_quotes_vars
 from .artifact_source import HTTPSource, S3Source, ProjectFolderSource
 from .reference import InputArtifactReference, InputParameterReference, \
     TaskArtifactReference, TaskParameterReference, ItemParameterReference
@@ -343,6 +344,35 @@ class DAGTaskOutputs(IOBase):
     )
 
 
+class LoopControl(BaseModel):
+    """Loop Control"""
+
+    key: str = Field(
+        None,
+        description='The loop control key determines how parameters and artifacts from a looped task can be identified'
+    )
+
+    @validator('key')
+    def check_template(cls, v):
+
+        if v is None:
+            return
+
+        refs = parse_double_quotes_vars(v)
+
+        if len(refs) == 0:
+            raise ValueError(f'Loop Control Key must have templated values from the `item` variable. eg: `{{{{item.foo}}}}-{{{{item.bar}}}}')
+
+        for ref in refs:
+            is_item = ref == 'item'
+            is_item_key = ref.startswith('item.')
+
+            if not is_item and not is_item_key:
+                raise ValueError(f'Loop control template must be `{{{{item}}}}` or `{{{{item.<var-name>}}}}`. Not: `{{{{{ref}}}}}`')
+
+        return v
+
+
 class DAGTaskLoop(BaseModel):
     """Loop configuration for the task.
 
@@ -359,6 +389,11 @@ class DAGTaskLoop(BaseModel):
     value: List[Union[str, int, float, dict]] = Field(
         None,
         description='A list of values or JSON objects to loop over.'
+    )
+
+    control: LoopControl = Field(
+        None,
+        description='Parameters to control some loop behavior for this task'
     )
 
     sub_folders: List[str] = Field(
