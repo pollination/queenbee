@@ -530,7 +530,13 @@ class BakedRecipe(Recipe):
 
                 dep = cls.dependency_by_name(dependencies, template_dep_list[0])
 
-                dep_hash = digest_dict[dep.ref_name]
+                try:
+                    dep_hash = digest_dict[dep.ref_name]
+                except KeyError:
+                    raise ValueError(
+                        f'Unresolvable dependency name {dep.ref_name}. Did you forget '
+                        f' to package or link {dep.ref_name}?'
+                    )
 
                 # Template name is another Recipe
                 if dep.type == DependencyType.recipe:
