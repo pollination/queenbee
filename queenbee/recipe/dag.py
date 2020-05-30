@@ -489,7 +489,10 @@ class DAGTask(BaseModel):
         Returns:
             bool -- True if the task has no dependencies
         """
-        return len(self.dependencies) == 0
+        if self.dependencies:
+            return len(self.dependencies) == 0
+        else:
+            return True
 
     def check_template(self, template: IOBase):
         """A function to check the inputs and outputs of a DAG task.
