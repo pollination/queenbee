@@ -458,22 +458,30 @@ class BakedRecipe(Recipe):
 
         templates = []
 
-        for operator_dep_name in os.listdir(os.path.join(dependencies_folder, 'operator')):
-            operator = Operator.from_folder(
-                folder_path=os.path.join(dependencies_folder, 'operator', operator_dep_name)
-            )
-            templates.extend(TemplateFunction.from_operator(operator))
-            digest_dict[operator_dep_name] = operator.__hash__
+        operators_folder = os.path.join(dependencies_folder, 'operator')
+        if os.path.isdir(operators_folder):
+            for operator_dep_name in os.listdir(operators_folder):
+                operator = Operator.from_folder(
+                    folder_path=os.path.join(
+                        dependencies_folder, 'operator', operator_dep_name
+                    )
+                )
+                templates.extend(TemplateFunction.from_operator(operator))
+                digest_dict[operator_dep_name] = operator.__hash__
 
-        for recipe_dep_name in os.listdir(os.path.join(dependencies_folder, 'recipe')):
-            sub_baked_recipe = cls.from_folder(
-                folder_path=os.path.join(dependencies_folder, 'recipe', recipe_dep_name),
-                refresh_deps=refresh_deps
-            )
+        recipes_folder = os.path.join(dependencies_folder, 'recipe')
+        if os.path.isdir(recipes_folder):
+            for recipe_dep_name in os.listdir(recipes_folder):
+                sub_baked_recipe = cls.from_folder(
+                    folder_path=os.path.join(
+                        dependencies_folder, 'recipe', recipe_dep_name
+                    ),
+                    refresh_deps=refresh_deps
+                )
 
-            templates.extend(sub_baked_recipe.templates)
-            templates.extend(sub_baked_recipe.flow)
-            digest_dict[recipe_dep_name] = sub_baked_recipe.digest
+                templates.extend(sub_baked_recipe.templates)
+                templates.extend(sub_baked_recipe.flow)
+                digest_dict[recipe_dep_name] = sub_baked_recipe.digest
 
         flow = cls.replace_template_refs(
             dependencies=recipe.dependencies,
