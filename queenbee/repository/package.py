@@ -67,7 +67,9 @@ class ResourceVersion(BaseModel):
 
     @classmethod
     def _package_resource(cls, resource: Union[Operator, Recipe], repo_folder: str,
-                          path_to_readme: str = None, overwrite: bool = False):
+                          path_to_readme: str = None, path_to_license: str = None,
+                          overwrite: bool = False
+                        ):
         """Package a resource into a gzipped tar archive
 
         Arguments:
@@ -77,6 +79,8 @@ class ResourceVersion(BaseModel):
 
         Keyword Arguments:
             path_to_readme {str} -- Path to the resource README.md file if it exists
+                (default: {None})
+            path_to_license {str} -- Path to the resource LICENSE file if it exists
                 (default: {None})
             overwrite {bool} -- Overwrite a package with the same name (default: {False})
 
@@ -116,6 +120,12 @@ class ResourceVersion(BaseModel):
         if path_to_readme is not None:
             tar.add(
                 os.path.abspath(path_to_readme), arcname='README.md',
+                filter=reset_tar
+            )
+
+        if path_to_license is not None:
+            tar.add(
+                os.path.abspath(path_to_license), arcname='LICENSE',
                 filter=reset_tar
             )
 
@@ -173,13 +183,36 @@ class ResourceVersion(BaseModel):
 
         return path_to_readme
 
+    @staticmethod
+    def path_to_license(folder_path: str) -> str:
+        """Infer the path to the license file within a folder
+
+        Arguments:
+            folder_path {str} -- Path to the folder where a license file should be found
+
+        Returns:
+            str -- Path to the found license file (or None if no license file is found)
+        """
+        path_to_license = None
+
+        license_pattern = r'^license$'
+
+        for file in os.listdir(folder_path):
+            res = re.match(license_pattern, file, re.IGNORECASE)
+            if res is not None:
+                path_to_license = os.path.join(folder_path, file)
+
+        return path_to_license
+
 
 class OperatorVersion(ResourceVersion, OperatorMetadata):
     """A version of an Operator"""
 
     @classmethod
     def package_resource(cls, resource: Operator, repo_folder: str,
-                         path_to_readme: str = None, overwrite: bool = False):
+                         path_to_readme: str = None, path_to_license: str = None,
+                         overwrite: bool = False
+                        ):
         """Package an Operator into a gzipped tar file
 
         Arguments:
@@ -190,6 +223,8 @@ class OperatorVersion(ResourceVersion, OperatorMetadata):
         Keyword Arguments:
             path_to_readme {str} -- Path to the operator README.md file if it exists
                 (default: {None})
+            path_to_license {str} -- Path to the resource LICENSE file if it exists
+                (default: {None})
             overwrite {bool} -- Overwrite an operator with the same name
                 (default: {False})
 
@@ -198,7 +233,8 @@ class OperatorVersion(ResourceVersion, OperatorMetadata):
         """
         return cls._package_resource(
             resource=resource, repo_folder=repo_folder,
-            path_to_readme=path_to_readme, overwrite=overwrite
+            path_to_readme=path_to_readme, path_to_license=path_to_license,
+            overwrite=overwrite
         )
 
     @classmethod
@@ -223,6 +259,7 @@ class OperatorVersion(ResourceVersion, OperatorMetadata):
             resource=resource,
             repo_folder=repo_folder,
             path_to_readme=cls.path_to_readme(folder_path),
+            path_to_license=cls.path_to_license(folder_path),
             overwrite=overwrite,
         )
 
@@ -232,7 +269,9 @@ class RecipeVersion(ResourceVersion, RecipeMetadata):
     @classmethod
     def package_resource(
         cls, resource: Recipe, repo_folder: str, check_deps: bool = True,
-            path_to_readme: str = None, overwrite: bool = False):
+        path_to_readme: str = None, path_to_license: str = None,
+        overwrite: bool = False
+    ):
         """Package an Recipe into a gzipped tar file
 
         Arguments:
@@ -245,6 +284,8 @@ class RecipeVersion(ResourceVersion, RecipeMetadata):
                 the recipe by baking it (default: {True})
             path_to_readme {str} -- Path to the recipe README.md file if it exists
                 (default: {None})
+            path_to_license {str} -- Path to the resource LICENSE file if it exists
+                (default: {None})
             overwrite {bool} -- Overwrite an recipe with the same name (default: {False})
 
         Returns:
@@ -255,7 +296,7 @@ class RecipeVersion(ResourceVersion, RecipeMetadata):
 
         return cls._package_resource(
             resource=resource, repo_folder=repo_folder, path_to_readme=path_to_readme,
-            overwrite=overwrite
+            path_to_license=path_to_license, overwrite=overwrite
         )
 
     @classmethod
@@ -283,5 +324,6 @@ class RecipeVersion(ResourceVersion, RecipeMetadata):
             repo_folder=repo_folder,
             check_deps=check_deps,
             path_to_readme=cls.path_to_readme(folder_path),
+            path_to_license=cls.path_to_license(folder_path),
             overwrite=overwrite,
         )

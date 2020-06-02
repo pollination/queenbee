@@ -255,7 +255,7 @@ class Recipe(BaseModel):
                 )
             )
 
-    def to_folder(self, folder_path: str):
+    def to_folder(self, folder_path: str, readme_string: str = None, license_string: str = None):
         """Write a Recipe to a folder
 
         Note:
@@ -288,6 +288,10 @@ class Recipe(BaseModel):
 
         Arguments:
             folder_path {str} -- The path to the Recipe folder
+
+        Keyword Arguments:
+            readme_string {str} -- The README file string (default: {None})
+            license_string {str} -- The LICENSE file string (default: {None})
         """
 
         os.makedirs(os.path.join(folder_path, 'flow'))
@@ -303,6 +307,14 @@ class Recipe(BaseModel):
                 os.path.join(folder_path, 'flow', f'{dag.name}.yaml'),
                 exclude_unset=True
             )
+
+        if readme_string is not None:
+            with open(os.path.join(folder_path, 'README.md'), 'w') as f:
+                f.write(readme_string)
+
+        if license_string is not None:
+            with open(os.path.join(folder_path, 'LICENSE'), 'w') as f:
+                f.write(license_string)
 
     def write_dependencies(self, folder_path: str):
         """Fetch dependencies manifests and write them to the `.dependencies` folder
@@ -325,16 +337,18 @@ class Recipe(BaseModel):
 
         for dependency in self.dependencies:
             if dependency.type == DependencyType.operator:
-                raw_dep, digest = dependency.fetch()
+                raw_dep, digest, readme_string, license_string = dependency.fetch()
                 dep = Operator.parse_raw(raw_dep)
 
             elif dependency.type == DependencyType.recipe:
-                raw_dep, digest = dependency.fetch()
+                raw_dep, digest, readme_string, license_string = dependency.fetch()
                 dep = self.__class__.parse_raw(raw_dep)
                 dep.write_dependencies(folder_path)
 
             dep.to_folder(
-                folder_path=os.path.join(folder_path, '.dependencies', dependency.type, dependency.ref_name)
+                folder_path=os.path.join(folder_path, '.dependencies', dependency.type, dependency.ref_name),
+                readme_string=readme_string,
+                license_string=license_string,
             )
 
 
@@ -378,7 +392,7 @@ class BakedRecipe(Recipe):
         templates = []
 
         for dependency in recipe.dependencies:
-            dep_bytes, dep_hash = dependency.fetch()
+            dep_bytes, dep_hash, _, _ = dependency.fetch()
 
             if dependency.type == 'recipe':
                 dep = Recipe.parse_raw(dep_bytes)

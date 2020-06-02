@@ -157,6 +157,10 @@ class Dependency(BaseModel):
 
         tar = tarfile.open(fileobj=filebytes)
 
+        file_bytes = None
+        readme_string = None
+        license_string = None
+
         for member in tar.getmembers():
             if member.name == 'resource.json':
                 file_bytes = tar.extractfile(member).read()
@@ -169,10 +173,18 @@ class Dependency(BaseModel):
                             f' {hashlib.sha256(file_bytes).hexdigest()}'
                             )
                 break
-        else:
+            
+            elif member.name == 'README.md':
+                readme_string = tar.extractfile(member).read().decode('utf-8')
+            elif member.name == 'LICENSE':
+                license_string = tar.extractfile(member).read().decode('utf-8')
+
+        if file_bytes is None:
             raise ValueError(
                 'package tar file did not contain a resource.json file so could not be'
                 ' decoded.'
             )
 
-        return file_bytes, self.digest
+
+
+        return file_bytes, self.digest, readme_string, license_string

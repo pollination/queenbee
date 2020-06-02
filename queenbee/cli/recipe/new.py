@@ -83,7 +83,17 @@ def new(name, path):
 
     recipe = Recipe.parse_obj(input_dict)
 
+    # Readme
+    readme_string = f"""
+    # {name} Recipe
+
+    A Queenbee Recipe.
+    """
+
     # Create entire path to folder if it does not exist
     os.makedirs(folder_path, exist_ok=True)
 
-    recipe.to_folder(folder_path=folder_path)
+    recipe.to_folder(
+        folder_path=folder_path,
+        readme_string=readme_string,
+    )

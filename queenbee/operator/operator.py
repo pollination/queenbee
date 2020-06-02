@@ -137,7 +137,7 @@ class Operator(BaseModel):
 
         return cls.parse_obj(operator)
 
-    def to_folder(self, folder_path: str):
+    def to_folder(self, folder_path: str, readme_string: str = None, license_string: str = None):
         """Write an Operator to a folder
 
         Note:
@@ -155,6 +155,10 @@ class Operator(BaseModel):
 
         Arguments:
             folder_path {str} -- Path to write the folder to
+
+        Keyword Arguments:
+            readme_string {str} -- The README file string (default: {None})
+            license_string {str} -- The LICENSE file string (default: {None})
         """
         os.makedirs(os.path.join(folder_path, 'functions'))
 
@@ -170,3 +174,11 @@ class Operator(BaseModel):
                 os.path.join(folder_path, 'functions', f'{function.name}.yaml'),
                 exclude_unset=True
             )
+
+        if readme_string is not None:
+            with open(os.path.join(folder_path, 'README.md'), 'w') as f:
+                f.write(readme_string)
+
+        if license_string is not None:
+            with open(os.path.join(folder_path, 'LICENSE'), 'w') as f:
+                f.write(license_string)

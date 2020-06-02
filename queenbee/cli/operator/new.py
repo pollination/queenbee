@@ -76,7 +76,17 @@ def new(name, path):
 
     operator = Operator.parse_obj(input_dict)
 
+    # Readme
+    readme_string = f"""
+    # {name} Operator
+
+    A Queenbee Operator.
+    """
+
     # Create entire path to folder if it does not exist
     os.makedirs(folder_path, exist_ok=True)
 
-    operator.to_folder(folder_path=folder_path)
+    operator.to_folder(
+        folder_path=folder_path,
+        readme_string=readme_string,    
+    )
