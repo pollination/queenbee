@@ -155,7 +155,16 @@ class Dependency(BaseModel):
 
         filebytes = BytesIO(res.read())
 
-        tar = tarfile.open(fileobj=filebytes)
+        return self.unpack_tar(
+            tar_file=filebytes,
+            verify_digest=verifydigest,
+            digest=self.digest
+        )
+
+    @staticmethod
+    def unpack_tar(tar_file: BytesIO, verify_digest: bool = True, digest: str = None):
+
+        tar = tarfile.open(fileobj=tar_file)
 
         file_bytes = None
         readme_string = None
@@ -165,11 +174,11 @@ class Dependency(BaseModel):
             if member.name == 'resource.json':
                 file_bytes = tar.extractfile(member).read()
 
-                if verifydigest:
-                    assert hashlib.sha256(file_bytes).hexdigest() == self.digest, \
+                if verify_digest:
+                    assert hashlib.sha256(file_bytes).hexdigest() == digest, \
                         ValueError(
                             f'Hash of resource.json file is different from the one'
-                            f' expected from the index Expected {self.digest} and got'
+                            f' expected from the index Expected {digest} and got'
                             f' {hashlib.sha256(file_bytes).hexdigest()}'
                             )
                 break
@@ -187,4 +196,4 @@ class Dependency(BaseModel):
 
 
 
-        return file_bytes, self.digest, readme_string, license_string
+        return file_bytes, digest, readme_string, license_string
