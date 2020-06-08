@@ -8,22 +8,16 @@ except ImportError:
     )
 
 import os
-from pathlib import Path
 from pkg_resources import iter_entry_points
 
+from .context import Context
 from .operator import main as operator
 from .recipe import main as recipe
 from .repository import main as repository
+from .config import main as config
+
 
 MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
-
-class Context():
-
-    @property
-    def config_folder(self):
-        path = os.path.join(Path.home(), '.queenbee')
-        os.makedirs(path, exist_ok=True)
-        return path
 
 
 @with_plugins(iter_entry_points('queenbee.plugins'))
@@ -60,6 +54,8 @@ def main(ctx):
     You can use the commands documented below to help you manage queenbee objects
 
     """
+    ctx.ensure_object(Context)
+
     if ctx.invoked_subcommand is None:
         with open(os.path.join(MODULE_PATH, 'assets/queenbee-art.txt'), 'r') as f:
             queenbee_art = f.read()
@@ -80,6 +76,7 @@ def viz():
     """)
 
 
+main.add_command(config)
 main.add_command(operator)
 main.add_command(recipe)
 main.add_command(repository)
