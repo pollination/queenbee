@@ -56,7 +56,6 @@ def package(path, destination, force, no_update):
         BakedRecipe.from_folder(folder_path=path, refresh_deps=refresh_deps, config=ctx.obj.config)
         recipe_version, file_object = RecipeVersion.package_folder(
             folder_path=path,
-            overwrite=force,
             check_deps=False,
         )
     except ValidationError as error:
