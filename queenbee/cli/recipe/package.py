@@ -40,6 +40,8 @@ def package(path, destination, force, no_update):
     recipe, the command will not wipe your ``.dependencies`` folder and overwrite with fresh
     dependencies.
     """
+    ctx = click.get_current_context()
+
     path = os.path.abspath(path)
     destination = os.path.abspath(destination)
     os.chdir(path)
@@ -47,8 +49,11 @@ def package(path, destination, force, no_update):
     # Check valid recipe
     refresh_deps = not no_update
 
+    if refresh_deps:
+        ctx.obj.refresh_tokens()
+
     try:
-        BakedRecipe.from_folder(folder_path=path, refresh_deps=refresh_deps)
+        BakedRecipe.from_folder(folder_path=path, refresh_deps=refresh_deps, config=ctx.obj.config)
         recipe_version, file_object = RecipeVersion.package_folder(
             folder_path=path,
             overwrite=force,

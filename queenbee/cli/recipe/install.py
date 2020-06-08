@@ -20,6 +20,8 @@ def install(path):
     This subcommand interacts mostly with the ``dependencies.yaml`` file and
     ``.dependencies`` folder in your recipe folder.
     """
+    ctx = click.get_current_context()
+    ctx.obj.refresh_tokens()
 
     try:
         recipe = Recipe.from_folder(path)
@@ -31,9 +33,12 @@ def install(path):
         raise error
     os.chdir(path)
 
-    recipe.lock_dependencies()
+    recipe.lock_dependencies(config=ctx.obj.config)
     
     recipe.write_dependency_file('.')
 
-    recipe.write_dependencies('.')
+    recipe.write_dependencies(
+        folder_path='.',
+        config=ctx.obj.config,
+    )
 

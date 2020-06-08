@@ -29,8 +29,17 @@ def lint(path, dependency_update):
 
     # TODO: add an exception catch for cases where some dependencies are missing from the deps folder
 
+    ctx = click.get_current_context()
+
+    if dependency_update:
+        ctx.obj.refresh_tokens()
+
     try:
-        BakedRecipe.from_folder(folder_path=path, refresh_deps=dependency_update)
+        BakedRecipe.from_folder(
+            folder_path=path,
+            refresh_deps=dependency_update,
+            config=ctx.obj.config
+        )
     except ValidationError as error:
         raise click.ClickException(error)
     except FileNotFoundError as error:
