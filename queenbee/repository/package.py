@@ -11,6 +11,7 @@ from ..operator import Operator
 from ..recipe import Recipe, BakedRecipe
 
 from ..base.basemodel import BaseModel
+from ..base.request import make_request
 from ..operator.metadata import MetaData as OperatorMetadata
 from ..recipe.metadata import MetaData as RecipeMetadata
 
@@ -218,10 +219,10 @@ class ResourceVersion(BaseModel):
 
         return cls_
 
-    def fetch_package(self, source_url: str = None, verify_digest: bool = True) -> Tuple[bytes, str, str, str]:
+    def fetch_package(self, source_url: str = None, verify_digest: bool = True, auth_header: str = '') -> Tuple[bytes, str, str, str]:
         package_url = os.path.join(source_url, self.url).replace('\\', '/')
 
-        res = request.urlopen(package_url)
+        res = make_request(url=package_url, auth_header=auth_header)
 
         filebytes = BytesIO(res.read())
 

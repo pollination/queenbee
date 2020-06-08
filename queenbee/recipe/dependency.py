@@ -8,7 +8,7 @@ from typing import Tuple
 from pydantic import Field
 
 from ..base.basemodel import BaseModel
-
+from ..base.request import make_request
 
 class DependencyType(str, Enum):
 
@@ -78,7 +78,7 @@ class Dependency(BaseModel):
             return self.alias
         return self.name
 
-    def _fetch_index(self):
+    def _fetch_index(self, auth_header: str = ''):
         """Fetch the source repository index object.
 
         Returns:
@@ -97,11 +97,13 @@ class Dependency(BaseModel):
 
         # replace \\ with / for the case of Windows
         url = url.replace('\\', '/')
-        res = request.urlopen(url)
+
+        res = make_request(url=url, auth_header=auth_header)
+
         raw_bytes = res.read()
         return RepositoryIndex.parse_raw(raw_bytes)
 
-    def fetch(self, verify_digest: bool = True) -> Tuple[bytes, str, str, str]:
+    def fetch(self, verify_digest: bool = True, auth_header: str = '') -> Tuple[bytes, str, str, str]:
         """Fetch the dependency from its source
 
         Keyword Arguments:
@@ -118,7 +120,7 @@ class Dependency(BaseModel):
             str -- The license of the package
         """
 
-        index = self._fetch_index()
+        index = self._fetch_index(auth_header=auth_header)
 
         if self.digest is None:
             package_meta = index.package_by_version(
@@ -151,4 +153,8 @@ class Dependency(BaseModel):
                 else:
                     raise error
 
-        return package_meta.fetch_package(source_url=self.source, verify_digest=verify_digest)
+        return package_meta.fetch_package(
+            source_url=self.source,
+            verify_digest=verify_digest,
+            auth_header=auth_header,
+        )

@@ -11,11 +11,11 @@ from typing import List, Union, Dict
 import yaml
 from pydantic import Field, validator, root_validator
 
-
 from ..base.basemodel import BaseModel
+from ..config import Config
 from ..operator import Operator
 from ..operator.function import Function
-from ..operator.operator import Config
+from ..operator.operator import Config as OperatorConfig
 
 from .dag import DAG, DAGInputs
 from .metadata import MetaData
@@ -25,7 +25,7 @@ from .dependency import Dependency, DependencyType
 class TemplateFunction(Function):
     """Function template."""
 
-    config: Config = Field(
+    config: OperatorConfig = Field(
         ...,
         description='The operator config to use for this function'
     )
@@ -233,10 +233,11 @@ class Recipe(BaseModel):
 
         return res
 
-    def lock_dependencies(self):
+    def lock_dependencies(self, config: Config = Config()):
         """Lock the dependencies by fetching them and storing their digest"""
         for dependency in self.dependencies:
-            dependency.fetch()
+            auth_header = config.get_auth_header(registry_url=dependency.source)
+            dependency.fetch(auth_header=auth_header)
 
     def write_dependency_file(self, folder_path: str):
         """Write the locked dependencies to a Recipe folder
@@ -316,11 +317,13 @@ class Recipe(BaseModel):
             with open(os.path.join(folder_path, 'LICENSE'), 'w') as f:
                 f.write(license_string)
 
-    def write_dependencies(self, folder_path: str):
+    def write_dependencies(self, folder_path: str, config: Config = Config()):
         """Fetch dependencies manifests and write them to the `.dependencies` folder
 
         Arguments:
             folder_path {str} -- Path to the recipe folder
+        Keyword Arguments:
+            config {Config} -- A queenbee config object (default: {Config()})
         """
         dependencies_folder = os.path.join(folder_path, '.dependencies')
         operator_folder = os.path.join(dependencies_folder, 'operator')
@@ -337,13 +340,18 @@ class Recipe(BaseModel):
 
         for dependency in self.dependencies:
             if dependency.type == DependencyType.operator:
-                raw_dep, digest, readme_string, license_string = dependency.fetch()
+                auth_header = config.get_auth_header(registry_url=dependency.source)
+                raw_dep, digest, readme_string, license_string = dependency.fetch(auth_header=auth_header)
                 dep = Operator.parse_raw(raw_dep)
 
             elif dependency.type == DependencyType.recipe:
-                raw_dep, digest, readme_string, license_string = dependency.fetch()
+                auth_header = config.get_auth_header(registry_url=dependency.source)
+                raw_dep, digest, readme_string, license_string = dependency.fetch(auth_header=auth_header)
                 dep = self.__class__.parse_raw(raw_dep)
-                dep.write_dependencies(folder_path)
+                dep.write_dependencies(
+                    folder_path=folder_path,
+                    config=config,
+                )
 
             dep.to_folder(
                 folder_path=os.path.join(folder_path, '.dependencies', dependency.type, dependency.ref_name),
@@ -368,11 +376,14 @@ class BakedRecipe(Recipe):
     )
 
     @classmethod
-    def from_recipe(cls, recipe: Recipe):
+    def from_recipe(cls, recipe: Recipe, config: Config = Config()):
         """Bake a recipe
 
         Arguments:
             recipe {Recipe} -- A Queenbee recipe
+
+        Keyword Arguments:
+            config {Config} -- A queenbee config object (default: {Config()})
 
         Raises:
             ValueError: The dependencies or templates do not match the flow
@@ -392,7 +403,8 @@ class BakedRecipe(Recipe):
         templates = []
 
         for dependency in recipe.dependencies:
-            dep_bytes, dep_hash, _, _ = dependency.fetch()
+            auth_header = config.get_auth_header(registry_url=dependency.source)
+            dep_bytes, dep_hash, _, _ = dependency.fetch(auth_header=auth_header)
 
             if dependency.type == 'recipe':
                 dep = Recipe.parse_raw(dep_bytes)
@@ -424,7 +436,7 @@ class BakedRecipe(Recipe):
         return cls.parse_obj(input_dict)
 
     @classmethod
-    def from_folder(cls, folder_path: str, refresh_deps: bool = True):
+    def from_folder(cls, folder_path: str, refresh_deps: bool = True, config: Config = Config()):
         """Generate a baked recipe from a recipe folder
 
         Note:
@@ -450,6 +462,7 @@ class BakedRecipe(Recipe):
         Keyword Arguments:
             refresh_deps {bool} -- Fetch the dependencies from their source instead of
                 the ``.dependencies`` folder (default: {True})
+            config {Config} -- A queenbee config object (default: {Config()})
 
         Returns:
             BakedRecipe -- A baked recipe
@@ -468,7 +481,10 @@ class BakedRecipe(Recipe):
             if os.path.exists(dependencies_folder) and \
                     os.path.isdir(dependencies_folder):
                 shutil.rmtree(dependencies_folder)
-            recipe.write_dependencies(folder_path)
+            recipe.write_dependencies(
+                folder_path=folder_path,
+                config=config,
+            )
 
         templates = []
 

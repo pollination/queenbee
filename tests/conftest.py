@@ -16,7 +16,8 @@ def mock_repository_url(monkeypatch):
     
     repo_base_bath = 'tests/assets/repository'
 
-    def urlopen_mock(url: str):
+    def urlopen_mock(req: request.Request):
+        url = req.get_full_url()
         parsed = parse.urlparse(url)
         file_path = f'{repo_base_bath}{parsed.path}'
         return open(file_path, 'rb')
