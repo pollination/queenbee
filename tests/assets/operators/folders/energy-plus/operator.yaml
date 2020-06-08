@@ -1,5 +1,5 @@
 name: energy-plus
-version: 0.1.0
+tag: 0.1.0
 app_version: 9.0.1   # The version of EnergyPlus the operator uses
 description: An operator to run EnergyPlus functions
 keywords:

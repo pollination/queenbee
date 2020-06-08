@@ -1,11 +1,11 @@
 metadata:
   name: minimal-recipe
-  version: 0.2.1
+  tag: 0.2.1
 
 dependencies:
 - type: operator
   name: not-whale-operator
-  version: 1.2.3
+  tag: 1.2.3
   source: https://ladybug.tools/queenbee-reppo
 
 flow:

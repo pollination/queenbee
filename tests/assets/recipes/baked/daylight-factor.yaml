@@ -1,6 +1,6 @@
 metadata:
   name: daylight-factor
-  version: 0.0.1
+  tag: 0.0.1
   keywords:
   - ladybug-tools
   - radiance
@@ -16,12 +16,12 @@ metadata:
 dependencies:
 - type: operator
   name: honeybee-radiance
-  hash: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048
+  hash: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff
   alias: null
-  version: 1.2.3
+  tag: 1.2.3
   source: https://example.com/test-repo
 flow:
-- name: 442ba65f89455253f50b5a445e39b155702be1fa5dbaa77576c8841bbc359523/main
+- name: 8f5638585f8e73088b5db68fe2574ccffdee90bc72f64df96e7144a67134266d/main
   inputs:
     parameters:
     - name: radiance-parameters
@@ -44,7 +44,7 @@ flow:
   fail_fast: true
   tasks:
   - name: create-octree
-    template: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048/create-octree
+    template: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/create-octree
     arguments:
       parameters: []
       artifacts:
@@ -69,7 +69,7 @@ flow:
       - name: scene-file
         path: output/octree/scene.oct
   - name: daylight-factor-simulation
-    template: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048/ray-tracing
+    template: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/ray-tracing
     arguments:
       parameters:
       - name: radiance-parameters
@@ -107,7 +107,7 @@ flow:
       - name: result-file
         path: grid.res
   - name: generate-sky
-    template: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048/10000-lux-sky
+    template: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/10000-lux-sky
     arguments:
       parameters: []
       artifacts: []
@@ -120,7 +120,7 @@ flow:
       - name: sky
         path: asset/sky/10000_lux.sky
   - name: post-process
-    template: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048/post-process
+    template: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/post-process
     arguments:
       parameters: []
       artifacts:
@@ -141,7 +141,7 @@ flow:
       - name: post-process-folder
         path: output/post-process
   - name: split-grid
-    template: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048/split-grid
+    template: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/split-grid
     arguments:
       parameters:
       - name: grid-count
@@ -177,9 +177,9 @@ flow:
         type: tasks
         name: post-process
         variable: post-process-folder
-digest: 442ba65f89455253f50b5a445e39b155702be1fa5dbaa77576c8841bbc359523
+digest: 8f5638585f8e73088b5db68fe2574ccffdee90bc72f64df96e7144a67134266d
 templates:
-- name: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048/10000-lux-sky
+- name: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/10000-lux-sky
   description: Generates a 10000 lux sky
   inputs:
     parameters: []
@@ -197,7 +197,7 @@ templates:
       registry: null
       workdir: /opt/run/
     local: null
-- name: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048/create-octree
+- name: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/create-octree
   description: Generate an octree
   inputs:
     parameters: []
@@ -221,7 +221,7 @@ templates:
       registry: null
       workdir: /opt/run/
     local: null
-- name: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048/post-process
+- name: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/post-process
   description: Post process your results and $$$
   inputs:
     parameters: []
@@ -248,7 +248,7 @@ templates:
       registry: null
       workdir: /opt/run/
     local: null
-- name: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048/ray-tracing
+- name: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/ray-tracing
   description: Run ray tracing using some input data!
   inputs:
     parameters:
@@ -277,7 +277,7 @@ templates:
       registry: null
       workdir: /opt/run/
     local: null
-- name: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048/split-grid
+- name: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/split-grid
   description: null
   inputs:
     parameters:

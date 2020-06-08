@@ -1,6 +1,6 @@
 metadata:
   name: full-operator
-  version: 0.0.1
+  tag: 0.0.1
   app_version: 3.4.3
   description: A test operator with every possible bit of metadata included
   keywords:

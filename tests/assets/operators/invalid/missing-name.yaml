@@ -1,5 +1,5 @@
 metadata:
-  version: 0.0.1
+  tag: 0.0.1
 config:
   docker:
     image: some/docker-image:latest

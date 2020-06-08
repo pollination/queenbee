@@ -3,7 +3,7 @@ metadata:
   description: An awesome workflow to run daylight factor!
   icon: https://www.ladybug.tools/assets/img/logo.png
 
-  version: 0.0.1
+  tag: 0.0.1
 
   keywords:
   - ladybug-tools
@@ -16,8 +16,8 @@ metadata:
 dependencies:
 - type: operator
   name: honeybee-radiance
-  hash: 4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048
-  version: 1.2.3
+  hash: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff
+  tag: 1.2.3
   source: https://example.com/test-repo
 
 flow:

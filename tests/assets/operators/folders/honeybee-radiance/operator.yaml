@@ -5,7 +5,7 @@ home: https://ladybug.tools/honeybee-radiance/docs
 sources:
 - https://github.com/ladybug-tools/honeybee-radiance
 
-version: 1.2.3
+tag: 1.2.3
 app_version: 2.3.2
 
 keywords:

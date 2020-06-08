@@ -1,10 +1,10 @@
 {
-  "generated": "2020-05-29T07:36:37.694761",
+  "generated": "2020-06-08T16:56:02.663916",
   "operator": {
     "honeybee-radiance": [
       {
         "name": "honeybee-radiance",
-        "version": "1.2.3",
+        "tag": "1.2.3",
         "app_version": "2.3.2",
         "keywords": [
           "honeybee",
@@ -25,8 +25,8 @@
         "deprecated": null,
         "description": "An operator to run all things honeybee and radiance!",
         "url": "operators/honeybee-radiance-1.2.3.tgz",
-        "created": "2020-05-18T12:40:19.074516",
-        "digest": "4e6b9354ade52b792988abef4426d744b587fb26eaabbc681ad27c75aa0c8048"
+        "created": "2020-06-08T16:55:44.035830",
+        "digest": "3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff"
       }
     ]
   },
@@ -34,7 +34,7 @@
     "daylight-factor": [
       {
         "name": "daylight-factor",
-        "version": "0.0.1",
+        "tag": "0.0.1",
         "keywords": [
           "ladybug-tools",
           "radiance"
@@ -52,8 +52,8 @@
         "description": "An awesome workflow to run daylight factor!",
         "license": null,
         "url": "recipes/daylight-factor-0.0.1.tgz",
-        "created": "2020-05-29T07:35:49.898524",
-        "digest": "e7ce5c90a183680f30a7439c762740ccb022200571233261b0bf648a700fa3fa"
+        "created": "2020-06-08T16:55:53.227897",
+        "digest": "8f5638585f8e73088b5db68fe2574ccffdee90bc72f64df96e7144a67134266d"
       }
     ]
   }
