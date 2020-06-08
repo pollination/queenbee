@@ -34,9 +34,9 @@ class MetaData(BaseModel):
         ' in your workflow.'
     )
 
-    version: str = Field(
+    tag: str = Field(
         ...,
-        description='The version of the operator'
+        description='The tag of the operator'
     )
 
     app_version: str = Field(

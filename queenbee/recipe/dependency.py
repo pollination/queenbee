@@ -44,9 +44,9 @@ class Dependency(BaseModel):
         ' is already used somewhere else.'
     )
 
-    version: str = Field(
+    tag: str = Field(
         ...,
-        description='Version of the resource.'
+        description='Tag of the resource.'
     )
 
     source: str = Field(
@@ -123,10 +123,10 @@ class Dependency(BaseModel):
         index = self._fetch_index(auth_header=auth_header)
 
         if self.digest is None:
-            package_meta = index.package_by_version(
+            package_meta = index.package_by_tag(
                 package_type=self.type,
                 package_name=self.name,
-                package_version=self.version
+                package_tag=self.tag
             )
 
             self.digest = package_meta.digest
@@ -139,14 +139,14 @@ class Dependency(BaseModel):
                 )
             except ValueError as error:
                 # If hash does not exist then try to download
-                # by version. This is in the case where some package
-                # owner overwrote the version of the dependency
+                # by tag. This is in the case where some package
+                # owner overwrote the tag of the dependency
                 if str(error) == f'No {self.type} package with name {self.name} ' \
                         'and digest {self.digest} exists in this index':
-                    package_meta = index.package_by_version(
+                    package_meta = index.package_by_tag(
                         package_type=self.type,
                         package_name=self.name,
-                        package_version=self.version
+                        package_tag=self.tag
                     )
 
                     self.digest = package_meta.digest

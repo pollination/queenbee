@@ -46,9 +46,9 @@ class MetaData(BaseModel):
         description='Recipe name. Make it descriptive and helpful ;)'
     )
 
-    version: str = Field(
+    tag: str = Field(
         ...,
-        description='The version of the recipe'
+        description='The tag of the recipe'
     )
 
     keywords: List[str] = Field(

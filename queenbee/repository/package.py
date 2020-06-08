@@ -66,7 +66,7 @@ class ResourceVersion(BaseModel):
         Returns:
             ResourceVersion -- A resource version object
         """
-        package_path = f'{resource.metadata.name}-{resource.metadata.version}.tgz'
+        package_path = f'{resource.metadata.name}-{resource.metadata.tag}.tgz'
 
         if created is None:
             created = datetime.utcnow()

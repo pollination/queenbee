@@ -163,19 +163,19 @@ class RepositoryIndex(BaseModel):
         if not overwrite:
             match = next(
                 filter(
-                    lambda x: x.version == resource_version.version, resource_list
+                    lambda x: x.tag == resource_version.tag, resource_list
                 ), None
             )
             if match is not None:
                 if match.digest != resource_version.digest:
                     raise ValueError(
                         f'Resource {resource_version.name} already has a version'
-                        f' {resource_version.version} in the index'
+                        f' {resource_version.tag} in the index'
                     )
                 return resource_dict
 
         resource_list = list(
-            filter(lambda x: x.version != resource_version.version, resource_list)
+            filter(lambda x: x.tag != resource_version.tag, resource_list)
         )
 
         resource_list.append(resource_version)
@@ -250,18 +250,18 @@ class RepositoryIndex(BaseModel):
                         continue
                 raise error
 
-    def package_by_version(
+    def package_by_tag(
         self,
         package_type: str,
         package_name: str,
-        package_version: str
+        package_tag: str
     ) -> Union[OperatorVersion, RecipeVersion]:
-        """Retrieve a Resource Version by its version
+        """Retrieve a Resource Version by its tag
 
         Arguments:
             package_type {str} -- The type of package (operator or recipe)
             package_name {str} -- The name of the package
-            package_version {str} -- The package version
+            package_tag {str} -- The package tag
 
         Raises:
             ValueError: The package was not found
@@ -279,12 +279,12 @@ class RepositoryIndex(BaseModel):
                 f' in this index'
             )
 
-        res = next(filter(lambda x: x.version == package_version, package_list), None)
+        res = next(filter(lambda x: x.tag == package_tag, package_list), None)
 
         if res is None:
             raise ValueError(
                 f'No {package_type} package with name {package_name} and version '
-                f'{package_version} exists in this index'
+                f'{package_tag} exists in this index'
             )
 
         return res
