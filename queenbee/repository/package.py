@@ -170,11 +170,11 @@ class ResourceVersion(BaseModel):
                 read_digest = hashlib.sha256(manifest_bytes).hexdigest()
 
                 if verify_digest:
-                    assert hashlib.sha256(manifest_bytes).hexdigest() == digest, \
+                    read_digest == digest, \
                         ValueError(
                             f'Hash of resource.json file is different from the one'
-                            f' expected from the index Expected {digest} and got'
-                            f' {hashlib.sha256(manifest_bytes).hexdigest()}'
+                            f' expected from the index Expected {digest} but got'
+                            f' {read_digest}'
                             )
             elif member.name == 'version.json':
                 version = cls.parse_raw(tar.extractfile(member).read())
@@ -206,18 +206,14 @@ class ResourceVersion(BaseModel):
         """
         file_path = os.path.normpath(os.path.abspath(package_path))
 
+        with open(file_path, 'rb') as f:
+            filebytes = BytesIO(f.read())
+
         tar_file = TarFile.open(file_path)
 
-        member = tar_file.getmember('version.json')
+        version, _, _, _, _ = cls.unpack_tar(tar_file=filebytes, verify_digest=False)
 
-        version_bytes = tar_file.extractfile(member).read()
-
-        cls_ = cls.parse_raw(version_bytes)
-
-        # add subfolder (e.g. operators, recipes ) to url
-        cls_.url = '/'.join(file_path.split(os.sep)[-2:])
-
-        return cls_
+        return version
 
     def fetch_package(self, source_url: str = None, verify_digest: bool = True, auth_header: str = '') -> Tuple[bytes, str, str, str]:
         package_url = os.path.join(source_url, self.url).replace('\\', '/')
