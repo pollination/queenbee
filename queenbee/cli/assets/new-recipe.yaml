@@ -1,9 +1,9 @@
 metadata:
-  version: 0.1.0
+  tag: 0.1.0
 dependencies:
 - type: operator
   name: whalesay
-  version: 0.1.0
+  tag: 0.1.0
   source: https://pollination.github.io/shed # Replace with name of repo
 flow:
 - name: main

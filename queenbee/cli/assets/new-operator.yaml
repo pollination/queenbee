@@ -1,5 +1,5 @@
 metadata:
-  version: 0.1.0
+  tag: 0.1.0
 config:
   docker:
     image: docker/whalesay:latest
