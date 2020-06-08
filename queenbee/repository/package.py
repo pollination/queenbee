@@ -1,8 +1,11 @@
 import os
 import re
+import hashlib
+from io import BytesIO
 from datetime import datetime
 from tarfile import TarInfo, TarFile
-from typing import Union
+from typing import Union, Tuple
+from urllib import request
 
 from ..operator import Operator
 from ..recipe import Recipe, BakedRecipe
@@ -17,6 +20,16 @@ def reset_tar(tarinfo: TarInfo) -> TarInfo:
     tarinfo.uname = tarinfo.gname = "0"
     return tarinfo
 
+def add_to_tar(tar: TarFile, data: bytes, filename: str):
+    tarinfo = TarInfo(name=filename)
+    tarinfo.size = len(data)
+    tarinfo.mtime = int(datetime.timestamp(datetime.utcnow()))
+    tarinfo.mode = 436
+    tarinfo.type = b'0'
+    tarinfo.uid = tarinfo.gid = 0
+    tarinfo.uname = tarinfo.gname = "0"
+    
+    tar.addfile(tarinfo, BytesIO(data))
 
 class ResourceVersion(BaseModel):
     """Resource Version
@@ -32,8 +45,11 @@ class ResourceVersion(BaseModel):
     digest: str
 
     @classmethod
-    def from_resource(cls, resource: Union[Operator, Recipe], package_path: str = None,
-                      created: datetime = None):
+    def from_resource(
+        cls,
+        resource: Union[Operator, Recipe],
+        created: datetime = None
+    ):
         """Generate a Resource Version from a resource
 
         Arguments:
@@ -41,9 +57,6 @@ class ResourceVersion(BaseModel):
                 or recipe)
 
         Keyword Arguments:
-            package_path {str} -- The path to the packaged resource manifest, will be
-                ``<resource-name>-<resource_version>.tgz`` if not specified (default:
-                {None})
             created {datetime} -- When version was generated (default: {None})
 
         Raises:
@@ -52,8 +65,7 @@ class ResourceVersion(BaseModel):
         Returns:
             ResourceVersion -- A resource version object
         """
-        if package_path is None:
-            package_path = f'{resource.metadata.name}-{resource.metadata.version}.tgz'
+        package_path = f'{resource.metadata.name}-{resource.metadata.version}.tgz'
 
         if created is None:
             created = datetime.utcnow()
@@ -66,76 +78,120 @@ class ResourceVersion(BaseModel):
         return cls.parse_obj(input_dict)
 
     @classmethod
-    def _package_resource(cls, resource: Union[Operator, Recipe], repo_folder: str,
-                          path_to_readme: str = None, path_to_license: str = None,
-                          overwrite: bool = False
-                        ):
+    def pack_tar(cls,
+        resource: Union[Operator, Recipe],
+        readme: str = None,
+        license: str = None,
+    ) -> Tuple['ResourceVersion', BytesIO]:
         """Package a resource into a gzipped tar archive
 
         Arguments:
             resource {Union[Operator, Recipe]} -- A resource to be packaged (operator or
                 recipe)
-            repo_folder {str} -- Path to the repository folder
 
         Keyword Arguments:
-            path_to_readme {str} -- Path to the resource README.md file if it exists
+            readme {str} -- resource README.md file text if it exists
                 (default: {None})
-            path_to_license {str} -- Path to the resource LICENSE file if it exists
+            license {str} -- resource LICENSE file text if it exists
                 (default: {None})
-            overwrite {bool} -- Overwrite a package with the same name (default: {False})
 
         Raises:
             ValueError: Failed to create the package
 
         Returns:
             ResourceVersion -- A resource version object
+            BytesIO -- A BytesIO stream of the gzipped tar file
         """
+
+        file_object = BytesIO()
+
         resource_version = cls.from_resource(resource)
-
-        resource.to_json('resource.json')
-        resource_version.to_json('version.json')
-
-        folder_path = os.path.abspath(repo_folder)
-
-        os.makedirs(folder_path, exist_ok=True)
-
-        tar_path = os.path.join(
-            folder_path,
-            resource_version.url
+        
+        tar = TarFile.open(
+            name=resource_version.url,
+            mode='w:gz',
+            fileobj=file_object,
         )
 
-        tar_dir = os.path.dirname(tar_path)
+        resource_bytes = bytes(resource.json(by_alias=True, exclude_unset=False), 'utf-8')
+        resource_version_bytes = bytes(resource_version.json(by_alias=True, exclude_unset=False), 'utf-8')
 
-        os.makedirs(tar_dir, exist_ok=True)
+        add_to_tar(
+            tar=tar,
+            data=resource_bytes,
+            filename='resource.json'
+        )
 
-        if not overwrite:
-            if os.path.isfile(tar_path):
-                os.remove('resource.json')
-                raise ValueError(f'Cannot overwrite file at path: {tar_path}')
+        add_to_tar(
+            tar=tar,
+            data=resource_version_bytes,
+            filename='version.json'
+        )
 
-        tar = TarFile.open(tar_path, 'w:gz')
-        tar.add('resource.json', arcname='resource.json', filter=reset_tar)
-        tar.add('version.json', arcname='version.json', filter=reset_tar)
-
-        if path_to_readme is not None:
-            tar.add(
-                os.path.abspath(path_to_readme), arcname='README.md',
-                filter=reset_tar
+        if readme is not None:
+            add_to_tar(
+                tar=tar,
+                data=bytes(readme, 'utf-8'),
+                filename='README.md'
             )
 
-        if path_to_license is not None:
-            tar.add(
-                os.path.abspath(path_to_license), arcname='LICENSE',
-                filter=reset_tar
+        if license is not None:
+            add_to_tar(
+                tar=tar,
+                data=bytes(license, 'utf-8'),
+                filename='LICENSE'
             )
 
         tar.close()
 
-        # Delete original resource file
-        os.remove('resource.json')
-        os.remove('version.json')
+        return resource_version, file_object
 
-        return resource_version
+
+    @classmethod
+    def unpack_tar(
+        cls,
+        tar_file: BytesIO,
+        verify_digest: bool = True,
+        digest: str = None
+    ) -> Tuple['ResourceVersion', bytes, str, str, str]:
+
+        tar = TarFile.open(fileobj=tar_file)
+
+        manifest_bytes = None
+        version = None
+        readme_string = None
+        license_string = None
+        read_digest = None
+
+        for member in tar.getmembers():
+            if member.name == 'resource.json':
+                manifest_bytes = tar.extractfile(member).read()
+                read_digest = hashlib.sha256(manifest_bytes).hexdigest()
+
+                if verify_digest:
+                    assert hashlib.sha256(manifest_bytes).hexdigest() == digest, \
+                        ValueError(
+                            f'Hash of resource.json file is different from the one'
+                            f' expected from the index Expected {digest} and got'
+                            f' {hashlib.sha256(manifest_bytes).hexdigest()}'
+                            )
+            elif member.name == 'version.json':
+                version = cls.parse_raw(tar.extractfile(member).read())
+            elif member.name == 'README.md':
+                readme_string = tar.extractfile(member).read().decode('utf-8')
+            elif member.name == 'LICENSE':
+                license_string = tar.extractfile(member).read().decode('utf-8')
+
+        if manifest_bytes is None:
+            raise ValueError(
+                'package tar file did not contain a resource.json file so could not be'
+                ' decoded.'
+            )
+
+
+
+        return version, manifest_bytes, read_digest, readme_string, license_string
+
 
     @classmethod
     def from_package(cls, package_path: str):
@@ -162,15 +218,31 @@ class ResourceVersion(BaseModel):
 
         return cls_
 
+    def fetch_package(self, source_url: str = None, verify_digest: bool = True) -> Tuple[bytes, str, str, str]:
+        package_url = os.path.join(source_url, self.url).replace('\\', '/')
+
+        res = request.urlopen(package_url)
+
+        filebytes = BytesIO(res.read())
+
+        version, manifest_bytes, read_digest, readme_string, license_string = self.unpack_tar(
+            tar_file=filebytes,
+            verify_digest=verify_digest,
+            digest=self.digest
+        )
+
+        return manifest_bytes, read_digest, readme_string, license_string
+
+
     @staticmethod
-    def path_to_readme(folder_path: str) -> str:
-        """Infer the path to the readme within a folder
+    def read_readme(folder_path: str) -> str:
+        """Infer the path to the readme within a folder and read it
 
         Arguments:
             folder_path {str} -- Path to the folder where a readme should be found
 
         Returns:
-            str -- Path to the found readme (or None if no readme is found)
+            str -- The found Readme text (or None if no readme is found)
         """
         path_to_readme = None
 
@@ -181,17 +253,19 @@ class ResourceVersion(BaseModel):
             if res is not None:
                 path_to_readme = os.path.join(folder_path, file)
 
-        return path_to_readme
+        if path_to_readme is not None:
+            with open(path_to_readme, 'r') as f:
+                return f.read()
 
     @staticmethod
-    def path_to_license(folder_path: str) -> str:
-        """Infer the path to the license file within a folder
+    def read_license(folder_path: str) -> str:
+        """Infer the path to the license file within a folder and read it
 
         Arguments:
             folder_path {str} -- Path to the folder where a license file should be found
 
         Returns:
-            str -- Path to the found license file (or None if no license file is found)
+            str -- The found licence text (or None if no license file is found)
         """
         path_to_license = None
 
@@ -202,65 +276,62 @@ class ResourceVersion(BaseModel):
             if res is not None:
                 path_to_license = os.path.join(folder_path, file)
 
-        return path_to_license
+        if path_to_license is not None:
+            with open(path_to_license, 'r') as f:
+                return f.read()
 
 
 class OperatorVersion(ResourceVersion, OperatorMetadata):
     """A version of an Operator"""
 
     @classmethod
-    def package_resource(cls, resource: Operator, repo_folder: str,
-                         path_to_readme: str = None, path_to_license: str = None,
-                         overwrite: bool = False
-                        ):
+    def package_resource(cls,
+        resource: Operator,
+        readme: str = None,
+        license: str = None,
+    ) -> Tuple['OperatorVersion', BytesIO]:
         """Package an Operator into a gzipped tar file
 
         Arguments:
             resource {Operator} -- An operator
-            repo_folder {str} -- Path to the repository folder where the operator
-                package is saved
 
         Keyword Arguments:
-            path_to_readme {str} -- Path to the operator README.md file if it exists
+            readme {str} -- resource README.md file text if it exists
                 (default: {None})
-            path_to_license {str} -- Path to the resource LICENSE file if it exists
+            license {str} -- resource LICENSE file text if it exists
                 (default: {None})
-            overwrite {bool} -- Overwrite an operator with the same name
-                (default: {False})
 
         Returns:
             OperatorVersion -- An operator version object
+            BytesIO -- A BytesIO stream of the gzipped tar file
         """
-        return cls._package_resource(
-            resource=resource, repo_folder=repo_folder,
-            path_to_readme=path_to_readme, path_to_license=path_to_license,
-            overwrite=overwrite
+
+        return cls.pack_tar(
+            resource=resource,
+            readme=readme,
+            license=license,
         )
 
     @classmethod
-    def package_folder(cls, folder_path: str, repo_folder: str, overwrite: bool = True):
+    def package_folder(
+        cls,
+        folder_path: str,
+    ) -> Tuple['OperatorVersion', BytesIO]:
         """Package an Operator from its folder into a gzipped tar file
 
         Arguments:
             folder_path {str} -- Path to the folder where the Operator is defined
-            repo_folder {str} -- Path to the repository folder where the operator
-                package is saved
-
-        Keyword Arguments:
-            overwrite {bool} -- Overwrite an operator with the same name (default:
-                {False})
 
         Returns:
             OperatorVersion -- An operator version object
+            BytesIO -- A BytesIO stream of the gzipped tar file
         """
         resource = Operator.from_folder(folder_path=folder_path)
 
         return cls.package_resource(
             resource=resource,
-            repo_folder=repo_folder,
-            path_to_readme=cls.path_to_readme(folder_path),
-            path_to_license=cls.path_to_license(folder_path),
-            overwrite=overwrite,
+            readme=cls.read_readme(folder_path),
+            license=cls.read_license(folder_path),
         )
 
 
@@ -268,62 +339,62 @@ class RecipeVersion(ResourceVersion, RecipeMetadata):
 
     @classmethod
     def package_resource(
-        cls, resource: Recipe, repo_folder: str, check_deps: bool = True,
-        path_to_readme: str = None, path_to_license: str = None,
-        overwrite: bool = False
-    ):
+        cls,
+        resource: Recipe,
+        check_deps: bool = True,
+        readme: str = None,
+        license: str = None,
+    ) -> Tuple['RecipeVersion', BytesIO]:
         """Package an Recipe into a gzipped tar file
 
         Arguments:
             resource {Recipe} -- An recipe
-            repo_folder {str} -- Path to the repository folder where the recipe package
-                is saved
 
         Keyword Arguments:
             check_deps {bool} -- Fetch the dependencies from their source and validate
                 the recipe by baking it (default: {True})
-            path_to_readme {str} -- Path to the recipe README.md file if it exists
+            readme {str} -- Text of the recipe README.md file if it exists
                 (default: {None})
-            path_to_license {str} -- Path to the resource LICENSE file if it exists
+            license {str} -- Text of the resource LICENSE file if it exists
                 (default: {None})
-            overwrite {bool} -- Overwrite an recipe with the same name (default: {False})
 
         Returns:
             RecipeVersion -- An recipe version object
+            BytesIO -- A BytesIO stream of the gzipped tar file
         """
         if check_deps:
             BakedRecipe.from_recipe(resource)
 
-        return cls._package_resource(
-            resource=resource, repo_folder=repo_folder, path_to_readme=path_to_readme,
-            path_to_license=path_to_license, overwrite=overwrite
+        return cls.pack_tar(
+            resource=resource,
+            readme=readme,
+            license=license,
         )
 
     @classmethod
-    def package_folder(cls, folder_path: str, repo_folder: str, check_deps: bool = True,
-                       overwrite: bool = True):
+    def package_folder(
+        cls,
+        folder_path: str,
+        check_deps: bool = True,
+    ) -> Tuple['RecipeVersion', BytesIO]:
         """Package an Recipe from its folder into a gzipped tar file
 
         Arguments:
             folder_path {str} -- Path to the folder where the Recipe is defined
-            repo_folder {str} -- Path to the repository folder where the Recipe package
-                is saved
 
         Keyword Arguments:
             check_deps {bool} -- Fetch the dependencies from their source and validate
                 the recipe by baking it (default: {True})
-            overwrite {bool} -- Overwrite an recipe with the same name (default: {False})
 
         Returns:
             RecipeVersion -- An recipe version object
+            BytesIO -- A BytesIO stream of the gzipped tar file
         """
         resource = Recipe.from_folder(folder_path=folder_path)
 
         return cls.package_resource(
             resource=resource,
-            repo_folder=repo_folder,
             check_deps=check_deps,
-            path_to_readme=cls.path_to_readme(folder_path),
-            path_to_license=cls.path_to_license(folder_path),
-            overwrite=overwrite,
+            readme=cls.read_readme(folder_path),
+            license=cls.read_license(folder_path),
         )

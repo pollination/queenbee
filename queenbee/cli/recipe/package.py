@@ -29,7 +29,7 @@ def package(path, destination, force, no_update):
 
         queenbee recipe package path/to/my/recipe --destination path/to/my/repository/recipes
 
-    If you do not specify a ``--repository`` the command will package the recipe in the
+    If you do not specify a ``--destination`` the command will package the recipe in the
     directory the command is invoked from (ie: ``.``)
 
     You can also decide to not pull fresh dependencies in your ``.dependencies`` folder::
@@ -41,7 +41,7 @@ def package(path, destination, force, no_update):
     dependencies.
     """
     path = os.path.abspath(path)
-    repository = os.path.abspath(destination)
+    destination = os.path.abspath(destination)
     os.chdir(path)
 
     # Check valid recipe
@@ -49,6 +49,11 @@ def package(path, destination, force, no_update):
 
     try:
         BakedRecipe.from_folder(folder_path=path, refresh_deps=refresh_deps)
+        recipe_version, file_object = RecipeVersion.package_folder(
+            folder_path=path,
+            overwrite=force,
+            check_deps=False,
+        )
     except ValidationError as error:
         raise click.ClickException(error)
     except FileNotFoundError as error:
@@ -56,9 +61,15 @@ def package(path, destination, force, no_update):
     except Exception as error:
         raise error
 
-    RecipeVersion.package_folder(
-        folder_path=path,
-        repo_folder=repository,
-        overwrite=force,
-        check_deps=False,
-    )
+
+
+    file_path = os.path.join(destination, recipe_version.url)
+
+    if not force and os.path.isfile(file_path):
+        raise click.ClickException(f'File already exists at path {file_path}. Use -f to overwrite it.')
+
+    with open(file_path, 'wb') as f:
+        file_object.seek(0)
+        f.write(file_object.read())
+
+    

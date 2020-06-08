@@ -1,7 +1,5 @@
 """Queenbee dependency class."""
 import os
-import hashlib
-import tarfile
 from enum import Enum
 from io import BytesIO
 from urllib import request
@@ -103,18 +101,21 @@ class Dependency(BaseModel):
         raw_bytes = res.read()
         return RepositoryIndex.parse_raw(raw_bytes)
 
-    def fetch(self, verifydigest: bool = True) -> Tuple[bytes, str]:
+    def fetch(self, verify_digest: bool = True) -> Tuple[bytes, str, str, str]:
         """Fetch the dependency from its source
 
         Keyword Arguments:
-            verifydigest {bool} -- If the dependency is locked, ensure the found
+            verify_digest {bool} -- If the dependency is locked, ensure the found
                 manifest matches the saved digest (default: {True})
 
         Raises:
             ValueError: The dependency could not be found or was invalid
 
         Returns:
-            Tuple[bytes, str] -- A JSON manifest of the dependency
+            bytes -- A byte string of the resource manifest
+            str -- The digest hash of the package
+            str -- The readme of the package
+            str -- The license of the package
         """
 
         index = self._fetch_index()
@@ -150,50 +151,4 @@ class Dependency(BaseModel):
                 else:
                     raise error
 
-        package_url = os.path.join(self.source, package_meta.url).replace('\\', '/')
-        res = request.urlopen(package_url)
-
-        filebytes = BytesIO(res.read())
-
-        return self.unpack_tar(
-            tar_file=filebytes,
-            verify_digest=verifydigest,
-            digest=self.digest
-        )
-
-    @staticmethod
-    def unpack_tar(tar_file: BytesIO, verify_digest: bool = True, digest: str = None):
-
-        tar = tarfile.open(fileobj=tar_file)
-
-        file_bytes = None
-        readme_string = None
-        license_string = None
-
-        for member in tar.getmembers():
-            if member.name == 'resource.json':
-                file_bytes = tar.extractfile(member).read()
-
-                if verify_digest:
-                    assert hashlib.sha256(file_bytes).hexdigest() == digest, \
-                        ValueError(
-                            f'Hash of resource.json file is different from the one'
-                            f' expected from the index Expected {digest} and got'
-                            f' {hashlib.sha256(file_bytes).hexdigest()}'
-                            )
-                break
-            
-            elif member.name == 'README.md':
-                readme_string = tar.extractfile(member).read().decode('utf-8')
-            elif member.name == 'LICENSE':
-                license_string = tar.extractfile(member).read().decode('utf-8')
-
-        if file_bytes is None:
-            raise ValueError(
-                'package tar file did not contain a resource.json file so could not be'
-                ' decoded.'
-            )
-
-
-
-        return file_bytes, digest, readme_string, license_string
+        return package_meta.fetch_package(source_url=self.source, verify_digest=verify_digest)

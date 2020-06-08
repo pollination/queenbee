@@ -74,7 +74,8 @@ class RepositoryIndex(BaseModel):
         cls,
         index_folder: str,
         resource: Union[Operator, Recipe],
-        path_to_readme: str = None,
+        readme: str = None,
+        license: str = None,
         overwrite: bool = False,
     ):
         """Package an Operator or Workflow and add it to an existing index.json file
@@ -84,6 +85,10 @@ class RepositoryIndex(BaseModel):
             resource {Union[Operator, Recipe]} -- The Operator or Recipe to package
 
         Keyword Arguments:
+            readme {str} -- Text of the recipe README.md file if it exists
+                (default: {None})
+            license {str} -- Text of the resource LICENSE file if it exists
+                (default: {None})
             overwrite {bool} -- Indicate whether overwriting an existing package or
                 index entry is allowed (default: {False})
 
@@ -98,28 +103,32 @@ class RepositoryIndex(BaseModel):
         index = cls.from_file(os.path.join(index_folder, 'index.json'))
 
         if isinstance(resource, Operator):
-            # type_path = 'operators'
+            type_path = 'operators'
             resource_version_class = OperatorVersion
         elif isinstance(resource, Recipe):
-            # type_path = 'recipes'
+            type_path = 'recipes'
             resource_version_class = RecipeVersion
         else:
             raise ValueError(f"Resource should be an Operator or a Recipe")
 
-        resource_version = resource_version_class.package_resource(
+
+        resource_version, file_object = resource_version_class.package_resource(
             resource=resource,
-            repo_folder=index_folder,
-            path_to_readme=path_to_readme,
+            readme=readme,
+            license=license,
         )
 
-        try:
-            if isinstance(resource, Operator):
-                index.index_operator_version(resource_version, overwrite)
-            elif isinstance(resource, Recipe):
-                index.index_recipe_version(resource_version, overwrite)
-        except ValueError as error:
-            # os.remove(package_abs_path)
-            raise error
+        tar_path = os.path.join(index_folder, type_path, resource_version.url)
+
+        if isinstance(resource, Operator):
+            index.index_operator_version(resource_version, overwrite)
+        elif isinstance(resource, Recipe):
+            index.index_recipe_version(resource_version, overwrite)
+
+        # Write packaged version to repo directory
+        with open(tar_path, 'wb') as f:
+            file_object.seek(0)
+            f.write(file_object.read())
 
         index.to_json(index_path)
 

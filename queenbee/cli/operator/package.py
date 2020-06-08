@@ -32,19 +32,31 @@ def package(path, destination, force):
 
         queenbee operator package path/to/my/operator --destination path/to/my/repository/operators
 
-    If you do not specify a ``--repository`` the command will package the operator in the
+    If you do not specify a ``--destination`` the command will package the operator in the
     directory the command is invoked from (ie: ``.``)
     """
-
+    path = os.path.abspath(path)
+    destination = os.path.abspath(destination)
+    os.chdir(path)
+    
     try:
-        OperatorVersion.package_folder(
+        operator_version, file_object = OperatorVersion.package_folder(
             folder_path=path,
-            repo_folder=destination,
-            overwrite=force
         )
     except ValidationError as error:
         raise click.ClickException(error)
     except FileNotFoundError as error:
         raise click.ClickException(error)
-    except ValidationError as error:
-        raise error
+    except ValueError as error:
+        raise click.ClickException(error)
+
+    file_path = os.path.join(destination, operator_version.url)
+
+    if not force and os.path.isfile(file_path):
+        raise click.ClickException(f'File already exists at path {file_path}. Use -f to overwrite it.')
+
+    with open(file_path, 'wb') as f:
+        file_object.seek(0)
+        f.write(file_object.read())
+
+    
