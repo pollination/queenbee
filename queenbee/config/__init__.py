@@ -1,12 +1,13 @@
 from typing import List, Union
 from urllib.parse import urlparse
-from pydantic import Field
+from pydantic import Field, SecretStr
+
 from ..base.basemodel import BaseModel
-from .auth import PollinationAuth
+from .auth import JWTAuth, PollinationAuth
 
 class Config(BaseModel):
 
-    auth: List[Union[PollinationAuth]] = Field(
+    auth: List[Union[PollinationAuth, JWTAuth]] = Field(
         [],
         description='A list of authentication configurations for different registry domains'
     )
@@ -22,3 +23,23 @@ class Config(BaseModel):
         auth_config = res[0]
 
         return auth_config.auth_header()
+
+    def refresh_tokens(self):
+        [auth.refresh_token() for auth in self.auth]
+
+    def add_auth(self, auth: Union[PollinationAuth, JWTAuth]):
+        found = False
+
+        for index, existing_auth in enumerate(self.auth):
+            if existing_auth.domain == auth.domain:
+                found = True
+                self.auth[index] = auth
+
+        if not found:
+            self.auth.append(auth)
+
+
+    class Config:
+        json_encoders = {
+            SecretStr: lambda v: v.get_secret_value() if v else None,
+        }
