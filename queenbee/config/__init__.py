@@ -22,7 +22,7 @@ class Config(BaseModel):
         
         auth_config = res[0]
 
-        return auth_config.auth_header()
+        return auth_config.auth_header
 
     def refresh_tokens(self):
         [auth.refresh_token() for auth in self.auth]
