@@ -32,6 +32,7 @@ class BaseAuth(BaseModel):
     def refresh_token(self):
         pass
 
+
 class JWTAuth(BaseAuth):
 
     type: Enum('JWTAuth', {'type': 'jwt'}) = 'jwt'

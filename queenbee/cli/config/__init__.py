@@ -12,10 +12,7 @@ except ImportError:
 @click.group('config')
 @click.pass_context
 def main(ctx):
-    """manage queenbee configuration data
-    
-
-    """
+    """manage queenbee configuration data"""
     pass
 
 main.add_command(view)

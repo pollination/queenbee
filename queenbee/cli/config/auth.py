@@ -10,18 +10,12 @@ except ImportError:
 
 @click.group('auth')
 def auth():
-    """manage queenbee configuration auth
-    
-
-    """
+    """manage queenbee configuration auth"""
     pass
 
 @auth.group('add')
 def add():
-    """add auth domains and methods to your queenbee config
-    
-
-    """
+    """add auth domains and methods to your queenbee config"""
     pass
 
 @add.command('pollination')

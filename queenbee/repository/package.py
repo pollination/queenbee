@@ -211,7 +211,7 @@ class ResourceVersion(BaseModel):
 
         tar_file = TarFile.open(file_path)
 
-        version, _, _, _, _ = cls.unpack_tar(tar_file=filebytes, verify_digest=False)
+        version, *_ = cls.unpack_tar(tar_file=filebytes, verify_digest=False)
 
         return version
 
