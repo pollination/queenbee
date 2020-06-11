@@ -5,13 +5,12 @@ from io import BytesIO
 from datetime import datetime
 from tarfile import TarInfo, TarFile
 from typing import Union, Tuple
-from urllib import request
 
 from ..operator import Operator
 from ..recipe import Recipe, BakedRecipe
 
 from ..base.basemodel import BaseModel
-from ..base.request import make_request
+from ..base.request import make_request, urljoin
 from ..operator.metadata import MetaData as OperatorMetadata
 from ..recipe.metadata import MetaData as RecipeMetadata
 
@@ -216,7 +215,7 @@ class ResourceVersion(BaseModel):
         return version
 
     def fetch_package(self, source_url: str = None, verify_digest: bool = True, auth_header: str = '') -> Tuple[bytes, str, str, str]:
-        package_url = os.path.join(source_url, self.url).replace('\\', '/')
+        package_url = urljoin(source_url, self.url)
 
         res = make_request(url=package_url, auth_header=auth_header)
 

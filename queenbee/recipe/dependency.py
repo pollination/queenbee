@@ -8,7 +8,7 @@ from typing import Tuple
 from pydantic import Field
 
 from ..base.basemodel import BaseModel
-from ..base.request import make_request
+from ..base.request import make_request, urljoin
 
 class DependencyType(str, Enum):
 
@@ -93,10 +93,7 @@ class Dependency(BaseModel):
 
             url = f'file:{abs_path}'
         else:
-            url = os.path.join(self.source, 'index.json')
-
-        # replace \\ with / for the case of Windows
-        url = url.replace('\\', '/')
+            url = urljoin(self.source, 'index.json')
 
         res = make_request(url=url, auth_header=auth_header)
 
