@@ -114,4 +114,9 @@ class WorkflowStatus(BaseStatus):
         description='The ID of the individual workflow run.'
     )
 
+    entrypoint: str = Field(
+        None,
+        description='The ID of the first task in the workflow'
+    )
+
     tasks: Dict[str, TaskStatus] = {}
