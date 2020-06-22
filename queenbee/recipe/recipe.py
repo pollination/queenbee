@@ -408,7 +408,7 @@ class BakedRecipe(Recipe):
 
             if dependency.type == 'recipe':
                 dep = Recipe.parse_raw(dep_bytes)
-                sub_recipe = cls.from_recipe(recipe=recipe, config=config)
+                sub_recipe = cls.from_recipe(recipe=dep, config=config)
 
                 templates.extend(sub_recipe.templates)
                 templates.extend(sub_recipe.flow)
