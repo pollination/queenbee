@@ -408,7 +408,7 @@ class BakedRecipe(Recipe):
 
             if dependency.type == 'recipe':
                 dep = Recipe.parse_raw(dep_bytes)
-                sub_recipe = cls.from_recipe(dep)
+                sub_recipe = cls.from_recipe(recipe=recipe, config=config)
 
                 templates.extend(sub_recipe.templates)
                 templates.extend(sub_recipe.flow)
@@ -506,7 +506,8 @@ class BakedRecipe(Recipe):
                     folder_path=os.path.join(
                         dependencies_folder, 'recipe', recipe_dep_name
                     ),
-                    refresh_deps=refresh_deps
+                    refresh_deps=refresh_deps,
+                    config=config,
                 )
 
                 templates.extend(sub_baked_recipe.templates)
