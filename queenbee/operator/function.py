@@ -71,7 +71,7 @@ class FunctionParameterIn(BaseModel):
         description='Whether this value must be specified in a task argument.'
     )
 
-    @validator('required')
+    @validator('required', always=True)
     def validate_required(cls, v, values):
         """Ensure parameter with no default value is marked as required"""
         function_name = values.get('name')
@@ -81,6 +81,11 @@ class FunctionParameterIn(BaseModel):
         # Set required to True
         if default is None and v is None:
             return True
+        
+        # Default value provided and required not specified
+        # Set required to False
+        if default is not None and v is None:
+            return False
 
         # No default value but explicitely set to not required
         if default is None and v is False:
