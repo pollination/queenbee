@@ -35,14 +35,18 @@ def lint(path, dependency_update):
         ctx.obj.refresh_tokens()
 
     try:
-        BakedRecipe.from_folder(
+        br = BakedRecipe.from_folder(
             folder_path=path,
             refresh_deps=dependency_update,
             config=ctx.obj.config
         )
+        obj = br.to_dict()
+        BakedRecipe.parse_obj(obj)
     except ValidationError as error:
         raise click.ClickException(error)
     except FileNotFoundError as error:
         raise click.ClickException(error)
     except Exception as error:
         raise error
+
+    click.echo('Your recipe is looking good!')

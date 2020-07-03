@@ -24,7 +24,9 @@ def lint(path):
     """
 
     try:
-        Operator.from_folder(path)
+        op = Operator.from_folder(path)
+        obj = op.to_dict()
+        Operator.parse_obj(obj)
     except ValidationError as error:
         raise click.ClickException(error)
     except FileNotFoundError as error:
