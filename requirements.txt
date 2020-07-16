@@ -1,2 +1,2 @@
-pydantic==1.6
+pydantic==1.6.1
 PyYAML==5.3.1
