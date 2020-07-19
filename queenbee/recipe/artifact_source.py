@@ -4,8 +4,7 @@ ArtifactSource is a configuration to a source system to acquire artifacts from.
 
 """
 from typing import Dict, List
-from enum import Enum
-from pydantic import Field
+from pydantic import Field, constr
 
 from ..base.basemodel import BaseModel
 from .reference import references_from_string
@@ -47,7 +46,7 @@ class ProjectFolderSource(ArtifactSource):
     context of a workflow run on Pollination this folder will correspond to a Project
     scoped folder.
     """
-    type: Enum('ProjectFolderSource', {'type': 'project-folder'})
+    type: constr(regex='^ProjectFolderSource$') = 'ProjectFolderSource'
 
     path: str = Field(
         None,
@@ -69,7 +68,7 @@ class HTTPSource(ArtifactSource):
     A web HTTP to an FTP server or an API for example.
     """
 
-    type: Enum('HTTPSource', {'type': 'http'})
+    type: constr(regex='^http$') = 'http'
 
     url: str = Field(
         ...,
@@ -89,7 +88,7 @@ class S3Source(ArtifactSource):
     An S3 bucket artifact Source.
     """
 
-    type: Enum('S3Source', {'type': 's3'})
+    type: constr(regex='^s3$') = 's3'
 
     key: str = Field(
         ...,
