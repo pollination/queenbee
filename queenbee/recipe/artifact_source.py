@@ -46,7 +46,7 @@ class ProjectFolderSource(ArtifactSource):
     context of a workflow run on Pollination this folder will correspond to a Project
     scoped folder.
     """
-    type: constr(regex='^ProjectFolderSource$') = 'ProjectFolderSource'
+    type: constr(regex='^project-folder$') = 'project-folder'
 
     path: str = Field(
         None,
