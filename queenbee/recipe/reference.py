@@ -29,6 +29,16 @@ class BaseReference(BaseModel):
         pass
 
 
+class FolderArtifactReference(BaseReference):
+
+    type: Enum('FolderReference', {'type': 'folder'}) = 'folder'
+
+    path: str = Field(
+        ...,
+        description='The path to the file or folder relative to the workflow output folder'
+    )
+
+
 class InputBaseReference(BaseReference):
     """An Input Reference"""
 
