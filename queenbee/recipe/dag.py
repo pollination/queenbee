@@ -11,7 +11,8 @@ from ..base.io import IOBase, find_dup_items
 from ..base.parser import parse_double_quotes_vars
 from .artifact_source import HTTPSource, S3Source, ProjectFolderSource
 from .reference import InputArtifactReference, InputParameterReference, \
-    TaskArtifactReference, TaskParameterReference, ItemParameterReference
+    TaskArtifactReference, TaskParameterReference, ItemParameterReference, \
+    FolderArtifactReference
 
 
 class DAGInputParameter(BaseModel):
@@ -174,7 +175,7 @@ class DAGTaskArtifactArgument(BaseModel):
         description='Name of the argument variable'
     )
 
-    from_: Union[InputArtifactReference, TaskArtifactReference] = Field(
+    from_: Union[InputArtifactReference, TaskArtifactReference, FolderArtifactReference] = Field(
         ...,
         alias='from',
         description='The previous task or global workflow variable to pull this argument'
@@ -186,18 +187,6 @@ class DAGTaskArtifactArgument(BaseModel):
         description='Specify this value if your source artifact is a repository and you'
         ' want to source an artifact from within that directory.'
     )
-
-    value: str = Field(
-        None,
-        description='The fixed value for this task argument.'
-    )
-
-    @validator('value')
-    def check_value_exists(cls, v):
-        if v is not None:
-            assert v.from_ is not None, \
-                ValueError('value must be specified if no "from" source is specified for argument artifact.')
-        return v
 
 
 class DAGTaskParameterArgument(BaseModel):
