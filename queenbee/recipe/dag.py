@@ -187,6 +187,18 @@ class DAGTaskArtifactArgument(BaseModel):
         ' want to source an artifact from within that directory.'
     )
 
+    value: str = Field(
+        None,
+        description='The fixed value for this task argument.'
+    )
+
+    @validator('value')
+    def check_value_exists(cls, v):
+        if v is not None:
+            assert v.from_ is not None, \
+                ValueError('value must be specified if no "from" source is specified for argument artifact.')
+        return v
+
 
 class DAGTaskParameterArgument(BaseModel):
     """Input argument for a DAG task.
