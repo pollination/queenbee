@@ -15,7 +15,19 @@ from .reference import InputArtifactReference, InputParameterReference, \
     FolderArtifactReference
 
 
-class DAGInputParameter(BaseModel):
+class _DAGInputsBase(BaseModel):
+
+    annotations: Dict[str, str] = Field(
+        None,
+        description='Optional annotations for Queenbee objects.'
+    )
+
+    @validator('annotations', always=True)
+    def set_to_empty_dict(cls, v):
+        return {} if not v else v
+
+
+class DAGInputParameter(_DAGInputsBase):
     """An input parameter used within the DAG."""
 
     name: str = Field(
@@ -65,7 +77,7 @@ class DAGInputParameter(BaseModel):
         return self._referenced_values(['default'])
 
 
-class DAGInputArtifact(BaseModel):
+class DAGInputArtifact(_DAGInputsBase):
     """An artifact used within the DAG."""
 
     name: str = Field(

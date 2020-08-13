@@ -148,14 +148,17 @@ templates:
   inputs:
     parameters:
     - name: radiance-parameters
+      annotations: {}
       default: -b 5
       description: a string of radiance parameters
       required: false
     artifacts:
     - name: grid
+      annotations: {}
       description: null
       path: grid.pts
     - name: scene-file
+      annotations: {}
       description: null
       path: scene.oct
   command: rtrace -I -h {{inputs.parameters.radiance-parameters}} scene.oct < grid.pts

@@ -2,9 +2,11 @@ name: main
 inputs:
   parameters:
   - name: model-names
+    annotations: {}
     descriptions: a list of model folder names
   artifacts:
   - name: models-folder
+    annotations: {}
     description: A folder full of honeybee models
 
 tasks:

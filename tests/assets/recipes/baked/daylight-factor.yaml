@@ -282,11 +282,13 @@ templates:
   inputs:
     parameters:
     - name: grid-count
+      annotations: {}
       default: null
       description: null
       required: true
     artifacts:
     - name: grid
+      annotations: {}
       description: The input grid to split
       path: grid.pts
   command: honeybee radiance grid split grid.pts --folder output --log-file output/grids.txt
