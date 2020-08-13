@@ -21,23 +21,27 @@ dependencies:
   tag: 1.2.3
   source: https://example.com/test-repo
 flow:
-- name: 8f5638585f8e73088b5db68fe2574ccffdee90bc72f64df96e7144a67134266d/main
+- name: 1fe9af7b24ed9bc662e78a0f3c14446caab5b8e6dc545b2564c9e5759a8fcce7/main
   inputs:
     parameters:
-    - name: radiance-parameters
+    - annotations: {}
+      name: radiance-parameters
       default: -I -ab 2 -h
       description: The radiance parameters for ray tracing
       required: null
-    - name: sensor-grid-count
+    - annotations: {}
+      name: sensor-grid-count
       default: '100'
       description: The maximum number of grid points per parallel execution
       required: null
     artifacts:
-    - name: input-grid
+    - annotations: {}
+      name: input-grid
       description: A grid file
       default: null
       required: true
-    - name: model
+    - annotations: {}
+      name: model
       description: A Honeybee model with radiance properties
       default: null
       required: true
@@ -177,7 +181,7 @@ flow:
         type: tasks
         name: post-process
         variable: post-process-folder
-digest: 8f5638585f8e73088b5db68fe2574ccffdee90bc72f64df96e7144a67134266d
+digest: 1fe9af7b24ed9bc662e78a0f3c14446caab5b8e6dc545b2564c9e5759a8fcce7
 templates:
 - name: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/10000-lux-sky
   description: Generates a 10000 lux sky
@@ -282,13 +286,11 @@ templates:
   inputs:
     parameters:
     - name: grid-count
-      annotations: {}
       default: null
       description: null
       required: true
     artifacts:
     - name: grid
-      annotations: {}
       description: The input grid to split
       path: grid.pts
   command: honeybee radiance grid split grid.pts --folder output --log-file output/grids.txt
