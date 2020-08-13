@@ -21,22 +21,24 @@ dependencies:
   tag: 0.0.1
   source: https://example.com/test-repo
 flow:
-- name: 7c180cd053efd44623cef6b05e69a39a06cce40cde41655082964d3aaa764614/main
+- name: 8583a25d92a36dbc7d4c5d243b6d8bb8c9d52ba54f6d4087b37cac425491c242/main
   inputs:
     parameters:
-    - name: model-names
+    - annotations: {}
+      name: model-names
       default: null
       description: null
       required: true
     artifacts:
-    - name: models-folder
+    - annotations: {}
+      name: models-folder
       description: A folder full of honeybee models
       default: null
       required: true
   fail_fast: true
   tasks:
   - name: daylight-factor
-    template: 8f5638585f8e73088b5db68fe2574ccffdee90bc72f64df96e7144a67134266d/main
+    template: 1fe9af7b24ed9bc662e78a0f3c14446caab5b8e6dc545b2564c9e5759a8fcce7/main
     arguments:
       parameters: []
       artifacts:
@@ -72,7 +74,7 @@ flow:
         type: tasks
         name: daylight-factor
         variable: data
-digest: 7c180cd053efd44623cef6b05e69a39a06cce40cde41655082964d3aaa764614
+digest: 8583a25d92a36dbc7d4c5d243b6d8bb8c9d52ba54f6d4087b37cac425491c242
 templates:
 - name: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/10000-lux-sky
   description: Generates a 10000 lux sky
@@ -148,17 +150,14 @@ templates:
   inputs:
     parameters:
     - name: radiance-parameters
-      annotations: {}
       default: -b 5
       description: a string of radiance parameters
       required: false
     artifacts:
     - name: grid
-      annotations: {}
       description: null
       path: grid.pts
     - name: scene-file
-      annotations: {}
       description: null
       path: scene.oct
   command: rtrace -I -h {{inputs.parameters.radiance-parameters}} scene.oct < grid.pts
@@ -203,23 +202,27 @@ templates:
       registry: null
       workdir: /opt/run/
     local: null
-- name: 8f5638585f8e73088b5db68fe2574ccffdee90bc72f64df96e7144a67134266d/main
+- name: 1fe9af7b24ed9bc662e78a0f3c14446caab5b8e6dc545b2564c9e5759a8fcce7/main
   inputs:
     parameters:
-    - name: radiance-parameters
+    - annotations: {}
+      name: radiance-parameters
       default: -I -ab 2 -h
       description: The radiance parameters for ray tracing
       required: null
-    - name: sensor-grid-count
+    - annotations: {}
+      name: sensor-grid-count
       default: '100'
       description: The maximum number of grid points per parallel execution
       required: null
     artifacts:
-    - name: input-grid
+    - annotations: {}
+      name: input-grid
       description: A grid file
       default: null
       required: true
-    - name: model
+    - annotations: {}
+      name: model
       description: A Honeybee model with radiance properties
       default: null
       required: true
