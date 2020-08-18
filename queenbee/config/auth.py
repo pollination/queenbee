@@ -61,7 +61,7 @@ class PollinationAuth(BaseAuth):
                 auth_header=auth_header
             )
         except HTTPError as err:
-            if err.code == 401:
+            if err.code == 403:
                 return False
             else:
                 raise err
