@@ -4,7 +4,7 @@ A DAG step defines a single step in a Recipe. Each step indicates what function 
 should be used and maps inputs and outputs for the specific task.
 """
 from typing import List, Union, Dict
-from pydantic import Field, validator
+from pydantic import Field, validator, root_validator
 
 from ..base.basemodel import BaseModel
 from ..base.io import IOBase, find_dup_items
@@ -227,12 +227,15 @@ class DAGTaskParameterArgument(BaseModel):
         description='The fixed value for this task argument'
     )
 
-    @validator('value')
-    def check_value_exists(cls, v, values):
-        if v is None:
-            assert 'from_' in values, \
-                ValueError('value must be specified if no "from" source is specified for argument parameter')
-        return v
+    @root_validator
+    def check_value_exists(cls, values):
+        value = values.get('value')
+        from_ = values.get('from_')
+
+        if value is None and from_ is None:
+            raise ValueError('value must be specified if no "from" source is specified for argument parameter')
+    
+        return values
 
 
 class DAGTaskArgument(IOBase):
