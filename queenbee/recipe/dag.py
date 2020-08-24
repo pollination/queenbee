@@ -230,7 +230,7 @@ class DAGTaskParameterArgument(BaseModel):
     @validator('value')
     def check_value_exists(cls, v, values):
         if v is None:
-            assert values['from_'] is not None, \
+            assert 'from_' in values, \
                 ValueError('value must be specified if no "from" source is specified for argument parameter')
         return v
 
