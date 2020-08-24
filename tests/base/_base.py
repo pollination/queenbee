@@ -82,7 +82,10 @@ class BaseTestClass:
         instances = []
 
         for path in paths:
-            instances.append(klass.from_file(path))
+            try:
+                instances.append(klass.from_file(path))
+            except Exception as error:
+                print(error)
 
         return instances
 

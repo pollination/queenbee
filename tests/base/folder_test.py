@@ -15,10 +15,6 @@ class BaseFolderTest(BaseTestClass):
 
         inputs = []
 
-        print(folders)
-        print([i.metadata.name for i in valid_instances])
-
-
         for folder in folders:
             folder_name = os.path.basename(folder)
             matching_instances = [instance for instance in valid_instances if instance.metadata.name == folder_name]

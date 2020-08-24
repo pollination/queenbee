@@ -16,5 +16,7 @@ flow:
     arguments:
       parameters:
       - name: foo
+        value: test-value
       - name: bar
+        value: test-value
     sub_folder: path/{{arguments.parameters.foo}}/{{arguments.parameters.bar}}
