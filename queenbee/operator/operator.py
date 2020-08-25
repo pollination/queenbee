@@ -160,7 +160,7 @@ class Operator(BaseModel):
             readme_string {str} -- The README file string (default: {None})
             license_string {str} -- The LICENSE file string (default: {None})
         """
-        os.makedirs(os.path.join(folder_path, 'functions'))
+        os.makedirs(os.path.join(folder_path, 'functions'), exist_ok=True)
 
         self.metadata.to_yaml(
             os.path.join(folder_path, 'operator.yaml'),

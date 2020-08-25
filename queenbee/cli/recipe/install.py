@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from pydantic import ValidationError
 
@@ -32,6 +33,8 @@ def install(path):
     except Exception as error:
         raise error
     os.chdir(path)
+
+    shutil.rmtree('.dependencies')
 
     recipe.lock_dependencies(config=ctx.obj.config)
     

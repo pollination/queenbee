@@ -295,7 +295,7 @@ class Recipe(BaseModel):
             license_string {str} -- The LICENSE file string (default: {None})
         """
 
-        os.makedirs(os.path.join(folder_path, 'flow'))
+        os.makedirs(os.path.join(folder_path, 'flow'), exist_ok=True)
 
         self.metadata.to_yaml(
             os.path.join(folder_path, 'recipe.yaml'), exclude_unset=True
@@ -330,13 +330,13 @@ class Recipe(BaseModel):
         recipes_folder = os.path.join(dependencies_folder, 'recipe')
 
         if not os.path.isdir(dependencies_folder):
-            os.mkdir(dependencies_folder)
+            os.makedirs(dependencies_folder, exist_ok=True)
 
         if not os.path.isdir(operator_folder):
-            os.mkdir(operator_folder)
+            os.makedirs(operator_folder, exist_ok=True)
 
         if not os.path.isdir(recipes_folder):
-            os.mkdir(recipes_folder)
+            os.makedirs(recipes_folder, exist_ok=True)
 
         for dependency in self.dependencies:
             if dependency.type == DependencyType.operator:
@@ -349,7 +349,7 @@ class Recipe(BaseModel):
                 raw_dep, digest, readme_string, license_string = dependency.fetch(auth_header=auth_header)
                 dep = self.__class__.parse_raw(raw_dep)
                 dep.write_dependencies(
-                    folder_path=folder_path,
+                    folder_path=os.path.join(recipes_folder, dependency.ref_name),
                     config=config,
                 )
 
