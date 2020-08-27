@@ -1,1 +1,1 @@
-DAG Output `from` of type `folder` cannot use templated values in its path: path/to/{{input.not-folder-path}}/file
+DAG Output `from` of type `folder` cannot use templated values in its path: path/to/{{input.folder-path}}/file
