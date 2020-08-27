@@ -28,4 +28,4 @@ flow:
     - name: fixed-folder-output
       from:
         type: folder
-        path: path/to/{{input.not-folder-path}}/file
+        path: path/to/file

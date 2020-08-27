@@ -160,6 +160,18 @@ class DAGOutputArtifact(BaseModel):
         ' must be an output variable.'
     )
 
+    @validator('from_')
+    def check_folder_artifact_has_no_refs(cls, v):
+        if isinstance(v, FolderArtifactReference):
+            refs = references_from_string(v.path)
+            if refs != []:
+                raise ValueError(
+                    'DAG Output `from` of type '
+                    '`folder` cannot use templated values in its '
+                    f'path: {v.path}'
+                )
+        
+        return v
 
 class DAGOutputs(IOBase):
     """Artifacts and Parameters exposed by the DAG"""
