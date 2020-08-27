@@ -21,7 +21,7 @@ dependencies:
   tag: 0.0.1
   source: https://example.com/test-repo
 flow:
-- name: 8583a25d92a36dbc7d4c5d243b6d8bb8c9d52ba54f6d4087b37cac425491c242/main
+- name: 670b9ea331cb4aa1db66d87bfb3816e45d6e986c540d527cf307d3b26cabdfa3/main
   inputs:
     parameters:
     - annotations: {}
@@ -38,7 +38,7 @@ flow:
   fail_fast: true
   tasks:
   - name: daylight-factor
-    template: 1fe9af7b24ed9bc662e78a0f3c14446caab5b8e6dc545b2564c9e5759a8fcce7/main
+    template: 5bb562a0b8fbbbebbf7851a7a9c0ddeb771455ff5a36d03d0998eba707bc80d5/main
     arguments:
       parameters: []
       artifacts:
@@ -58,7 +58,6 @@ flow:
         type: inputs
         variable: model-names
       value: null
-      control: null
     sub_folder: null
     outputs:
       parameters:
@@ -74,7 +73,7 @@ flow:
         type: tasks
         name: daylight-factor
         variable: data
-digest: 8583a25d92a36dbc7d4c5d243b6d8bb8c9d52ba54f6d4087b37cac425491c242
+digest: 670b9ea331cb4aa1db66d87bfb3816e45d6e986c540d527cf307d3b26cabdfa3
 templates:
 - name: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/10000-lux-sky
   description: Generates a 10000 lux sky
@@ -202,7 +201,7 @@ templates:
       registry: null
       workdir: /opt/run/
     local: null
-- name: 1fe9af7b24ed9bc662e78a0f3c14446caab5b8e6dc545b2564c9e5759a8fcce7/main
+- name: 5bb562a0b8fbbbebbf7851a7a9c0ddeb771455ff5a36d03d0998eba707bc80d5/main
   inputs:
     parameters:
     - annotations: {}
@@ -284,7 +283,6 @@ templates:
         name: split-grid
         variable: grid-list
       value: null
-      control: null
     sub_folder: null
     outputs:
       parameters: []

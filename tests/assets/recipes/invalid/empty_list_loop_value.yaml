@@ -14,8 +14,4 @@ flow:
   - name: minimal-task
     template: honeybee-radiance/10000-lux-sky
     loop:
-      value:
-      - name: foo
-      - name: bar
-      control:
-        key: '{{item.name}}-{{input.test}}'
+      value: []

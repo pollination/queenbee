@@ -360,35 +360,6 @@ class DAGTaskOutputs(IOBase):
     )
 
 
-class LoopControl(BaseModel):
-    """Loop Control"""
-
-    key: str = Field(
-        None,
-        description='The loop control key determines how parameters and artifacts from a looped task can be identified'
-    )
-
-    @validator('key')
-    def check_template(cls, v):
-
-        if v is None:
-            return
-
-        refs = parse_double_quotes_vars(v)
-
-        if len(refs) == 0:
-            raise ValueError(f'Loop Control Key must have templated values from the `item` variable. eg: `{{{{item.foo}}}}-{{{{item.bar}}}}')
-
-        for ref in refs:
-            is_item = ref == 'item'
-            is_item_key = ref.startswith('item.')
-
-            if not is_item and not is_item_key:
-                raise ValueError(f'Loop control template must be `{{{{item}}}}` or `{{{{item.<var-name>}}}}`. Not: `{{{{{ref}}}}}`')
-
-        return v
-
-
 class DAGTaskLoop(BaseModel):
     """Loop configuration for the task.
 
@@ -407,11 +378,17 @@ class DAGTaskLoop(BaseModel):
         description='A list of values or JSON objects to loop over.'
     )
 
-    control: LoopControl = Field(
-        None,
-        description='Parameters to control some loop behavior for this task'
-    )
+    @validator('value')
+    def check_value(cls, v):
+        if v == []:
+            raise ValueError('Dag Task Loop value must be a non-empty list or null')
+        return v
 
+    @root_validator
+    def check_loop(cls, values):
+        if values.get('from_') is None and values.get('value') is None:
+            raise ValueError('Dag Task Loop must loop over a fixed or references value')
+        return values
 
 
 class DAGTask(BaseModel):
@@ -467,7 +444,7 @@ class DAGTask(BaseModel):
                 )
         return v
 
-    @validator('sub_folder')
+    @validator('sub_folder', always=True)
     def check_references(cls, v, values):
         loop = values.get('loop')
         arguments = values.get('arguments')

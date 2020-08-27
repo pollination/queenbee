@@ -17,5 +17,3 @@ flow:
       value:
       - name: foo
       - name: bar
-      control:
-        key: '{{item.name}}.txt'
