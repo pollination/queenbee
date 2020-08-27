@@ -1,0 +1,31 @@
+metadata:
+  name: minimal-recipe
+  tag: 0.2.1
+
+dependencies:
+- type: operator
+  name: honeybee-radiance
+  tag: 1.2.3
+  source: https://example.com/test-repo
+
+flow:
+- name: main
+  inputs:
+    parameters:
+    - name: folder-path
+      default: something
+  tasks:
+  - name: minimal-task
+    template: honeybee-radiance/10000-lux-sky
+    arguments:
+      parameters:
+      - name: foo
+        value: test-value
+      - name: bar
+        value: test-value
+  outputs:
+    artifacts:
+    - name: fixed-folder-output
+      from:
+        type: folder
+        path: path/to/{{input.folder-path}}/file

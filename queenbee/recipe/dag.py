@@ -12,7 +12,7 @@ from ..base.parser import parse_double_quotes_vars
 from .artifact_source import HTTPSource, S3Source, ProjectFolderSource
 from .reference import InputArtifactReference, InputParameterReference, \
     TaskArtifactReference, TaskParameterReference, ItemParameterReference, \
-    FolderArtifactReference
+    FolderArtifactReference, references_from_string
 
 
 class _DAGInputsBase(BaseModel):
@@ -153,7 +153,7 @@ class DAGOutputArtifact(BaseModel):
         description='The name of the output variable'
     )
 
-    from_: TaskArtifactReference = Field(
+    from_: Union[TaskArtifactReference, FolderArtifactReference]= Field(
         ...,
         alias='from',
         description='The task reference to pull this output variable from. Note, this'
@@ -749,14 +749,30 @@ class DAG(BaseModel):
             return v
 
         tasks = values.get('tasks')
+        inputs = values.get('inputs')
         exceptions = []
 
         for artifact in v.artifacts:
             try:
-                cls.find_task_output(
-                    tasks=tasks,
-                    reference=artifact.from_,
-                    )
+                if artifact.from_.type.value == 'tasks':
+                    cls.find_task_output(
+                        tasks=tasks,
+                        reference=artifact.from_,
+                        )
+                elif artifact.from_.type.value == 'folder':
+                    refs = references_from_string(artifact.from_.path)
+                    for ref in refs:
+                        if ref.type == 'tasks':
+                            cls.find_task_output(
+                                tasks=tasks,
+                                reference=ref
+                            )
+                        if ref.type == 'inputs':
+                            inputs.parameter_by_name(ref.variable)
+                        else:
+                            raise ValueError('Reference of type {ref.type.value} is not supported for DAG folder output path')
+                else:
+                    raise ValueError(f'DAG output of type {artifact.from_.type.value} is not supported')
             except ValueError as error:
                 exceptions.append(error)
 
