@@ -56,7 +56,7 @@ class TestFolder(BaseTestClass):
         parsed_instance = BakedRecipe.from_folder(folder)
 
         parsed_test_path = os.path.join(ASSET_FOLDER, 'baked', f'{parsed_instance.metadata.name}.yaml')
-
+        parsed_instance.to_yaml(parsed_test_path)
         if os.path.exists(parsed_test_path):
             compare_instance = BakedRecipe.from_file(parsed_test_path)
 

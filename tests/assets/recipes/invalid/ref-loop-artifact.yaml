@@ -1,0 +1,30 @@
+metadata:
+  name: minimal-recipe
+  tag: 0.2.1
+
+dependencies:
+- type: operator
+  name: honeybee-radiance
+  tag: 1.2.3
+  source: https://example.com/test-repo
+
+flow:
+- name: main
+  tasks:
+  - name: minimal-task
+    template: honeybee-radiance/10000-lux-sky
+    loop:
+      value:
+      - 1
+      - 2
+    outputs:
+      artifacts:
+        - name: sky
+          path: '{{item}}.sky'
+  outputs:
+    artifacts:
+    - name: skies
+      from:
+        type: tasks
+        name: minimal-task
+        variable: sky

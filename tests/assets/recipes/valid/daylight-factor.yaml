@@ -25,29 +25,33 @@ flow:
   inputs:
     parameters:
     - name: sensor-grid-count
+      annotations: {}
       description: The maximum number of grid points per parallel execution
       default: 100
     - name: radiance-parameters
+      annotations: {}
       description: The radiance parameters for ray tracing
       default: -I -ab 2 -h
     
     artifacts:
     - name: model
+      annotations: {}
       description: A Honeybee model with radiance properties
       required: true
     - name: input-grid
+      annotations: {}
       description: A grid file
       required: true
-
+  
   tasks:
-
+  
   - name: generate-sky
     template: honeybee-radiance/10000-lux-sky
     outputs:
       artifacts:
       - name: sky
         path: asset/sky/10000_lux.sky
-
+  
   - name: split-grid
     template: honeybee-radiance/split-grid
     arguments:
@@ -67,7 +71,7 @@ flow:
       artifacts:
       - name: output-grids-folder
         path: output/temp
-
+  
   - name: create-octree
     template: honeybee-radiance/create-octree
     dependencies:
@@ -98,8 +102,7 @@ flow:
         type: tasks
         name: split-grid
         variable: grid-list
-      sub_folder:
-      - item.name
+    sub_folder: output/raw-results
     arguments:
       parameters:
       - name: radiance-parameters
@@ -120,10 +123,9 @@ flow:
           variable: scene-file
     outputs:
       artifacts:
-      # This file is persisted in a loop sub-folder so the name won't clash
       - name: result-file
-        path: grid.res
-
+        path: '{{item.name}}.res'
+  
   - name: post-process
     template: honeybee-radiance/post-process
     dependencies:
@@ -132,17 +134,16 @@ flow:
       artifacts:
       - name: raw-results-folder
         from:
-          type: tasks
-          name: daylight-factor-simulation
-          variable: result-file
+          type: folder
+          path: output/raw-results
     outputs:
       artifacts:
       - name: post-process-folder
-        path: output/post-process
+        path: result
       parameters:
       - name: daylight-factor-average
-
-
+  
+  
   outputs:
     artifacts:
     - name: data
@@ -156,3 +157,4 @@ flow:
         type: tasks
         name: post-process
         variable: daylight-factor-average
+  

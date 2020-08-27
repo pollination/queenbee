@@ -17,6 +17,7 @@ tasks:
     from:
       type: inputs
       variable: model-names
+  sub_folder: 'daylight-factor/{{item}}'
   arguments:
     artifacts:
     - name: model
@@ -32,18 +33,13 @@ tasks:
   outputs:
     parameters:
     - name: average
-    artifacts:
-    # This file is persisted in a loop sub-folder so the name won't clash
-    - name: data
-      path: daylight-factor.res
 
 outputs:
   artifacts:
   - name: daylight-factor-grids
     from:
-      type: tasks
-      name: daylight-factor
-      variable: data
-  
+      type: folder
+      path: daylight-factor
+
 
       

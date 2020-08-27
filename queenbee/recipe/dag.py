@@ -626,6 +626,12 @@ class DAG(BaseModel):
         task = filtered_tasks[0]
 
         if isinstance(reference, TaskArtifactReference):
+            if task.loop is not None:
+                raise ValueError(
+                    'Cannot refer to outputs from a looped task.'
+                    'You must perform your own aggregation and then refer to '
+                    'a hard coded folder path.'
+                )
             return task.outputs.artifact_by_name(reference.variable)
         elif isinstance(reference, TaskParameterReference):
             return task.outputs.parameter_by_name(reference.variable)

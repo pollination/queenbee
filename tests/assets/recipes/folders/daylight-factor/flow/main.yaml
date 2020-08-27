@@ -79,8 +79,7 @@ tasks:
       type: tasks
       name: split-grid
       variable: grid-list
-    sub_folder:
-    - item.name
+  sub_folder: output/raw-results
   arguments:
     parameters:
     - name: radiance-parameters
@@ -101,9 +100,8 @@ tasks:
         variable: scene-file
   outputs:
     artifacts:
-    # This file is persisted in a loop sub-folder so the name won't clash
     - name: result-file
-      path: grid.res
+      path: '{{item.name}}.res'
 
 - name: post-process
   template: honeybee-radiance/post-process
@@ -113,13 +111,12 @@ tasks:
     artifacts:
     - name: raw-results-folder
       from:
-        type: tasks
-        name: daylight-factor-simulation
-        variable: result-file
+        type: folder
+        path: output/raw-results
   outputs:
     artifacts:
     - name: post-process-folder
-      path: output/post-process
+      path: result
     parameters:
     - name: daylight-factor-average
 

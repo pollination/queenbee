@@ -1,0 +1,1 @@
+Cannot refer to outputs from a looped task.You must perform your own aggregation and then refer to a hard coded folder path.
