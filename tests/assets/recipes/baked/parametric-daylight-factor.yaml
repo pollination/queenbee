@@ -72,7 +72,7 @@ flow:
         path: daylight-factor
 digest: aff667ff2b510fd7453bde01286c632912870e0c597fd414a002deed15ee557f
 templates:
-- name: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/10000-lux-sky
+- name: 8e7742aaf4dc704490072404fff296d5974f61a657fcf8179fabbc80e677d2af/10000-lux-sky
   description: Generates a 10000 lux sky
   inputs:
     parameters: []
@@ -90,7 +90,7 @@ templates:
       registry: null
       workdir: /opt/run/
     local: null
-- name: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/create-octree
+- name: 8e7742aaf4dc704490072404fff296d5974f61a657fcf8179fabbc80e677d2af/create-octree
   description: Generate an octree
   inputs:
     parameters: []
@@ -114,7 +114,7 @@ templates:
       registry: null
       workdir: /opt/run/
     local: null
-- name: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/post-process
+- name: 8e7742aaf4dc704490072404fff296d5974f61a657fcf8179fabbc80e677d2af/post-process
   description: Post process your results and $$$
   inputs:
     parameters: []
@@ -141,7 +141,7 @@ templates:
       registry: null
       workdir: /opt/run/
     local: null
-- name: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/ray-tracing
+- name: 8e7742aaf4dc704490072404fff296d5974f61a657fcf8179fabbc80e677d2af/ray-tracing
   description: Run ray tracing using some input data!
   inputs:
     parameters:
@@ -170,7 +170,7 @@ templates:
       registry: null
       workdir: /opt/run/
     local: null
-- name: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/split-grid
+- name: 8e7742aaf4dc704490072404fff296d5974f61a657fcf8179fabbc80e677d2af/split-grid
   description: null
   inputs:
     parameters:
@@ -225,7 +225,7 @@ templates:
   fail_fast: true
   tasks:
   - name: create-octree
-    template: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/create-octree
+    template: 8e7742aaf4dc704490072404fff296d5974f61a657fcf8179fabbc80e677d2af/create-octree
     arguments:
       parameters: []
       artifacts:
@@ -250,7 +250,7 @@ templates:
       - name: scene-file
         path: output/octree/scene.oct
   - name: daylight-factor-simulation
-    template: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/ray-tracing
+    template: 8e7742aaf4dc704490072404fff296d5974f61a657fcf8179fabbc80e677d2af/ray-tracing
     arguments:
       parameters:
       - name: radiance-parameters
@@ -287,7 +287,7 @@ templates:
       - name: result-file
         path: '{{item.name}}.res'
   - name: generate-sky
-    template: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/10000-lux-sky
+    template: 8e7742aaf4dc704490072404fff296d5974f61a657fcf8179fabbc80e677d2af/10000-lux-sky
     arguments:
       parameters: []
       artifacts: []
@@ -300,7 +300,7 @@ templates:
       - name: sky
         path: asset/sky/10000_lux.sky
   - name: post-process
-    template: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/post-process
+    template: 8e7742aaf4dc704490072404fff296d5974f61a657fcf8179fabbc80e677d2af/post-process
     arguments:
       parameters: []
       artifacts:
@@ -320,7 +320,7 @@ templates:
       - name: post-process-folder
         path: result
   - name: split-grid
-    template: 3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff/split-grid
+    template: 8e7742aaf4dc704490072404fff296d5974f61a657fcf8179fabbc80e677d2af/split-grid
     arguments:
       parameters:
       - name: grid-count
