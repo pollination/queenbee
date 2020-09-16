@@ -1,6 +1,6 @@
-"""Queenbee Recipe MetaData class.
+"""Queenbee MetaData class.
 
-This object provides metadata information for a recipe.
+This object provides metadata information for a package.
 
 The specification is designed based on openapi info object:
 https://swagger.io/specification/#infoObject
@@ -9,7 +9,7 @@ https://swagger.io/specification/#infoObject
 from typing import List
 from pydantic import Field
 
-from ..base.basemodel import BaseModel
+from .basemodel import BaseModel
 
 
 class Maintainer(BaseModel):
@@ -26,44 +26,44 @@ class Maintainer(BaseModel):
 
 
 class License(BaseModel):
-    """License information for the Recipe"""
+    """License information for the Package"""
     name: str = Field(
         ...,
-        description='The license name used for the recipe.'
+        description='The license name used for the package.'
     )
 
     url: str = Field(
         None,
-        description='A URL to the license used for the recipe.'
+        description='A URL to the license used for the package.'
     )
 
 
 class MetaData(BaseModel):
-    """Recipe metadata information."""
+    """Package metadata information."""
 
     name: str = Field(
         ...,
-        description='Recipe name. Make it descriptive and helpful ;)'
+        description='Package name. Make it descriptive and helpful ;)'
     )
 
     tag: str = Field(
         ...,
-        description='The tag of the recipe'
+        description='The tag of the package'
     )
 
     keywords: List[str] = Field(
         None,
-        description='A list of keywords to search the recipe by'
+        description='A list of keywords to search the package by'
     )
 
     maintainers: List[Maintainer] = Field(
         None,
-        description='A list of maintainers for the recipe'
+        description='A list of maintainers for the package'
     )
 
     home: str = Field(
         None,
-        description='The URL of this recipe\'s home page'
+        description='The URL of this package\'s home page'
     )
 
     sources: List[str] = Field(
@@ -78,12 +78,12 @@ class MetaData(BaseModel):
 
     deprecated: bool = Field(
         None,
-        description='Whether this recipe is deprecated'
+        description='Whether this package is deprecated'
     )
 
     description: str = Field(
         None,
-        description='A description of what this recipe does'
+        description='A description of what this package does'
     )
 
     license: License = Field(

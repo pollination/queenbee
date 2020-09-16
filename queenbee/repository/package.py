@@ -11,8 +11,7 @@ from ..recipe import Recipe, BakedRecipe
 
 from ..base.basemodel import BaseModel
 from ..base.request import make_request, urljoin
-from ..operator.metadata import MetaData as OperatorMetadata
-from ..recipe.metadata import MetaData as RecipeMetadata
+from ..base.metadata import MetaData
 
 
 def reset_tar(tarinfo: TarInfo) -> TarInfo:
@@ -34,7 +33,7 @@ def add_to_tar(tar: TarFile, data: bytes, filename: str):
 class ResourceVersion(BaseModel):
     """Resource Version
 
-    A Metadata object to distinguish a specific resource version within a repository
+    A MetaData object to distinguish a specific resource version within a repository
     index.
     """
 
@@ -277,7 +276,7 @@ class ResourceVersion(BaseModel):
                 return f.read()
 
 
-class OperatorVersion(ResourceVersion, OperatorMetadata):
+class OperatorVersion(ResourceVersion, MetaData):
     """A version of an Operator"""
 
     @classmethod
@@ -331,7 +330,7 @@ class OperatorVersion(ResourceVersion, OperatorMetadata):
         )
 
 
-class RecipeVersion(ResourceVersion, RecipeMetadata):
+class RecipeVersion(ResourceVersion, MetaData):
 
     @classmethod
     def package_resource(

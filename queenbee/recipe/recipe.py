@@ -12,13 +12,14 @@ import yaml
 from pydantic import Field, validator, root_validator
 
 from ..base.basemodel import BaseModel
+from ..base.metadata import MetaData
+
 from ..config import Config
 from ..operator import Operator
 from ..operator.function import Function
 from ..operator.operator import Config as OperatorConfig
 
 from .dag import DAG, DAGInputs
-from .metadata import MetaData
 from .dependency import Dependency, DependencyType
 
 

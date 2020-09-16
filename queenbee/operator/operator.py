@@ -5,8 +5,8 @@ from typing import List
 from pydantic import Field, validator
 
 from ..base.basemodel import BaseModel
+from ..base.metadata import MetaData
 from .function import Function
-from .metadata import MetaData
 
 
 class DockerConfig(BaseModel):
