@@ -4,7 +4,6 @@ import shutil
 from pydantic import ValidationError
 
 from ...recipe import Recipe, BakedRecipe
-from ...repository import RecipeVersion
 
 try:
     import click

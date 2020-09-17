@@ -100,7 +100,7 @@ class Dependency(BaseModel):
         raw_bytes = res.read()
         return RepositoryIndex.parse_raw(raw_bytes)
 
-    def fetch(self, verify_digest: bool = True, auth_header: str = '') -> Tuple[bytes, str, str, str]:
+    def fetch(self, verify_digest: bool = True, auth_header: str = '') -> 'PackageVersion':
         """Fetch the dependency from its source
 
         Keyword Arguments:

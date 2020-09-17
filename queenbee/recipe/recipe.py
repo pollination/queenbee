@@ -340,15 +340,11 @@ class Recipe(BaseModel):
             os.makedirs(recipes_folder, exist_ok=True)
 
         for dependency in self.dependencies:
-            if dependency.type == DependencyType.operator:
-                auth_header = config.get_auth_header(registry_url=dependency.source)
-                raw_dep, digest, readme_string, license_string = dependency.fetch(auth_header=auth_header)
-                dep = Operator.parse_raw(raw_dep)
+            auth_header = config.get_auth_header(registry_url=dependency.source)
+            package_version = dependency.fetch(auth_header=auth_header)
+            dep = package_version.manifest
 
-            elif dependency.type == DependencyType.recipe:
-                auth_header = config.get_auth_header(registry_url=dependency.source)
-                raw_dep, digest, readme_string, license_string = dependency.fetch(auth_header=auth_header)
-                dep = self.__class__.parse_raw(raw_dep)
+            if dependency.type == DependencyType.recipe:
                 dep.write_dependencies(
                     folder_path=os.path.join(recipes_folder, dependency.ref_name),
                     config=config,
@@ -356,8 +352,8 @@ class Recipe(BaseModel):
 
             dep.to_folder(
                 folder_path=os.path.join(folder_path, '.dependencies', dependency.type, dependency.ref_name),
-                readme_string=readme_string,
-                license_string=license_string,
+                readme_string=package_version.readme,
+                license_string=package_version.license,
             )
 
 
@@ -405,10 +401,10 @@ class BakedRecipe(Recipe):
 
         for dependency in recipe.dependencies:
             auth_header = config.get_auth_header(registry_url=dependency.source)
-            dep_bytes, dep_hash, _, _ = dependency.fetch(auth_header=auth_header)
+            package_version = dependency.fetch(auth_header=auth_header)
+            dep = package_version.manifest
 
             if dependency.type == 'recipe':
-                dep = Recipe.parse_raw(dep_bytes)
                 sub_recipe = cls.from_recipe(recipe=dep, config=config)
 
                 templates.extend(sub_recipe.templates)
@@ -416,7 +412,6 @@ class BakedRecipe(Recipe):
                 digest_dict[dependency.ref_name] = sub_recipe.digest
 
             elif dependency.type == 'operator':
-                dep = Operator.parse_raw(dep_bytes)
                 templates.extend(TemplateFunction.from_operator(dep))
                 digest_dict[dependency.ref_name] = dep.__hash__
 

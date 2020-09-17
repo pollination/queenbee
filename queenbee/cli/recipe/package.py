@@ -3,7 +3,7 @@ import os
 from pydantic import ValidationError
 
 from ...recipe import Recipe, BakedRecipe
-from ...repository import RecipeVersion
+from ...repository import PackageVersion
 
 try:
     import click
@@ -54,7 +54,8 @@ def package(path, destination, force, no_update):
 
     try:
         BakedRecipe.from_folder(folder_path=path, refresh_deps=refresh_deps, config=ctx.obj.config)
-        recipe_version, file_object = RecipeVersion.package_folder(
+        recipe_version, file_object = PackageVersion.package_folder(
+            resource_type='recipe',
             folder_path=path,
             check_deps=False,
         )

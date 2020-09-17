@@ -6,6 +6,8 @@ from datetime import datetime
 from tarfile import TarInfo, TarFile
 from typing import Union, Tuple
 
+from pydantic import Field
+
 from ..operator import Operator
 from ..recipe import Recipe, BakedRecipe
 
@@ -30,10 +32,10 @@ def add_to_tar(tar: TarFile, data: bytes, filename: str):
     
     tar.addfile(tarinfo, BytesIO(data))
 
-class ResourceVersion(BaseModel):
-    """Resource Version
+class PackageVersion(MetaData):
+    """Package Version
 
-    A MetaData object to distinguish a specific resource version within a repository
+    A MetaData object to distinguish a specific package version within a repository
     index.
     """
 
@@ -43,13 +45,29 @@ class ResourceVersion(BaseModel):
 
     digest: str
 
+    readme: str = Field(
+      None,
+      description='The README file string for this package'
+    )
+
+    license: str = Field(
+      None,
+      description='The License file string for this package'
+    )
+
+    manifest: Union[Recipe, Operator] = Field(
+      None,
+      description="The package Recipe or Operator manifest"
+    )
+
     @classmethod
     def from_resource(
         cls,
         resource: Union[Operator, Recipe],
-        created: datetime = None
+        created: datetime = None,
+        include_manifest: bool = False,
     ):
-        """Generate a Resource Version from a resource
+        """Generate a Package Version from a resource
 
         Arguments:
             resource {Union[Operator, Recipe]} -- A resource to be versioned (operator
@@ -62,7 +80,7 @@ class ResourceVersion(BaseModel):
             ValueError: The resource is invalid
 
         Returns:
-            ResourceVersion -- A resource version object
+            PackageVersion -- A package version object
         """
         package_path = f'{resource.metadata.name}-{resource.metadata.tag}.tgz'
 
@@ -74,6 +92,9 @@ class ResourceVersion(BaseModel):
         input_dict['created'] = created
         input_dict['url'] = package_path
 
+        if include_manifest:
+          input_dict['manifest'] = resource.to_dict()
+
         return cls.parse_obj(input_dict)
 
     @classmethod
@@ -81,7 +102,8 @@ class ResourceVersion(BaseModel):
         resource: Union[Operator, Recipe],
         readme: str = None,
         license: str = None,
-    ) -> Tuple['ResourceVersion', BytesIO]:
+        include_manifest: bool = False,
+    ) -> Tuple['PackageVersion', BytesIO]:
         """Package a resource into a gzipped tar archive
 
         Arguments:
@@ -98,7 +120,7 @@ class ResourceVersion(BaseModel):
             ValueError: Failed to create the package
 
         Returns:
-            ResourceVersion -- A resource version object
+            PackageVersion -- A package version object
             BytesIO -- A BytesIO stream of the gzipped tar file
         """
 
@@ -143,6 +165,12 @@ class ResourceVersion(BaseModel):
 
         tar.close()
 
+        resource_version.readme = readme
+        resource_version.license = license
+
+        if include_manifest:
+          resource_version.manifest = resource
+
         return resource_version, file_object
 
 
@@ -152,7 +180,7 @@ class ResourceVersion(BaseModel):
         tar_file: BytesIO,
         verify_digest: bool = True,
         digest: str = None
-    ) -> Tuple['ResourceVersion', bytes, str, str, str]:
+    ) -> 'PackageVersion':
 
         tar = TarFile.open(fileobj=tar_file)
 
@@ -187,20 +215,31 @@ class ResourceVersion(BaseModel):
                 ' decoded.'
             )
 
+        try:
+          manifest = Operator.parse_raw(manifest_bytes)
+        except Exception as error:
+          try:
+            manifest = Recipe.parse_raw(manifest_bytes)
+          except Exception as error:
+            raise ValueError('Package resource.json could not be read as a Recipe or an Operator')
 
+        version.manifest = manifest
+        version.readme = readme_string
+        version.license = license_string
+        version.digest = read_digest
 
-        return version, manifest_bytes, read_digest, readme_string, license_string
+        return version
 
 
     @classmethod
     def from_package(cls, package_path: str):
-        """Generate a resource version from a packaged resource
+        """Generate a package version from a packaged resource
 
         Arguments:
             package_path {str} -- Path to the package
 
         Returns:
-            ResourceVersion -- A resource version object
+            PackageVersion -- A package version object
         """
         file_path = os.path.normpath(os.path.abspath(package_path))
 
@@ -209,24 +248,32 @@ class ResourceVersion(BaseModel):
 
         tar_file = TarFile.open(file_path)
 
-        version, *_ = cls.unpack_tar(tar_file=filebytes, verify_digest=False)
+        version= cls.unpack_tar(tar_file=filebytes, verify_digest=False)
 
         return version
 
-    def fetch_package(self, source_url: str = None, verify_digest: bool = True, auth_header: str = '') -> Tuple[bytes, str, str, str]:
+    def fetch_package(self, source_url: str = None, verify_digest: bool = True, auth_header: str = '') -> 'PackageVersion':
+        if source_url.startswith('file:'):
+          source_path = source_url.split('file:')[1]
+          
+          if os.path.isabs(source_path):
+            package_path = os.path.join(source_path, self.url)
+          else:
+            package_path = os.path.join(os.getcwd(), source_path, self.url)
+
+          return self.from_package(package_path)
+
         package_url = urljoin(source_url, self.url)
 
         res = make_request(url=package_url, auth_header=auth_header)
 
         filebytes = BytesIO(res.read())
 
-        version, manifest_bytes, read_digest, readme_string, license_string = self.unpack_tar(
+        return self.unpack_tar(
             tar_file=filebytes,
             verify_digest=verify_digest,
             digest=self.digest
         )
-
-        return manifest_bytes, read_digest, readme_string, license_string
 
 
     @staticmethod
@@ -275,20 +322,17 @@ class ResourceVersion(BaseModel):
             with open(path_to_license, 'r') as f:
                 return f.read()
 
-
-class OperatorVersion(ResourceVersion, MetaData):
-    """A version of an Operator"""
-
     @classmethod
     def package_resource(cls,
-        resource: Operator,
+        resource: Union[Operator, Recipe],
+        check_deps: bool = True,
         readme: str = None,
         license: str = None,
-    ) -> Tuple['OperatorVersion', BytesIO]:
-        """Package an Operator into a gzipped tar file
+    ) -> Tuple['PackageVersion', BytesIO]:
+        """Package a Recipe or Operator into a gzipped tar file
 
         Arguments:
-            resource {Operator} -- An operator
+            resource {Union[Operator, Recipe]} -- An operator or recipe
 
         Keyword Arguments:
             readme {str} -- resource README.md file text if it exists
@@ -297,9 +341,12 @@ class OperatorVersion(ResourceVersion, MetaData):
                 (default: {None})
 
         Returns:
-            OperatorVersion -- An operator version object
+            PackageVersion -- An operator or recipe version object
             BytesIO -- A BytesIO stream of the gzipped tar file
         """
+
+        if check_deps and isinstance(resource, Recipe):
+          BakedRecipe.from_recipe(resource)
 
         return cls.pack_tar(
             resource=resource,
@@ -310,82 +357,29 @@ class OperatorVersion(ResourceVersion, MetaData):
     @classmethod
     def package_folder(
         cls,
-        folder_path: str,
-    ) -> Tuple['OperatorVersion', BytesIO]:
-        """Package an Operator from its folder into a gzipped tar file
-
-        Arguments:
-            folder_path {str} -- Path to the folder where the Operator is defined
-
-        Returns:
-            OperatorVersion -- An operator version object
-            BytesIO -- A BytesIO stream of the gzipped tar file
-        """
-        resource = Operator.from_folder(folder_path=folder_path)
-
-        return cls.package_resource(
-            resource=resource,
-            readme=cls.read_readme(folder_path),
-            license=cls.read_license(folder_path),
-        )
-
-
-class RecipeVersion(ResourceVersion, MetaData):
-
-    @classmethod
-    def package_resource(
-        cls,
-        resource: Recipe,
-        check_deps: bool = True,
-        readme: str = None,
-        license: str = None,
-    ) -> Tuple['RecipeVersion', BytesIO]:
-        """Package an Recipe into a gzipped tar file
-
-        Arguments:
-            resource {Recipe} -- An recipe
-
-        Keyword Arguments:
-            check_deps {bool} -- Fetch the dependencies from their source and validate
-                the recipe by baking it (default: {True})
-            readme {str} -- Text of the recipe README.md file if it exists
-                (default: {None})
-            license {str} -- Text of the resource LICENSE file if it exists
-                (default: {None})
-
-        Returns:
-            RecipeVersion -- An recipe version object
-            BytesIO -- A BytesIO stream of the gzipped tar file
-        """
-        if check_deps:
-            BakedRecipe.from_recipe(resource)
-
-        return cls.pack_tar(
-            resource=resource,
-            readme=readme,
-            license=license,
-        )
-
-    @classmethod
-    def package_folder(
-        cls,
+        resource_type: str,
         folder_path: str,
         check_deps: bool = True,
-    ) -> Tuple['RecipeVersion', BytesIO]:
-        """Package an Recipe from its folder into a gzipped tar file
+    ) -> Tuple['PackageVersion', BytesIO]:
+        """Package an Operator or Recipe from its folder into a gzipped tar file
 
         Arguments:
-            folder_path {str} -- Path to the folder where the Recipe is defined
+            folder_path {str} -- Path to the folder where the Operator or Recipe is defined
 
         Keyword Arguments:
             check_deps {bool} -- Fetch the dependencies from their source and validate
                 the recipe by baking it (default: {True})
 
         Returns:
-            RecipeVersion -- An recipe version object
+            PackageVersion -- An recipe or operator version object
             BytesIO -- A BytesIO stream of the gzipped tar file
         """
-        resource = Recipe.from_folder(folder_path=folder_path)
+        if resource_type == 'recipe':
+          resource = Recipe.from_folder(folder_path=folder_path)
+        elif resource_type == 'operator':
+          resource = Operator.from_folder(folder_path=folder_path)
+        else:
+          raise ValueError(f'resource_type must be one of ["recipe", "operator"], not: {resource_type}')
 
         return cls.package_resource(
             resource=resource,

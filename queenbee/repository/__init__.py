@@ -1,2 +1,2 @@
-from .package import OperatorVersion, RecipeVersion
+from .package import PackageVersion
 from .index import RepositoryIndex

@@ -8,7 +8,7 @@ from ..base.basemodel import BaseModel
 from ..operator import Operator
 from ..recipe import Recipe
 
-from .package import OperatorVersion, RecipeVersion
+from .package import PackageVersion
 
 
 class RepositoryIndex(BaseModel):
@@ -19,13 +19,13 @@ class RepositoryIndex(BaseModel):
         description='The timestamp at which the index was generated'
     )
 
-    operator: Dict[str, List[OperatorVersion]] = Field(
+    operator: Dict[str, List[PackageVersion]] = Field(
         {},
         description='A dict of operators accessible by name. Each name key points to'
         ' a list of operator versions'
     )
 
-    recipe: Dict[str, List[RecipeVersion]] = Field(
+    recipe: Dict[str, List[PackageVersion]] = Field(
         {},
         description='A dict of recipes accessible by name. Each name key points to a'
         ' list of recipesversions'
@@ -52,7 +52,7 @@ class RepositoryIndex(BaseModel):
         if os.path.exists(operators_folder):
             for package in os.listdir(operators_folder):
                 package_path = os.path.join(folder_path, 'operators', package)
-                resource_version = OperatorVersion.from_package(package_path)
+                resource_version = PackageVersion.from_package(package_path)
                 resource_version.url = \
                     os.path.join('operators', package).replace('\\', '/')
                 index.index_operator_version(resource_version)
@@ -60,7 +60,7 @@ class RepositoryIndex(BaseModel):
         if os.path.exists(recipes_folder):
             for package in os.listdir(recipes_folder):
                 package_path = os.path.join(folder_path, 'recipes', package)
-                resource_version = RecipeVersion.from_package(package_path)
+                resource_version = PackageVersion.from_package(package_path)
                 resource_version.url = \
                     os.path.join('recipes', package).replace('\\', '/')
                 index.index_recipe_version(resource_version)
@@ -104,15 +104,13 @@ class RepositoryIndex(BaseModel):
 
         if isinstance(resource, Operator):
             type_path = 'operators'
-            resource_version_class = OperatorVersion
         elif isinstance(resource, Recipe):
             type_path = 'recipes'
-            resource_version_class = RecipeVersion
         else:
             raise ValueError(f"Resource should be an Operator or a Recipe")
 
 
-        resource_version, file_object = resource_version_class.package_resource(
+        resource_version, file_object = PackageVersion.package_resource(
             resource=resource,
             readme=readme,
             license=license,
@@ -134,17 +132,17 @@ class RepositoryIndex(BaseModel):
 
     @staticmethod
     def _index_resource_version(
-        resource_dict: Dict[str, List[Union[RecipeVersion, OperatorVersion]]],
-        resource_version: Union[RecipeVersion, OperatorVersion],
+        resource_dict: Dict[str, List[PackageVersion]],
+        resource_version: PackageVersion,
         overwrite: bool = False,
         skip: bool = False
-    ) -> Dict[str, List[Union[RecipeVersion, OperatorVersion]]]:
+    ) -> Dict[str, List[PackageVersion]]:
         """Add a resource version to an index of resource versions
 
         Arguments:
-            resource_dict {Dict[str, List[Union[RecipeVersion, OperatorVersion]]]} -- An
+            resource_dict {Dict[str, List[PackageVersion]]} -- An
                 index of resource versions
-            resource_version {Union[RecipeVersion, OperatorVersion]} -- The resource
+            resource_version {PackageVersion} -- The resource
                 version to add
 
         Keyword Arguments:
@@ -155,7 +153,7 @@ class RepositoryIndex(BaseModel):
             ValueError: Resource version already exists
 
         Returns:
-            Dict[str, List[Union[RecipeVersion, OperatorVersion]]] -- A resource version
+            Dict[str, List[PackageVersion]] -- A resource version
                 index
         """
         resource_list = resource_dict.get(resource_version.name, [])
@@ -183,12 +181,12 @@ class RepositoryIndex(BaseModel):
 
         return resource_dict
 
-    def index_recipe_version(self, recipe_version: RecipeVersion,
+    def index_recipe_version(self, recipe_version: PackageVersion,
                              overwrite: bool = False):
         """Add a Recipe Version to an Index of Recipes
 
         Arguments:
-            recipe_version {RecipeVersion} -- A recipe version object
+            recipe_version {PackageVersion} -- A recipe version object
 
         Keyword Arguments:
             overwrite {bool} -- Overwrite the Recipe Version if it already exists in the
@@ -199,12 +197,12 @@ class RepositoryIndex(BaseModel):
         )
         self.generated = datetime.utcnow()
 
-    def index_operator_version(self, operator_version: OperatorVersion,
+    def index_operator_version(self, operator_version: PackageVersion,
                                overwrite: bool = False):
         """Add a Operator Version to an Index of Operators
 
         Arguments:
-            operator_version {OperatorVersion} -- A operator version object
+            operator_version {PackageVersion} -- A operator version object
 
         Keyword Arguments:
             overwrite {bool} -- Overwrite the Operator Version if it already exists in
@@ -230,7 +228,7 @@ class RepositoryIndex(BaseModel):
         """
         for package in os.listdir(os.path.join(folder_path, 'operators')):
             package_path = os.path.join(folder_path, 'operators', package)
-            resource_version = OperatorVersion.from_package(package_path)
+            resource_version = PackageVersion.from_package(package_path)
             try:
                 self.index_operator_version(resource_version, overwrite)
             except ValueError as error:
@@ -241,7 +239,7 @@ class RepositoryIndex(BaseModel):
 
         for package in os.listdir(os.path.join(folder_path, 'recipes')):
             package_path = os.path.join(folder_path, 'recipes', package)
-            resource_version = RecipeVersion.from_package(package_path)
+            resource_version = PackageVersion.from_package(package_path)
             try:
                 self.index_recipe_version(resource_version, overwrite)
             except ValueError as error:
@@ -255,7 +253,7 @@ class RepositoryIndex(BaseModel):
         package_type: str,
         package_name: str,
         package_tag: str
-    ) -> Union[OperatorVersion, RecipeVersion]:
+    ) -> PackageVersion:
         """Retrieve a Resource Version by its tag
 
         Arguments:
@@ -267,7 +265,7 @@ class RepositoryIndex(BaseModel):
             ValueError: The package was not found
 
         Returns:
-            Union[OperatorVersion, RecipeVersion] -- A resource version object
+            PackageVersion -- A resource version object
         """
         package_dict = getattr(self, package_type)
 
@@ -294,7 +292,7 @@ class RepositoryIndex(BaseModel):
         package_type: str,
         package_name: str,
         package_digest: str
-    ) -> Union[OperatorVersion, RecipeVersion]:
+    ) -> PackageVersion:
         """Retrieve a Resource Version by its hash digest
 
         Arguments:
@@ -306,7 +304,7 @@ class RepositoryIndex(BaseModel):
             ValueError: The package was not found
 
         Returns:
-            Union[OperatorVersion, RecipeVersion] -- A resource version object
+            PackageVersion -- A resource version object
         """
         package_dict = getattr(self, package_type)
 
@@ -327,3 +325,36 @@ class RepositoryIndex(BaseModel):
             )
 
         return res
+
+
+    def json(self, *args, **kwargs):
+      """Overwrite the BaseModel json method to exclude certain keys
+
+      The objective is to remove the readme, license and manifest keys which are not
+      needed in a serialized index object.
+      """
+      exclude_keys = {
+        'operator': {},
+        'recipe': {},
+      }
+
+      for key in self.operator:
+        exclude_keys['operator'][key] = {
+           '__all__': {
+              'readme',
+              'license',
+              'manifest'
+            }
+        }
+
+
+      for key in self.recipe:
+        exclude_keys['recipe'][key] = {
+           '__all__': {
+              'readme',
+              'license',
+              'manifest'
+            }
+        }
+
+      return super(RepositoryIndex, self).json(exclude=exclude_keys, *args, **kwargs)

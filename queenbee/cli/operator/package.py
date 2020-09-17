@@ -2,7 +2,7 @@ import os
 
 from pydantic import ValidationError
 
-from ...repository import OperatorVersion
+from ...repository import PackageVersion
 
 try:
     import click
@@ -40,7 +40,8 @@ def package(path, destination, force):
     os.chdir(path)
     
     try:
-        operator_version, file_object = OperatorVersion.package_folder(
+        operator_version, file_object = PackageVersion.package_folder(
+            resource_type='operator',
             folder_path=path,
         )
     except ValidationError as error:
