@@ -1,6 +1,8 @@
 from .index import index
 from .serve import serve
 from .init import init
+from .manage import add, list_repos, remove
+from .search import search, get_by_tag
 
 try:
     import click
@@ -10,7 +12,7 @@ except ImportError:
     )
 
 
-@click.group('repository')
+@click.group('repo')
 @click.pass_context
 def main(ctx):
     """manage package repositories
@@ -41,3 +43,8 @@ def main(ctx):
 main.add_command(index)
 main.add_command(serve)
 main.add_command(init)
+main.add_command(add)
+main.add_command(list_repos)
+main.add_command(remove)
+main.add_command(search)
+main.add_command(get_by_tag)
