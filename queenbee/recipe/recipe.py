@@ -237,7 +237,7 @@ class Recipe(BaseModel):
     def lock_dependencies(self, config: Config = Config()):
         """Lock the dependencies by fetching them and storing their digest"""
         for dependency in self.dependencies:
-            auth_header = config.get_auth_header(registry_url=dependency.source)
+            auth_header = config.get_auth_header(repository_url=dependency.source)
             dependency.fetch(auth_header=auth_header)
 
     def write_dependency_file(self, folder_path: str):
@@ -340,7 +340,7 @@ class Recipe(BaseModel):
             os.makedirs(recipes_folder, exist_ok=True)
 
         for dependency in self.dependencies:
-            auth_header = config.get_auth_header(registry_url=dependency.source)
+            auth_header = config.get_auth_header(repository_url=dependency.source)
             package_version = dependency.fetch(auth_header=auth_header)
             dep = package_version.manifest
 
@@ -400,7 +400,7 @@ class BakedRecipe(Recipe):
         templates = []
 
         for dependency in recipe.dependencies:
-            auth_header = config.get_auth_header(registry_url=dependency.source)
+            auth_header = config.get_auth_header(repository_url=dependency.source)
             package_version = dependency.fetch(auth_header=auth_header)
             dep = package_version.manifest
 

@@ -18,8 +18,8 @@ class Config(BaseModel):
       description='A list of repositories used for local execution'
     )
 
-    def get_auth_header(self, registry_url: str) -> str:
-        domain = urlparse(registry_url).netloc
+    def get_auth_header(self, repository_url: str) -> str:
+        domain = urlparse(repository_url).netloc
 
         res = [x for x in self.auth if x.domain == domain]
 

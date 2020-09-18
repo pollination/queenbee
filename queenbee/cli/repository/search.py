@@ -28,12 +28,12 @@ def search(repository, package_type, search):
 
     if repository is not None:
       repos = [
-        r.fetch(auth_header=ctx.obj.config.get_auth_header(registry_url=r.path))
+        r.fetch(auth_header=ctx.obj.config.get_auth_header(repository_url=r.path))
         for r in ctx.obj.config.repositories if r.name == repository
       ]
     else:
       repos = [
-        r.fetch(auth_header=ctx.obj.config.get_auth_header(registry_url=r.path))
+        r.fetch(auth_header=ctx.obj.config.get_auth_header(repository_url=r.path))
         for r in ctx.obj.config.repositories
       ]
 
@@ -70,7 +70,7 @@ def get_by_tag(type, repo, name, tag):
   if repo_ref is None:
     raise click.ClickException(f'No repository with name "{repo}" found')
   
-  auth_header = ctx.obj.config.get_auth_header(registry_url=repo_ref.path)
+  auth_header = ctx.obj.config.get_auth_header(repository_url=repo_ref.path)
   repo_index = repo_ref.fetch(auth_header=auth_header)
 
   try:

@@ -47,7 +47,7 @@ def list_repos():
   ctx = click.get_current_context()
 
   repos = [
-    r.fetch(auth_header=ctx.obj.config.get_auth_header(registry_url=r.path))
+    r.fetch(auth_header=ctx.obj.config.get_auth_header(repository_url=r.path))
     for r in ctx.obj.config.repositories
   ]
 
