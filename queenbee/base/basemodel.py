@@ -27,7 +27,7 @@ class BaseModel(PydanticBaseModel):
 
     """
 
-    def yaml(self, exclude_unset=False):
+    def yaml(self, exclude_unset=False, **kwargs):
         """Get a YAML string from the model
 
         Keyword Arguments:
@@ -38,11 +38,11 @@ class BaseModel(PydanticBaseModel):
             str -- A yaml string representing the model
         """
         return yaml.dump(
-            json.loads(self.json(by_alias=True, exclude_unset=exclude_unset)),
+            json.loads(self.json(by_alias=True, exclude_unset=exclude_unset, **kwargs)),
             default_flow_style=False
         )
 
-    def to_dict(self, exclude_unset=False, by_alias=True):
+    def to_dict(self, exclude_unset=False, by_alias=True, **kwargs):
         """Get a dictionary from the model
 
         Keyword Arguments:
@@ -54,9 +54,9 @@ class BaseModel(PydanticBaseModel):
         Returns:
             dict -- A python dictionary representing the model
         """
-        return json.loads(self.json(by_alias=by_alias, exclude_unset=exclude_unset))
+        return json.loads(self.json(by_alias=by_alias, exclude_unset=exclude_unset, **kwargs))
 
-    def to_json(self, filepath, indent=None):
+    def to_json(self, filepath, indent=None, **kwargs):
         """Write a JSON file of the model
 
         Arguments:
@@ -66,9 +66,9 @@ class BaseModel(PydanticBaseModel):
             indent {int} -- indent amount (default: {None})
         """
         with open(filepath, 'w') as file:
-            file.write(self.json(by_alias=True, exclude_unset=False, indent=indent))
+            file.write(self.json(by_alias=True, exclude_unset=False, indent=indent, **kwargs))
 
-    def to_yaml(self, filepath, exclude_unset=False):
+    def to_yaml(self, filepath, exclude_unset=False, **kwargs):
         """Write a YAML file of the model
 
         Arguments:
@@ -78,7 +78,7 @@ class BaseModel(PydanticBaseModel):
             exclude_unset {bool} -- Boolean toggle to add or remove any unset/None values
             (default: {False})
         """
-        content = self.yaml(exclude_unset=exclude_unset)
+        content = self.yaml(exclude_unset=exclude_unset, **kwargs)
 
         with open(filepath, 'w') as out_file:
             out_file.write(content)
