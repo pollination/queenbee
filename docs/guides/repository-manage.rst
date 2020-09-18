@@ -20,7 +20,7 @@ This sections walks through the basic management commands.
 
 2. Add a local repository. We will use the `local-queenbee-repo` from the previous section::
 
-    > queenbee repo add local path/to/local-queenbee-repo
+    > queenbee repo add local-repo path/to/local-queenbee-repo
 
 3. View the repositories that are listed in your local index::
 
@@ -28,7 +28,7 @@ This sections walks through the basic management commands.
 
     [
       {
-        "name": "local-queenbee-repo",
+        "name": "local-repo",
         "description": "A Queenbee package repository",
         "source": "file:C:\path\to\local-queenbee-repo",
         "operator_count": 1,
@@ -70,7 +70,7 @@ This sections walks through the basic management commands.
             "url": "operator/honeybee-energy/36dec1c7b2c169f62ae08d64f6cac6de4b3c192320ed10a0f8283a3be03aa4af",
             "created": "2020-06-30T11:07:15.744710",
             "digest": "36dec1c7b2c169f62ae08d64f6cac6de4b3c192320ed10a0f8283a3be03aa4af",
-            "slug": "antoine/honeybee-energy",
+            "slug": "ladybug/honeybee-energy",
             "type": "operator"
         },
         {
