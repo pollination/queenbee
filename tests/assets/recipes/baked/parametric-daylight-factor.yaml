@@ -16,12 +16,12 @@ metadata:
 dependencies:
 - type: recipe
   name: daylight-factor
-  hash: 8f5638585f8e73088b5db68fe2574ccffdee90bc72f64df96e7144a67134266d
+  hash: 044132bd4ace30a9b2340dc5e2b445e5366651287f981b87ca2efd62d8b00e1b
   alias: null
   tag: 0.0.1
   source: https://example.com/test-repo
 flow:
-- name: aff667ff2b510fd7453bde01286c632912870e0c597fd414a002deed15ee557f/main
+- name: 81e01d6f53b4c70160d9b474d34fa712e7790a97b2fa736135080fd174f5f113/main
   inputs:
     parameters:
     - annotations: {}
@@ -70,7 +70,7 @@ flow:
       from:
         type: folder
         path: daylight-factor
-digest: aff667ff2b510fd7453bde01286c632912870e0c597fd414a002deed15ee557f
+digest: 81e01d6f53b4c70160d9b474d34fa712e7790a97b2fa736135080fd174f5f113
 templates:
 - name: 8e7742aaf4dc704490072404fff296d5974f61a657fcf8179fabbc80e677d2af/10000-lux-sky
   description: Generates a 10000 lux sky

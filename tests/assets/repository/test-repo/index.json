@@ -1,15 +1,17 @@
 {
-  "generated": "2020-06-08T16:56:02.663916",
+  "generated": "2020-09-18T10:40:02.974470",
   "metadata": {
     "name": "test-repo",
-    "description": "A test repo for testing purposes"
+    "description": "A Queenbee package repository",
+    "source": null,
+    "operator_count": 1,
+    "recipe_count": 1
   },
   "operator": {
     "honeybee-radiance": [
       {
         "name": "honeybee-radiance",
         "tag": "1.2.3",
-        "app_version": "2.3.2",
         "keywords": [
           "honeybee",
           "radiance",
@@ -30,7 +32,9 @@
         "description": "An operator to run all things honeybee and radiance!",
         "url": "operators/honeybee-radiance-1.2.3.tgz",
         "created": "2020-06-08T16:55:44.035830",
-        "digest": "3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff"
+        "digest": "3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff",
+        "slug": "test-repo/honeybee-radiance",
+        "type": "operator"
       }
     ]
   },
@@ -54,10 +58,11 @@
         "icon": "https://www.ladybug.tools/assets/img/logo.png",
         "deprecated": null,
         "description": "An awesome workflow to run daylight factor!",
-        "license": null,
         "url": "recipes/daylight-factor-0.0.1.tgz",
-        "created": "2020-06-08T16:55:53.227897",
-        "digest": "8f5638585f8e73088b5db68fe2574ccffdee90bc72f64df96e7144a67134266d"
+        "created": "2020-08-27T09:33:21.555580",
+        "digest": "044132bd4ace30a9b2340dc5e2b445e5366651287f981b87ca2efd62d8b00e1b",
+        "slug": "test-repo/daylight-factor",
+        "type": "recipe"
       }
     ]
   }
