@@ -247,6 +247,7 @@ from queenbee._openapi import get_openapi
 from queenbee.operator import Operator
 from queenbee.recipe import Recipe
 from queenbee.workflow import Workflow
+from queenbee.repository import RepositoryIndex
 
 folder = os.path.join(os.path.dirname(__file__), '_static/schemas')
 if not os.path.isdir(folder):
@@ -273,6 +274,13 @@ with open(os.path.join(folder, 'recipe-openapi.json'), 'w') as out_file:
         indent=2
     )
 
+with open(os.path.join(folder, 'repository-openapi.json'), 'w') as out_file:
+    json.dump(
+        get_openapi(schema_class=RepositoryIndex, title='Queenbee Repository Schema', description='Schema documentation for Queenbee Recipes'),
+        out_file,
+        indent=2
+    )
+
 with open(os.path.join(folder, 'workflow-schema.json'), 'w') as out_file:
     out_file.write(Workflow.schema_json())
 
@@ -281,3 +289,6 @@ with open(os.path.join(folder, 'operator-schema.json'), 'w') as out_file:
 
 with open(os.path.join(folder, 'recipe-schema.json'), 'w') as out_file:
     out_file.write(Recipe.schema_json())
+
+with open(os.path.join(folder, 'repository-schema.json'), 'w') as out_file:
+    out_file.write(RepositoryIndex.schema_json())

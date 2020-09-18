@@ -29,4 +29,5 @@ Guides
 
    operator
    recipe
-   repository
+   repository-create
+   repository-manage

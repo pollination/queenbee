@@ -14,4 +14,5 @@ workflow executor.
 
    operators
    recipes
+   repository
    workflows
