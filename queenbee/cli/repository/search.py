@@ -49,6 +49,9 @@ def search(repository, package_type, search):
       'manifest'
     }
 
+    if packages == []:
+      return print(json.dumps([]))
+
     print(json.dumps([p.dict(exclude=exclude_keys) for p in packages], indent=2, default=packages[0].__json_encoder__))
 
 
@@ -82,7 +85,7 @@ def get_by_tag(type, repo, name, tag):
   except ValueError as error:
     raise click.ClickException(error)
 
-  package = package.fetch_package(source_url=repo_index.metadata.source, auth_header=auth_header)
+  package = package.fetch_package(source_url=repo_ref.path, auth_header=auth_header)
   package.slug = f'{repo}/{package.name}'
 
   print(package.json(indent=2))

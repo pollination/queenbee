@@ -51,6 +51,11 @@ class MetaData(BaseModel):
         description='The tag of the package'
     )
 
+    app_version: str = Field(
+      None,
+      description='The version of the application code underlying the manifest'
+    )
+
     keywords: List[str] = Field(
         None,
         description='A list of keywords to search the package by'

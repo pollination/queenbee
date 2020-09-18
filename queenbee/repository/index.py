@@ -94,12 +94,12 @@ class RepositoryIndex(BaseModel):
         return values
       
       cls.add_slugs(
-        root=f'{name}',
+        root=name,
         packages=values.get('operator')
       )
 
       cls.add_slugs(
-        root=f'{name}',
+        root=name,
         packages=values.get('recipe')
       )
 
@@ -119,6 +119,10 @@ class RepositoryIndex(BaseModel):
             RepositoryIndex -- An index generated from packages in the folder
         """
         index = cls.parse_obj({})
+
+        head, tail = os.path.split(folder_path)
+
+        index.metadata.name = tail
 
         operators_folder = os.path.join(folder_path, 'operators')
         recipes_folder = os.path.join(folder_path, 'recipes')
@@ -140,6 +144,19 @@ class RepositoryIndex(BaseModel):
                 index.index_recipe_version(resource_version)
 
         index.generated = datetime.utcnow()
+
+        cls.add_slugs(
+          root=tail,
+          packages=index.operator,
+        )
+
+        cls.add_slugs(
+          root=tail,
+          packages=index.recipe,
+        )
+
+        index.metadata.operator_count = len(index.operator)
+        index.metadata.recipe_count = len(index.recipe)
 
         return index
 
