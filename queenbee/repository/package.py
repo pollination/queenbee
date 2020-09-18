@@ -45,6 +45,16 @@ class PackageVersion(MetaData):
 
     digest: str
 
+    slug: str = Field(
+      None,
+      description='A slug of the repository name and the package name.'
+    )
+
+    type: str = Field(
+      '',
+      description='The type of Queenbee package (ie: recipe or operator)'
+    )
+
     readme: str = Field(
       None,
       description='The README file string for this package'
@@ -91,6 +101,11 @@ class PackageVersion(MetaData):
         input_dict['digest'] = resource.__hash__
         input_dict['created'] = created
         input_dict['url'] = package_path
+
+        if isinstance(resource, Operator):
+          input_dict['type'] = 'operator'
+        elif isinstance(resource, Recipe):
+          input_dict['type'] = 'recipe'
 
         if include_manifest:
           input_dict['manifest'] = resource.to_dict()
@@ -217,9 +232,11 @@ class PackageVersion(MetaData):
 
         try:
           manifest = Operator.parse_raw(manifest_bytes)
+          version.type = 'operator'
         except Exception as error:
           try:
             manifest = Recipe.parse_raw(manifest_bytes)
+            version.type = 'recipe'
           except Exception as error:
             raise ValueError('Package resource.json could not be read as a Recipe or an Operator')
 

@@ -1,7 +1,7 @@
 import os
 from typing import List, Union, Dict
 from datetime import datetime
-from pydantic import Field
+from pydantic import Field, root_validator, validator
 
 from ..base.basemodel import BaseModel
 
@@ -10,6 +10,32 @@ from ..recipe import Recipe
 
 from .package import PackageVersion
 
+class RepositoryMetadata(BaseModel):
+
+  name: str = Field(
+    None,
+    description='The name of the repository'
+  )
+
+  description: str = Field(
+    'A Queenbee package repository',
+    description='A short description of the repository'
+  )
+
+  source: str = Field(
+    None,
+    description='The source path (url or local) to the repository'
+  )
+
+  operator_count: int = Field(
+    0,
+    description='The number of operators hosted by the repository'
+  )
+
+  recipe_count: int = Field(
+    0,
+    description='The number of recipes hosted by the repository'
+  )
 
 class RepositoryIndex(BaseModel):
     """A searchable index for a Queenbee Operator and Recipe repository"""
@@ -17,6 +43,11 @@ class RepositoryIndex(BaseModel):
     generated: datetime = Field(
         None,
         description='The timestamp at which the index was generated'
+    )
+
+    metadata: RepositoryMetadata = Field(
+      RepositoryMetadata(),
+      description='Extra information about the repository'
     )
 
     operator: Dict[str, List[PackageVersion]] = Field(
@@ -30,6 +61,49 @@ class RepositoryIndex(BaseModel):
         description='A dict of recipes accessible by name. Each name key points to a'
         ' list of recipesversions'
     )
+
+    @validator('operator')
+    def set_operator_type(cls, v):
+      for _, package in v.items():
+        for pv in package:
+          pv.type = 'operator'
+
+      return v
+
+    @validator('recipe')
+    def set_recipe_type(cls, v):
+      for _, package in v.items():
+        for pv in package:
+          pv.type = 'recipe'
+
+      return v
+
+
+    @root_validator
+    def metadata_counts(cls, values):
+      values['metadata'].operator_count = len(values.get('operator'))
+      values['metadata'].recipe_count = len(values.get('recipe'))
+
+      return values
+
+    @root_validator
+    def check_slugs(cls, values):
+      name = values.get('metadata').name
+      
+      if name is None:
+        return values
+      
+      cls.add_slugs(
+        root=f'{name}',
+        packages=values.get('operator')
+      )
+
+      cls.add_slugs(
+        root=f'{name}',
+        packages=values.get('recipe')
+      )
+
+      return values
 
     @classmethod
     def from_folder(cls, folder_path):
@@ -132,6 +206,13 @@ class RepositoryIndex(BaseModel):
 
 
     @staticmethod
+    def add_slugs(root: str, packages: Dict[str, List[PackageVersion]]):
+      for _, package_list in packages.items():
+        for p in package_list:
+          p.slug = f'{root}/{p.name}'
+
+
+    @staticmethod
     def get_latest(package_versions: List[PackageVersion]) -> PackageVersion:
       if package_versions == []:
         return None
@@ -143,8 +224,8 @@ class RepositoryIndex(BaseModel):
     def _index_resource_version(
         resource_dict: Dict[str, List[PackageVersion]],
         resource_version: PackageVersion,
+        repository_name: str = None,
         overwrite: bool = False,
-        skip: bool = False
     ) -> Dict[str, List[PackageVersion]]:
         """Add a resource version to an index of resource versions
 
@@ -155,6 +236,8 @@ class RepositoryIndex(BaseModel):
                 version to add
 
         Keyword Arguments:
+            repository_name {str} -- The name of the repository the package is being indexed to
+                (default: {None})
             overwrite {bool} -- Overwrite a resource version if it already exists
                 (default: {False})
 
@@ -165,6 +248,9 @@ class RepositoryIndex(BaseModel):
             Dict[str, List[PackageVersion]] -- A resource version
                 index
         """
+        if repository_name:
+          resource_version.slug = f'{repository_name.lower()}/{resource_version.name.lower()}'
+  
         resource_list = resource_dict.get(resource_version.name, [])
 
         if not overwrite:

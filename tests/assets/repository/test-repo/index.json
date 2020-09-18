@@ -1,5 +1,9 @@
 {
   "generated": "2020-06-08T16:56:02.663916",
+  "metadata": {
+    "name": "test-repo",
+    "description": "A test repo for testing purposes"
+  },
   "operator": {
     "honeybee-radiance": [
       {
