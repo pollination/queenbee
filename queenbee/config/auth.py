@@ -24,7 +24,12 @@ class BaseAuth(BaseModel):
     )
 
     @property
-    def auth_header(self):
+    def auth_header(self) -> str:
+        """the auth header string for this auth model
+
+        Returns:
+            str: a bearer token auth header string
+        """
         if self.access_token is None:
             return ''
         return f'Bearer {self.access_token.get_secret_value()}'
@@ -51,8 +56,15 @@ class PollinationAuth(BaseAuth):
     def auth_endpoint(self):
         return f'https://{self.domain}/user/login'
 
-    def check_cached_token(self) -> str:
-        
+    def check_cached_token(self) -> bool:
+        """Check whether the cached auth token is still valid
+
+        Raises:
+            err: could not verify the token with the auth server
+
+        Returns:
+            bool: whether the token is still valid
+        """
         auth_header = self.auth_header
 
         try:
@@ -69,7 +81,8 @@ class PollinationAuth(BaseAuth):
         return True
 
     def refresh_token(self):
-
+        """Refresh the cached token if it is invalid
+        """
         if self.check_cached_token():
             return
 

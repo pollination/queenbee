@@ -28,7 +28,11 @@ class RepositoryReference(BaseModel):
     return v
 
   def fetch(self, auth_header: str = '') -> 'RepositoryIndex':
-    """fetch the referenced repository index"""
+    """Fetch the referenced repository index
+
+    Returns:
+        RepositoryIndex: return the index from the repository reference
+    """
     from ..repository import RepositoryIndex
 
     if self.path.startswith('file:'):

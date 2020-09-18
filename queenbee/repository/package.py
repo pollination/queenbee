@@ -406,7 +406,17 @@ class PackageVersion(MetaData):
         )
 
 
-    def search_match(self, search_string: str = None):
+    def search_match(self, search_string: str = None) -> bool:
+      """Return a boolean indicating whether the search string matches the given package
+
+      If no search string is specified this function will return True.
+
+      Args:
+          search_string (str, optional): The search string to use. Defaults to None.
+
+      Returns:
+          bool: Whether the search string matches the package or not
+      """
       if search_string is None:
         return True
 

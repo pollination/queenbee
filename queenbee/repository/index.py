@@ -207,6 +207,12 @@ class RepositoryIndex(BaseModel):
 
     @staticmethod
     def add_slugs(root: str, packages: Dict[str, List[PackageVersion]]):
+      """Add slugs to the packages based on the provided root
+
+      Args:
+          root (str): a slug root string
+          packages (Dict[str, List[PackageVersion]]): The list of packages to update with slugs
+      """
       for _, package_list in packages.items():
         for p in package_list:
           p.slug = f'{root}/{p.name}'
@@ -214,6 +220,14 @@ class RepositoryIndex(BaseModel):
 
     @staticmethod
     def get_latest(package_versions: List[PackageVersion]) -> PackageVersion:
+      """Get the most recent package from the given list
+
+      Args:
+          package_versions (List[PackageVersion]): A list of Queenbee packages
+
+      Returns:
+          PackageVersion: The most recent Queenbee package in the list
+      """
       if package_versions == []:
         return None
 
@@ -350,6 +364,9 @@ class RepositoryIndex(BaseModel):
         package_tag: str
     ) -> PackageVersion:
         """Retrieve a Resource Version by its tag
+
+        If the tag is set to "latest" then the most recent 
+        version of the package will be retrieved.
 
         Arguments:
             package_type {str} -- The type of package (operator or recipe)
