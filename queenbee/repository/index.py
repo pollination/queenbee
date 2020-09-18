@@ -424,6 +424,38 @@ class RepositoryIndex(BaseModel):
 
         return res
 
+    def search(
+      self,
+      package_type: str = None,
+      search_string: str = None,
+    ) -> List[PackageVersion]:
+      """Search for a package inside of a repository using a search string
+
+      Args:
+          package_type (str, optional): The type of package to search for (ie: operator or recipe). Defaults to None.
+          search_string (str, optional): The search string to use. Defaults to None.
+
+      Returns:
+          List[PackageVersion]: A list of packages (the latest from each list)
+      """
+      
+      packages = []
+
+      if package_type is None or package_type == 'recipe':
+        for name, package_versions in self.recipe.items():
+          package = self.get_latest(package_versions=package_versions)
+
+          if package.search_match(search_string=search_string):
+            packages.append(package)
+
+      if package_type is None or package_type == 'operator':
+        for name, package_versions in self.operator.items():
+          package = self.get_latest(package_versions=package_versions)
+
+          if package.search_match(search_string=search_string):
+            packages.append(package)
+
+      return packages
 
     def json(self, *args, **kwargs):
       """Overwrite the BaseModel json method to exclude certain keys

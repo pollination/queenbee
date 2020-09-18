@@ -404,3 +404,18 @@ class PackageVersion(MetaData):
             readme=cls.read_readme(folder_path),
             license=cls.read_license(folder_path),
         )
+
+
+    def search_match(self, search_string: str = None):
+      if search_string is None:
+        return True
+
+      search_string = search_string.lower()
+
+      if search_string in self.name:
+        return True
+
+      if self.keywords is not None and search_string in self.keywords:
+        return True
+
+      return False
