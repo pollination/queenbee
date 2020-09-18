@@ -10,8 +10,6 @@ except ImportError:
         'click modules not installed. Try `pip install queenbee[cli]` command.'
     )
 
-MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
-
 
 @click.command('index')
 @click.argument('path', type=click.Path(exists=True))
