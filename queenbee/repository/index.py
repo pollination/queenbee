@@ -130,6 +130,15 @@ class RepositoryIndex(BaseModel):
 
         index.to_json(index_path)
 
+
+    @staticmethod
+    def get_latest(package_versions: List[PackageVersion]) -> PackageVersion:
+      if package_versions == []:
+        return None
+
+      package_versions.sort(key = lambda x: x.created)
+      return package_versions[-1]
+
     @staticmethod
     def _index_resource_version(
         resource_dict: Dict[str, List[PackageVersion]],
@@ -276,6 +285,9 @@ class RepositoryIndex(BaseModel):
                 f'No {package_type} package with name {package_name} exists'
                 f' in this index'
             )
+
+        if package_tag == 'latest':
+          return self.get_latest(package_versions=package_list)
 
         res = next(filter(lambda x: x.tag == package_tag, package_list), None)
 
