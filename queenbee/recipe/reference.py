@@ -1,7 +1,7 @@
 import re
 from enum import Enum
 from typing import List, Union
-from pydantic import Field
+from pydantic import Field, constr
 
 from ..base.basemodel import BaseModel
 
@@ -30,7 +30,7 @@ class BaseReference(BaseModel):
 
 
 class FolderArtifactReference(BaseReference):
-    
+
     type: constr(regex='^FolderArtifactReference$') = 'FolderArtifactReference'
 
     path: str = Field(
