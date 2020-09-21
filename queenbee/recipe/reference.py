@@ -30,8 +30,8 @@ class BaseReference(BaseModel):
 
 
 class FolderArtifactReference(BaseReference):
-
-    type: Enum('FolderReference', {'type': 'folder'}) = 'folder'
+    
+    type: constr(regex='^FolderArtifactReference$') = 'FolderArtifactReference'
 
     path: str = Field(
         ...,
@@ -62,6 +62,8 @@ class InputBaseReference(BaseReference):
 class InputArtifactReference(InputBaseReference):
     """An Input Artifact Reference"""
 
+    type: constr(regex='^InputArtifactReference$') = 'InputArtifactReference'
+
     @property
     def source(self):
         return 'artifacts'
@@ -69,6 +71,8 @@ class InputArtifactReference(InputBaseReference):
 
 class InputParameterReference(InputBaseReference):
     """An Input Parameter Reference"""
+
+    type: constr(regex='^InputParameterReference$') = 'InputParameterReference'
 
     @property
     def source(self):
@@ -103,6 +107,8 @@ class TaskBaseReference(BaseReference):
 class TaskArtifactReference(TaskBaseReference):
     """A Task Artifact Reference"""
 
+    type: constr(regex='^TaskArtifactReference$') = 'TaskArtifactReference'
+
     @property
     def source(self):
         return 'artifacts'
@@ -110,6 +116,8 @@ class TaskArtifactReference(TaskBaseReference):
 
 class TaskParameterReference(TaskBaseReference):
     """A Task Parameter Reference"""
+
+    type: constr(regex='^TaskParameterReference$') = 'TaskParameterReference'
 
     @property
     def source(self):
@@ -139,6 +147,8 @@ class ItemBaseReference(BaseReference):
 
 class ItemParameterReference(ItemBaseReference):
     """An Item Parameter Reference"""
+
+    type: constr(regex='^ItemParameterReference$') = 'ItemParameterReference'
 
     @property
     def source(self):
