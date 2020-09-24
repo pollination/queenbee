@@ -6,11 +6,13 @@ from queenbee.operator.function import Function
 
 ASSET_FOLDER = 'tests/assets/functions'
 
+
 class TestIO(BaseIOTest):
 
     klass = Function
 
     asset_folder = ASSET_FOLDER
+
 
 class TestValueError(BaseValueErrorTest):
 

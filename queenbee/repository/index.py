@@ -10,32 +10,34 @@ from ..recipe import Recipe
 
 from .package import PackageVersion
 
+
 class RepositoryMetadata(BaseModel):
 
-  name: str = Field(
-    None,
-    description='The name of the repository'
-  )
+    name: str = Field(
+        None,
+        description='The name of the repository'
+    )
 
-  description: str = Field(
-    'A Queenbee package repository',
-    description='A short description of the repository'
-  )
+    description: str = Field(
+        'A Queenbee package repository',
+        description='A short description of the repository'
+    )
 
-  source: str = Field(
-    None,
-    description='The source path (url or local) to the repository'
-  )
+    source: str = Field(
+        None,
+        description='The source path (url or local) to the repository'
+    )
 
-  operator_count: int = Field(
-    0,
-    description='The number of operators hosted by the repository'
-  )
+    operator_count: int = Field(
+        0,
+        description='The number of operators hosted by the repository'
+    )
 
-  recipe_count: int = Field(
-    0,
-    description='The number of recipes hosted by the repository'
-  )
+    recipe_count: int = Field(
+        0,
+        description='The number of recipes hosted by the repository'
+    )
+
 
 class RepositoryIndex(BaseModel):
     """A searchable index for a Queenbee Operator and Recipe repository"""
@@ -46,8 +48,8 @@ class RepositoryIndex(BaseModel):
     )
 
     metadata: RepositoryMetadata = Field(
-      RepositoryMetadata(),
-      description='Extra information about the repository'
+        RepositoryMetadata(),
+        description='Extra information about the repository'
     )
 
     operator: Dict[str, List[PackageVersion]] = Field(
@@ -64,46 +66,45 @@ class RepositoryIndex(BaseModel):
 
     @validator('operator')
     def set_operator_type(cls, v):
-      for _, package in v.items():
-        for pv in package:
-          pv.type = 'operator'
+        for _, package in v.items():
+            for pv in package:
+                pv.type = 'operator'
 
-      return v
+        return v
 
     @validator('recipe')
     def set_recipe_type(cls, v):
-      for _, package in v.items():
-        for pv in package:
-          pv.type = 'recipe'
+        for _, package in v.items():
+            for pv in package:
+                pv.type = 'recipe'
 
-      return v
-
+        return v
 
     @root_validator
     def metadata_counts(cls, values):
-      values['metadata'].operator_count = len(values.get('operator'))
-      values['metadata'].recipe_count = len(values.get('recipe'))
+        values['metadata'].operator_count = len(values.get('operator'))
+        values['metadata'].recipe_count = len(values.get('recipe'))
 
-      return values
+        return values
 
     @root_validator
     def check_slugs(cls, values):
-      name = values.get('metadata').name
-      
-      if name is None:
+        name = values.get('metadata').name
+
+        if name is None:
+            return values
+
+        cls.add_slugs(
+            root=name,
+            packages=values.get('operator')
+        )
+
+        cls.add_slugs(
+            root=name,
+            packages=values.get('recipe')
+        )
+
         return values
-      
-      cls.add_slugs(
-        root=name,
-        packages=values.get('operator')
-      )
-
-      cls.add_slugs(
-        root=name,
-        packages=values.get('recipe')
-      )
-
-      return values
 
     @classmethod
     def from_folder(cls, folder_path):
@@ -146,13 +147,13 @@ class RepositoryIndex(BaseModel):
         index.generated = datetime.utcnow()
 
         cls.add_slugs(
-          root=tail,
-          packages=index.operator,
+            root=tail,
+            packages=index.operator,
         )
 
         cls.add_slugs(
-          root=tail,
-          packages=index.recipe,
+            root=tail,
+            packages=index.recipe,
         )
 
         index.metadata.operator_count = len(index.operator)
@@ -200,7 +201,6 @@ class RepositoryIndex(BaseModel):
         else:
             raise ValueError(f"Resource should be an Operator or a Recipe")
 
-
         resource_version, file_object = PackageVersion.package_resource(
             resource=resource,
             readme=readme,
@@ -221,35 +221,33 @@ class RepositoryIndex(BaseModel):
 
         index.to_json(index_path)
 
-
     @staticmethod
     def add_slugs(root: str, packages: Dict[str, List[PackageVersion]]):
-      """Add slugs to the packages based on the provided root
+        """Add slugs to the packages based on the provided root
 
-      Args:
-          root (str): a slug root string
-          packages (Dict[str, List[PackageVersion]]): The list of packages to update with slugs
-      """
-      for _, package_list in packages.items():
-        for p in package_list:
-          p.slug = f'{root}/{p.name}'
-
+        Args:
+            root (str): a slug root string
+            packages (Dict[str, List[PackageVersion]]): The list of packages to update with slugs
+        """
+        for _, package_list in packages.items():
+            for p in package_list:
+                p.slug = f'{root}/{p.name}'
 
     @staticmethod
     def get_latest(package_versions: List[PackageVersion]) -> PackageVersion:
-      """Get the most recent package from the given list
+        """Get the most recent package from the given list
 
-      Args:
-          package_versions (List[PackageVersion]): A list of Queenbee packages
+        Args:
+            package_versions (List[PackageVersion]): A list of Queenbee packages
 
-      Returns:
-          PackageVersion: The most recent Queenbee package in the list
-      """
-      if package_versions == []:
-        return None
+        Returns:
+            PackageVersion: The most recent Queenbee package in the list
+        """
+        if package_versions == []:
+            return None
 
-      package_versions.sort(key = lambda x: x.created)
-      return package_versions[-1]
+        package_versions.sort(key=lambda x: x.created)
+        return package_versions[-1]
 
     @staticmethod
     def _index_resource_version(
@@ -280,8 +278,8 @@ class RepositoryIndex(BaseModel):
                 index
         """
         if repository_name:
-          resource_version.slug = f'{repository_name.lower()}/{resource_version.name.lower()}'
-  
+            resource_version.slug = f'{repository_name.lower()}/{resource_version.name.lower()}'
+
         resource_list = resource_dict.get(resource_version.name, [])
 
         if not overwrite:
@@ -407,7 +405,7 @@ class RepositoryIndex(BaseModel):
             )
 
         if package_tag == 'latest':
-          return self.get_latest(package_versions=package_list)
+            return self.get_latest(package_versions=package_list)
 
         res = next(filter(lambda x: x.tag == package_tag, package_list), None)
 
@@ -448,7 +446,8 @@ class RepositoryIndex(BaseModel):
                 f' in this index'
             )
 
-        res = next(filter(lambda x: x.digest == package_digest, package_list), None)
+        res = next(filter(lambda x: x.digest ==
+                          package_digest, package_list), None)
 
         if res is None:
             raise ValueError(
@@ -459,66 +458,65 @@ class RepositoryIndex(BaseModel):
         return res
 
     def search(
-      self,
-      package_type: str = None,
-      search_string: str = None,
+        self,
+        package_type: str = None,
+        search_string: str = None,
     ) -> List[PackageVersion]:
-      """Search for a package inside of a repository using a search string
+        """Search for a package inside of a repository using a search string
 
-      Args:
-          package_type (str, optional): The type of package to search for (ie: operator or recipe). Defaults to None.
-          search_string (str, optional): The search string to use. Defaults to None.
+        Args:
+            package_type (str, optional): The type of package to search for (ie: operator or recipe). Defaults to None.
+            search_string (str, optional): The search string to use. Defaults to None.
 
-      Returns:
-          List[PackageVersion]: A list of packages (the latest from each list)
-      """
-      
-      packages = []
+        Returns:
+            List[PackageVersion]: A list of packages (the latest from each list)
+        """
 
-      if package_type is None or package_type == 'recipe':
-        for name, package_versions in self.recipe.items():
-          package = self.get_latest(package_versions=package_versions)
+        packages = []
 
-          if package.search_match(search_string=search_string):
-            packages.append(package)
+        if package_type is None or package_type == 'recipe':
+            for name, package_versions in self.recipe.items():
+                package = self.get_latest(package_versions=package_versions)
 
-      if package_type is None or package_type == 'operator':
-        for name, package_versions in self.operator.items():
-          package = self.get_latest(package_versions=package_versions)
+                if package.search_match(search_string=search_string):
+                    packages.append(package)
 
-          if package.search_match(search_string=search_string):
-            packages.append(package)
+        if package_type is None or package_type == 'operator':
+            for name, package_versions in self.operator.items():
+                package = self.get_latest(package_versions=package_versions)
 
-      return packages
+                if package.search_match(search_string=search_string):
+                    packages.append(package)
+
+        return packages
 
     def json(self, *args, **kwargs):
-      """Overwrite the BaseModel json method to exclude certain keys
+        """Overwrite the BaseModel json method to exclude certain keys
 
-      The objective is to remove the readme, license and manifest keys which are not
-      needed in a serialized index object.
-      """
-      exclude_keys = {
-        'operator': {},
-        'recipe': {},
-      }
-
-      for key in self.operator:
-        exclude_keys['operator'][key] = {
-           '__all__': {
-              'readme',
-              'license',
-              'manifest'
-            }
+        The objective is to remove the readme, license and manifest keys which are not
+        needed in a serialized index object.
+        """
+        exclude_keys = {
+            'operator': {},
+            'recipe': {},
         }
 
-
-      for key in self.recipe:
-        exclude_keys['recipe'][key] = {
-           '__all__': {
-              'readme',
-              'license',
-              'manifest'
+        for key in self.operator:
+            exclude_keys['operator'][key] = {
+                '__all__': {
+                    'readme',
+                    'license',
+                    'manifest'
+                }
             }
-        }
 
-      return super(RepositoryIndex, self).json(exclude=exclude_keys, *args, **kwargs)
+        for key in self.recipe:
+            exclude_keys['recipe'][key] = {
+                '__all__': {
+                    'readme',
+                    'license',
+                    'manifest'
+                }
+            }
+
+        return super(RepositoryIndex, self).json(exclude=exclude_keys, *args, **kwargs)

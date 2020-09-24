@@ -86,8 +86,8 @@ class PollinationAuth(BaseAuth):
         if self.check_cached_token():
             return
 
-
-        payload = json.dumps({'api_token': self.api_token.get_secret_value()}).encode('utf-8')
+        payload = json.dumps(
+            {'api_token': self.api_token.get_secret_value()}).encode('utf-8')
 
         headers = {
             'Content-Type': 'application/json; charset=utf-8',
@@ -105,4 +105,3 @@ class PollinationAuth(BaseAuth):
         res_data = json.loads(res.read())
 
         self.access_token = SecretStr(res_data.get('access_token'))
-

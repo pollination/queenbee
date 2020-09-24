@@ -13,6 +13,7 @@ except ImportError:
         'click modules not installed. Try `pip install queenbee[cli]` command.'
     )
 
+
 @click.command('link')
 @click.argument('dependency_name')
 @click.argument('dependency_path', type=click.Path(exists=True))
@@ -27,11 +28,13 @@ def link(dependency_name, dependency_path, recipe_path):
     recipe = Recipe.from_folder(recipe_path)
 
     try:
-        dependency = recipe.dependency_by_name(recipe.dependencies, dependency_name)
+        dependency = recipe.dependency_by_name(
+            recipe.dependencies, dependency_name)
     except ValueError as error:
         raise click.ClickException(error)
 
-    destination = os.path.join(recipe_path, '.dependencies', dependency.type, dependency_name)
+    destination = os.path.join(
+        recipe_path, '.dependencies', dependency.type, dependency_name)
     destination = os.path.abspath(destination)
 
     source = os.path.abspath(dependency_path)

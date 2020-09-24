@@ -52,8 +52,8 @@ class MetaData(BaseModel):
     )
 
     app_version: str = Field(
-      None,
-      description='The version of the application code underlying the manifest'
+        None,
+        description='The version of the application code underlying the manifest'
     )
 
     keywords: List[str] = Field(

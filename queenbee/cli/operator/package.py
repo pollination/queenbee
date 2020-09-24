@@ -36,7 +36,7 @@ def package(path, destination, force):
     path = os.path.abspath(path)
     destination = os.path.abspath(destination)
     os.chdir(path)
-    
+
     try:
         operator_version, file_object = PackageVersion.package_folder(
             resource_type='operator',
@@ -52,10 +52,9 @@ def package(path, destination, force):
     file_path = os.path.join(destination, operator_version.url)
 
     if not force and os.path.isfile(file_path):
-        raise click.ClickException(f'File already exists at path {file_path}. Use -f to overwrite it.')
+        raise click.ClickException(
+            f'File already exists at path {file_path}. Use -f to overwrite it.')
 
     with open(file_path, 'wb') as f:
         file_object.seek(0)
         f.write(file_object.read())
-
-    

@@ -58,7 +58,8 @@ class Workflow(BaseModel):
             for parameter in recipe_inputs.parameters:
                 if parameter.required:
                     exists = next(
-                        filter(lambda x: x.name == parameter.name, parameters), None
+                        filter(lambda x: x.name ==
+                               parameter.name, parameters), None
                     )
                     assert exists is not None, \
                         ValueError(
@@ -67,7 +68,8 @@ class Workflow(BaseModel):
                         )
 
             for artifact in recipe_inputs.artifacts:
-                exists = next(filter(lambda x: x.name == artifact.name, artifacts), None)
+                exists = next(filter(lambda x: x.name ==
+                                     artifact.name, artifacts), None)
                 assert exists is not None, \
                     ValueError(
                         f'Workflow must provide argument for artifact {artifact.name}'

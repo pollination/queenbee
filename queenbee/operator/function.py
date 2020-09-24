@@ -81,7 +81,7 @@ class FunctionParameterIn(BaseModel):
         # Set required to True
         if default is None and v is None:
             return True
-        
+
         # Default value provided and required not specified
         # Set required to False
         if default is not None and v is None:
@@ -189,7 +189,8 @@ class Function(BaseModel):
                 # check the value exist in inputs
                 name = ref.split('.')[-1]
                 if name not in input_names:
-                    warns.append(f'\t- {{{{{ref}}}}}: Cannot find "{name}" in inputs.')
+                    warns.append(
+                        f'\t- {{{{{ref}}}}}: Cannot find "{name}" in inputs.')
             else:
                 warns.append(add_info)
 
@@ -216,7 +217,7 @@ class Function(BaseModel):
         cls.validate_referenced_values(
             input_names=input_names,
             variables=referenced_values
-            )
+        )
 
         return v
 
@@ -267,7 +268,7 @@ class Function(BaseModel):
         cls.validate_referenced_values(
             input_names=input_names,
             variables=referenced_values
-            )
+        )
 
         return v
 

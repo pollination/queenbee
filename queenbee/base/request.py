@@ -5,6 +5,7 @@ from .basemodel import BaseModel
 
 USER_AGENT_STRING = 'Queenbee'
 
+
 def urljoin(*args):
     """join multiple string into a clean url
 
@@ -15,6 +16,7 @@ def urljoin(*args):
     url.replace('\\', '/')
 
     return url
+
 
 def make_request(url: str, auth_header: str = '') -> str:
     """Fetch data from a url to a local file or using the http protocol
@@ -33,5 +35,3 @@ def make_request(url: str, auth_header: str = '') -> str:
 
     req = request.Request(url=url, headers=headers)
     return request.urlopen(req)
-
-

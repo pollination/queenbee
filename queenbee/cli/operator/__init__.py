@@ -14,7 +14,7 @@ except ImportError:
 @click.pass_context
 def main(ctx):
     """create, lint and package operators
-    
+
     An operator defines a CLI tool into a series of functions. Each
     function templates the command line arguments and fixes where any
     file or folder (called artifact) should be stored for the command
@@ -56,6 +56,7 @@ def main(ctx):
     Check the docs below to see all you can do with this sub-command
     """
     pass
+
 
 main.add_command(new)
 main.add_command(lint)

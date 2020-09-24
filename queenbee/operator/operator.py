@@ -166,12 +166,13 @@ class Operator(BaseModel):
             os.path.join(folder_path, 'operator.yaml'),
             exclude_unset=True
         )
-        self.config.to_yaml(os.path.join(folder_path, 'config.yaml'), exclude_unset=True)
-
+        self.config.to_yaml(os.path.join(
+            folder_path, 'config.yaml'), exclude_unset=True)
 
         for function in self.functions:
             function.to_yaml(
-                os.path.join(folder_path, 'functions', f'{function.name}.yaml'),
+                os.path.join(folder_path, 'functions',
+                             f'{function.name}.yaml'),
                 exclude_unset=True
             )
 

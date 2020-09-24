@@ -13,6 +13,7 @@ except ImportError:
 from ...config.repositories import RepositoryReference
 from ...repository.index import RepositoryIndex, RepositoryMetadata
 
+
 @click.command('add')
 @click.argument('name')
 @click.argument('path')
@@ -29,29 +30,29 @@ def add(name, path, force):
 
     # Not a url, therefore local path
     if parse_res.scheme == '':
-      path = os.path.abspath(path)
+        path = os.path.abspath(path)
 
     try:
-      ctx.obj.config.add_repository(
-        repo=RepositoryReference(name=name, path=path)
-      )
+        ctx.obj.config.add_repository(
+            repo=RepositoryReference(name=name, path=path)
+        )
     except ValueError as error:
-      click.ClickException(error)
+        click.ClickException(error)
 
     ctx.obj.write_config()
 
 
 @click.command('list')
 def list_repos():
-  """list the repositories saved in your local index"""
-  ctx = click.get_current_context()
+    """list the repositories saved in your local index"""
+    ctx = click.get_current_context()
 
-  repos = [
-    r.fetch(auth_header=ctx.obj.config.get_auth_header(repository_url=r.path))
-    for r in ctx.obj.config.repositories
-  ]
+    repos = [
+        r.fetch(auth_header=ctx.obj.config.get_auth_header(repository_url=r.path))
+        for r in ctx.obj.config.repositories
+    ]
 
-  print(json.dumps([r.metadata.dict() for r in repos], indent=2))
+    print(json.dumps([r.metadata.dict() for r in repos], indent=2))
 
 
 @click.command('remove')
@@ -62,9 +63,9 @@ def remove(name):
     Use this command to remove a repository from your local index.
     """
     ctx = click.get_current_context()
-      
+
     ctx.obj.config.remove_repository(
-      name=name
+        name=name
     )
 
     ctx.obj.write_config()

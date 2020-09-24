@@ -9,6 +9,7 @@ from ..config import Config as QueenbeeConfig
 DEFAULT_CONFIG_DIR = os.path.join(Path.home(), '.queenbee')
 DEFAULT_CONFIG_PATH = os.path.join(DEFAULT_CONFIG_DIR, 'config.yml')
 
+
 def init_config():
 
     try:
@@ -24,6 +25,7 @@ def init_config():
     config.to_yaml(filepath=DEFAULT_CONFIG_PATH)
 
     return config
+
 
 class Context(BaseModel):
 

@@ -37,11 +37,10 @@ def install(path):
     shutil.rmtree('.dependencies')
 
     recipe.lock_dependencies(config=ctx.obj.config)
-    
+
     recipe.write_dependency_file('.')
 
     recipe.write_dependencies(
         folder_path='.',
         config=ctx.obj.config,
     )
-

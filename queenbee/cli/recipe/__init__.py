@@ -16,7 +16,7 @@ except ImportError:
 @click.pass_context
 def main(ctx):
     """create, lint and package recipes
-    
+
     A recipe is a template used to connect multiple operator functions and
     even other recipes into a re-usable flow of actions. 
 
@@ -73,9 +73,9 @@ def main(ctx):
     """
     pass
 
+
 main.add_command(new)
 main.add_command(lint)
 main.add_command(package)
 main.add_command(install)
 main.add_command(link)
-

@@ -15,6 +15,6 @@ def main(ctx):
     """manage queenbee configuration data"""
     pass
 
+
 main.add_command(view)
 main.add_command(auth)
-

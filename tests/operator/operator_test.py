@@ -7,17 +7,20 @@ from queenbee.operator import Operator
 
 ASSET_FOLDER = 'tests/assets/operators'
 
+
 class TestIO(BaseIOTest):
 
     klass = Operator
 
     asset_folder = ASSET_FOLDER
 
+
 class TestValueError(BaseValueErrorTest):
 
     klass = Operator
 
     asset_folder = ASSET_FOLDER
+
 
 class TestFolder(BaseFolderTest):
 

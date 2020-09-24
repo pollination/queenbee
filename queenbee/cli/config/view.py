@@ -11,6 +11,7 @@ except ImportError:
         'click modules not installed. Try `pip install queenbee[cli]` command.'
     )
 
+
 @click.command('view')
 def view():
     """view the config file

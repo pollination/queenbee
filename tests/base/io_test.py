@@ -19,7 +19,6 @@ class BaseIOTest(BaseTestClass):
 
         if "valid_dict" in metafunc.fixturenames:
             metafunc.parametrize("valid_dict", valid_dicts, ids=valid_files)
-        
 
     def valid_files(self):
         return self.fixture_files('valid')
@@ -61,7 +60,8 @@ class BaseIOTest(BaseTestClass):
             obj = yaml.safe_load(inf.read())
 
         assert obj == valid_instance.to_dict()
-        assert self.klass.from_file(loc_file).__hash__ == valid_instance.__hash__
+        assert self.klass.from_file(
+            loc_file).__hash__ == valid_instance.__hash__
 
     def test_to_json(self, valid_dict):
         valid_instance = self.klass.parse_obj(valid_dict)
@@ -74,5 +74,5 @@ class BaseIOTest(BaseTestClass):
             obj = json.load(inf)
 
         assert obj == valid_instance.to_dict()
-        assert self.klass.from_file(loc_file).__hash__ == valid_instance.__hash__
-
+        assert self.klass.from_file(
+            loc_file).__hash__ == valid_instance.__hash__

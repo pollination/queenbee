@@ -26,19 +26,19 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 @click.pass_context
 def main(ctx):
     """ The Queenbee Resource Manager
-    
+
     Making new things::
 
         queenbee operator new
-        
+
 
         queenbee recipe new
-    
-    
+
+
     Packaging things::
 
         queenbee operator package PATH/TO/OPERATOR
-        
+
 
         queenbee recipe package PATH/TO/RECIPE
 
@@ -46,10 +46,10 @@ def main(ctx):
     Checking things are ok::
 
         queenbee operator lint PATH/TO/OPERATOR
-        
+
 
         queenbee recipe lint PATH/TO/RECIPE
-   
+
 
     You can use the commands documented below to help you manage queenbee objects
 

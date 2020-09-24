@@ -12,6 +12,13 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+from queenbee.repository import RepositoryIndex
+from queenbee.workflow import Workflow
+from queenbee.recipe import Recipe
+from queenbee.operator import Operator
+from queenbee._openapi import get_openapi
+import json
+import sphinx_bootstrap_theme
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
@@ -47,8 +54,8 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
-	'sphinxcontrib.fulltoc',
-	'sphinx.ext.napoleon',
+    'sphinxcontrib.fulltoc',
+    'sphinx.ext.napoleon',
     'sphinx_click.ext',
     'recommonmark',
 ]
@@ -92,7 +99,6 @@ pygments_style = None
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-import sphinx_bootstrap_theme
 
 # html_theme = 'alabaster'
 html_theme = 'bootstrap'
@@ -108,12 +114,12 @@ html_theme_options = {
     # Fix navigation bar to top of page?
     # Values: "true" (default) or "false"
     'navbar_fixed_top': "true",
-	'navbar_pagenav': True,
+    'navbar_pagenav': True,
     'source_link_position': "nav",
-	'bootswatch_theme': "united",
+    'bootswatch_theme': "united",
     'bootstrap_version': "3",
     'globaltoc_depth': 3,
-	}
+}
 
 # on_rtd is whether we are on readthedocs.org
 # on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
@@ -155,7 +161,7 @@ html_js_files = [
 #
 html_sidebars = {
     # '**': ['localtoc.html']
-   '**': ['localtoc.html'],
+    '**': ['localtoc.html'],
 }
 
 
@@ -241,13 +247,6 @@ epub_exclude_files = ['search.html']
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
-import json
-
-from queenbee._openapi import get_openapi
-from queenbee.operator import Operator
-from queenbee.recipe import Recipe
-from queenbee.workflow import Workflow
-from queenbee.repository import RepositoryIndex
 
 folder = os.path.join(os.path.dirname(__file__), '_static/schemas')
 if not os.path.isdir(folder):
@@ -255,28 +254,32 @@ if not os.path.isdir(folder):
 
 with open(os.path.join(folder, 'workflow-openapi.json'), 'w') as out_file:
     json.dump(
-        get_openapi(schema_class=Workflow, title='Queenbee Workflow Schema', description='Schema documentation for Queenbee Workflows'),
+        get_openapi(schema_class=Workflow, title='Queenbee Workflow Schema',
+                    description='Schema documentation for Queenbee Workflows'),
         out_file,
         indent=2
     )
 
 with open(os.path.join(folder, 'operator-openapi.json'), 'w') as out_file:
     json.dump(
-        get_openapi(schema_class=Operator, title='Queenbee Operator Schema', description='Schema documentation for Queenbee Operators'),
+        get_openapi(schema_class=Operator, title='Queenbee Operator Schema',
+                    description='Schema documentation for Queenbee Operators'),
         out_file,
         indent=2
     )
 
 with open(os.path.join(folder, 'recipe-openapi.json'), 'w') as out_file:
     json.dump(
-        get_openapi(schema_class=Recipe, title='Queenbee Recipe Schema', description='Schema documentation for Queenbee Recipes'),
+        get_openapi(schema_class=Recipe, title='Queenbee Recipe Schema',
+                    description='Schema documentation for Queenbee Recipes'),
         out_file,
         indent=2
     )
 
 with open(os.path.join(folder, 'repository-openapi.json'), 'w') as out_file:
     json.dump(
-        get_openapi(schema_class=RepositoryIndex, title='Queenbee Repository Schema', description='Schema documentation for Queenbee Recipes'),
+        get_openapi(schema_class=RepositoryIndex, title='Queenbee Repository Schema',
+                    description='Schema documentation for Queenbee Recipes'),
         out_file,
         indent=2
     )

@@ -75,7 +75,8 @@ def new(name, path):
     folder_path = os.path.abspath(folder_path)
 
     if os.path.exists(folder_path):
-        raise click.ClickException(f'Cannot create new recipe at path {folder_path} because there is already something there')
+        raise click.ClickException(
+            f'Cannot create new recipe at path {folder_path} because there is already something there')
 
     path = os.path.join(MODULE_PATH, '../assets/new-recipe.yaml')
     input_dict = parse_file(path)

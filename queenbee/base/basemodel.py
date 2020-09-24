@@ -38,7 +38,8 @@ class BaseModel(PydanticBaseModel):
             str -- A yaml string representing the model
         """
         return yaml.dump(
-            json.loads(self.json(by_alias=True, exclude_unset=exclude_unset, **kwargs)),
+            json.loads(self.json(by_alias=True,
+                                 exclude_unset=exclude_unset, **kwargs)),
             default_flow_style=False
         )
 
@@ -66,7 +67,8 @@ class BaseModel(PydanticBaseModel):
             indent {int} -- indent amount (default: {None})
         """
         with open(filepath, 'w') as file:
-            file.write(self.json(by_alias=True, exclude_unset=False, indent=indent, **kwargs))
+            file.write(self.json(by_alias=True, exclude_unset=False,
+                                 indent=indent, **kwargs))
 
     def to_yaml(self, filepath, exclude_unset=False, **kwargs):
         """Write a YAML file of the model
@@ -108,7 +110,7 @@ class BaseModel(PydanticBaseModel):
         """
         return hashlib.sha256(
             self.json(by_alias=True, exclude_unset=False).encode('utf-8')
-            ).hexdigest()
+        ).hexdigest()
 
     def _referenced_values(self, var_names: List[str]) -> Dict[str, List[str]]:
         """Get all referenced values specified by var name

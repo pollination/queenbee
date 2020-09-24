@@ -96,7 +96,8 @@ class TaskBaseReference(BaseReference):
         Returns:
             str -- A reference string
         """
-        template = [self.type.value, self.name, 'outputs', self.source, self.variable]
+        template = [self.type.value, self.name,
+                    'outputs', self.source, self.variable]
         return template_string(template)
 
 
@@ -171,15 +172,16 @@ def references_from_string(string: str) -> List[Union[InputParameterReference, T
                 ValueError(
                     f'Input Reference should be in format "input.variable" but found:'
                     f' {ref}'
-                )
+            )
             ref = InputParameterReference(variable=split_ref[1])
         elif ref_type == 'tasks':
             assert len(split_ref) == 3, \
                 ValueError(
                     f'Task Reference should be in format "tasks.task-name.variable" but'
                     f' found: {ref}'
-                )
-            ref = TaskParameterReference(name=split_ref[1], variable=split_ref[2])
+            )
+            ref = TaskParameterReference(
+                name=split_ref[1], variable=split_ref[2])
         elif ref_type == 'item':
             variable = '.'.join(split_ref[1:])
             ref = ItemParameterReference(variable=variable)

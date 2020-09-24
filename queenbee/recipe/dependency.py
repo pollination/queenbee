@@ -10,6 +10,7 @@ from pydantic import Field
 from ..base.basemodel import BaseModel
 from ..base.request import make_request, urljoin
 
+
 class DependencyType(str, Enum):
 
     recipe = 'recipe'

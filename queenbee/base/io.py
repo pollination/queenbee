@@ -55,7 +55,7 @@ class IOBase(BaseModel):
 
     @validator('parameters', 'artifacts', always=True)
     def empty_list(cls, v):
-         return [] if v is None else v
+        return [] if v is None else v
 
     @validator('parameters', 'artifacts')
     def sort_list(cls, v):
@@ -88,10 +88,12 @@ class IOBase(BaseModel):
             IOItem -- An IO Item with the input name
         """
         if input_list is None:
-            raise ValueError(f'no value with name {name} exists in: \n{input_list}')
+            raise ValueError(
+                f'no value with name {name} exists in: \n{input_list}')
         res = [x for x in input_list if x.name == name]
         if res == []:
-            raise ValueError(f'no value with name {name} exists in: \n{input_list}')
+            raise ValueError(
+                f'no value with name {name} exists in: \n{input_list}')
 
         return res[0]
 

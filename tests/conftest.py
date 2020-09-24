@@ -13,7 +13,7 @@ def temp_folder():
 
 @pytest.fixture(autouse=True)
 def mock_repository_url(monkeypatch):
-    
+
     repo_base_bath = 'tests/assets/repository'
 
     def urlopen_mock(req: request.Request):
@@ -23,4 +23,3 @@ def mock_repository_url(monkeypatch):
         return open(file_path, 'rb')
 
     monkeypatch.setattr(request, 'urlopen', urlopen_mock)
-

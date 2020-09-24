@@ -25,5 +25,6 @@ def serve(port, address, path):
 
     http = HTTPServer((address, 8000), SimpleHTTPRequestHandler)
 
-    print(f'Serving HTTP on {address} port {port} (http://{address}:{port}/) ...')
+    print(
+        f'Serving HTTP on {address} port {port} (http://{address}:{port}/) ...')
     http.serve_forever()

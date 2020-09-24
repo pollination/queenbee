@@ -5,9 +5,10 @@ import yaml
 
 from queenbee.base.parser import _import_dict_data
 
+
 class BaseTestClass:
-    
-    test_folder ='./tests/assets/temp'
+
+    test_folder = './tests/assets/temp'
 
     asset_folder = None
 
@@ -15,7 +16,6 @@ class BaseTestClass:
 
     def generate_test_file(self, name):
         return os.path.join(self.test_folder, name)
-
 
     def fixture_folders(self, path):
 
@@ -58,7 +58,8 @@ class BaseTestClass:
 
             ext = path.split('.')[-1].lower()
             if not ext in ('json', 'yml', 'yaml'):
-                pytest.skip(f'Invalid test asset file format (should be json, yml or yaml): {path}')
+                pytest.skip(
+                    f'Invalid test asset file format (should be json, yml or yaml): {path}')
 
             if ext == 'json':
                 with open(path) as inf:
@@ -88,5 +89,3 @@ class BaseTestClass:
                 print(error)
 
         return instances
-
-            

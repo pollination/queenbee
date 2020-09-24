@@ -13,6 +13,7 @@ except ImportError:
         'click modules not installed. Try `pip install queenbee[cli]` command.'
     )
 
+
 @click.command('package')
 @click.argument('path', type=click.Path(exists=True))
 @click.option('-d', '--destination', help='location to write the package', show_default=True, default='.', type=click.Path(exists=False))
@@ -53,7 +54,8 @@ def package(path, destination, force, no_update):
         ctx.obj.refresh_tokens()
 
     try:
-        BakedRecipe.from_folder(folder_path=path, refresh_deps=refresh_deps, config=ctx.obj.config)
+        BakedRecipe.from_folder(
+            folder_path=path, refresh_deps=refresh_deps, config=ctx.obj.config)
         recipe_version, file_object = PackageVersion.package_folder(
             resource_type='recipe',
             folder_path=path,
@@ -66,15 +68,12 @@ def package(path, destination, force, no_update):
     except Exception as error:
         raise error
 
-
-
     file_path = os.path.join(destination, recipe_version.url)
 
     if not force and os.path.isfile(file_path):
-        raise click.ClickException(f'File already exists at path {file_path}. Use -f to overwrite it.')
+        raise click.ClickException(
+            f'File already exists at path {file_path}. Use -f to overwrite it.')
 
     with open(file_path, 'wb') as f:
         file_object.seek(0)
         f.write(file_object.read())
-
-    

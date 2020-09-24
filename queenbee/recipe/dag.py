@@ -153,7 +153,7 @@ class DAGOutputArtifact(BaseModel):
         description='The name of the output variable'
     )
 
-    from_: Union[TaskArtifactReference, FolderArtifactReference]= Field(
+    from_: Union[TaskArtifactReference, FolderArtifactReference] = Field(
         ...,
         alias='from',
         description='The task reference to pull this output variable from. Note, this'
@@ -170,8 +170,9 @@ class DAGOutputArtifact(BaseModel):
                     '`folder` cannot use templated values in its '
                     f'path: {v.path}'
                 )
-        
+
         return v
+
 
 class DAGOutputs(IOBase):
     """Artifacts and Parameters exposed by the DAG"""
@@ -226,13 +227,13 @@ class DAGTaskParameterArgument(BaseModel):
     )
 
     from_: Union[
-            InputParameterReference, TaskParameterReference, ItemParameterReference
-        ] = Field(
-            None,
-            alias='from',
-            description='The previous task or global workflow variable to pull this'
-            ' argument from'
-        )
+        InputParameterReference, TaskParameterReference, ItemParameterReference
+    ] = Field(
+        None,
+        alias='from',
+        description='The previous task or global workflow variable to pull this'
+        ' argument from'
+    )
 
     value: str = Field(
         None,
@@ -245,8 +246,9 @@ class DAGTaskParameterArgument(BaseModel):
         from_ = values.get('from_')
 
         if value is None and from_ is None:
-            raise ValueError('value must be specified if no "from" source is specified for argument parameter')
-    
+            raise ValueError(
+                'value must be specified if no "from" source is specified for argument parameter')
+
         return values
 
 
@@ -393,13 +395,15 @@ class DAGTaskLoop(BaseModel):
     @validator('value')
     def check_value(cls, v):
         if v == []:
-            raise ValueError('Dag Task Loop value must be a non-empty list or null')
+            raise ValueError(
+                'Dag Task Loop value must be a non-empty list or null')
         return v
 
     @root_validator
     def check_loop(cls, values):
         if values.get('from_') is None and values.get('value') is None:
-            raise ValueError('Dag Task Loop must loop over a fixed or references value')
+            raise ValueError(
+                'Dag Task Loop must loop over a fixed or references value')
         return values
 
 
@@ -453,7 +457,7 @@ class DAGTask(BaseModel):
                 ValueError(
                     'Cannot use "item" references in argument parameters if no'
                     ' "loop" is specified'
-                )
+            )
         return v
 
     @validator('sub_folder', always=True)
@@ -471,21 +475,22 @@ class DAGTask(BaseModel):
                 assert loop is not None, 'Cannot use `item` if no loop is specified'
             else:
                 ref_list = ref.split('.')
-                assert ref.startswith('arguments.parameters.'), f'Sub folder ref must be from `item` or `arguments.parameters`. Not: {ref}'
-                assert len(ref_list) == 3, f'Sub folder ref must follow format `arguments.parameters.<var-name>`. Not {ref}'
+                assert ref.startswith(
+                    'arguments.parameters.'), f'Sub folder ref must be from `item` or `arguments.parameters`. Not: {ref}'
+                assert len(
+                    ref_list) == 3, f'Sub folder ref must follow format `arguments.parameters.<var-name>`. Not {ref}'
                 # Check parameter is set
                 arguments.parameter_by_name(ref_list[2])
 
         return v
 
-
     @validator('arguments', always=True)
     def set_default_args(cls, v):
-         return DAGTaskArgument() if v is None else v
+        return DAGTaskArgument() if v is None else v
 
     @validator('outputs', always=True)
     def set_default_outputs(cls, v):
-         return DAGTaskOutputs() if v is None else v
+        return DAGTaskOutputs() if v is None else v
 
     @property
     def is_root(self) -> bool:
@@ -527,9 +532,9 @@ class DAGTask(BaseModel):
                         self.arguments.parameter_by_name(param.name)
                     except ValueError as error:
                         raise ValueError(
-                                f'Validation Error for Task {self.name} and '
-                                f'Template {template.name}: \n\t{str(error)}'
-                            )
+                            f'Validation Error for Task {self.name} and '
+                            f'Template {template.name}: \n\t{str(error)}'
+                        )
 
             for art in template.inputs.artifacts:
 
@@ -543,9 +548,9 @@ class DAGTask(BaseModel):
                     self.arguments.artifact_by_name(art.name)
                 except ValueError as error:
                     raise ValueError(
-                            f'Validation Error for Task {self.name} and '
-                            f'Template {template.name}: \n\t{str(error)}'
-                        )
+                        f'Validation Error for Task {self.name} and '
+                        f'Template {template.name}: \n\t{str(error)}'
+                    )
 
         if self.outputs is not None:
             if template.outputs is None:
@@ -559,25 +564,26 @@ class DAGTask(BaseModel):
                     template.outputs.parameter_by_name(param.name)
                 except ValueError as error:
                     raise ValueError(
-                            f'Validation Error for Task {self.name} and'
-                            f' Template {template.name}: \n{str(error)}'
-                        )
+                        f'Validation Error for Task {self.name} and'
+                        f' Template {template.name}: \n{str(error)}'
+                    )
 
             for art in self.outputs.artifacts:
                 try:
                     template.outputs.artifact_by_name(art.name)
                 except ValueError as error:
                     raise ValueError(
-                            f'Validation Error for Task {self.name} and'
-                            f' Template {template.name}: \n{str(error)}'
-                        )
-                
+                        f'Validation Error for Task {self.name} and'
+                        f' Template {template.name}: \n{str(error)}'
+                    )
+
                 if art.path is not None and isinstance(template, DAG):
-                    print('WARNING: Setting a persistence path for a DAG template will have no effect.')
+                    print(
+                        'WARNING: Setting a persistence path for a DAG template will have no effect.')
 
                 if art.path is None and isinstance(template, TemplateFunction):
                     print('WARNING: Not setting a persistence path for a Function template '
-                    'means the artifact will be saved in an arbitrary folder.')
+                          'means the artifact will be saved in an arbitrary folder.')
 
 
 class DAG(BaseModel):
@@ -655,11 +661,11 @@ class DAG(BaseModel):
 
     @validator('inputs', always=True)
     def set_default_inputs(cls, v):
-         return DAGInputs() if v is None else v
+        return DAGInputs() if v is None else v
 
     @validator('outputs', always=True)
     def set_default_outputs(cls, v):
-         return DAGOutputs() if v is None else v
+        return DAGOutputs() if v is None else v
 
     @validator('tasks')
     def check_unique_names(cls, v):
@@ -776,7 +782,7 @@ class DAG(BaseModel):
                     cls.find_task_output(
                         tasks=tasks,
                         reference=artifact.from_,
-                        )
+                    )
                 elif artifact.from_.type.value == 'folder':
                     refs = references_from_string(artifact.from_.path)
                     for ref in refs:
@@ -788,9 +794,11 @@ class DAG(BaseModel):
                         if ref.type == 'inputs':
                             inputs.parameter_by_name(ref.variable)
                         else:
-                            raise ValueError('Reference of type {ref.type.value} is not supported for DAG folder output path')
+                            raise ValueError(
+                                'Reference of type {ref.type.value} is not supported for DAG folder output path')
                 else:
-                    raise ValueError(f'DAG output of type {artifact.from_.type.value} is not supported')
+                    raise ValueError(
+                        f'DAG output of type {artifact.from_.type.value} is not supported')
             except ValueError as error:
                 exceptions.append(error)
 
@@ -799,7 +807,7 @@ class DAG(BaseModel):
                 cls.find_task_output(
                     tasks=tasks,
                     reference=parameter.from_,
-                    )
+                )
             except ValueError as error:
                 exceptions.append(error)
 

@@ -230,14 +230,16 @@ class Recipe(BaseModel):
         res = next(filter(lambda x: x.name == name, flow), None)
 
         if res is None:
-            raise ValueError(f'No DAG with reference name {name} found in flow')
+            raise ValueError(
+                f'No DAG with reference name {name} found in flow')
 
         return res
 
     def lock_dependencies(self, config: Config = Config()):
         """Lock the dependencies by fetching them and storing their digest"""
         for dependency in self.dependencies:
-            auth_header = config.get_auth_header(repository_url=dependency.source)
+            auth_header = config.get_auth_header(
+                repository_url=dependency.source)
             dependency.fetch(auth_header=auth_header)
 
     def write_dependency_file(self, folder_path: str):
@@ -340,18 +342,21 @@ class Recipe(BaseModel):
             os.makedirs(recipes_folder, exist_ok=True)
 
         for dependency in self.dependencies:
-            auth_header = config.get_auth_header(repository_url=dependency.source)
+            auth_header = config.get_auth_header(
+                repository_url=dependency.source)
             package_version = dependency.fetch(auth_header=auth_header)
             dep = package_version.manifest
 
             if dependency.type == DependencyType.recipe:
                 dep.write_dependencies(
-                    folder_path=os.path.join(recipes_folder, dependency.ref_name),
+                    folder_path=os.path.join(
+                        recipes_folder, dependency.ref_name),
                     config=config,
                 )
 
             dep.to_folder(
-                folder_path=os.path.join(folder_path, '.dependencies', dependency.type, dependency.ref_name),
+                folder_path=os.path.join(
+                    folder_path, '.dependencies', dependency.type, dependency.ref_name),
                 readme_string=package_version.readme,
                 license_string=package_version.license,
             )
@@ -400,7 +405,8 @@ class BakedRecipe(Recipe):
         templates = []
 
         for dependency in recipe.dependencies:
-            auth_header = config.get_auth_header(repository_url=dependency.source)
+            auth_header = config.get_auth_header(
+                repository_url=dependency.source)
             package_version = dependency.fetch(auth_header=auth_header)
             dep = package_version.manifest
 
@@ -416,7 +422,8 @@ class BakedRecipe(Recipe):
                 digest_dict[dependency.ref_name] = dep.__hash__
 
             else:
-                raise ValueError(f'Dependency of type {dependency.type} not recognized')
+                raise ValueError(
+                    f'Dependency of type {dependency.type} not recognized')
 
         flow = cls.replace_template_refs(
             dependencies=recipe.dependencies,
@@ -427,7 +434,8 @@ class BakedRecipe(Recipe):
         input_dict = recipe.to_dict()
         input_dict['digest'] = digest
         input_dict['flow'] = [dag.to_dict() for dag in flow]
-        input_dict['templates'] = [template.to_dict() for template in templates]
+        input_dict['templates'] = [template.to_dict()
+                                   for template in templates]
 
         return cls.parse_obj(input_dict)
 
@@ -519,7 +527,8 @@ class BakedRecipe(Recipe):
         input_dict = recipe.to_dict()
         input_dict['digest'] = digest
         input_dict['flow'] = [dag.to_dict() for dag in flow]
-        input_dict['templates'] = [template.to_dict() for template in templates]
+        input_dict['templates'] = [template.to_dict()
+                                   for template in templates]
 
         return cls.parse_obj(input_dict)
 
@@ -546,7 +555,8 @@ class BakedRecipe(Recipe):
         dag_names = [dag.name for dag in dags]
 
         if dependencies is None:
-            raise ValueError('Cannot resolve template refs without dependencies')
+            raise ValueError(
+                'Cannot resolve template refs without dependencies')
 
         for dag in dags:
             # Replace name of DAG to "{digest}/{dag.name}"
@@ -563,7 +573,8 @@ class BakedRecipe(Recipe):
                     task.template = f'{dep_hash}/{template_dep_list[0]}'
                     continue
 
-                dep = cls.dependency_by_name(dependencies, template_dep_list[0])
+                dep = cls.dependency_by_name(
+                    dependencies, template_dep_list[0])
 
                 try:
                     dep_hash = digest_dict[dep.ref_name]
@@ -578,7 +589,7 @@ class BakedRecipe(Recipe):
                     assert len(template_dep_list) == 1, \
                         ValueError(
                             f'Unresolvable Recipe template dependency {task.template}'
-                        )
+                    )
                     template_dep = f'{dep_hash}/main'
 
                 # Template name is an Operator Function
@@ -587,7 +598,7 @@ class BakedRecipe(Recipe):
                         ValueError(
                             f'Unresolvable Operator function template dependency'
                             f' {task.template}'
-                        )
+                    )
                     template_dep = f'{dep_hash}/{template_dep_list[1]}'
 
                 task.template = template_dep

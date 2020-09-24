@@ -18,7 +18,7 @@ class BaseValueErrorTest(BaseTestClass):
             parametrized.append((f, f))
 
         if 'invalid_file' in metafunc.fixturenames and 'error_message' in metafunc.fixturenames:
-            
+
             metafunc.parametrize(
                 'invalid_file, error_message',
                 parametrized,
@@ -27,13 +27,12 @@ class BaseValueErrorTest(BaseTestClass):
             )
 
         if 'invalid_file' in metafunc.fixturenames and 'error_message' not in metafunc.fixturenames:
-            
+
             metafunc.parametrize(
                 'invalid_file',
                 invalid_files,
                 ids=invalid_files,
             )
-
 
     @staticmethod
     def readable_extension_check(file_path):
@@ -55,7 +54,8 @@ class BaseValueErrorTest(BaseTestClass):
             with open(error_message_path, 'r') as f:
                 return f.read()
         except:
-            pytest.skip(f'Cannot read value error message at path: {error_message_path}')
+            pytest.skip(
+                f'Cannot read value error message at path: {error_message_path}')
 
     def test_raise_value_error(self, invalid_file):
         with pytest.raises(ValueError):

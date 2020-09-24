@@ -11,6 +11,7 @@ except ImportError:
         'click modules not installed. Try `pip install queenbee[cli]` command.'
     )
 
+
 @click.command('lint')
 @click.argument('path', type=click.Path(exists=True))
 @click.option('-u', '--dependency-update', help='Fetch fresh dependencies from remote sources before running checks', default=False, type=bool, is_flag=True)

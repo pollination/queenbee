@@ -88,5 +88,5 @@ def new(name, path):
 
     operator.to_folder(
         folder_path=folder_path,
-        readme_string=readme_string,    
+        readme_string=readme_string,
     )

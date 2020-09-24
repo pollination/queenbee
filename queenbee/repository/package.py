@@ -21,6 +21,7 @@ def reset_tar(tarinfo: TarInfo) -> TarInfo:
     tarinfo.uname = tarinfo.gname = "0"
     return tarinfo
 
+
 def add_to_tar(tar: TarFile, data: bytes, filename: str):
     tarinfo = TarInfo(name=filename)
     tarinfo.size = len(data)
@@ -29,8 +30,9 @@ def add_to_tar(tar: TarFile, data: bytes, filename: str):
     tarinfo.type = b'0'
     tarinfo.uid = tarinfo.gid = 0
     tarinfo.uname = tarinfo.gname = "0"
-    
+
     tar.addfile(tarinfo, BytesIO(data))
+
 
 class PackageVersion(MetaData):
     """Package Version
@@ -46,28 +48,28 @@ class PackageVersion(MetaData):
     digest: str
 
     slug: str = Field(
-      None,
-      description='A slug of the repository name and the package name.'
+        None,
+        description='A slug of the repository name and the package name.'
     )
 
     type: str = Field(
-      '',
-      description='The type of Queenbee package (ie: recipe or operator)'
+        '',
+        description='The type of Queenbee package (ie: recipe or operator)'
     )
 
     readme: str = Field(
-      None,
-      description='The README file string for this package'
+        None,
+        description='The README file string for this package'
     )
 
     license: str = Field(
-      None,
-      description='The License file string for this package'
+        None,
+        description='The License file string for this package'
     )
 
     manifest: Union[Recipe, Operator] = Field(
-      None,
-      description="The package Recipe or Operator manifest"
+        None,
+        description="The package Recipe or Operator manifest"
     )
 
     @classmethod
@@ -103,22 +105,22 @@ class PackageVersion(MetaData):
         input_dict['url'] = package_path
 
         if isinstance(resource, Operator):
-          input_dict['type'] = 'operator'
+            input_dict['type'] = 'operator'
         elif isinstance(resource, Recipe):
-          input_dict['type'] = 'recipe'
+            input_dict['type'] = 'recipe'
 
         if include_manifest:
-          input_dict['manifest'] = resource.to_dict()
+            input_dict['manifest'] = resource.to_dict()
 
         return cls.parse_obj(input_dict)
 
     @classmethod
     def pack_tar(cls,
-        resource: Union[Operator, Recipe],
-        readme: str = None,
-        license: str = None,
-        include_manifest: bool = False,
-    ) -> Tuple['PackageVersion', BytesIO]:
+                 resource: Union[Operator, Recipe],
+                 readme: str = None,
+                 license: str = None,
+                 include_manifest: bool = False,
+                 ) -> Tuple['PackageVersion', BytesIO]:
         """Package a resource into a gzipped tar archive
 
         Arguments:
@@ -142,15 +144,17 @@ class PackageVersion(MetaData):
         file_object = BytesIO()
 
         resource_version = cls.from_resource(resource)
-        
+
         tar = TarFile.open(
             name=resource_version.url,
             mode='w:gz',
             fileobj=file_object,
         )
 
-        resource_bytes = bytes(resource.json(by_alias=True, exclude_unset=False), 'utf-8')
-        resource_version_bytes = bytes(resource_version.json(by_alias=True, exclude_unset=False), 'utf-8')
+        resource_bytes = bytes(resource.json(
+            by_alias=True, exclude_unset=False), 'utf-8')
+        resource_version_bytes = bytes(resource_version.json(
+            by_alias=True, exclude_unset=False), 'utf-8')
 
         add_to_tar(
             tar=tar,
@@ -184,10 +188,9 @@ class PackageVersion(MetaData):
         resource_version.license = license
 
         if include_manifest:
-          resource_version.manifest = resource
+            resource_version.manifest = resource
 
         return resource_version, file_object
-
 
     @classmethod
     def unpack_tar(
@@ -216,7 +219,7 @@ class PackageVersion(MetaData):
                             f'Hash of resource.json file is different from the one'
                             f' expected from the index Expected {digest} but got'
                             f' {read_digest}'
-                            )
+                        )
             elif member.name == 'version.json':
                 version = cls.parse_raw(tar.extractfile(member).read())
             elif member.name == 'README.md':
@@ -231,14 +234,15 @@ class PackageVersion(MetaData):
             )
 
         try:
-          manifest = Operator.parse_raw(manifest_bytes)
-          version.type = 'operator'
+            manifest = Operator.parse_raw(manifest_bytes)
+            version.type = 'operator'
         except Exception as error:
-          try:
-            manifest = Recipe.parse_raw(manifest_bytes)
-            version.type = 'recipe'
-          except Exception as error:
-            raise ValueError('Package resource.json could not be read as a Recipe or an Operator')
+            try:
+                manifest = Recipe.parse_raw(manifest_bytes)
+                version.type = 'recipe'
+            except Exception as error:
+                raise ValueError(
+                    'Package resource.json could not be read as a Recipe or an Operator')
 
         version.manifest = manifest
         version.readme = readme_string
@@ -246,7 +250,6 @@ class PackageVersion(MetaData):
         version.digest = read_digest
 
         return version
-
 
     @classmethod
     def from_package(cls, package_path: str):
@@ -265,20 +268,20 @@ class PackageVersion(MetaData):
 
         tar_file = TarFile.open(file_path)
 
-        version= cls.unpack_tar(tar_file=filebytes, verify_digest=False)
+        version = cls.unpack_tar(tar_file=filebytes, verify_digest=False)
 
         return version
 
     def fetch_package(self, source_url: str = None, verify_digest: bool = True, auth_header: str = '') -> 'PackageVersion':
         if source_url.startswith('file:'):
-          source_path = source_url.split('file:')[1]
-          
-          if os.path.isabs(source_path):
-            package_path = os.path.join(source_path, self.url)
-          else:
-            package_path = os.path.join(os.getcwd(), source_path, self.url)
+            source_path = source_url.split('file:')[1]
 
-          return self.from_package(package_path)
+            if os.path.isabs(source_path):
+                package_path = os.path.join(source_path, self.url)
+            else:
+                package_path = os.path.join(os.getcwd(), source_path, self.url)
+
+            return self.from_package(package_path)
 
         package_url = urljoin(source_url, self.url)
 
@@ -291,7 +294,6 @@ class PackageVersion(MetaData):
             verify_digest=verify_digest,
             digest=self.digest
         )
-
 
     @staticmethod
     def read_readme(folder_path: str) -> str:
@@ -341,11 +343,11 @@ class PackageVersion(MetaData):
 
     @classmethod
     def package_resource(cls,
-        resource: Union[Operator, Recipe],
-        check_deps: bool = True,
-        readme: str = None,
-        license: str = None,
-    ) -> Tuple['PackageVersion', BytesIO]:
+                         resource: Union[Operator, Recipe],
+                         check_deps: bool = True,
+                         readme: str = None,
+                         license: str = None,
+                         ) -> Tuple['PackageVersion', BytesIO]:
         """Package a Recipe or Operator into a gzipped tar file
 
         Arguments:
@@ -363,7 +365,7 @@ class PackageVersion(MetaData):
         """
 
         if check_deps and isinstance(resource, Recipe):
-          BakedRecipe.from_recipe(resource)
+            BakedRecipe.from_recipe(resource)
 
         return cls.pack_tar(
             resource=resource,
@@ -392,11 +394,12 @@ class PackageVersion(MetaData):
             BytesIO -- A BytesIO stream of the gzipped tar file
         """
         if resource_type == 'recipe':
-          resource = Recipe.from_folder(folder_path=folder_path)
+            resource = Recipe.from_folder(folder_path=folder_path)
         elif resource_type == 'operator':
-          resource = Operator.from_folder(folder_path=folder_path)
+            resource = Operator.from_folder(folder_path=folder_path)
         else:
-          raise ValueError(f'resource_type must be one of ["recipe", "operator"], not: {resource_type}')
+            raise ValueError(
+                f'resource_type must be one of ["recipe", "operator"], not: {resource_type}')
 
         return cls.package_resource(
             resource=resource,
@@ -405,27 +408,26 @@ class PackageVersion(MetaData):
             license=cls.read_license(folder_path),
         )
 
-
     def search_match(self, search_string: str = None) -> bool:
-      """Return a boolean indicating whether the search string matches the given package
+        """Return a boolean indicating whether the search string matches the given package
 
-      If no search string is specified this function will return True.
+        If no search string is specified this function will return True.
 
-      Args:
-          search_string (str, optional): The search string to use. Defaults to None.
+        Args:
+            search_string (str, optional): The search string to use. Defaults to None.
 
-      Returns:
-          bool: Whether the search string matches the package or not
-      """
-      if search_string is None:
-        return True
+        Returns:
+            bool: Whether the search string matches the package or not
+        """
+        if search_string is None:
+            return True
 
-      search_string = search_string.lower()
+        search_string = search_string.lower()
 
-      if search_string in self.name:
-        return True
+        if search_string in self.name:
+            return True
 
-      if self.keywords is not None and search_string in self.keywords:
-        return True
+        if self.keywords is not None and search_string in self.keywords:
+            return True
 
-      return False
+        return False

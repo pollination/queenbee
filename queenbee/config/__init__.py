@@ -6,6 +6,7 @@ from ..base.basemodel import BaseModel
 from .auth import JWTAuth, PollinationAuth
 from .repositories import RepositoryReference
 
+
 class Config(BaseModel):
 
     auth: List[Union[PollinationAuth, JWTAuth]] = Field(
@@ -14,8 +15,8 @@ class Config(BaseModel):
     )
 
     repositories: List[RepositoryReference] = Field(
-      [],
-      description='A list of repositories used for local execution'
+        [],
+        description='A list of repositories used for local execution'
     )
 
     def get_auth_header(self, repository_url: str) -> str:
@@ -33,7 +34,7 @@ class Config(BaseModel):
 
         if res == []:
             return None
-        
+
         auth_config = res[0]
 
         return auth_config.auth_header
@@ -60,56 +61,54 @@ class Config(BaseModel):
             self.auth.append(auth)
 
     def add_repository(self, repo: RepositoryReference, force: bool = False):
-      """add a repository reference to the config
+        """add a repository reference to the config
 
-      Args:
-          repo (RepositoryReference): a repository source url and its given name in the config
-          force (bool, optional): overwrite existing repository reference with the same name if it exsits. Defaults to False.
+        Args:
+            repo (RepositoryReference): a repository source url and its given name in the config
+            force (bool, optional): overwrite existing repository reference with the same name if it exsits. Defaults to False.
 
-      Raises:
-          ValueError: error thrown if the repository reference already exists and is not to be overwritten
-      """
-      existing_index = None
+        Raises:
+            ValueError: error thrown if the repository reference already exists and is not to be overwritten
+        """
+        existing_index = None
 
-      for i, existing_repo in enumerate(self.repositories):
-        if existing_repo.name == repo.name:
-          existing_index = i
+        for i, existing_repo in enumerate(self.repositories):
+            if existing_repo.name == repo.name:
+                existing_index = i
 
+        if existing_index is not None:
+            if force:
+                self.repositories[i] = repo
+                return
 
-      if existing_index is not None:
-        if force:
-          self.repositories[i] = repo
-          return
+            raise ValueError(
+                f'Repository with name {repo.name} already exists')
 
-        raise ValueError(f'Repository with name {repo.name} already exists')
-
-      self.repositories.append(repo)
-
+        self.repositories.append(repo)
 
     def get_repository(self, name: str) -> RepositoryReference:
-      """get a repository reference by name for the config
+        """get a repository reference by name for the config
 
-      Returns:
-          RepositoryReference: a repository reference
-      """
-      for repo in self.repositories:
-        if repo.name == name:
-          return repo
+        Returns:
+            RepositoryReference: a repository reference
+        """
+        for repo in self.repositories:
+            if repo.name == name:
+                return repo
 
     def remove_repository(self, name: str):
-      """remove a repository reference from the config
+        """remove a repository reference from the config
 
-      Args:
-          name (str): the name of the repository to remove
-      """
-      existing_index = None
+        Args:
+            name (str): the name of the repository to remove
+        """
+        existing_index = None
 
-      for i, repo in enumerate(self.repositories):
-        if repo.name == name:
-          existing_index = i
+        for i, repo in enumerate(self.repositories):
+            if repo.name == name:
+                existing_index = i
 
-      del self.repositories[existing_index]
-
+        del self.repositories[existing_index]
 
     class Config:
         json_encoders = {

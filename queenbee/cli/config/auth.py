@@ -8,15 +8,18 @@ except ImportError:
         'click modules not installed. Try `pip install queenbee[cli]` command.'
     )
 
+
 @click.group('auth')
 def auth():
     """manage queenbee configuration auth"""
     pass
 
+
 @auth.group('add')
 def add():
     """add auth domains and methods to your queenbee config"""
     pass
+
 
 @add.command('pollination')
 @click.argument('api_token')
@@ -30,7 +33,7 @@ def add():
 def add_pollination(api_token, domain):
     """add a pollination auth domain"""
     ctx = click.get_current_context()
-    
+
     auth_conf = PollinationAuth(
         domain=domain,
         api_token=api_token,
@@ -39,4 +42,3 @@ def add_pollination(api_token, domain):
     ctx.obj.config.add_auth(auth=auth_conf)
 
     ctx.obj.write_config()
-
