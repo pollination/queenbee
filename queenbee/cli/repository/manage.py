@@ -1,6 +1,5 @@
 import os
 import json
-from urllib.parse import urlparse
 
 try:
     import click
@@ -25,12 +24,6 @@ def add(name, path, force):
     is useful to search, develop and use queenbee packages locally.
     """
     ctx = click.get_current_context()
-
-    parse_res = urlparse(path)
-
-    # Not a url, therefore local path
-    if parse_res.scheme == '':
-        path = os.path.abspath(path)
 
     try:
         ctx.obj.config.add_repository(
