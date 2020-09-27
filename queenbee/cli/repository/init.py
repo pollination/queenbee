@@ -20,7 +20,7 @@ def init(path):
 
     path = os.path.abspath(path)
 
-    os.makedirs(os.path.join(path, 'workflows'), exist_ok=True)
+    os.makedirs(os.path.join(path, 'operators'), exist_ok=True)
     os.makedirs(os.path.join(path, 'recipes'), exist_ok=True)
 
     index = RepositoryIndex.from_folder(path)
