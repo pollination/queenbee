@@ -20,12 +20,12 @@ except ImportError:
 @click.option('-f', '--force', help='Boolean toggle to overwrite existing package with same name and version', default=False, type=bool, is_flag=True)
 @click.option('--no-update', help='Do not fetch fresh versions of dependencies before packaging', default=False, type=bool, is_flag=True)
 def package(path, destination, force, no_update):
-    """package an recipe
+    """package a recipe
 
     This command helps you package recipes and add them to repository folders. A packaged
     recipe is essentially a gzipped version of its folder.
 
-    You can package an recipe in a specific folder or repository by using the ``--destination``
+    You can package a recipe in a specific folder or repository by using the ``--destination``
     flag::
 
         queenbee recipe package path/to/my/recipe --destination path/to/my/repository/recipes

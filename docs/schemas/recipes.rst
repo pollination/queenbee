@@ -56,7 +56,7 @@ Examples
 
 Minimal
 ^^^^^^^
-The minimal configuration for an recipe can be found below. The keys indicated here are the ones
+The minimal configuration for a recipe can be found below. The keys indicated here are the ones
 you **absolutely** have to fill in for this recipe to be validated by Queenbee.
 
 ..  literalinclude:: ../../tests/assets/recipes/valid/minimal.yaml
