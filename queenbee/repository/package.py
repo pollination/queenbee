@@ -261,7 +261,7 @@ class PackageVersion(MetaData):
         Returns:
             PackageVersion -- A package version object
         """
-        file_path = os.path.normpath(os.path.abspath(package_path))
+        file_path = os.path.normpath(os.path.abspath(package_path)).replace('\\', '/')
 
         with open(file_path, 'rb') as f:
             filebytes = BytesIO(f.read())
@@ -274,12 +274,12 @@ class PackageVersion(MetaData):
 
     def fetch_package(self, source_url: str = None, verify_digest: bool = True, auth_header: str = '') -> 'PackageVersion':
         if source_url.startswith('file:'):
-            source_path = source_url.split('file:')[1]
-
+            source_path = source_url.split('file:///')[1]
+            subfolder = f'{self.type}s'
             if os.path.isabs(source_path):
-                package_path = os.path.join(source_path, self.url)
+                package_path = os.path.join(source_path, subfolder, self.url)
             else:
-                package_path = os.path.join(os.getcwd(), source_path, self.url)
+                package_path = os.path.join(os.getcwd(), source_path, subfolder, self.url)
 
             return self.from_package(package_path)
 
@@ -390,7 +390,7 @@ class PackageVersion(MetaData):
                 the recipe by baking it (default: {True})
 
         Returns:
-            PackageVersion -- An recipe or operator version object
+            PackageVersion -- A recipe or operator version object
             BytesIO -- A BytesIO stream of the gzipped tar file
         """
         if resource_type == 'recipe':
