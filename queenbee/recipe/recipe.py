@@ -581,7 +581,8 @@ class BakedRecipe(Recipe):
                 except KeyError:
                     raise ValueError(
                         f'Unresolvable dependency name {dep.ref_name}. Did you forget '
-                        f' to package or link {dep.ref_name}?'
+                        f'to package or link {dep.ref_name}? '
+                        'See `queenbee recipe link --help` for more information.'
                     )
 
                 # Template name is another Recipe
