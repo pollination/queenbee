@@ -1,9 +1,24 @@
+import pathlib
+import os
 from urllib import request
 from typing import Union
-
 from .basemodel import BaseModel
 
 USER_AGENT_STRING = 'Queenbee'
+
+
+def get_uri(url):
+    """Resolve uri for urls and local files."""
+
+    if url.startswith('file:///'):
+        return url.replace('\\', '/')
+
+    try:
+        uri = pathlib.Path(os.path.abspath(url)).as_uri()
+    except ValueError:
+        uri = url
+
+    return uri
 
 
 def urljoin(*args):
@@ -13,7 +28,7 @@ def urljoin(*args):
         str: a clean url string
     """
     url = "/".join(map(lambda x: str(x).rstrip('/'), args))
-    url.replace('\\', '/')
+    url = url.replace('\\', '/')
 
     return url
 

@@ -2,7 +2,7 @@ import os
 from urllib.parse import urlparse
 from pydantic import Field, validator
 from ..base.basemodel import BaseModel
-from ..base.request import make_request, urljoin
+from ..base.request import make_request, urljoin, get_uri
 
 
 class RepositoryReference(BaseModel):
@@ -20,13 +20,7 @@ class RepositoryReference(BaseModel):
     @validator('path')
     def remote_or_local(cls, v):
         """Determine whether the path is local or remote (ie: http)"""
-        parsed_path = urlparse(v)
-
-        # If it's on the local machine
-        if parsed_path.scheme == '':
-            v = f'file:{v}'
-
-        return v
+        return get_uri(v)
 
     def fetch(self, auth_header: str = '') -> 'RepositoryIndex':
         """Fetch the referenced repository index
@@ -37,9 +31,7 @@ class RepositoryReference(BaseModel):
         from ..repository import RepositoryIndex
 
         if self.path.startswith('file:'):
-            path = self.path.split('file:')[-1]
-            index_path = os.path.join(path, 'index.json')
-            url = f'file:{index_path}'
+            url = os.path.join(self.path, 'index.json').replace('\\', '/')
         else:
             url = urljoin(self.path, 'index.json')
 
