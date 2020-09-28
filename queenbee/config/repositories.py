@@ -31,7 +31,7 @@ class RepositoryReference(BaseModel):
         from ..repository import RepositoryIndex
 
         if self.path.startswith('file:'):
-            url = os.path.join(self.path, 'index.json').replace('\\', '/')
+            url = os.path.join(self.path, 'index.json')
         else:
             url = urljoin(self.path, 'index.json')
 
