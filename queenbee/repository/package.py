@@ -266,8 +266,6 @@ class PackageVersion(MetaData):
         with open(file_path, 'rb') as f:
             filebytes = BytesIO(f.read())
 
-        tar_file = TarFile.open(file_path)
-
         version = cls.unpack_tar(tar_file=filebytes, verify_digest=False)
 
         return version
@@ -275,11 +273,10 @@ class PackageVersion(MetaData):
     def fetch_package(self, source_url: str = None, verify_digest: bool = True, auth_header: str = '') -> 'PackageVersion':
         if source_url.startswith('file:'):
             source_path = source_url.split('file:///')[1]
-            subfolder = f'{self.type}s'
             if os.path.isabs(source_path):
-                package_path = os.path.join(source_path, subfolder, self.url)
+                package_path = os.path.join(source_path, self.url)
             else:
-                package_path = os.path.join(os.getcwd(), source_path, subfolder, self.url)
+                package_path = os.path.join(os.getcwd(), subfolder, self.url)
 
             return self.from_package(package_path)
 
