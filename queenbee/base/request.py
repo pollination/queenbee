@@ -12,7 +12,10 @@ def get_uri(url):
 
     if url.startswith('file:///'):
         return url.replace('\\', '/')
+    elif url.startswith('http://') or url.startswith('https://'):
+        return url
 
+    # a local file 
     try:
         uri = pathlib.Path(os.path.abspath(url)).as_uri()
     except ValueError:
