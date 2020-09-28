@@ -317,7 +317,7 @@ class RepositoryIndex(BaseModel):
                 index (default: {False})
         """
         self.recipe = self._index_resource_version(
-            self.recipe, recipe_version, overwrite
+            self.recipe, recipe_version, overwrite=overwrite
         )
         self.generated = datetime.utcnow()
 
@@ -333,19 +333,19 @@ class RepositoryIndex(BaseModel):
                 the index (default: {False})
         """
         self.operator = self._index_resource_version(
-            self.operator, operator_version, overwrite
+            self.operator, operator_version, overwrite=overwrite
         )
         self.generated = datetime.utcnow()
 
     def merge_folder(self, folder_path, overwrite: bool = False, skip: bool = False):
-        """Merge the contents of an repository folder with the index
+        """Merge the contents of a repository folder with the index
 
         Arguments:
             folder_path {str} -- The path to the repository folder
 
         Keyword Arguments:
             overwrite {bool} -- Overwrite any Resource Version (default: {False})
-            skip {bool} -- [description] (default: {False})
+            skip {bool} -- Skip any errors if version already exist (default: {False})
 
         Raises:
             ValueError: Resource version already exists or is invalid
@@ -353,6 +353,8 @@ class RepositoryIndex(BaseModel):
         for package in os.listdir(os.path.join(folder_path, 'operators')):
             package_path = os.path.join(folder_path, 'operators', package)
             resource_version = PackageVersion.from_package(package_path)
+            resource_version.url = \
+                    os.path.join('operators', package).replace('\\', '/')
             try:
                 self.index_operator_version(resource_version, overwrite)
             except ValueError as error:
@@ -364,6 +366,8 @@ class RepositoryIndex(BaseModel):
         for package in os.listdir(os.path.join(folder_path, 'recipes')):
             package_path = os.path.join(folder_path, 'recipes', package)
             resource_version = PackageVersion.from_package(package_path)
+            resource_version.url = \
+                    os.path.join('recipes', package).replace('\\', '/')
             try:
                 self.index_recipe_version(resource_version, overwrite)
             except ValueError as error:
