@@ -34,7 +34,8 @@ def install(path):
         raise error
     os.chdir(path)
 
-    shutil.rmtree('.dependencies')
+    if os.path.exists('.dependencies'):
+        shutil.rmtree('.dependencies')
 
     recipe.lock_dependencies(config=ctx.obj.config)
 
