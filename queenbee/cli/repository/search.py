@@ -63,12 +63,18 @@ def search(repository, package_type, search):
 @click.argument('type')
 @click.argument('repo')
 @click.argument('name')
-@click.argument('tag')
+@click.option('-t', '--tag', help='Package tag.', default='latest')
 def get_by_tag(type, repo, name, tag):
     """get and print a specific package
 
-    Use this command to print out a specific package version from a 
-    given repository. 
+    Use this command to print out a specific package version from a given repository.
+
+    type: Package type. It should be either an operator or a repository.
+
+    repo: The name of the repository.
+
+    name: Name of the package.
+
     """
 
     ctx = click.get_current_context()
