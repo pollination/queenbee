@@ -32,18 +32,6 @@ class BaseInput(BaseModel):
         description='Whether this value must be specified.'
     )
 
-    annotations: Dict = Field(
-        None,
-        description='An optional dictionary to add annotations to inputs. These '
-        'annotations will be used by client side libraries to validate the inputs or '
-        'bind them to specific actions. Use ``schema`` key for providing JSON Schema '
-        'specifications for the input.'
-    )
-
-    @validator('annotations', always=True)
-    def replace_none_value(cls, v):
-        return {} if not v else v
-
     def validate(self, value):
         """Validate an input value against specification.
 

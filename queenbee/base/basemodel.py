@@ -5,6 +5,7 @@ from typing import List, Dict
 
 import yaml
 from pydantic import BaseModel as PydanticBaseModel
+from pydantic import validator, Field
 
 from .parser import parse_file
 from .variable import get_ref_variable
@@ -26,6 +27,17 @@ class BaseModel(PydanticBaseModel):
     """BaseModel with functionality to return the object as a yaml string
 
     """
+    annotations: Dict[str, str] = Field(
+        None,
+        description='An optional dictionary to add annotations to inputs. These '
+        'annotations will be used by client side libraries to validate the inputs or '
+        'bind them to specific actions. Use ``schema`` key for providing JSON Schema '
+        'specifications for the input.'
+    )
+
+    @validator('annotations', always=True)
+    def replace_none_value(cls, v):
+        return {} if not v else v
 
     def yaml(self, exclude_unset=False, **kwargs):
         """Get a YAML string from the model
