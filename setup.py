@@ -12,8 +12,8 @@ setuptools.setup(
     setup_requires=['setuptools_scm'],
     author="Ladybug Tools",
     author_email="info@ladybug.tools",
-    description="Queenbee is a workflow language for creating DAG workflows which "
-    "empowers all workflow libraries in Ladybug Tools!",
+    description="Queenbee is a workflow language and a package manager for creating "
+    "DAG workflows which empowers all workflow libraries in Ladybug Tools!",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ladybug-tools/queenbee",
@@ -32,4 +32,5 @@ setuptools.setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent"
     ],
+    license="GPL-3.0"
 )
