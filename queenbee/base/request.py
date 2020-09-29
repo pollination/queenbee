@@ -46,6 +46,7 @@ def make_request(url: str, auth_header: str = '') -> str:
     Returns:
         str: [description]
     """
+    auth_header = auth_header or ''
     headers = {
         'Authorization': auth_header,
         'User-Agent': USER_AGENT_STRING
