@@ -16,15 +16,7 @@ from .reference import InputArtifactReference, InputParameterReference, \
 
 
 class _DAGInputsBase(BaseModel):
-
-    annotations: Dict[str, str] = Field(
-        None,
-        description='Optional annotations for Queenbee objects.'
-    )
-
-    @validator('annotations', always=True)
-    def set_to_empty_dict(cls, v):
-        return {} if not v else v
+    pass
 
 
 class DAGInputParameter(_DAGInputsBase):
