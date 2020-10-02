@@ -7,10 +7,10 @@ from typing import Dict, List
 from pydantic import Field, constr
 
 from ..base.basemodel import BaseModel
-from .reference import references_from_string
+from ..io.reference import references_from_string
 
 
-class ArtifactSource(BaseModel):
+class _ArtifactSource(BaseModel):
     """ArtifactSource.
 
     An Artifact Source System.
@@ -38,7 +38,7 @@ class ArtifactSource(BaseModel):
         return self._referenced_values()
 
 
-class ProjectFolderSource(ArtifactSource):
+class ProjectFolder(_ArtifactSource):
     """Project Folder Source
 
     This is the path to a folder where files and folders can be sourced. In the context
@@ -46,13 +46,12 @@ class ProjectFolderSource(ArtifactSource):
     context of a workflow run on Pollination this folder will correspond to a Project
     scoped folder.
     """
-    type: constr(regex='^project-folder$') = 'project-folder'
+    type: constr(regex='^ProjectFolder$') = 'ProjectFolder'
 
     path: str = Field(
         None,
-        description='For a local filesystem this can be'
-        ' \"C:\\Users\\me\\simulations\\test\".'
-        ' This will correspond to the run specific folder .'
+        description='The path to a folder where files and folders can be sourced. For a '
+        'local filesystem this can be "C:\\Users\\me\\simulations\\test".'
     )
 
     @property
@@ -62,13 +61,13 @@ class ProjectFolderSource(ArtifactSource):
         return self._referenced_values(values)
 
 
-class HTTPSource(ArtifactSource):
-    """HTTPSource
+class HTTP(_ArtifactSource):
+    """HTTP Source
 
     A web HTTP to an FTP server or an API for example.
     """
 
-    type: constr(regex='^http$') = 'http'
+    type: constr(regex='^HTTP$') = 'HTTP'
 
     url: str = Field(
         ...,
@@ -82,13 +81,13 @@ class HTTPSource(ArtifactSource):
         return self._referenced_values(values)
 
 
-class S3Source(ArtifactSource):
-    """S3Source
+class S3(_ArtifactSource):
+    """S3 Source
 
     An S3 bucket artifact Source.
     """
 
-    type: constr(regex='^s3$') = 's3'
+    type: constr(regex='^S3$') = 'S3'
 
     key: str = Field(
         ...,

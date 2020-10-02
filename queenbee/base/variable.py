@@ -1,7 +1,4 @@
-"""A collection of methods to handle queenbee referenced variables.
-
-See README.md for a human readable version of valid variables.
-"""
+"""A collection of methods to handle queenbee referenced variables."""
 from typing import Union
 from .parser import parse_double_quotes_vars
 
