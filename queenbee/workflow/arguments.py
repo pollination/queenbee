@@ -2,9 +2,9 @@ from typing import Union, List
 from pydantic import Field
 
 from ..base.basemodel import BaseModel
-from ..base.io import IOBase
+from ..io import IOBase
 
-from ..recipe.artifact_source import HTTPSource, S3Source, ProjectFolderSource
+from ..recipe.artifact_source import HTTP, S3, ProjectFolder
 
 
 class ArgumentArtifact(BaseModel):
@@ -15,7 +15,7 @@ class ArgumentArtifact(BaseModel):
         description='The name of the artifact'
     )
 
-    source: Union[HTTPSource, S3Source, ProjectFolderSource] = Field(
+    source: Union[HTTP, S3, ProjectFolder] = Field(
         ...,
         description='The source to pull the artifact from'
     )
