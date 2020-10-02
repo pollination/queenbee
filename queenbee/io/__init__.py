@@ -3,7 +3,7 @@ import collections
 from typing import List
 from pydantic import validator
 
-from .basemodel import BaseModel
+from ..base.basemodel import BaseModel
 
 
 def find_dup_items(values: List) -> List:
@@ -30,9 +30,9 @@ class IOBase(BaseModel):
     IOBase is used within Operators, Recipes and Workflows.
     """
 
-    parameters: List[IOItem]
+    inputs: List[IOItem]
 
-    artifacts: List[IOItem]
+    outputs: List[IOItem]
 
     @validator('parameters', 'artifacts')
     def parameter_unique_names(cls, v):
