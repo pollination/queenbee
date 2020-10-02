@@ -3,7 +3,7 @@ from typing import Dict, List
 from pydantic import Field, validator
 
 from ..base.basemodel import BaseModel
-from ..base.io import IOBase
+from ..io import IOBase
 from ..base.variable import _validate_inputs_outputs_var_format, get_ref_variable
 
 
