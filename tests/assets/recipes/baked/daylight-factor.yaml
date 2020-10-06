@@ -23,28 +23,24 @@ dependencies:
 flow:
 - name: d129f14181241f03cd8f6f1762fcce538917cfb2606e1c79dbbca9e7fc552cb6/main
   inputs:
-    parameters:
-    - annotations: {}
-      name: radiance-parameters
-      default: -I -ab 2 -h
-      description: The radiance parameters for ray tracing
-      required: null
-    - annotations: {}
-      name: sensor-grid-count
-      default: '100'
-      description: The maximum number of grid points per parallel execution
-      required: null
-    artifacts:
-    - annotations: {}
-      name: input-grid
-      description: A grid file
-      default: null
-      required: true
-    - annotations: {}
-      name: model
-      description: A Honeybee model with radiance properties
-      default: null
-      required: true
+    - name: sensor-grid-count
+    type: DAGIntegerInput
+    annotations: {}
+    description: The maximum number of grid points per parallel execution
+    default: 100
+  - name: radiance-parameters
+    type: DAGStringInput
+    annotations: {}
+    description: The radiance parameters for ray tracing
+    default: -I -ab 2 -h
+  - name: model
+    type: DAGFolderInput
+    annotations: {}
+    description: A Honeybee model with radiance properties
+  - name: input-grid
+    type: DAGFileInput
+    annotations: {}
+    description: A grid file
   fail_fast: true
   tasks:
   - name: create-octree
