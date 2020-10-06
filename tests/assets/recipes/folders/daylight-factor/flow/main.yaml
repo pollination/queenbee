@@ -1,24 +1,23 @@
 name: main
 inputs:
-  parameters:
   - name: sensor-grid-count
+    type: IntegerInput
     annotations: {}
     description: The maximum number of grid points per parallel execution
     default: 100
   - name: radiance-parameters
+    type: StringInput
     annotations: {}
     description: The radiance parameters for ray tracing
     default: -I -ab 2 -h
-  
-  artifacts:
   - name: model
+    type: FolderInput
     annotations: {}
     description: A Honeybee model with radiance properties
-    required: true
   - name: input-grid
+    type: FileInput
     annotations: {}
     description: A grid file
-    required: true
 
 tasks:
 

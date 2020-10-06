@@ -23,18 +23,17 @@ dependencies:
 flow:
 - name: 2baf1598a7c37936a17d1f8df444e2013cd55cab067997cef788d95db5aab81c/main
   inputs:
-    parameters:
-    - annotations: {}
-      name: model-names
-      default: null
-      description: null
-      required: true
-    artifacts:
-    - annotations: {}
-      name: models-folder
-      description: A folder full of honeybee models
-      default: null
-      required: true
+  - annotations: {}
+    type: ArrayInput
+    items_type: string
+    name: model-names
+    default: null
+    description: null
+  - annotations: {}
+    type: FolderInput
+    name: models-folder
+    description: A folder full of honeybee models
+    default: null
   fail_fast: true
   tasks:
   - name: daylight-factor
@@ -200,28 +199,24 @@ templates:
     local: null
 - name: d129f14181241f03cd8f6f1762fcce538917cfb2606e1c79dbbca9e7fc552cb6/main
   inputs:
-    parameters:
-    - annotations: {}
-      name: radiance-parameters
-      default: -I -ab 2 -h
-      description: The radiance parameters for ray tracing
-      required: null
-    - annotations: {}
-      name: sensor-grid-count
-      default: '100'
-      description: The maximum number of grid points per parallel execution
-      required: null
-    artifacts:
-    - annotations: {}
-      name: input-grid
-      description: A grid file
-      default: null
-      required: true
-    - annotations: {}
-      name: model
-      description: A Honeybee model with radiance properties
-      default: null
-      required: true
+    - name: sensor-grid-count
+    type: IntegerInput
+    annotations: {}
+    description: The maximum number of grid points per parallel execution
+    default: 100
+  - name: radiance-parameters
+    type: StringInput
+    annotations: {}
+    description: The radiance parameters for ray tracing
+    default: -I -ab 2 -h
+  - name: model
+    type: FolderInput
+    annotations: {}
+    description: A Honeybee model with radiance properties
+  - name: input-grid
+    type: FileInput
+    annotations: {}
+    description: A grid file
   fail_fast: true
   tasks:
   - name: create-octree
