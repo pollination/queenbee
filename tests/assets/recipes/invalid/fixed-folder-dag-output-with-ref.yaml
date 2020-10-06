@@ -11,9 +11,9 @@ dependencies:
 flow:
 - name: main
   inputs:
-    parameters:
-    - name: folder-path
-      default: something
+  - name: folder-path
+    type: StringInput
+    default: something
   tasks:
   - name: minimal-task
     template: honeybee-radiance/10000-lux-sky
