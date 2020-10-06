@@ -2,7 +2,7 @@
 
 import re
 from typing import List, Union
-from pydantic import Field, constr
+from pydantic import Field, constr, validator
 
 from ..base.basemodel import BaseModel
 
@@ -55,7 +55,7 @@ class FolderReference(_BaseReference):
 class _TaskReference(_BaseReference):
     """A Task Reference"""
 
-    type: constr(regex='^FileReference$') = 'FileReference'
+    type: constr(regex='^_TaskReference$') = '_TaskReference'
 
     name: str = Field(
         ...,
@@ -145,7 +145,7 @@ class InputReference(_InputReference):
     Use InputFileReference, InputFolderReference or InputPathReference instead.
     """
 
-    type: constr(regex='^_InputReference$') = '_InputReference'
+    type: constr(regex='^InputReference$') = 'InputReference'
 
     @property
     def source(self):
@@ -205,6 +205,55 @@ class ItemReference(_BaseReference):
     @property
     def source(self):
         return 'parameters'
+
+
+class ValueReference(_BaseReference):
+    """A reference to a fixed value."""
+
+    type: constr(regex='^ValueReference$') = 'ValueReference'
+
+    # TODO: Add validation for fixed value reference types.
+    value: Union[str, float, int, bool, list, dict] = Field(
+        ...,
+        description='A fixed value for this reference.'
+    )
+
+
+class ValueListReference(_BaseReference):
+    """A reference to a fixed value."""
+
+    type: constr(regex='^ValueListReference$') = 'ValueListReference'
+
+    # TODO: Add validation for fixed value reference types.
+    value: List[Union[str, float, int, bool, dict, list]] = Field(
+        ...,
+        description='A fixed value for this reference.'
+    )
+
+    @validator('value')
+    def check_value(cls, v):
+        if v == []:
+            raise ValueError(
+                'ValueListReference must be a non-empty list or null')
+        return v
+
+
+class ValueFileReference(_BaseReference):
+    """A reference to a fixed file."""
+
+    type: constr(regex='^ValueFileReference$') = 'ValueFileReference'
+
+    # TODO: Add validation for fixed value reference types.
+    value: Union[str, List[str]] = Field(
+        ...,
+        description='A fixed value for this reference.'
+    )
+
+
+class ValueFolderReference(ValueFileReference):
+    """A reference to a fixed folder."""
+
+    type: constr(regex='^ValueFolderReference$') = 'ValueFolderReference'
 
 
 def references_from_string(string: str) -> List[

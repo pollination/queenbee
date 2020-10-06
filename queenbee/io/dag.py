@@ -6,7 +6,7 @@ from typing import Dict, Union, List
 from pydantic import constr, Field, validator
 from jsonschema import validate as json_schema_validator
 
-from .common import ItemType, GenericInput, GenericOutput
+from .common import ItemType, GenericInput, FromOutput
 from ..recipe.artifact_source import HTTP, S3, ProjectFolder
 from ..io.reference import FileReference, FolderReference, TaskReference
 
@@ -303,7 +303,7 @@ class DAGArrayInput(GenericInput):
         if self.spec:
             spec = dict(self.spec)
             spec['type'] = 'array'
-            spec['items'] = self.items_type
+            spec['items'] = self.items_type.lower()
             json_schema_validator(value, spec)
 
 
@@ -344,7 +344,7 @@ DAGInputs = Union[
     DAGFolderInput, DAGFileInput, DAGPathInput, DAGArrayInput, DAGObjectInput]
 
 
-class DAGFileOutput(GenericOutput):
+class DAGFileOutput(FromOutput):
     """DAG file output."""
     type: constr(regex='^DAGFileOutput$') = 'DAGFileOutput'
 
@@ -359,7 +359,7 @@ class DAGFileOutput(GenericOutput):
         return True
 
 
-class DAGFolderOutput(GenericOutput):
+class DAGFolderOutput(FromOutput):
     """DAG folder output."""
     type: constr(regex='^DAGFolderOutput$') = 'DAGFolderOutput'
 
