@@ -11,13 +11,13 @@ from ..base.basemodel import BaseModel
 
 class ItemType(str, Enum):
     """Type enum for items in a list."""
-    String = 'string'
-    Integer = 'integer'
-    Number = 'number'
-    Boolean = 'boolean'
-    Folder = 'folder'
-    Array = 'array'
-    Object = 'object'
+    String = 'String'
+    Integer = 'Integer'
+    Number = 'Number'
+    Boolean = 'Boolean'
+    Folder = 'Folder'
+    Array = 'Array'
+    Object = 'Object'
 
 
 class GenericInput(BaseModel):
@@ -89,7 +89,10 @@ class GenericInput(BaseModel):
 
 
 class GenericOutput(BaseModel):
-    """Base class for all output types."""
+    """Base class for all output types.
+
+    The baseclass uses a name to source the output.
+    """
 
     type: constr(regex='^GenericOutput$') = 'GenericOutput'
 
@@ -102,6 +105,37 @@ class GenericOutput(BaseModel):
         None,
         description='Optional description for output.'
     )
+
+    @property
+    def is_artifact(self):
+        return False
+
+    @property
+    def is_parameter(self):
+        return not self.is_artifact
+
+
+class PathOutput(GenericOutput):
+    """Base class for output classes that source tha output from a path.
+
+    An example of using PathOutput is TaskFile and TaskFolder outputs.
+    """
+
+    type: constr(regex='^PathOutput$') = 'PathOutput'
+
+    path: str = Field(
+        ...,
+        description='Path to the output artifact relative to where the function command '
+        'is executed.'
+        )
+
+
+class FromOutput(GenericOutput):
+    """Base class for output classes that source ``from`` an object.
+
+    See DAG output classes for more examples.
+    """
+    type: constr(regex='^FromOutput$') = 'FromOutput'
 
     # This will be overwritten in all the subclasses.
     # We need this here to make sure the validator doesn't fail.
@@ -123,11 +157,3 @@ class GenericOutput(BaseModel):
                 )
 
         return v
-
-    @property
-    def is_artifact(self):
-        return False
-
-    @property
-    def is_parameter(self):
-        return not self.is_artifact
