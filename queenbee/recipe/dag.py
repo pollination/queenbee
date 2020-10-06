@@ -4,203 +4,15 @@ A DAG step defines a single step in a Recipe. Each step indicates what function 
 should be used and maps inputs and outputs for the specific task.
 """
 from typing import List, Union
-from pydantic import Field, validator, root_validator
+from pydantic import Field, validator
 
 from ..base.basemodel import BaseModel
 from ..io import IOBase, find_dup_items
 from ..base.parser import parse_double_quotes_vars
 from ..io.dag import DAGInputs, DAGOutputs
-from ..io.reference import InputArtifactReference, InputParameterReference, \
-    TaskReference, TaskParameterReference, ItemParameterReference, \
-    FolderReference, references_from_string
-
-
-class DAGTaskArtifactArgument(BaseModel):
-    """Input argument for a DAG task.
-
-    The name must correspond to an input artifact from the template function the task
-    refers to.
-    """
-
-    name: str = Field(
-        ...,
-        description='Name of the argument variable'
-    )
-
-    from_: Union[InputArtifactReference, TaskReference, FolderReference] = Field(
-        ...,
-        alias='from',
-        description='The previous task or global workflow variable to pull this argument'
-        ' from'
-    )
-
-    subpath: str = Field(
-        None,
-        description='Specify this value if your source artifact is a repository and you'
-        ' want to source an artifact from within that directory.'
-    )
-
-
-class DAGTaskParameterArgument(BaseModel):
-    """Input argument for a DAG task.
-
-    The name must correspond to an input parameter from the template function the task
-    refers to.
-    """
-
-    name: str = Field(
-        ...,
-        description='Name of the argument variable'
-    )
-
-    from_: Union[
-        InputParameterReference, TaskParameterReference, ItemParameterReference
-    ] = Field(
-        None,
-        alias='from',
-        description='The previous task or global workflow variable to pull this'
-        ' argument from'
-    )
-
-    value: str = Field(
-        None,
-        description='The fixed value for this task argument'
-    )
-
-    @root_validator
-    def check_value_exists(cls, values):
-        value = values.get('value')
-        from_ = values.get('from_')
-
-        if value is None and from_ is None:
-            raise ValueError(
-                'value must be specified if no "from" source is specified for argument '
-                'parameter'
-            )
-
-        return values
-
-
-class DAGTaskArgument(IOBase):
-    """DAG task argument.
-
-    These arguments should match the inputs from the template referenced in the task.
-    """
-
-    artifacts: List[DAGTaskArtifactArgument] = Field(
-        [],
-        description='A list of input artifacts to pass to the task'
-    )
-
-    parameters: List[DAGTaskParameterArgument] = Field(
-        [],
-        description='A list of input parameters to pass to the task'
-    )
-
-    def artifacts_by_ref_source(self, source) -> List[DAGTaskArtifactArgument]:
-        """Retrieve a list of argument artifacts by their source type.
-
-        Arguments:
-            source {str} -- The source type, one of: 'dag', 'task'
-
-        Raises:
-            ValueError: The source type is not recognized
-
-        Returns:
-            List[DAGTaskArtifactArgument] -- A list of Argument Artifacts
-        """
-        if self.artifacts is None:
-            return []
-
-        source_class = None
-
-        if source == 'dag':
-            source_class = InputArtifactReference
-        elif source == 'task':
-            source_class = TaskReference
-        else:
-            raise ValueError(
-                'reference source string should be one of ["dag", "task"], not {source}'
-            )
-
-        return [x for x in self.artifacts if isinstance(x.from_, source_class)]
-
-    def parameters_by_ref_source(self, source) -> List[DAGTaskParameterArgument]:
-        """Retrieve an list of argument parameters by their source type.
-
-        Arguments:
-            source {str} -- The source type, one of: 'dag', 'task', 'item'
-
-        Raises:
-            ValueError: The source type is not recognized
-
-        Returns:
-            List[DAGTaskParameterArgument] -- A list of Argument Parameters
-        """
-        if self.parameters is None:
-            return []
-
-        source_class = None
-
-        if source == 'dag':
-            source_class = InputParameterReference
-        elif source == 'task':
-            source_class = TaskParameterReference
-        elif source == 'item':
-            source_class = ItemParameterReference
-        else:
-            raise ValueError(
-                'reference source string should be one of ["dag", "task", "item"], '
-                'not {source}'
-            )
-
-        return [x for x in self.parameters if isinstance(x.from_, source_class)]
-
-
-class DAGTaskOutputArtifact(BaseModel):
-    """Output artifact for a DAG task.
-
-    The name must correspond to an output artifact from the template function the task
-    refers to.
-    """
-
-    name: str = Field(
-        ...,
-        description='The name of the output variable'
-    )
-
-    path: str = Field(
-        None,
-        description='The path where the artifact should be saved relative to the DAG'
-        ' folder.'
-    )
-
-
-class DAGTaskOutputParameter(BaseModel):
-    """Output parameter for a DAG task.
-
-    The name must correspond to an output parameter from the template function the task
-    refers to.
-    """
-
-    name: str = Field(
-        ...,
-        description='The name of the output variable'
-    )
-
-
-class DAGTaskOutputs(IOBase):
-    """These outputs should match the outputs from the template referenced in the task"""
-
-    artifacts: List[DAGTaskOutputArtifact] = Field(
-        [],
-        description='A list of output artifacts to expose from the task'
-    )
-
-    parameters: List[DAGTaskOutputParameter] = Field(
-        [],
-        description='A list of output parameters to expose from the task'
-    )
+from ..io.reference import InputReference, TaskReference, ValueListReference, \
+    references_from_string
+from ..io.task import TaskArguments, TaskReturns
 
 
 class DAGTaskLoop(BaseModel):
@@ -210,30 +22,11 @@ class DAGTaskLoop(BaseModel):
     input or task parameter which should be a list.
     """
 
-    from_: Union[InputParameterReference, TaskParameterReference] = Field(
+    from_: Union[InputReference, TaskReference, ValueListReference] = Field(
         None,
         alias='from',
         description='The task or DAG parameter to loop over (must be iterable).'
     )
-
-    value: List[Union[str, int, float, dict]] = Field(
-        None,
-        description='A list of values or JSON objects to loop over.'
-    )
-
-    @validator('value')
-    def check_value(cls, v):
-        if v == []:
-            raise ValueError(
-                'Dag Task Loop value must be a non-empty list or null')
-        return v
-
-    @root_validator
-    def check_loop(cls, values):
-        if values.get('from_') is None and values.get('value') is None:
-            raise ValueError(
-                'Dag Task Loop must loop over a fixed or references value')
-        return values
 
 
 class DAGTask(BaseModel):
@@ -249,9 +42,9 @@ class DAGTask(BaseModel):
         description='Template name.'
     )
 
-    arguments: DAGTaskArgument = Field(
+    arguments: TaskArguments = Field(
         None,
-        description='The input arguments for this task'
+        description='The input arguments for this task.'
     )
 
     dependencies: List[str] = Field(
@@ -271,7 +64,7 @@ class DAGTask(BaseModel):
         'wanting to save results in a specific folder.'
     )
 
-    outputs: DAGTaskOutputs = Field(
+    returns: TaskReturns = Field(
         None,
         description='The outputs of this task'
     )
@@ -315,11 +108,11 @@ class DAGTask(BaseModel):
 
     @validator('arguments', always=True)
     def set_default_args(cls, v):
-        return DAGTaskArgument() if v is None else v
+        return [] if v is None else v
 
-    @validator('outputs', always=True)
+    @validator('returns', always=True)
     def set_default_outputs(cls, v):
-        return DAGTaskOutputs() if v is None else v
+        return [] if v is None else v
 
     @property
     def is_root(self) -> bool:
@@ -415,6 +208,69 @@ class DAGTask(BaseModel):
                           'means the artifact will be saved in an arbitrary folder.')
 
 
+# TODO: Add these methods to the DAGTask itself.
+# class DAGTaskArgument(IOBase):
+
+#     def artifacts_by_ref_source(self, source) -> List[DAGTaskArtifactArgument]:
+#         """Retrieve a list of argument artifacts by their source type.
+
+#         Arguments:
+#             source {str} -- The source type, one of: 'dag', 'task'
+
+#         Raises:
+#             ValueError: The source type is not recognized
+
+#         Returns:
+#             List[DAGTaskArtifactArgument] -- A list of Argument Artifacts
+#         """
+#         if self.artifacts is None:
+#             return []
+
+#         source_class = None
+
+#         if source == 'dag':
+#             source_class = InputArtifactReference
+#         elif source == 'task':
+#             source_class = TaskReference
+#         else:
+#             raise ValueError(
+#                 'reference source string should be one of ["dag", "task"], not {source}'
+#             )
+
+#         return [x for x in self.artifacts if isinstance(x.from_, source_class)]
+
+#     def parameters_by_ref_source(self, source) -> List[DAGTaskParameterArgument]:
+#         """Retrieve an list of argument parameters by their source type.
+
+#         Arguments:
+#             source {str} -- The source type, one of: 'dag', 'task', 'item'
+
+#         Raises:
+#             ValueError: The source type is not recognized
+
+#         Returns:
+#             List[DAGTaskParameterArgument] -- A list of Argument Parameters
+#         """
+#         if self.parameters is None:
+#             return []
+
+#         source_class = None
+
+#         if source == 'dag':
+#             source_class = InputParameterReference
+#         elif source == 'task':
+#             source_class = TaskParameterReference
+#         elif source == 'item':
+#             source_class = ItemParameterReference
+#         else:
+#             raise ValueError(
+#                 'reference source string should be one of ["dag", "task", "item"], '
+#                 'not {source}'
+#             )
+
+#         return [x for x in self.parameters if isinstance(x.from_, source_class)]
+
+
 class DAG(BaseModel):
     """A Directed Acyclic Graph containing a list of tasks."""
 
@@ -444,49 +300,49 @@ class DAG(BaseModel):
         description='Outputs of the DAG that can be used by other DAGs'
     )
 
-    @staticmethod
-    def find_task_output(
-        tasks: List[DAGTask],
-        reference: Union[TaskReference, TaskParameterReference]
-            ) -> Union[DAGTaskOutputArtifact, DAGTaskOutputParameter]:
-        """Find a task output within the DAG from a reference
+    # @staticmethod
+    # def find_task_output(
+    #     tasks: List[DAGTask],
+    #     reference: Union[TaskReference, TaskPathReference]
+    #         ) -> Union[DAGTaskOutputArtifact, DAGTaskOutputParameter]:
+    #     """Find a task output within the DAG from a reference
 
-        Arguments:
-            tasks {List[DAGTask]} -- A list of DAG Tasks
-            reference {Union[TaskReference, TaskParameterReference]} -- A
-                reference to a DAG Task output
+    #     Arguments:
+    #         tasks {List[DAGTask]} -- A list of DAG Tasks
+    #         reference {Union[TaskReference, TaskParameterReference]} -- A
+    #             reference to a DAG Task output
 
-        Raises:
-            ValueError: The task output reference cannot be found
+    #     Raises:
+    #         ValueError: The task output reference cannot be found
 
-        Returns:
-            Union[DAGTaskOutputArtifact, DAGTaskOutputParameter] -- A task output
-                parameter or artifact
-        """
-        filtered_tasks = [x for x in tasks if x.name == reference.name]
+    #     Returns:
+    #         Union[DAGTaskOutputArtifact, DAGTaskOutputParameter] -- A task output
+    #             parameter or artifact
+    #     """
+    #     filtered_tasks = [x for x in tasks if x.name == reference.name]
 
-        if len(filtered_tasks) != 1:
-            raise ValueError(
-                f'Task with name "{reference.name}" not found'
-            )
+    #     if len(filtered_tasks) != 1:
+    #         raise ValueError(
+    #             f'Task with name "{reference.name}" not found'
+    #         )
 
-        task = filtered_tasks[0]
+    #     task = filtered_tasks[0]
 
-        if isinstance(reference, TaskReference):
-            if task.loop is not None:
-                raise ValueError(
-                    'Cannot refer to outputs from a looped task.'
-                    'You must perform your own aggregation and then refer to '
-                    'a hard coded folder path.'
-                )
-            return task.outputs.artifact_by_name(reference.variable)
-        elif isinstance(reference, TaskParameterReference):
-            return task.outputs.parameter_by_name(reference.variable)
-        else:
-            raise ValueError(
-                f'Unexpected output_type "{type(reference)}".'
-                f' Expected one of "TaskReference" or "TaskParameterReference".'
-            )
+    #     if isinstance(reference, TaskReference):
+    #         if task.loop is not None:
+    #             raise ValueError(
+    #                 'Cannot refer to outputs from a looped task.'
+    #                 'You must perform your own aggregation and then refer to '
+    #                 'a hard coded folder path.'
+    #             )
+    #         return task.outputs.artifact_by_name(reference.variable)
+    #     elif isinstance(reference, TaskParameterReference):
+    #         return task.outputs.parameter_by_name(reference.variable)
+    #     else:
+    #         raise ValueError(
+    #             f'Unexpected output_type "{type(reference)}".'
+    #             f' Expected one of "TaskReference" or "TaskParameterReference".'
+    #         )
 
     @validator('inputs', always=True)
     def set_default_inputs(cls, v):
