@@ -9,7 +9,7 @@ from typing import Union, List
 from pydantic import constr, Field
 from jsonschema import validate as json_schema_validator
 
-from .common import GenericInput
+from .common import GenericInput, PathOutput
 from .dag import DAGStringInput, DAGIntegerInput, DAGNumberInput, DAGBooleanInput, \
     DAGFolderInput, DAGArrayInput, DAGObjectInput
 
@@ -220,3 +220,56 @@ FunctionInputs = Union[
     FunctionBooleanInput, FunctionFolderInput, FunctionFileInput, FunctionPathInput,
     FunctionArrayInput, FunctionObjectInput
 ]
+
+
+# function outputs
+class FunctionFileOutput(PathOutput):
+
+    type: constr(regex='^FunctionFileOutput$') = 'FunctionFileOutput'
+
+    path: str = Field(
+        ...,
+        description='Path to the output file relative to where the function command '
+        'is executed.'
+        )
+
+    @property
+    def is_artifact(self):
+        return True
+
+
+class FunctionFolderOutput(PathOutput):
+
+    type: constr(regex='^FunctionFolderOutput$') = 'FunctionFolderOutput'
+
+    path: str = Field(
+        ...,
+        description='Path to the output folder relative to where the function command '
+        'is executed.'
+        )
+
+    @property
+    def is_artifact(self):
+        return True
+
+
+class FunctionStringOutput(FunctionFileOutput):
+
+    type: constr(regex='^FunctionStringOutput$') = 'FunctionStringOutput'
+
+    @property
+    def is_artifact(self):
+        return False
+
+
+class FunctionObjectOutput(FunctionFileOutput):
+
+    type: constr(regex='^FunctionObjectOutput$') = 'FunctionObjectOutput'
+
+    @property
+    def is_artifact(self):
+        return False
+
+
+FunctionOutputs = Union[
+    FunctionFileOutput, FunctionFolderOutput, FunctionStringOutput, FunctionObjectOutput]
