@@ -56,9 +56,13 @@ class ProjectFolder(_ArtifactSource):
 
     @property
     def referenced_values(self) -> Dict[str, List[str]]:
-        values = [self.path]
+        """Get referenced variables if any.
 
-        return self._referenced_values(values)
+        Returns:
+            Dict[str, List[str]] -- A dictionary where keys are attributes and values
+                are lists contain referenced value string.
+        """
+        return self._referenced_values(['path'])
 
 
 class HTTP(_ArtifactSource):

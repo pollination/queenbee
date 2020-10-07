@@ -42,14 +42,15 @@ class DAGTask(BaseModel):
         description='Template name.'
     )
 
-    arguments: TaskArguments = Field(
+    arguments: List[TaskArguments] = Field(
         None,
         description='The input arguments for this task.'
     )
 
-    dependencies: List[str] = Field(
+    needs: List[str] = Field(
         None,
-        description='Dependencies are name of other DAG steps which this depends on.'
+        description='List of DAG tasks that this task depends on and needs to be'
+        ' executed before this task.'
     )
 
     loop: DAGTaskLoop = Field(
@@ -64,22 +65,22 @@ class DAGTask(BaseModel):
         'wanting to save results in a specific folder.'
     )
 
-    returns: TaskReturns = Field(
+    returns: List[TaskReturns] = Field(
         None,
         description='The outputs of this task'
     )
 
     @validator('loop', always=True)
     def check_item_references(cls, v, values):
-        if v is None:
-            arguments = values.get('arguments')
-            if arguments is None:
-                return v
-            assert len(arguments.parameters_by_ref_source('item')) == 0, \
-                ValueError(
-                    'Cannot use "item" references in argument parameters if no'
-                    ' "loop" is specified'
-            )
+        # if v is None:
+        #     arguments = values.get('arguments')
+        #     if arguments is None:
+        #         return v
+        #     assert len(arguments.parameters_by_ref_source('item')) == 0, \
+        #         ValueError(
+        #             'Cannot use "item" references in argument parameters if no'
+        #             ' "loop" is specified'
+        #     )
         return v
 
     @validator('sub_folder', always=True)
@@ -369,14 +370,14 @@ class DAG(BaseModel):
         exceptions = []
 
         for task in v:
-            if task.dependencies is None:
+            if task.needs is None:
                 continue
 
-            if not all(dep in task_names for dep in task.dependencies):
+            if not all(dep in task_names for dep in task.needs):
                 exceptions.append(
                     ValueError(
                         f'DAG Task "{task.name}" has unresolved dependencies:'
-                        f' {task.dependencies}'
+                        f' {task.needs}'
                     )
                 )
 
@@ -457,47 +458,47 @@ class DAG(BaseModel):
         if v is None:
             return v
 
-        tasks = values.get('tasks')
-        inputs = values.get('inputs')
-        exceptions = []
+        # tasks = values.get('tasks')
+        # inputs = values.get('inputs')
+        # exceptions = []
 
-        for artifact in v.artifacts:
-            try:
-                if artifact.from_.type.value == 'tasks':
-                    cls.find_task_output(
-                        tasks=tasks,
-                        reference=artifact.from_,
-                    )
-                elif artifact.from_.type.value == 'folder':
-                    refs = references_from_string(artifact.from_.path)
-                    for ref in refs:
-                        if ref.type == 'tasks':
-                            cls.find_task_output(
-                                tasks=tasks,
-                                reference=ref
-                            )
-                        if ref.type == 'inputs':
-                            inputs.parameter_by_name(ref.variable)
-                        else:
-                            raise ValueError(
-                                'Reference of type {ref.type.value} is not supported for DAG folder output path')
-                else:
-                    raise ValueError(
-                        f'DAG output of type {artifact.from_.type.value} is not supported')
-            except ValueError as error:
-                exceptions.append(error)
+        # for artifact in v.artifacts:
+        #     try:
+        #         if artifact.from_.type.value == 'tasks':
+        #             cls.find_task_output(
+        #                 tasks=tasks,
+        #                 reference=artifact.from_,
+        #             )
+        #         elif artifact.from_.type.value == 'folder':
+        #             refs = references_from_string(artifact.from_.path)
+        #             for ref in refs:
+        #                 if ref.type == 'tasks':
+        #                     cls.find_task_output(
+        #                         tasks=tasks,
+        #                         reference=ref
+        #                     )
+        #                 if ref.type == 'inputs':
+        #                     inputs.parameter_by_name(ref.variable)
+        #                 else:
+        #                     raise ValueError(
+        #                         'Reference of type {ref.type.value} is not supported for DAG folder output path')
+        #         else:
+        #             raise ValueError(
+        #                 f'DAG output of type {artifact.from_.type.value} is not supported')
+        #     except ValueError as error:
+        #         exceptions.append(error)
 
-        for parameter in v.parameters:
-            try:
-                cls.find_task_output(
-                    tasks=tasks,
-                    reference=parameter.from_,
-                )
-            except ValueError as error:
-                exceptions.append(error)
+        # for parameter in v.parameters:
+        #     try:
+        #         cls.find_task_output(
+        #             tasks=tasks,
+        #             reference=parameter.from_,
+        #         )
+        #     except ValueError as error:
+        #         exceptions.append(error)
 
-        if exceptions != []:
-            raise ValueError(exceptions)
+        # if exceptions != []:
+        #     raise ValueError(exceptions)
 
         return v
 
