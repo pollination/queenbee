@@ -43,105 +43,105 @@ flow:
     description: A grid file
   
   tasks:
-  
   - name: generate-sky
     template: honeybee-radiance/10000-lux-sky
-    outputs:
-      artifacts:
-      - name: sky
-        path: asset/sky/10000_lux.sky
+    returns:
+    - name: sky
+      type: TaskPathReturn
+      path: asset/sky/10000_lux.sky
   
   - name: split-grid
     template: honeybee-radiance/split-grid
     arguments:
-      parameters:
-      - name: grid-count
-        from:
-          type: inputs
-          variable: sensor-grid-count
-      artifacts:
-      - name: grid
-        from:
-          type: inputs
-          variable: input-grid
-    outputs:
-      parameters:
-      - name: grid-list
-      artifacts:
-      - name: output-grids-folder
-        path: output/temp
+    - name: grid-count
+      type: TaskArgument
+      from:
+        type: InputReference
+        variable: sensor-grid-count
+    - name: grid
+      type: TaskPathArgument
+      from:
+        type: InputFileReference
+        variable: input-grid
+    returns:
+    - name: grid-list
+      type: TaskReturn
+    - name: output-grids-folder
+      type: TaskPathReturn
+      path: output/temp
   
   - name: create-octree
     template: honeybee-radiance/create-octree
-    dependencies:
+    needs:
     - generate-sky
     arguments:
-      artifacts:
-      - name: model
-        from:
-          type: inputs
-          variable: model
-      - name: sky
-        from:
-          type: tasks
-          name: generate-sky
-          variable: sky
-    outputs:
-      artifacts:
-      - name: scene-file
-        path: output/octree/scene.oct
+    - name: model
+      type: TaskPathArgument
+      from:
+        type: InputFolderReference
+        variable: model
+    - name: sky
+      type: TaskPathArgument
+      from:
+        type: TaskFileReference
+        name: generate-sky
+        variable: sky
+    returns:
+    - name: scene-file
+      type: TaskPathReturn
+      path: output/octree/scene.oct
     
   - name: daylight-factor-simulation
     template: honeybee-radiance/ray-tracing
-    dependencies:
+    needs:
     - split-grid
     - create-octree
     loop:
       from:
-        type: tasks
+        type: TaskReference
         name: split-grid
         variable: grid-list
     sub_folder: output/raw-results
     arguments:
-      parameters:
-      - name: radiance-parameters
-        from:
-          type: inputs
-          variable: radiance-parameters
-      artifacts:
-      - name: grid
-        from:
-          type: tasks
-          name: split-grid
-          variable: output-grids-folder
-        subpath: '{{item.name}}'
-      - name: scene-file
-        from:
-          type: tasks
-          name: create-octree
-          variable: scene-file
-    outputs:
-      artifacts:
-      - name: result-file
-        path: '{{item.name}}.res'
+    - name: radiance-parameters
+      type: TaskArgument
+      from:
+        type: InputReference
+        variable: radiance-parameters
+    - name: grid
+      type: TaskPathArgument
+      from:
+        type: TaskFolderReference
+        name: split-grid
+        variable: output-grids-folder
+      sub_path: '{{item.name}}'
+    - name: scene-file
+      type: TaskPathArgument
+      from:
+        type: TaskFileReference
+        name: create-octree
+        variable: scene-file
+    returns:
+    - name: result-file
+      type: TaskPathReturn
+      path: '{{item.name}}.res'
   
   - name: post-process
     template: honeybee-radiance/post-process
-    dependencies:
+    needs:
     - daylight-factor-simulation
     arguments:
-      artifacts:
-      - name: raw-results-folder
-        from:
-          type: folder
-          path: output/raw-results
-    outputs:
-      artifacts:
-      - name: post-process-folder
-        path: result
-      parameters:
-      - name: daylight-factor-average
-  
+    - name: raw-results-folder
+      type: TaskPathArgument
+      from:
+        type: ValueFolderReference
+        path: output/raw-results
+    returns:
+    - name: post-process-folder
+      type: TaskPathReturn
+      path: result
+    - name: daylight-factor-average
+      type: TaskReturn
   
   outputs:
   - name: data
