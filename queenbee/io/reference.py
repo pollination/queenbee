@@ -1,7 +1,7 @@
 """Objects to reference parameters, files and folders from inputs, tasks and items."""
 
 import re
-from typing import List, Union
+from typing import List, Union, Dict
 from pydantic import Field, constr, validator
 
 from ..base.basemodel import BaseModel
@@ -50,6 +50,16 @@ class FolderReference(_BaseReference):
         ...,
         description='Relative path to a folder.'
     )
+
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        """Get referenced variables if any.
+
+        Returns:
+            Dict[str, List[str]] -- A dictionary where keys are attributes and values
+                are lists contain referenced value string.
+        """
+        return self._referenced_values(['path'])
 
 
 class _TaskReference(_BaseReference):
@@ -244,7 +254,7 @@ class ValueFileReference(_BaseReference):
     type: constr(regex='^ValueFileReference$') = 'ValueFileReference'
 
     # TODO: Add validation for fixed value reference types.
-    value: Union[str, List[str]] = Field(
+    path: Union[str, List[str]] = Field(
         ...,
         description='A fixed value for this reference.'
     )

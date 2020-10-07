@@ -171,7 +171,7 @@ class DAGFolderInput(GenericInput):
 
     @property
     def is_artifact(self):
-               return True
+        return True
 
 
 class DAGFileInput(DAGFolderInput):
