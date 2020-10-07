@@ -10,11 +10,9 @@ Task argument and return objects provide the interface to connect:
 
 """
 
-
-# Place holder for Task IO
-# Arguments are very similar to DAG outputs
 from typing import Union
 from pydantic import Field, constr
+from ..base.basemodel import BaseModel
 from .reference import InputReference, ItemReference, TaskReference, ValueReference, \
     InputFileReference, InputFolderReference, InputPathReference, \
     TaskFileReference, TaskFolderReference, TaskPathReference, \
@@ -22,7 +20,7 @@ from .reference import InputReference, ItemReference, TaskReference, ValueRefere
 from .common import GenericOutput, PathOutput
 
 
-class TaskArgument(object):
+class TaskArgument(BaseModel):
     """Task argument for receiving inputs that are not files or folders."""
 
     type: constr(regex='^TaskArgument$') = 'TaskArgument'
@@ -41,7 +39,7 @@ class TaskArgument(object):
     )
 
 
-class TaskPathArgument(object):
+class TaskPathArgument(BaseModel):
     type: constr(regex='^TaskPathArgument$') = 'TaskPathArgument'
 
     name: str = Field(
@@ -69,7 +67,7 @@ class TaskPathArgument(object):
     )
 
 
-TaskArguments = [TaskArgument, TaskPathArgument]
+TaskArguments = Union[TaskArgument, TaskPathArgument]
 
 
 # Returns are very similar to Function outputs
@@ -86,4 +84,4 @@ class TaskPathReturn(PathOutput):
     type: constr(regex='^TaskPathReturn$') = 'TaskPathReturn'
 
 
-TaskReturns = [TaskReturn, TaskPathReturn]
+TaskReturns = Union[TaskReturn, TaskPathReturn]
