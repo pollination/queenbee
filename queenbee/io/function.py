@@ -5,7 +5,7 @@
 """
 
 import os
-from typing import Union, List
+from typing import Union, List, Dict
 from pydantic import constr, Field
 from jsonschema import validate as json_schema_validator
 
@@ -99,6 +99,16 @@ class FunctionFolderInput(DAGFolderInput):
         description='Path to the target location that the input will be copied to. '
         ' This path is relative to the working directory where the command is executed.'
     )
+
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        """Get referenced variables if any
+
+        Returns:
+            Dict[str, List[str]] -- A dictionary where keys are attributes and lists '
+                'contain referenced value string
+        """
+        return self._referenced_values(['path'])
 
 
 class FunctionFileInput(FunctionFolderInput):

@@ -129,6 +129,16 @@ class PathOutput(GenericOutput):
         'is executed.'
         )
 
+    @property
+    def referenced_values(self) -> Dict[str, List[str]]:
+        """Get referenced variables if any.
+
+        Returns:
+            Dict[str, List[str]] -- A dictionary where keys are attributes and values
+                are lists contain referenced value string.
+        """
+        return self._referenced_values(['path'])
+
 
 class FromOutput(GenericOutput):
     """Base class for output classes that source ``from`` an object.
