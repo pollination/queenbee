@@ -19,22 +19,17 @@ def find_dup_items(values: List) -> List:
     return dup
 
 
-class IOItem(BaseModel):
-
-    name: str
-
-
 class IOBase(BaseModel):
-    """A reusable model for Input and Output (IO) objects.
+    """A reusable model for classes with Input and Output (IO) objects.
 
     IOBase is used within Operators, Recipes and Workflows.
     """
 
-    inputs: List[IOItem]
+    inputs: List
 
-    outputs: List[IOItem]
+    outputs: List
 
-    @validator('parameters', 'artifacts')
+    @validator('inputs', 'outputs')
     def parameter_unique_names(cls, v):
         """Pydantic validator to check that IO item names are unique within their list
 
@@ -53,11 +48,11 @@ class IOBase(BaseModel):
             raise ValueError(f'Duplicate names: {duplicates}')
         return v
 
-    @validator('parameters', 'artifacts', always=True)
+    @validator('inputs', 'outputs', always=True)
     def empty_list(cls, v):
         return [] if v is None else v
 
-    @validator('parameters', 'artifacts')
+    @validator('inputs', 'outputs')
     def sort_list(cls, v):
         """Pydantic validator to sort IO items by name
 
@@ -97,24 +92,24 @@ class IOBase(BaseModel):
 
         return res[0]
 
-    def artifact_by_name(self, name: str):
-        """Retrieve an artifact from the IOBase model by name
+    # def artifact_by_name(self, name: str):
+    #     """Retrieve an artifact from the IOBase model by name
 
-        Arguments:
-            name {str} -- The name to search for
+    #     Arguments:
+    #         name {str} -- The name to search for
 
-        Returns:
-            IOItem -- An IO Item with the input name
-        """
-        return self._by_name(self.artifacts, name)
+    #     Returns:
+    #         IOItem -- An IO Item with the input name
+    #     """
+    #     return self._by_name(self.artifacts, name)
 
-    def parameter_by_name(self, name: str):
-        """Retrieve an parameter from the IOBase model by name
+    # def parameter_by_name(self, name: str):
+    #     """Retrieve an parameter from the IOBase model by name
 
-        Arguments:
-            name {str} -- The name to search for
+    #     Arguments:
+    #         name {str} -- The name to search for
 
-        Returns:
-            IOItem -- An IO Item with the input name
-        """
-        return self._by_name(self.parameters, name)
+    #     Returns:
+    #         IOItem -- An IO Item with the input name
+    #     """
+    #     return self._by_name(self.parameters, name)
