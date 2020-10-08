@@ -30,9 +30,7 @@ class BaseModel(PydanticBaseModel):
     annotations: Dict[str, str] = Field(
         None,
         description='An optional dictionary to add annotations to inputs. These '
-        'annotations will be used by client side libraries to validate the inputs or '
-        'bind them to specific actions. Use ``schema`` key for providing JSON Schema '
-        'specifications for the input.'
+        'annotations will be used by the client side libraries.'
     )
 
     @validator('annotations', always=True)
