@@ -340,8 +340,9 @@ class DAGObjectInput(GenericInput):
 
 
 DAGInputs = Union[
-    GenericInput, DAGStringInput, DAGIntegerInput, DAGNumberInput, DAGBooleanInput,
-    DAGFolderInput, DAGFileInput, DAGPathInput, DAGArrayInput, DAGObjectInput]
+    DAGStringInput, DAGIntegerInput, DAGNumberInput, DAGBooleanInput,
+    DAGFolderInput, DAGFileInput, DAGPathInput, DAGArrayInput, DAGObjectInput
+]
 
 
 class DAGFileOutput(FromOutput):
@@ -374,6 +375,22 @@ class DAGFolderOutput(FromOutput):
         return True
 
 
+class DAGPathOutput(FromOutput):
+    """DAG path output."""
+    type: constr(regex='^DAGPathOutput$') = 'DAGPathOutput'
+
+    from_: Union[TaskReference, FileReference, FolderReference] = Field(
+        ...,
+        description='Reference to a file, folder or a task output. Task output must '
+        'either be a file or a folder.',
+        alias='from'
+    )
+
+    @property
+    def is_artifact(self):
+        return True
+
+
 class DAGStringOutput(DAGFileOutput):
     """DAG string output.
 
@@ -386,16 +403,64 @@ class DAGStringOutput(DAGFileOutput):
         return False
 
 
-class DAGObjectOutput(DAGFileOutput):
-    """DAG string output.
+class DAGIntegerOutput(DAGStringOutput):
+    """DAG integer output.
+
+    This output loads the content from a file as an integer.
+    """
+    type: constr(regex='^DAGIntegerOutput$') = 'DAGIntegerOutput'
+
+
+class DAGNumberOutput(DAGStringOutput):
+    """DAG number output.
+
+    This output loads the content from a file as a floating number.
+    """
+    type: constr(regex='^DAGNumberOutput$') = 'DAGNumberOutput'
+
+
+class DAGBooleanOutput(DAGStringOutput):
+    """DAG boolean output.
+
+    This output loads the content from a file as a boolean.
+    """
+    type: constr(regex='^DAGBooleanOutput$') = 'DAGBooleanOutput'
+
+
+class DAGArrayOutput(DAGStringOutput):
+    """DAG array output.
+
+    This output loads the content from a file. By default the data will be split by new
+    line. If you want each line to also be splitted provide a secondary splitter
+    charecter.
+
+    Use DAGObjectOutput for JSON arrays.
+    """
+    type: constr(regex='^DAGArrayOutput$') = 'DAGArrayOutput'
+
+    items_type: ItemType = Field(
+        ItemType.String,
+        description='Type of items in this array. All the items in an array must be '
+        'from the same type.'
+    )
+
+    splitter: List[str] = Field(
+        ['\n'],
+        description='A string to split the input data from the file. Default is new '
+        'line. If a list of separator is provided each item from the first split will '
+        'be splitted with the next splitter item.'
+    )
+
+
+class DAGObjectOutput(DAGStringOutput):
+    """DAG object output.
 
     This output loads the content from a file as a JSON object.
     """
     type: constr(regex='^DAGObjectOutput$') = 'DAGObjectOutput'
 
-    @property
-    def is_artifact(self):
-        return False
 
-
-DAGOutputs = Union[DAGFileOutput, DAGFolderOutput, DAGStringOutput, DAGObjectOutput]
+DAGOutputs = Union[
+    DAGStringOutput, DAGIntegerOutput, DAGNumberOutput, DAGBooleanOutput,
+    DAGFolderOutput, DAGFileOutput, DAGPathOutput, DAGArrayOutput, DAGObjectOutput
+]
