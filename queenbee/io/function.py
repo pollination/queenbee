@@ -9,7 +9,7 @@ from typing import Union, List, Dict
 from pydantic import constr, Field
 from jsonschema import validate as json_schema_validator
 
-from .common import GenericInput, PathOutput
+from .common import PathOutput, ItemType
 from .dag import DAGStringInput, DAGIntegerInput, DAGNumberInput, DAGBooleanInput, \
     DAGFolderInput, DAGArrayInput, DAGObjectInput
 
@@ -226,7 +226,7 @@ class FunctionObjectInput(DAGObjectInput):
 
 
 FunctionInputs = Union[
-    GenericInput, FunctionStringInput, FunctionIntegerInput, FunctionNumberInput,
+    FunctionStringInput, FunctionIntegerInput, FunctionNumberInput,
     FunctionBooleanInput, FunctionFolderInput, FunctionFileInput, FunctionPathInput,
     FunctionArrayInput, FunctionObjectInput
 ]
@@ -234,7 +234,7 @@ FunctionInputs = Union[
 
 # function outputs
 class FunctionFileOutput(PathOutput):
-
+    """Function File output."""
     type: constr(regex='^FunctionFileOutput$') = 'FunctionFileOutput'
 
     path: str = Field(
@@ -249,7 +249,7 @@ class FunctionFileOutput(PathOutput):
 
 
 class FunctionFolderOutput(PathOutput):
-
+    """Function Folder output."""
     type: constr(regex='^FunctionFolderOutput$') = 'FunctionFolderOutput'
 
     path: str = Field(
@@ -263,8 +263,26 @@ class FunctionFolderOutput(PathOutput):
         return True
 
 
-class FunctionStringOutput(FunctionFileOutput):
+class FunctionPathOutput(PathOutput):
+    """Function Path output."""
+    type: constr(regex='^FunctionPathOutput$') = 'FunctionPathOutput'
 
+    path: str = Field(
+        ...,
+        description='Path to the output file or folder relative to where the function '
+        'command is executed.'
+        )
+
+    @property
+    def is_artifact(self):
+        return True
+
+
+class FunctionStringOutput(FunctionFileOutput):
+    """Function string output.
+
+    This output loads the content from a file as a string.
+    """
     type: constr(regex='^FunctionStringOutput$') = 'FunctionStringOutput'
 
     @property
@@ -272,14 +290,66 @@ class FunctionStringOutput(FunctionFileOutput):
         return False
 
 
-class FunctionObjectOutput(FunctionFileOutput):
+class FunctionIntegerOutput(FunctionStringOutput):
+    """Function integer output.
 
+    This output loads the content from a file as an integer.
+    """
+    type: constr(regex='^FunctionIntegerOutput$') = 'FunctionIntegerOutput'
+
+
+class FunctionNumberOutput(FunctionStringOutput):
+    """Function number output.
+
+    This output loads the content from a file as a floating number.
+    """
+    type: constr(regex='^FunctionNumberOutput$') = 'FunctionNumberOutput'
+
+
+class FunctionBooleanOutput(FunctionStringOutput):
+    """Function boolean output.
+
+    This output loads the content from a file as a boolean.
+    """
+    type: constr(regex='^FunctionBooleanOutput$') = 'FunctionBooleanOutput'
+
+
+# TODO: add splitter
+class FunctionArrayOutput(FunctionStringOutput):
+    """Function array output.
+
+    This output loads the content from a file. By default the data will be split by new
+    line. If you want each line to also be splitted provide a secondary splitter
+    charecter.
+
+    Use FunctionObjectOutput for JSON arrays.
+    """
+    type: constr(regex='^FunctionArrayOutput$') = 'FunctionArrayOutput'
+
+    items_type: ItemType = Field(
+        ItemType.String,
+        description='Type of items in this array. All the items in an array must be '
+        'from the same type.'
+    )
+
+    splitter: List[str] = Field(
+        ['\n'],
+        description='A string to split the input data from the file. Default is new '
+        'line. If a list of separator is provided each item from the first split will '
+        'be splitted with the next splitter item.'
+    )
+
+
+class FunctionObjectOutput(FunctionStringOutput):
+    """Function object output.
+
+    This output loads the content from a file as a JSON object.
+    """
     type: constr(regex='^FunctionObjectOutput$') = 'FunctionObjectOutput'
-
-    @property
-    def is_artifact(self):
-        return False
 
 
 FunctionOutputs = Union[
-    FunctionFileOutput, FunctionFolderOutput, FunctionStringOutput, FunctionObjectOutput]
+    FunctionStringOutput, FunctionIntegerOutput, FunctionNumberOutput,
+    FunctionBooleanOutput, FunctionFolderOutput, FunctionFileOutput, FunctionPathOutput,
+    FunctionArrayOutput, FunctionObjectOutput
+]
