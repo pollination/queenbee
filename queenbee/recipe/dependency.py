@@ -1,10 +1,6 @@
 """Queenbee dependency class."""
 import os
 from enum import Enum
-from io import BytesIO
-from urllib import request
-from typing import Tuple
-
 from pydantic import Field
 
 from ..base.basemodel import BaseModel
