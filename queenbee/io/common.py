@@ -203,6 +203,30 @@ def find_dup_items(values: List) -> List:
     return dup
 
 
+def find_io_by_name(input_list: list, name: str):
+    """Retrieve an item from a list by its name attribute
+
+    Arguments:
+        input_list {list} -- A list of IO Items
+        name {str} -- The name to filter for
+
+    Raises:
+        ValueError: No item with this name was found
+
+    Returns:
+        IOItem -- An IO Item with the input name
+    """
+    if input_list is None:
+        raise ValueError(
+            f'no value with name {name} exists in: \n{input_list}')
+    res = [x for x in input_list if x.name == name]
+    if res == []:
+        raise ValueError(
+            f'no value with name {name} exists in: \n{input_list}')
+
+    return res[0]
+
+
 class IOBase(BaseModel):
     """A reusable model for classes with Input and Output (IO) objects.
 
@@ -247,32 +271,6 @@ class IOBase(BaseModel):
         v.sort(key=lambda x: x.name)
         return v
 
-    @staticmethod
-    def _by_name(
-        input_list: list,
-        name: str,
-    ):
-        """Retrieve an item from a list by its name attribute
-
-        Arguments:
-            input_list {list} -- A list of IO Items
-            name {str} -- The name to filter for
-
-        Raises:
-            ValueError: No item with this name was found
-
-        Returns:
-            IOItem -- An IO Item with the input name
-        """
-        if input_list is None:
-            raise ValueError(
-                f'no value with name {name} exists in: \n{input_list}')
-        res = [x for x in input_list if x.name == name]
-        if res == []:
-            raise ValueError(
-                f'no value with name {name} exists in: \n{input_list}')
-
-        return res[0]
 
     @property
     def artifacts(self) -> Dict:
@@ -318,7 +316,7 @@ class IOBase(BaseModel):
         Returns:
             IOItem -- An IO Item with the input name
         """
-        return self._by_name(self.input_artifacts, name)
+        return find_io_by_name(self.input_artifacts, name)
 
     def output_artifact_by_name(self, name: str):
         """Retrieve an artifact from the outputs by name
@@ -329,7 +327,7 @@ class IOBase(BaseModel):
         Returns:
             IOItem -- An IO Item with the input name
         """
-        return self._by_name(self.output_artifacts, name)
+        return find_io_by_name(self.output_artifacts, name)
 
     @property
     def parameters(self) -> Dict:
@@ -376,7 +374,7 @@ class IOBase(BaseModel):
         Returns:
             IOItem -- An IO Item with the input name
         """
-        return self._by_name(self.input_parameters, name)
+        return find_io_by_name(self.input_parameters, name)
 
     def output_parameter_by_name(self, name: str):
         """Retrieve an parameter from the outputs by name
@@ -387,4 +385,4 @@ class IOBase(BaseModel):
         Returns:
             IOItem -- An IO Item with the input name
         """
-        return self._by_name(self.output_parameters, name)
+        return find_io_by_name(self.output_parameters, name)
