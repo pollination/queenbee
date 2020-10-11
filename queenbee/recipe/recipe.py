@@ -19,7 +19,7 @@ from ..operator import Operator
 from ..operator.function import Function
 from ..operator.operator import Config as OperatorConfig
 
-from .dag import DAG, DAGInputs
+from .dag import DAG, DAGInputs, DAGOutputs
 from .dependency import Dependency, DependencyType
 
 
@@ -175,13 +175,22 @@ class Recipe(BaseModel):
         return self.dag_by_name(flow=self.flow, name='main')
 
     @property
-    def inputs(self) -> DAGInputs:
+    def inputs(self) -> List[DAGInputs]:
         """Get the Recipe's inputs
 
         Returns:
-            DAGInputs -- The inputs of the entrypoint DAG
+            List[DAGInputs] -- The inputs of the entrypoint DAG
         """
         return self.root_dag.inputs
+
+    @property
+    def outputs(self) -> List[DAGOutputs]:
+        """Get the Recipe's outputs
+
+        Returns:
+            List[DAGOutputs] -- The outputs of the entrypoint DAG
+        """
+        return self.root_dag.outputs
 
     @property
     def is_locked(self) -> bool:
