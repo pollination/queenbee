@@ -174,7 +174,7 @@ class DAGTask(BaseModel):
             ValueError: The source type is not recognized
 
         Returns:
-            List[TaskArguments] -- A list of Argument Artifacts
+            List[TaskPathArguments] -- A list of Argument Artifacts
         """
         if not artifacts:
             return []
@@ -226,3 +226,43 @@ class DAGTask(BaseModel):
             )
 
         return [x for x in parameters if isinstance(x.from_, source_class)]
+
+    def argument_by_ref_source(self, source) -> List[TaskArguments]:
+        """Retrieve a list of argument artifacts by their source type.
+
+        Arguments:
+            source {str} -- The source type, one of: 'dag', 'task', 'value'. dag refers
+                to InputReference, InputFileReference, InputFolderReference and
+                InputPathReference. 'task' refers to TaskReference, TaskFileReference,
+                TaskFolderReference and TaskPathReference. 'item' refers to
+                ItemReference. Finally 'value' refers to ValueReference,
+                ValueFileReference and ValueFolder Reference.
+
+        Raises:
+            ValueError: The source type is not recognized
+
+        Returns:
+            List[TaskArguments] -- A list of Argument Artifacts
+        """
+        arguments = self.arguments
+
+        if source == 'dag':
+            source_class = (
+                InputReference, InputFileReference, InputFolderReference,
+                InputPathReference
+            )
+        elif source == 'task':
+            source_class = (
+                TaskReference, TaskFileReference, TaskFolderReference, TaskPathReference
+            )
+        elif source == 'item':
+            source_class = ItemReference
+        elif source == 'value':
+            source_class = (ValueReference, ValueFileReference, ValueFolderReference)
+        else:
+            raise ValueError(
+                'reference source string should be one of ["dag", "task" or "value"], '
+                f'not {source}'
+            )
+
+        return [x for x in arguments if isinstance(x.from_, source_class)]
