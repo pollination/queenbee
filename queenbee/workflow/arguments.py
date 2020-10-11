@@ -2,7 +2,7 @@ from typing import Union, List
 from pydantic import Field
 
 from ..base.basemodel import BaseModel
-from ..io import IOBase
+from ..io.common import IOBase
 
 from ..recipe.artifact_source import HTTP, S3, ProjectFolder
 
