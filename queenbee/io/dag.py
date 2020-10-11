@@ -433,11 +433,7 @@ class DAGBooleanOutput(DAGStringOutput):
 class DAGArrayOutput(DAGStringOutput):
     """DAG array output.
 
-    This output loads the content from a file. By default the data will be split by new
-    line. If you want each line to also be splitted provide a secondary splitter
-    charecter.
-
-    Use DAGObjectOutput for JSON arrays.
+    This output loads the content from a JSON file which must be a JSON Array.
     """
     type: constr(regex='^DAGArrayOutput$') = 'DAGArrayOutput'
 
@@ -445,13 +441,6 @@ class DAGArrayOutput(DAGStringOutput):
         ItemType.String,
         description='Type of items in this array. All the items in an array must be '
         'from the same type.'
-    )
-
-    splitter: List[str] = Field(
-        ['\n'],
-        description='A string to split the input data from the file. Default is new '
-        'line. If a list of separator is provided each item from the first split will '
-        'be splitted with the next splitter item.'
     )
 
 
