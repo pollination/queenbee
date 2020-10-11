@@ -272,13 +272,13 @@ def references_from_string(string: str) -> List[
     """Generate a reference object from a reference string
 
     Arguments:
-        string {str} -- A reference string (eg: `{{inputs.parameters.example}}`)
+        string {str} -- A reference string (eg: `{{inputs.example}}`)
 
     Raises:
         ValueError: Input string cannot be parsed as a reference object
 
     Returns:
-        List[Union[InputParameterReference, TaskParameterReference, ItemParameterReference]] -- A list of reference objects
+        List[Union[InputReference, TaskReference, ItemReference]] -- A list of reference objects
     """
     pattern = r"{{\s*([_a-zA-Z0-9.\-\$#\?]*)\s*}}"
     match = re.findall(pattern, string, flags=re.MULTILINE)
@@ -291,10 +291,7 @@ def references_from_string(string: str) -> List[
 
         if ref_type == 'input':
             assert len(split_ref) == 2, \
-                ValueError(
-                    f'Input Reference should be in format "input.variable" but found:'
-                    f' {ref}'
-            )
+                f'Input Reference must be in formatted as "input.variable" not {ref}.'
             ref = InputReference(variable=split_ref[1])
         elif ref_type == 'tasks':
             assert len(split_ref) == 3, \
@@ -308,7 +305,7 @@ def references_from_string(string: str) -> List[
             variable = '.'.join(split_ref[1:])
             ref = ItemReference(variable=variable)
         else:
-            raise ValueError(f'Ref of type {ref_type} not recognized: {ref}')
+            raise ValueError(f'Reference of type {ref_type} not recognized: {ref}')
 
         refs.append(ref)
 
