@@ -32,7 +32,7 @@ class FunctionStringInput(DAGStringInput):
 
     """
 
-    type: constr(regex='^DAGStringInput$') = 'DAGStringInput'
+    type: constr(regex='^FunctionStringInput$') = 'FunctionStringInput'
 
 
 class FunctionIntegerInput(DAGIntegerInput):
