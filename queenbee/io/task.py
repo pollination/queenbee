@@ -38,6 +38,12 @@ class TaskArgument(BaseModel):
         alias='from'
     )
 
+    def is_artifact(self):
+        return False
+
+    def is_parameter(self):
+        return not self.is_artifact
+
 
 class TaskPathArgument(BaseModel):
     type: constr(regex='^TaskPathArgument$') = 'TaskPathArgument'
@@ -66,22 +72,33 @@ class TaskPathArgument(BaseModel):
         ' copying all the files and folders inside the path.'
     )
 
+    def is_artifact(self):
+        return True
+
+    def is_parameter(self):
+        return not self.is_artifact
+
 
 TaskArguments = Union[TaskArgument, TaskPathArgument]
 
 
-# Returns are very similar to Function outputs
-# Follow those examples to populate them
+# Task returns
 class TaskReturn(GenericOutput):
     """A Task return output that exposes the values from a function or a DAG."""
 
     type: constr(regex='^TaskReturn$') = 'TaskReturn'
+
+    def is_artifact(self):
+        return False
 
 
 class TaskPathReturn(PathOutput):
     """A Task output that returns a file or a folder output from a function or a DAG."""
 
     type: constr(regex='^TaskPathReturn$') = 'TaskPathReturn'
+
+    def is_artifact(self):
+        return True
 
 
 TaskReturns = Union[TaskReturn, TaskPathReturn]
