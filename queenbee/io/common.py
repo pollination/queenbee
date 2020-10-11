@@ -1,4 +1,6 @@
 """common objects between different IO files."""
+import collections
+
 from enum import Enum
 from typing import Dict, List, Any
 
@@ -186,3 +188,203 @@ class FromOutput(GenericOutput):
                 )
 
         return v
+
+
+def find_dup_items(values: List) -> List:
+    """Find duplicate items in a list
+
+    Arguments:
+        values {List} -- A list of items
+
+    Returns:
+        List -- A list of duplicated items
+    """
+    dup = [t for t, c in collections.Counter(values).items() if c > 1]
+    return dup
+
+
+class IOBase(BaseModel):
+    """A reusable model for classes with Input and Output (IO) objects.
+
+    IOBase is the baseclass for Function, DAG and Workflow.
+    """
+
+    inputs: List[Any] = Field(None)
+
+    outputs: List[Any] = Field(None)
+
+    @validator('inputs', 'outputs', always=True)
+    def parameter_unique_names(cls, v):
+        """Pydantic validator to check that IO item names are unique within their list
+
+        Arguments:
+            v {list} -- A list of items
+
+        Raises:
+            ValueError: Duplicate names have been found
+
+        Returns:
+            list -- The accepted list of items
+        """
+        if v is None:
+            return []
+        names = [value.name for value in v]
+        duplicates = find_dup_items(names)
+        if len(duplicates) != 0:
+            raise ValueError(f'Duplicate names: {duplicates}')
+        return v
+
+    @validator('inputs', 'outputs')
+    def sort_list(cls, v):
+        """Pydantic validator to sort IO items by name
+
+        Arguments:
+            v {list} -- A list of items
+
+        Returns:
+            list -- The accepted list of items
+        """
+        v.sort(key=lambda x: x.name)
+        return v
+
+    @staticmethod
+    def _by_name(
+        input_list: list,
+        name: str,
+    ):
+        """Retrieve an item from a list by its name attribute
+
+        Arguments:
+            input_list {list} -- A list of IO Items
+            name {str} -- The name to filter for
+
+        Raises:
+            ValueError: No item with this name was found
+
+        Returns:
+            IOItem -- An IO Item with the input name
+        """
+        if input_list is None:
+            raise ValueError(
+                f'no value with name {name} exists in: \n{input_list}')
+        res = [x for x in input_list if x.name == name]
+        if res == []:
+            raise ValueError(
+                f'no value with name {name} exists in: \n{input_list}')
+
+        return res[0]
+
+    @property
+    def artifacts(self) -> Dict:
+        """Get input and output artifacts. Artifacts are file, folder and path inputs.
+
+        Returns:
+            Dict -- A dictionary with two keys for inputs and outputs. Each key includes
+                a list of artifacts.
+        """
+        input_artifacts = [inp for inp in self.inputs if inp.is_artifact]
+        output_artifacts = [inp for inp in self.outputs if inp.is_artifact]
+
+        return {'inputs': input_artifacts, 'outputs': output_artifacts}
+
+    @property
+    def input_artifacts(self) -> List:
+        """Get input artifacts. Artifacts are file, folder and path inputs.
+
+        Returns:
+            A list -- A list of input artifacts.
+        """
+        input_artifacts = [inp for inp in self.inputs if inp.is_artifact]
+
+        return input_artifacts
+
+    @property
+    def output_artifacts(self) -> List:
+        """Get output artifacts. Artifacts are file, folder and path inputs.
+
+        Returns:
+            A list -- A list of output artifacts.
+        """
+        output_artifacts = [inp for inp in self.outputs if inp.is_artifact]
+
+        return output_artifacts
+
+    def input_artifact_by_name(self, name: str):
+        """Retrieve an artifact from the inputs by name
+
+        Arguments:
+            name {str} -- The name to search for
+
+        Returns:
+            IOItem -- An IO Item with the input name
+        """
+        return self._by_name(self.input_artifacts, name)
+
+    def output_artifact_by_name(self, name: str):
+        """Retrieve an artifact from the outputs by name
+
+        Arguments:
+            name {str} -- The name to search for
+
+        Returns:
+            IOItem -- An IO Item with the input name
+        """
+        return self._by_name(self.output_artifacts, name)
+
+    @property
+    def parameters(self) -> Dict:
+        """Get input and output parameters.
+
+        Returns:
+            Dict -- A dictionary with two keys for inputs and outputs. Each key includes
+                a list of parameters.
+        """
+        input_parameters = [inp for inp in self.inputs if not inp.is_artifact]
+        output_parameters = [inp for inp in self.outputs if not inp.is_artifact]
+
+        return {'inputs': input_parameters, 'outputs': output_parameters}
+
+
+    @property
+    def input_parameters(self) -> List:
+        """Get input parameters. Parameters are file, folder and path inputs.
+
+        Returns:
+            A list -- A list of input parameters.
+        """
+        input_parameters = [inp for inp in self.inputs if inp.is_parameter]
+
+        return input_parameters
+
+    @property
+    def output_parameters(self) -> List:
+        """Get output parameters. Parameters are file, folder and path inputs.
+
+        Returns:
+            A list -- A list of output parameters.
+        """
+        output_parameters = [inp for inp in self.outputs if inp.is_parameter]
+
+        return output_parameters
+
+    def input_parameter_by_name(self, name: str):
+        """Retrieve an parameter from the inputs by name
+
+        Arguments:
+            name {str} -- The name to search for
+
+        Returns:
+            IOItem -- An IO Item with the input name
+        """
+        return self._by_name(self.input_parameters, name)
+
+    def output_parameter_by_name(self, name: str):
+        """Retrieve an parameter from the outputs by name
+
+        Arguments:
+            name {str} -- The name to search for
+
+        Returns:
+            IOItem -- An IO Item with the input name
+        """
+        return self._by_name(self.output_parameters, name)
