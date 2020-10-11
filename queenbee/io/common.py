@@ -40,11 +40,6 @@ class GenericInput(BaseModel):
         description='Default value to use for an input if a value was not supplied.'
     )
 
-    @property
-    def required(self):
-        """Check if input is required."""
-        return True if not self.default else False
-
     spec: Dict = Field(
         None,
         description='An optional JSON Schema specification to validate the input value. '
@@ -54,8 +49,27 @@ class GenericInput(BaseModel):
     @validator('spec')
     def validate_default_value(cls, v, values):
         """Validate default value against spec if provided."""
-        default = values['default']
-        if default is not None:
+        try:
+            type_ = values['type']
+        except KeyError:
+            raise ValueError(f'Input with missing type: {cls.__name__}')
+
+        if type_ != cls.__name__:
+            # this is a check to ensure the default value only gets validated againt the
+            # correct class type. The reason we need to do this is that Pydantic doesn't
+            # support discriminators (https://github.com/samuelcolvin/pydantic/issues/619).
+            # As a result in case of checking for Union it checks every possible item
+            # from the start until it finds one. For inputs it causes this check to fail
+            # on a string before it gets to the integer class for an integer input.
+            return v
+
+        try:
+            default = values['default']
+        except KeyError:
+            # spec is not set
+            return v
+
+        if v is not None:
             json_schema_validator(default, v)
         return v
 
@@ -68,6 +82,11 @@ class GenericInput(BaseModel):
             spec = dict(self.spec)
             json_schema_validator(value, spec)
         return value
+
+    @property
+    def required(self):
+        """Check if input is required."""
+        return True if not self.default else False
 
     @property
     def referenced_values(self) -> Dict[str, List[str]]:

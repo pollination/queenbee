@@ -98,7 +98,7 @@ class DAGNumberInput(GenericInput):
         """
         if self.spec:
             spec = dict(self.spec)
-            spec['type'] = 'integer'
+            spec['type'] = 'number'
             json_schema_validator(value, spec)
         return value
 
@@ -162,12 +162,13 @@ class DAGFolderInput(GenericInput):
 
         Use this for validating workflow inputs against a recipe.
         """
-        # TODO: This should only be checked for input folders
         assert os.path.isdir(value), f'There is no folder at {value}'
         if self.spec:
             spec = dict(self.spec)
             spec['type'] = 'string'
             json_schema_validator(value, spec)
+
+        return value
 
     @property
     def is_artifact(self):
@@ -217,6 +218,8 @@ class DAGFileInput(DAGFolderInput):
             spec = dict(self.spec)
             spec['type'] = 'string'
             json_schema_validator(value, spec)
+
+        return value
 
 
 class DAGPathInput(DAGFolderInput):
