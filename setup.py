@@ -27,10 +27,10 @@ setuptools.setup(
     },
     include_package_data=True,
     classifiers=[
-        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: Implementation :: CPython",
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent"
     ],
-    license="GPL-3.0"
+    license="MIT"
 )
