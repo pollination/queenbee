@@ -2,12 +2,12 @@
 from typing import List
 from pydantic import Field, validator
 
-from ..base.basemodel import BaseModel
+from ..io.common import IOBase
 from ..io.function import FunctionInputs, FunctionOutputs
 from ..base.variable import _validate_inputs_outputs_var_format, get_ref_variable
 
 
-class Function(BaseModel):
+class Function(IOBase):
     """A Function with a single command"""
 
     name: str = Field(
@@ -21,7 +21,7 @@ class Function(BaseModel):
         ' this function.'
     )
 
-    inputs: FunctionInputs = Field(
+    inputs: List[FunctionInputs] = Field(
         None,
         description=u'Input arguments for this function.'
     )
@@ -34,7 +34,7 @@ class Function(BaseModel):
         'or pipe data from one to another using |'
     )
 
-    outputs: FunctionOutputs = Field(
+    outputs: List[FunctionOutputs] = Field(
         None,
         description='List of output arguments.'
     )
@@ -72,82 +72,82 @@ class Function(BaseModel):
             msg = f'Invalid referenced value(s) in function:\n{info}'
             raise ValueError(msg)
 
-    @validator('inputs')
-    def validate_input_refs(cls, v):
-        """Validate referenced variables in inputs"""
-        if v is None:
-            return []
+    # @validator('inputs')
+    # def validate_input_refs(cls, v):
+    #     """Validate referenced variables in inputs"""
+    #     if v is None:
+    #         return []
 
-        input_names = [param.name for param in v.parameters]
+    #     input_names = [param.name for param in v.parameters]
 
-        variables = v.artifacts + v.parameters
+    #     variables = v.artifacts + v.parameters
 
-        referenced_values = []
+    #     referenced_values = []
 
-        for var in variables:
-            ref_values = var.referenced_values
-            for _, refs in ref_values.items():
-                referenced_values.extend(refs)
+    #     for var in variables:
+    #         ref_values = var.referenced_values
+    #         for _, refs in ref_values.items():
+    #             referenced_values.extend(refs)
 
-        cls.validate_referenced_values(
-            input_names=input_names,
-            variables=referenced_values
-        )
+    #     cls.validate_referenced_values(
+    #         input_names=input_names,
+    #         variables=referenced_values
+    #     )
 
-        return v
+    #     return v
 
-    @validator('command')
-    def validate_command_refs(cls, v, values):
-        """Validate referenced variables in the command"""
+    # @validator('command')
+    # def validate_command_refs(cls, v, values):
+    #     """Validate referenced variables in the command"""
 
-        ref_var = get_ref_variable(v)
+    #     ref_var = get_ref_variable(v)
 
-        # If inputs is not in values it has failed validation
-        # and we cannot check/validate output refs
-        if 'inputs' not in values:
-            return v
+    #     # If inputs is not in values it has failed validation
+    #     # and we cannot check/validate output refs
+    #     if 'inputs' not in values:
+    #         return v
 
-        inputs = values.get('inputs')
+    #     inputs = values.get('inputs')
 
-        input_names = [param.name for param in inputs.parameters]
+    #     input_names = [param.name for param in inputs.parameters]
 
-        cls.validate_referenced_values(
-            input_names=input_names,
-            variables=ref_var
-        )
+    #     cls.validate_referenced_values(
+    #         input_names=input_names,
+    #         variables=ref_var
+    #     )
 
-        return v
+    #     return v
 
-    @validator('outputs')
-    def validate_output_refs(cls, v, values):
-        """Validate referenced variables in outputs"""
-        if v is None:
-            return []
+    # @validator('outputs')
+    # def validate_output_refs(cls, v, values):
+    #     """Validate referenced variables in outputs"""
+    #     if v is None:
+    #         return []
 
-        # If inputs is not in values it has failed validation
-        # and we cannot check/validate output refs
-        if 'inputs' not in values:
-            return v
+    #     # If inputs is not in values it has failed validation
+    #     # and we cannot check/validate output refs
+    #     if 'inputs' not in values:
+    #         return v
 
-        inputs = values.get('inputs')
+    #     inputs = values.get('inputs')
 
-        input_names = [param.name for param in inputs.parameters]
+    #     input_names = [param.name for param in inputs.parameters]
 
-        variables = v.artifacts + v.parameters
+    #     variables = v.artifacts + v.parameters
 
-        referenced_values = []
+    #     referenced_values = []
 
-        for var in variables:
-            ref_values = var.referenced_values
-            for _, refs in ref_values.items():
-                referenced_values.extend(refs)
+    #     for var in variables:
+    #         ref_values = var.referenced_values
+    #         for _, refs in ref_values.items():
+    #             referenced_values.extend(refs)
 
-        cls.validate_referenced_values(
-            input_names=input_names,
-            variables=referenced_values
-        )
+    #     cls.validate_referenced_values(
+    #         input_names=input_names,
+    #         variables=referenced_values
+    #     )
 
-        return v
+    #     return v
 
     # @property
     # def artifacts(self) -> List[FunctionArtifact]:
