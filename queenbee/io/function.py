@@ -314,15 +314,10 @@ class FunctionBooleanOutput(FunctionStringOutput):
     type: constr(regex='^FunctionBooleanOutput$') = 'FunctionBooleanOutput'
 
 
-# TODO: add splitter
 class FunctionArrayOutput(FunctionStringOutput):
     """Function array output.
 
-    This output loads the content from a file. By default the data will be split by new
-    line. If you want each line to also be splitted provide a secondary splitter
-    charecter.
-
-    Use FunctionObjectOutput for JSON arrays.
+    This output loads the content from a JSON file which must be a JSON Array.
     """
     type: constr(regex='^FunctionArrayOutput$') = 'FunctionArrayOutput'
 
@@ -330,13 +325,6 @@ class FunctionArrayOutput(FunctionStringOutput):
         ItemType.String,
         description='Type of items in this array. All the items in an array must be '
         'from the same type.'
-    )
-
-    splitter: List[str] = Field(
-        ['\n'],
-        description='A string to split the input data from the file. Default is new '
-        'line. If a list of separator is provided each item from the first split will '
-        'be splitted with the next splitter item.'
     )
 
 
