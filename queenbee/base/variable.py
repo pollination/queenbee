@@ -96,10 +96,7 @@ def _validate_inputs_outputs_var_format(value: str) -> str:
     if len(parts) > 0 and parts[0] != 'inputs':
         add_info = f'Inputs and outputs variables can only refer to an input value' \
                    f' not: {parts[0]}'
-    elif len(parts) > 1 and parts[1] != 'parameters':
-        add_info = f'Inputs and outputs variables can only refer to an input parameter' \
-                   f' not: {parts[1]}'
-    elif len(parts) != 3:
+    elif len(parts) != 2:
         add_info = 'Inputs and outputs variables must have 3 segments.'
     return add_info
 
