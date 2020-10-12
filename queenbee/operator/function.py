@@ -26,17 +26,17 @@ class Function(IOBase):
         description=u'Input arguments for this function.'
     )
 
+    outputs: List[FunctionOutputs] = Field(
+        None,
+        description='List of output arguments.'
+    )
+
     command: str = Field(
         ...,
         description=u'Full shell command for this function. Each function accepts only '
         'one command. The command will be executed as a shell command in operator. '
         'For running several commands after each other use && between the commands '
         'or pipe data from one to another using |'
-    )
-
-    outputs: List[FunctionOutputs] = Field(
-        None,
-        description='List of output arguments.'
     )
 
     @staticmethod
@@ -72,97 +72,24 @@ class Function(IOBase):
             msg = f'Invalid referenced value(s) in function:\n{info}'
             raise ValueError(msg)
 
-    # @validator('inputs')
-    # def validate_input_refs(cls, v):
-    #     """Validate referenced variables in inputs"""
-    #     if v is None:
-    #         return []
+    @validator('command')
+    def validate_command_refs(cls, v, values):
+        """Validate referenced variables in the command"""
 
-    #     input_names = [param.name for param in v.parameters]
+        ref_var = get_ref_variable(v)
 
-    #     variables = v.artifacts + v.parameters
+        # If inputs is not in values it has failed validation
+        # and we cannot check/validate output refs
+        if 'inputs' not in values:
+            return v
 
-    #     referenced_values = []
+        inputs = values.get('inputs')
 
-    #     for var in variables:
-    #         ref_values = var.referenced_values
-    #         for _, refs in ref_values.items():
-    #             referenced_values.extend(refs)
+        input_names = [param.name for param in inputs]
 
-    #     cls.validate_referenced_values(
-    #         input_names=input_names,
-    #         variables=referenced_values
-    #     )
+        cls.validate_referenced_values(
+            input_names=input_names,
+            variables=ref_var
+        )
 
-    #     return v
-
-    # @validator('command')
-    # def validate_command_refs(cls, v, values):
-    #     """Validate referenced variables in the command"""
-
-    #     ref_var = get_ref_variable(v)
-
-    #     # If inputs is not in values it has failed validation
-    #     # and we cannot check/validate output refs
-    #     if 'inputs' not in values:
-    #         return v
-
-    #     inputs = values.get('inputs')
-
-    #     input_names = [param.name for param in inputs.parameters]
-
-    #     cls.validate_referenced_values(
-    #         input_names=input_names,
-    #         variables=ref_var
-    #     )
-
-    #     return v
-
-    # @validator('outputs')
-    # def validate_output_refs(cls, v, values):
-    #     """Validate referenced variables in outputs"""
-    #     if v is None:
-    #         return []
-
-    #     # If inputs is not in values it has failed validation
-    #     # and we cannot check/validate output refs
-    #     if 'inputs' not in values:
-    #         return v
-
-    #     inputs = values.get('inputs')
-
-    #     input_names = [param.name for param in inputs.parameters]
-
-    #     variables = v.artifacts + v.parameters
-
-    #     referenced_values = []
-
-    #     for var in variables:
-    #         ref_values = var.referenced_values
-    #         for _, refs in ref_values.items():
-    #             referenced_values.extend(refs)
-
-    #     cls.validate_referenced_values(
-    #         input_names=input_names,
-    #         variables=referenced_values
-    #     )
-
-    #     return v
-
-    # @property
-    # def artifacts(self) -> List[FunctionArtifact]:
-    #     """List of workflow artifacts
-
-    #     Returns:
-    #         List[FunctionArtifact] -- A list of Input and Output artifacts from a
-    #             function
-    #     """
-    #     artifacts = []
-
-    #     if self.inputs and self.inputs.artifacts:
-    #         artifacts.extend(self.inputs.artifacts)
-
-    #     if self.outputs and self.outputs.artifacts:
-    #         artifacts.extend(self.outputs.artifacts)
-
-    #     return list(artifacts)
+        return v
