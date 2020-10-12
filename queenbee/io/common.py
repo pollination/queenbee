@@ -71,7 +71,7 @@ class GenericInput(BaseModel):
             # spec is not set
             return v
 
-        if v is not None:
+        if v is not None and default is not None:
             json_schema_validator(default, v)
         return v
 
