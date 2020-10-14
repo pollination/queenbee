@@ -1,21 +1,20 @@
 name: main
 inputs:
   - name: sensor-grid-count
-    type: IntegerInput
+    type: DAGIntegerInput
     annotations: {}
     description: The maximum number of grid points per parallel execution
-    default: 100
   - name: radiance-parameters
-    type: StringInput
+    type: DAGStringInput
     annotations: {}
     description: The radiance parameters for ray tracing
     default: -I -ab 2 -h
   - name: model
-    type: FolderInput
+    type: DAGFolderInput
     annotations: {}
     description: A Honeybee model with radiance properties
   - name: input-grid
-    type: FileInput
+    type: DAGFileInput
     annotations: {}
     description: A grid file
 
@@ -23,29 +22,29 @@ tasks:
 
 - name: generate-sky
   template: honeybee-radiance/10000-lux-sky
-  outputs:
-    artifacts:
+  returns:
     - name: sky
+      type: TaskPathReturn
       path: asset/sky/10000_lux.sky
 
 - name: split-grid
   template: honeybee-radiance/split-grid
   arguments:
-    parameters:
     - name: grid-count
+      type: TaskArgument
       from:
-        type: inputs
+        type: InputReference
         variable: sensor-grid-count
-    artifacts:
     - name: grid
+      type: TaskPathArgument
       from:
-        type: inputs
+        type: InputFileReference
         variable: input-grid
-  outputs:
-    parameters:
+  returns:
     - name: grid-list
-    artifacts:
+      type: TaskReturn
     - name: output-grids-folder
+      type: TaskPathReturn
       path: output/temp
 
 - name: create-octree
@@ -53,19 +52,20 @@ tasks:
   dependencies:
   - generate-sky
   arguments:
-    artifacts:
     - name: model
+      type: TaskPathArgument
       from:
-        type: inputs
+        type: InputFolderReference
         variable: model
     - name: sky
+      type: TaskPathArgument
       from:
-        type: tasks
+        type: TaskFileReference
         name: generate-sky
         variable: sky
-  outputs:
-    artifacts:
+  returns:
     - name: scene-file
+      type: TaskPathReturn
       path: output/octree/scene.oct
   
 - name: daylight-factor-simulation
@@ -75,31 +75,32 @@ tasks:
   - create-octree
   loop:
     from:
-      type: tasks
+      type: TaskReference
       name: split-grid
       variable: grid-list
   sub_folder: output/raw-results
   arguments:
-    parameters:
     - name: radiance-parameters
+      type: TaskArgument
       from:
-        type: inputs
+        type: InputReference
         variable: radiance-parameters
-    artifacts:
     - name: grid
+      type: TaskPathArgument
       from:
-        type: tasks
+        type: TaskFolderReference
         name: split-grid
         variable: output-grids-folder
-      subpath: '{{item.name}}'
+      sub_path: '{{item.name}}'
     - name: scene-file
+      type: TaskPathArgument
       from:
-        type: tasks
+        type: TaskFileReference
         name: create-octree
         variable: scene-file
-  outputs:
-    artifacts:
+  returns:
     - name: result-file
+      type: TaskPathReturn
       path: '{{item.name}}.res'
 
 - name: post-process
@@ -107,29 +108,29 @@ tasks:
   dependencies:
   - daylight-factor-simulation
   arguments:
-    artifacts:
     - name: raw-results-folder
+      type: TaskPathArgument
       from:
-        type: folder
+        type: ValueFolderReference
         path: output/raw-results
-  outputs:
-    artifacts:
+  returns:
     - name: post-process-folder
+      type: TaskPathReturn
       path: result
-    parameters:
     - name: daylight-factor-average
+      type: TaskReturn
 
 
 outputs:
-  artifacts:
   - name: data
+    type: DAGFolderOutput
     from:
-      type: tasks
+      type: TaskReference
       name: post-process
       variable: post-process-folder
-  parameters:
   - name: average
+    type: DAGIntegerOutput
     from:
-      type: tasks
+      type: TaskReference
       name: post-process
       variable: daylight-factor-average

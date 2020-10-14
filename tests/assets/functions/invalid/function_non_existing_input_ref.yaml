@@ -2,13 +2,11 @@ type: function
 name: generate-overcast-sky
 operator: radiance-operator
 inputs:
-  parameters:
     - name: desired-irradiance
+      type: FunctionStringInput
       description: desired sky horizontal irradiance
-      required: true
-command: gensky -c -B "{{inputs.parameters.not-desired-irradiance}}" > file.sky
+command: gensky -c -B "{{inputs.not-desired-irradiance}}" > file.sky
 outputs:
-  artifacts:
     - name: sky
+      type: FunctionFolderOutput
       path: file.sky
-

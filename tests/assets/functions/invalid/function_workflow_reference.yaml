@@ -1,16 +1,17 @@
 name: generate-overcast-sky
 type: function
 inputs:
-  parameters:
     - name: desired-irradiance
+      type: FunctionIntegerInput
       description: desired sky horizontal irradiance
     - name: sky-file
+      type: FunctionStringInput
       description: full path to output sky file
-      default: "{{workflow.parameters.sky-file}}"
+      default: "{{workflow.sky-file}}"
 operator: radiance-operator
-command: gensky -c -B "{{inputs.parameters.desired-irradiance}}" > {{inputs.parameters.sky-file}}
+command: gensky -c -B "{{inputs.desired-irradiance}}" > file.sky
 outputs:
-  artifacts:
-    - name: sky
-      path: file.sky
+  - name: sky
+    type: FunctionFolderOutput
+    path: file.sky
 
