@@ -49,11 +49,12 @@ tasks:
 - name: step-in
   template: step-in
   arguments:
-    parameters:
     - name: step-count
-      value: "{{workflow.inputs.parameters.step-count}}"
+      type: TaskArgument
+      value: "{{workflow.inputs.step-count}}"
     - name: shake-hand
-      value: "{{workflow.inputs.parameters.shake-hand}}"
+      type: TaskArgument
+      value: "{{workflow.inputs.shake-hand}}"
   dependencies:
     - say-hi
 - name: take-off-shoes
@@ -62,7 +63,7 @@ tasks:
     - say-hi
 - name: walk-in
   template: walking
-  loop: "{{tasks.step-in.outputs.parameters.step-count}}"
+  loop: "{{tasks.step-in.outputs.step-count}}"
   dependencies:
   - take-off-shoes
   - step-in
