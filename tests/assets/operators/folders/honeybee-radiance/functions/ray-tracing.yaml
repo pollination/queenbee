@@ -1,17 +1,18 @@
 name: ray-tracing
 description: Run ray tracing using some input data!
 inputs:
-  parameters:
   - name: radiance-parameters
+    type: FunctionStringInput
     description: a string of radiance parameters
-    default: -b 5
-  artifacts:
+    default: -ab 5
   - name: grid
+    type: FunctionFileInput
     path: grid.pts
   - name: scene-file
+    type: FunctionFileInput
     path: scene.oct
-command: rtrace -I -h {{inputs.parameters.radiance-parameters}} scene.oct < grid.pts > grid.res
+command: rtrace -I -h {{inputs.radiance-parameters}} scene.oct < grid.pts > grid.res
 outputs:
-  artifacts:
   - name: result-file
+    type: FunctionFileOutput
     path: grid.res
