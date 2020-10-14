@@ -114,7 +114,7 @@ flow:
         type: TaskFolderReference
         name: split-grid
         variable: output-grids-folder
-      sub_path: '{{item.name}}'
+      sub_path:  '{{item.name}}'
     - name: scene-file
       type: TaskPathArgument
       from:

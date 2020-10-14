@@ -14,9 +14,14 @@ flow:
   - name: minimal-task
     template: honeybee-radiance/10000-lux-sky
     arguments:
-      parameters:
       - name: foo
-        value: test-value
+        type: TaskArgument
+        from:
+          type: ValueReference
+          value: test-value
       - name: bar
-        value: test-value
-    sub_folder: path/{{arguments.parameters.foo}}/{{arguments.parameters.bar}}
+        type: TaskArgument
+        from:
+          type: ValueReference
+          value: test-value
+    sub_folder: path/{{arguments.foo}}/{{arguments.bar}}
