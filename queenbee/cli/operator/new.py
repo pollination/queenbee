@@ -40,17 +40,17 @@ def new(name, path):
         - name: say-hi
         description: Make the whale say something!
         inputs:
-            parameters:
             - name: message
+            type: DAGStringInput
             default: hi
             description: What the whale will say
-        command: 'cowsay {{inputs.parameters.message}} | tee /tmp/hello_world.txt'
+        command: 'cowsay {{inputs.message}} | tee /tmp/hello_world.txt'
         outputs:
-            parameters:
             - name: whale-said
+            type: DAGStringOutput
             path: /tmp/hello_world.txt
-            artifacts:
             - name: whale-said-file
+            type: DAGFileOutput
             path: /tmp/hello_world.txt
 
     You can indicate where you want to create the operator folder by
