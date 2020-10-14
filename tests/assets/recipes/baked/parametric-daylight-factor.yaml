@@ -45,12 +45,12 @@ flow:
         from:
           type: inputs
           variable: models-folder
-        subpath: '{{item}}/grid'
+        sub_path: '{{item}}/grid'
       - name: model
         from:
           type: inputs
           variable: models-folder
-        subpath: '{{item}}/model'
+        sub_path: '{{item}}/model'
     dependencies: null
     loop:
       from:
@@ -145,7 +145,7 @@ templates:
   inputs:
     parameters:
     - name: radiance-parameters
-      default: -b 5
+      default: -ab 5
       description: a string of radiance parameters
       required: false
     artifacts:
@@ -155,8 +155,7 @@ templates:
     - name: scene-file
       description: null
       path: scene.oct
-  command: rtrace -I -h {{inputs.parameters.radiance-parameters}} scene.oct < grid.pts
-    > grid.res
+  command: rtrace -I -h {{inputs.radiance-parameters}} scene.oct < grid.pts > grid.res
   outputs:
     parameters: []
     artifacts:
@@ -228,13 +227,13 @@ templates:
         from:
           type: inputs
           variable: model
-        subpath: null
+        sub_path: null
       - name: sky
         from:
           type: tasks
           name: generate-sky
           variable: sky
-        subpath: null
+        sub_path: null
     dependencies:
     - generate-sky
     loop: null
@@ -259,13 +258,13 @@ templates:
           type: tasks
           name: split-grid
           variable: output-grids-folder
-        subpath: '{{item.name}}'
+        sub_path: '{{item.name}}'
       - name: scene-file
         from:
           type: tasks
           name: create-octree
           variable: scene-file
-        subpath: null
+        sub_path: null
     dependencies:
     - split-grid
     - create-octree
@@ -303,7 +302,7 @@ templates:
         from:
           type: folder
           path: output/raw-results
-        subpath: null
+        sub_path: null
     dependencies:
     - daylight-factor-simulation
     loop: null
@@ -328,7 +327,7 @@ templates:
         from:
           type: inputs
           variable: input-grid
-        subpath: null
+        sub_path: null
     dependencies: null
     loop: null
     sub_folder: null

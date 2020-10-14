@@ -30,37 +30,37 @@ def new(name, path):
         \b
         metadata:
             name: <input-name>
-            version: 0.1.0
+            tag: 0.1.0
         dependencies:
         - type: operator
         name: whalesay
-        version: 0.1.0
+        tag: 0.1.0
         source: https://pollination.github.io/shed # Replace with name of repo
         flow:
         - name: main
         inputs:
-            parameters:
             - name: thing-to-say
+            type: DAGStringInput
             default: hi
             description: What the whale will say
         tasks:
         - name: say-something
             template: whalesay/say-hi
             arguments:
-            parameters:
             - name: message
+                type: TaskArgument
                 from:
-                type: inputs
+                type: InputReference
                 variable: thing-to-say
-            outputs:
-            parameters:
+            returns:
             - name: whale-said
+                type: TaskReturn
 
         outputs:
-            parameters:
             - name: what-the-whale-said
+            type: DAGStringOutput
             from:
-                type: tasks
+                type: TaskReference
                 name: say-something
                 variable: whale-said
 

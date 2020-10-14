@@ -17,14 +17,14 @@ flow:
       value:
       - 1
       - 2
-    outputs:
-      artifacts:
+    returns:
         - name: sky
+          type: TaskPathReturn
           path: '{{item}}.sky'
   outputs:
-    artifacts:
     - name: skies
+      type: DAGFolderOutput
       from:
-        type: tasks
+        type: TaskReference
         name: minimal-task
         variable: sky

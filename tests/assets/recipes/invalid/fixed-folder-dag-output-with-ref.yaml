@@ -12,20 +12,28 @@ flow:
 - name: main
   inputs:
   - name: folder-path
-    type: StringInput
+    type: DAGStringInput
     default: something
   tasks:
   - name: minimal-task
     template: honeybee-radiance/10000-lux-sky
     arguments:
-      parameters:
       - name: foo
-        value: test-value
+        type: TaskArgument
+        from:
+          type: ValueReference
+          value: test-value
       - name: bar
-        value: test-value
+        type: TaskArgument
+        from:
+          type: ValueReference
+          value: test-value
   outputs:
-    artifacts:
     - name: fixed-folder-output
+      type: DAGFolderOutput
       from:
-        type: folder
+        type: FolderReference
+        # since now outputs are Union the error message is not as clean as we like
+        # them to be. If the error checks the message to be in the error it will pass
+        # otherwise it will fail.
         path: path/to/{{input.folder-path}}/file
