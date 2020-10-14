@@ -1,13 +1,13 @@
 name: main
 inputs:
 - annotations: {}
-  type: ArrayInput
+  type: DAGArrayInput
   items_type: string
   name: model-names
   default: null
   description: null
 - annotations: {}
-  type: FolderInput
+  type: DAGFolderInput
   name: models-folder
   description: A folder full of honeybee models
   default: null
@@ -22,26 +22,27 @@ tasks:
       variable: model-names
   sub_folder: 'daylight-factor/{{item}}'
   arguments:
-    artifacts:
     - name: model
+      type: TaskPathArgument
       from:
-        type: inputs
+        type: InputFolderReference
         variable: models-folder
-      subpath: '{{item}}/model'
+      sub_path: '{{item}}/model'
     - name: input-grid
+      type: TaskPathArgument
       from:
-        type: inputs
+        type: InputFolderReference
         variable: models-folder
-      subpath: '{{item}}/grid'
-  outputs:
-    parameters:
+      sub_path: '{{item}}/grid'
+  returns:
     - name: average
+      type: TaskReturn
 
 outputs:
-  artifacts:
   - name: daylight-factor-grids
+    type: DAGFolderOutput
     from:
-      type: folder
+      type: FolderReference
       path: daylight-factor
 
 
