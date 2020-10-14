@@ -9,6 +9,7 @@ from jsonschema import validate as json_schema_validator
 
 from .reference import FolderReference, FileReference, references_from_string
 from ..base.basemodel import BaseModel
+from ..base.variable import _validate_inputs_outputs_var_format, get_ref_variable
 
 
 class ItemType(str, Enum):
@@ -37,9 +38,9 @@ class GenericInput(BaseModel):
         description='Optional description for input.'
     )
 
-    default: Any = Field(
+    default: str = Field(
         None,
-        description='Default value to use for an input if a value was not supplied.'
+        description='Place-holder. Overwrite this!'
     )
 
     spec: Dict = Field(
@@ -47,6 +48,20 @@ class GenericInput(BaseModel):
         description='An optional JSON Schema specification to validate the input value. '
         'You can use validate_spec method to validate a value against the spec.'
     )
+
+    @validator('default')
+    def validate_default_refs(cls, v):
+        """Validate referenced variables in the command"""
+
+        ref_var = get_ref_variable(v)
+        add_info = []
+        for ref in ref_var:
+            add_info.append(_validate_inputs_outputs_var_format(ref))
+
+        if add_info:
+            raise ValueError('\n'.join(add_info))
+
+        return v
 
     @validator('spec')
     def validate_default_value(cls, v, values):
@@ -233,9 +248,15 @@ class IOBase(BaseModel):
     IOBase is the baseclass for Function, DAG and Workflow.
     """
 
-    inputs: List[Any] = Field(None)
+    inputs: List[Any] = Field(
+        None,
+        description='Place-holder. Overwrite this!'
+    )
 
-    outputs: List[Any] = Field(None)
+    outputs: List[Any] = Field(
+        None,
+        description='Place-holder. Overwrite this!'
+    )
 
     @validator('inputs', 'outputs', always=True)
     def parameter_unique_names(cls, v):
@@ -270,7 +291,6 @@ class IOBase(BaseModel):
         """
         v.sort(key=lambda x: x.name)
         return v
-
 
     @property
     def artifacts(self) -> Dict:
@@ -341,7 +361,6 @@ class IOBase(BaseModel):
         output_parameters = [inp for inp in self.outputs if not inp.is_artifact]
 
         return {'inputs': input_parameters, 'outputs': output_parameters}
-
 
     @property
     def input_parameters(self) -> List:
