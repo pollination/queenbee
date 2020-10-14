@@ -27,75 +27,77 @@ functions:
 - name: create-octree
   description: Generate an octree
   inputs:
-    artifacts:
     - name: model
+      type: FunctionFileInput
       path: model.json
     - name: sky
+      type: FunctionFileInput
       path: sky.sky
   command: honeybee radiance oconv -s sky.sky -m model.json --output scene.oct
   outputs:
-    artifacts:
     - name: scene-file
+      type: FunctionFileOutput
       path: scene.oct
 
 - name: 10000-lux-sky
   description: Generates a 10000 lux sky
   command: honeybee radiance sky illuminance 100000
   outputs:
-    artifacts:
     - name: sky
+      type: FunctionFileOutput
       description: The resulting sky object
       path: sky.sky
 
 - name: post-process
   description: Post process your results and $$$
   inputs:
-    artifacts:
     - name: raw-results-folder
+      type: FunctionFolderInput
       path: raw
   command: honeybee radiance grid merge raw --folder output
   outputs:
-    artifacts:
     - name: post-process-folder
+      type: FunctionFolderOutput
       path: output
-    parameters:
     - name: daylight-factor-max
+      type: FunctionStringOutput
       path: output/max
     - name: daylight-factor-average
+      type: FunctionIntegerOutput
       path: output/avg
 
 - name: ray-tracing
   description: Run ray tracing using some input data!
   inputs:
-    parameters:
     - name: radiance-parameters
+      type: FunctionStringInput
       description: a string of radiance parameters
-      default: -b 5
-    artifacts:
+      default: -ab 5
     - name: grid
+      type: FunctionFileInput
       path: grid.pts
     - name: scene-file
+      type: FunctionFileInput
       path: scene.oct
-  command: rtrace -I -h {{inputs.parameters.radiance-parameters}} scene.oct < grid.pts > grid.res
+  command: rtrace -I -h {{inputs.radiance-parameters}} scene.oct < grid.pts > grid.res
   outputs:
-    artifacts:
     - name: result-file
+      type: FunctionFileOutput
       path: grid.res
       
 - name: split-grid
   inputs:
-    parameters:
     - name: grid-count
-      required: true
-    artifacts:
+      type: FunctionIntegerInput
     - name: grid
+      type: FunctionFileInput
       description: The input grid to split
       path: grid.pts
   command: honeybee radiance grid split grid.pts --folder output --log-file output/grids.txt
   outputs:
-    parameters:
     - name: grid-list
+      type: FunctionArrayOutput
       path: output/grids.txt
-    artifacts:
     - name: output-grids-folder
+      type: FunctionFolderOutput
       path: output
