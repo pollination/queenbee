@@ -11,8 +11,8 @@ from pydantic import Field, validator, root_validator
 from .task import DAGTask
 from ..io.common import IOBase, find_dup_items
 from ..io.dag import DAGInputs, DAGOutputs
-from ..io.reference import FileReference, FolderReference, TaskReference, TaskFileReference, TaskFolderReference, \
-    TaskPathReference, references_from_string
+from ..io.reference import FileReference, FolderReference, TaskReference, \
+    TaskFileReference, TaskFolderReference, TaskPathReference
 
 
 class DAG(IOBase):

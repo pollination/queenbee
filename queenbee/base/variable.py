@@ -16,6 +16,7 @@ def get_ref_variable(value: Union[bytes, str]) -> list:
     return parse_double_quotes_vars(value)
 
 
+# TODO: update workflow inputs validation
 def _validate_workflow_var_format(value: str) -> str:
     """Validate workflow vars
 
@@ -67,16 +68,12 @@ def _validate_tasks_var_format(value: str) -> str:
     """
     add_info = ''
     parts = value.split('.')
-    if len(parts) != 5:
-        add_info = 'Valid tasks variables are ' \
-            '"tasks.<TASKNAME>.outputs.parameters.<NAME>" and ' \
-            '"tasks.<TASKNAME>.outputs.artifacts.<NAME>".'
+    if len(parts) != 4:
+        add_info = 'Valid tasks variables is "tasks.<TASKNAME>.outputs.<NAME>".'
     # check for other parts
-    _, _, attr, prop, _ = parts
+    _, _, attr, _ = parts
     if attr != 'outputs':
         add_info = 'Tasks variable can only access previous tasks "outputs".'
-    elif prop not in ('parameters', 'artifacts'):
-        add_info = 'Task outputs variables must be "parameters" or "artifacts".'
 
     return add_info
 
@@ -97,7 +94,7 @@ def _validate_inputs_outputs_var_format(value: str) -> str:
         add_info = f'Inputs and outputs variables can only refer to an input value' \
                    f' not: {parts[0]}'
     elif len(parts) != 2:
-        add_info = 'Inputs and outputs variables must have 3 segments.'
+        add_info = 'Inputs and outputs variables must have 2 segments.'
     return add_info
 
 

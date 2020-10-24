@@ -1,7 +1,7 @@
 """Objects to reference parameters, files and folders from inputs, tasks and items."""
 
 import re
-from typing import List, Union, Dict
+from typing import List, Union, Dict, Any
 from pydantic import Field, constr, validator
 
 from ..base.basemodel import BaseModel
@@ -62,10 +62,10 @@ class FolderReference(_BaseReference):
         return self._referenced_values(['path'])
 
 
-class _TaskReference(_BaseReference):
+class _TaskReferenceBase(_BaseReference):
     """A Task Reference"""
 
-    type: constr(regex='^_TaskReference$') = '_TaskReference'
+    type: constr(regex='^_TaskReferenceBase$') = '_TaskReferenceBase'
 
     name: str = Field(
         ...,
@@ -89,7 +89,7 @@ class _TaskReference(_BaseReference):
         return template_string(template)
 
 
-class TaskFileReference(_TaskReference):
+class TaskFileReference(_TaskReferenceBase):
     """A reference to a file that is generated in a task."""
 
     type: constr(regex='^TaskFileReference$') = 'TaskFileReference'
@@ -99,7 +99,7 @@ class TaskFileReference(_TaskReference):
         return 'artifacts'
 
 
-class TaskFolderReference(_TaskReference):
+class TaskFolderReference(_TaskReferenceBase):
     """A reference to a folder that is generated in a task."""
 
     type: constr(regex='^TaskFolderReference$') = 'TaskFolderReference'
@@ -109,7 +109,7 @@ class TaskFolderReference(_TaskReference):
         return 'artifacts'
 
 
-class TaskPathReference(_TaskReference):
+class TaskPathReference(_TaskReferenceBase):
     """A reference to a file or folder that is generated in a task."""
 
     type: constr(regex='^TaskPathReference$') = 'TaskPathReference'
@@ -119,7 +119,7 @@ class TaskPathReference(_TaskReference):
         return 'artifacts'
 
 
-class TaskReference(_TaskReference):
+class TaskReference(_TaskReferenceBase):
     """A Task reference for parameters other than files or folders."""
 
     type: constr(regex='^TaskReference$') = 'TaskReference'
@@ -129,10 +129,10 @@ class TaskReference(_TaskReference):
         return 'parameters'
 
 
-class _InputReference(_BaseReference):
+class _InputReferenceBase(_BaseReference):
     """An input reference."""
 
-    type: constr(regex='^_InputReference$') = '_InputReference'
+    type: constr(regex='^_InputReferenceBase$') = '_InputReferenceBase'
 
     variable: str = Field(
         ...,
@@ -149,10 +149,11 @@ class _InputReference(_BaseReference):
         return template_string(template)
 
 
-class InputReference(_InputReference):
+class InputReference(_InputReferenceBase):
     """An input parameter reference which is not a file or a folder.
 
-    Use InputFileReference, InputFolderReference or InputPathReference instead.
+    For a file or a folder use InputFileReference, InputFolderReference or
+    InputPathReference instead.
     """
 
     type: constr(regex='^InputReference$') = 'InputReference'
@@ -162,7 +163,7 @@ class InputReference(_InputReference):
         return 'parameters'
 
 
-class InputFileReference(_InputReference):
+class InputFileReference(_InputReferenceBase):
     """An input file reference"""
 
     type: constr(regex='^InputFileReference$') = 'InputFileReference'
@@ -172,7 +173,7 @@ class InputFileReference(_InputReference):
         return 'artifacts'
 
 
-class InputFolderReference(_InputReference):
+class InputFolderReference(_InputReferenceBase):
     """An input folder reference"""
 
     type: constr(regex='^InputFolderReference$') = 'InputFolderReference'
@@ -182,7 +183,7 @@ class InputFolderReference(_InputReference):
         return 'artifacts'
 
 
-class InputPathReference(_InputReference):
+class InputPathReference(_InputReferenceBase):
     """An input file or folder reference"""
 
     type: constr(regex='^InputPathReference$') = 'InputPathReference'
@@ -222,8 +223,7 @@ class ValueReference(_BaseReference):
 
     type: constr(regex='^ValueReference$') = 'ValueReference'
 
-    # TODO: Add validation for fixed value reference types.
-    value: Union[str, float, int, bool, list, dict] = Field(
+    value: Any = Field(
         ...,
         description='A fixed value for this reference.'
     )
@@ -235,7 +235,7 @@ class ValueListReference(_BaseReference):
     type: constr(regex='^ValueListReference$') = 'ValueListReference'
 
     # TODO: Add validation for fixed value reference types.
-    value: List[Union[str, float, int, bool, dict, list]] = Field(
+    value: List[Any] = Field(
         ...,
         description='A fixed value for this reference.'
     )
@@ -253,8 +253,7 @@ class ValueFileReference(_BaseReference):
 
     type: constr(regex='^ValueFileReference$') = 'ValueFileReference'
 
-    # TODO: Add validation for fixed value reference types.
-    path: Union[str, List[str]] = Field(
+    path: str = Field(
         ...,
         description='A fixed value for this reference.'
     )
