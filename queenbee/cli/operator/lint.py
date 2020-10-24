@@ -1,5 +1,3 @@
-import os
-
 from pydantic import ValidationError
 
 from ...operator import Operator
