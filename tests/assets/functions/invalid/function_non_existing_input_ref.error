@@ -1,1 +1,1 @@
-{{inputs.not-desired-irradiance}}: Cannot find "not-desired-irradiance" in inputs
+.*{{inputs\.not-desired-irradiance}}: Cannot find "not-desired-irradiance" in inputs\..*
