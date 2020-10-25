@@ -50,8 +50,17 @@ class GenericInput(BaseModel):
     )
 
     @validator('default')
-    def validate_default_refs(cls, v):
+    def validate_default_refs(cls, v, values):
         """Validate referenced variables in the command"""
+        try:
+            type_ = values['type']
+        except KeyError:
+            raise ValueError(f'Input with missing type: {cls.__name__}')
+
+        if type_ != cls.__name__ or not isinstance(v, (str, bytes)):
+            # this is a check to ensure the default value only gets validated againt the
+            # correct class type. See spec validation for more information
+            return v
 
         ref_var = get_ref_variable(v)
         add_info = []
