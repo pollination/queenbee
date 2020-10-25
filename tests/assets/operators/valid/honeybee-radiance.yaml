@@ -1,103 +1,161 @@
+annotations: {}
 metadata:
+  annotations: {}
   name: honeybee-radiance
-  description: An operator to run all things honeybee and radiance!
-  icon: https://www.ladybug.tools/assets/img/logo.png
-  home: https://ladybug.tools/honeybee-radiance/docs
-  sources:
-  - https://github.com/ladybug-tools/honeybee-radiance
-
   tag: 1.2.3
   app_version: 2.3.2
-
   keywords:
   - honeybee
   - radiance
   - ladybug-tools
-
   maintainers:
-  - name: mostapha
+  - annotations: {}
+    name: mostapha
     email: mostapha@ladybug.tools
-
+  home: https://ladybug.tools/honeybee-radiance/docs
+  sources:
+  - https://github.com/ladybug-tools/honeybee-radiance
+  icon: https://www.ladybug.tools/assets/img/logo.png
+  deprecated: null
+  description: An operator to run all things honeybee and radiance!
+  license: null
 config:
+  annotations: {}
   docker:
+    annotations: {}
     image: ladybugtools/honeybee-radiance:2.3.2
+    registry: null
     workdir: /opt/run/
-
+  local: null
 functions:
-- name: create-octree
-  description: Generate an octree
-  inputs:
-    - name: model
-      type: FunctionFileInput
-      path: model.json
-    - name: sky
-      type: FunctionFileInput
-      path: sky.sky
-  command: honeybee radiance oconv -s sky.sky -m model.json --output scene.oct
+- annotations: {}
+  inputs: []
   outputs:
-    - name: scene-file
-      type: FunctionFileOutput
-      path: scene.oct
-
-- name: 10000-lux-sky
+  - annotations: {}
+    type: FunctionFileOutput
+    name: sky
+    description: The resulting sky object
+    path: sky.sky
+  name: 10000-lux-sky
   description: Generates a 10000 lux sky
   command: honeybee radiance sky illuminance 100000
+- annotations: {}
+  inputs:
+  - annotations: {}
+    type: FunctionFileInput
+    name: model
+    description: null
+    default: null
+    spec: null
+    path: model.json
+    extensions: null
+  - annotations: {}
+    type: FunctionFileInput
+    name: sky
+    description: null
+    default: null
+    spec: null
+    path: sky.sky
+    extensions: null
   outputs:
-    - name: sky
-      type: FunctionFileOutput
-      description: The resulting sky object
-      path: sky.sky
-
-- name: post-process
+  - annotations: {}
+    type: FunctionFileOutput
+    name: scene-file
+    description: null
+    path: scene.oct
+  name: create-octree
+  description: Generate an octree
+  command: honeybee radiance oconv -s sky.sky -m model.json --output scene.oct
+- annotations: {}
+  inputs:
+  - annotations: {}
+    type: FunctionFileInput
+    name: raw-results-folder
+    description: null
+    default: null
+    spec: null
+    path: raw
+    extensions: null
+  outputs:
+  - annotations: {}
+    type: FunctionNumberOutput
+    name: daylight-factor-average
+    description: null
+    path: output/avg
+  - annotations: {}
+    type: FunctionNumberOutput
+    name: daylight-factor-max
+    description: null
+    path: output/max
+  - annotations: {}
+    type: FunctionFileOutput
+    name: post-process-folder
+    description: null
+    path: output
+  name: post-process
   description: Post process your results and $$$
-  inputs:
-    - name: raw-results-folder
-      type: FunctionFolderInput
-      path: raw
   command: honeybee radiance grid merge raw --folder output
+- annotations: {}
+  inputs:
+  - annotations: {}
+    type: FunctionFileInput
+    name: grid
+    description: null
+    default: null
+    spec: null
+    path: grid.pts
+    extensions: null
+  - annotations: {}
+    type: FunctionStringInput
+    name: radiance-parameters
+    description: a string of radiance parameters
+    default: -ab 5
+    spec: null
+  - annotations: {}
+    type: FunctionFileInput
+    name: scene-file
+    description: null
+    default: null
+    spec: null
+    path: scene.oct
+    extensions: null
   outputs:
-    - name: post-process-folder
-      type: FunctionFolderOutput
-      path: output
-    - name: daylight-factor-max
-      type: FunctionStringOutput
-      path: output/max
-    - name: daylight-factor-average
-      type: FunctionIntegerOutput
-      path: output/avg
-
-- name: ray-tracing
+  - annotations: {}
+    type: FunctionFileOutput
+    name: result-file
+    description: null
+    path: grid.res
+  name: ray-tracing
   description: Run ray tracing using some input data!
-  inputs:
-    - name: radiance-parameters
-      type: FunctionStringInput
-      description: a string of radiance parameters
-      default: -ab 5
-    - name: grid
-      type: FunctionFileInput
-      path: grid.pts
-    - name: scene-file
-      type: FunctionFileInput
-      path: scene.oct
   command: rtrace -I -h {{inputs.radiance-parameters}} scene.oct < grid.pts > grid.res
-  outputs:
-    - name: result-file
-      type: FunctionFileOutput
-      path: grid.res
-      
-- name: split-grid
+- annotations: {}
   inputs:
-    - name: grid-count
-      type: FunctionIntegerInput
-    - name: grid
-      type: FunctionFileInput
-      description: The input grid to split
-      path: grid.pts
-  command: honeybee radiance grid split grid.pts --folder output --log-file output/grids.txt
+  - annotations: {}
+    type: FunctionFileInput
+    name: grid
+    description: The input grid to split
+    default: null
+    spec: null
+    path: grid.pts
+    extensions: null
+  - annotations: {}
+    type: FunctionIntegerInput
+    name: grid-count
+    description: null
+    default: null
+    spec: null
   outputs:
-    - name: grid-list
-      type: FunctionArrayOutput
-      path: output/grids.txt
-    - name: output-grids-folder
-      type: FunctionFolderOutput
-      path: output
+  - annotations: {}
+    type: FunctionArrayOutput
+    name: grid-list
+    description: null
+    path: output/grids.txt
+    items_type: String
+  - annotations: {}
+    type: FunctionFolderOutput
+    name: output-grids-folder
+    description: null
+    path: output
+  name: split-grid
+  description: null
+  command: honeybee radiance grid split grid.pts --folder output --log-file output/grids.txt
