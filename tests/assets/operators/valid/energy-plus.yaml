@@ -1,43 +1,72 @@
+annotations: {}
 metadata:
+  annotations: {}
   name: energy-plus
   tag: 0.1.0
-  app_version: 9.0.1   # The version of EnergyPlus the operator uses
-  description: An operator to run EnergyPlus functions
+  app_version: 9.0.1
   keywords:
   - energyplus
+  maintainers: null
   home: https://energyplus.net
   sources:
   - https://github.com/nrel/energyplus
   icon: https://energyplus.net/sites/default/files/eplus_logo.png
-
+  deprecated: null
+  description: An operator to run EnergyPlus functions
+  license: null
 config:
+  annotations: {}
   docker:
+    annotations: {}
     image: nrel/energyplus:9.0.1
+    registry: null
     workdir: /var/simdata
-
+  local: null
 functions:
-- name: design-day-simulation
-  description: Run an EnergyPlus Design Day simulation using a weather file and an idf
+- annotations: {}
   inputs:
-    - name: idf
-      type: FunctionFileInput
-      path: input.idf
+  - annotations: {}
+    type: FunctionFileInput
+    name: idf
+    description: null
+    default: null
+    spec: null
+    path: input.idf
+    extensions: null
+  outputs:
+  - annotations: {}
+    type: FunctionFileOutput
+    name: outputs
+    description: null
+    path: simulation-outputs
+  name: design-day-simulation
+  description: Run an EnergyPlus Design Day simulation using a weather file and an
+    idf
   command: energyplus -D -x -d simulation-outputs input.idf
-  outputs:
-    - name: outputs
-      type: FunctionFolderOutput
-      path: simulation-outputs
-- name: run-simulation
-  description: Run an EnergyPlus simulation using a weather file and an idf
+- annotations: {}
   inputs:
-    - name: weather
-      type: FunctionFileInput
-      path: weather.epw
-    - name: idf
-      type: FunctionFileInput
-      path: input.idf
-  command: energyplus -w weather.epw -x -d simulation-outputs input.idf
+  - annotations: {}
+    type: FunctionFileInput
+    name: idf
+    description: null
+    default: null
+    spec: null
+    path: input.idf
+    extensions: null
+  - annotations: {}
+    type: FunctionFileInput
+    name: weather
+    description: null
+    default: null
+    spec: null
+    path: weather.epw
+    extensions: null
   outputs:
-    - name: outputs
-      type: FunctionFolderOutput
-      path: simulation-outputs
+  - annotations: {}
+    type: FunctionFolderOutput
+    name: outputs
+    description: null
+    path: simulation-outputs
+  name: run-simulation
+  description: Run an EnergyPlus simulation using a weather file and an idf
+  command: energyplus -w weather.epw -x -d simulation-outputs input.idf
