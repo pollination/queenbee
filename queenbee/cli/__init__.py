@@ -67,7 +67,7 @@ def main(ctx):
 def viz():
     """check queenbee is flying"""
     click.echo("""
-    
+
                                        .' '.            __
   viiiiiiiiiiiiizzzzzzzzz!  . .        .   .           (__\_
                                .         .         . -{{_(|8)
