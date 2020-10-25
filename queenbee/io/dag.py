@@ -7,7 +7,7 @@ from pydantic import constr, Field, validator
 from jsonschema import validate as json_schema_validator
 
 from .common import ItemType, GenericInput, FromOutput
-from ..recipe.artifact_source import HTTP, S3, ProjectFolder
+from .artifact_source import HTTP, S3, ProjectFolder
 from ..io.reference import FileReference, FolderReference, TaskReference
 
 
