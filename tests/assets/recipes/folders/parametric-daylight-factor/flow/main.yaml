@@ -2,7 +2,7 @@ name: main
 inputs:
 - annotations: {}
   type: DAGArrayInput
-  items_type: string
+  items_type: String
   name: model-names
   default: null
   description: null
@@ -18,7 +18,7 @@ tasks:
   template: daylight-factor
   loop:
     from:
-      type: inputs
+      type: InputReference
       variable: model-names
   sub_folder: 'daylight-factor/{{item}}'
   arguments:
@@ -28,6 +28,11 @@ tasks:
         type: InputFolderReference
         variable: models-folder
       sub_path: '{{item}}/model'
+    - name: sensor-grid-count
+      type: TaskArgument
+      from:
+        type: ValueReference
+        value: 200
     - name: input-grid
       type: TaskPathArgument
       from:
