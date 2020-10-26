@@ -1,11 +1,15 @@
+annotations: {}
 metadata:
+  annotations: {}
   name: parametric-daylight-factor
   tag: 0.2.0
+  app_version: null
   keywords:
   - ladybug-tools
   - radiance
   maintainers:
-  - name: mostapha
+  - annotations: {}
+    name: mostapha
     email: mostapha@ladybug.tools
   home: null
   sources: null
@@ -14,339 +18,444 @@ metadata:
   description: An awesome workflow to run daylight factor!
   license: null
 dependencies:
-- type: recipe
+- annotations: {}
+  type: recipe
   name: daylight-factor
   hash: 044132bd4ace30a9b2340dc5e2b445e5366651287f981b87ca2efd62d8b00e1b
   alias: null
   tag: 0.0.1
   source: https://example.com/test-repo
 flow:
-- name: 2baf1598a7c37936a17d1f8df444e2013cd55cab067997cef788d95db5aab81c/main
+- annotations: {}
   inputs:
   - annotations: {}
-    type: ArrayInput
-    items_type: string
+    type: DAGArrayInput
     name: model-names
-    default: null
     description: null
+    default: []
+    spec: null
+    items_type: String
   - annotations: {}
-    type: FolderInput
+    type: DAGFolderInput
     name: models-folder
     description: A folder full of honeybee models
     default: null
+    spec: null
+  outputs:
+  - annotations: {}
+    type: DAGFolderOutput
+    name: daylight-factor-grids
+    description: null
+    from:
+      annotations: {}
+      type: FolderReference
+      path: daylight-factor
+  name: 9d5650242b3e73eae0f6d1eb05b629176dcd25b7fecd19ca8ca3b6641d076abc/main
   fail_fast: true
   tasks:
-  - name: daylight-factor
-    template: d129f14181241f03cd8f6f1762fcce538917cfb2606e1c79dbbca9e7fc552cb6/main
+  - annotations: {}
+    name: daylight-factor
+    template: a85a19d988a1fdbcf775b1b8e9ed2b26a5af0ab137bbc57b4268729aa6e8a8d5/main
     arguments:
-      parameters: []
-      artifacts:
-      - name: input-grid
-        from:
-          type: inputs
-          variable: models-folder
-        sub_path: '{{item}}/grid'
-      - name: model
-        from:
-          type: inputs
-          variable: models-folder
-        sub_path: '{{item}}/model'
-    dependencies: null
+    - annotations: {}
+      type: TaskPathArgument
+      name: model
+      from:
+        annotations: {}
+        type: InputFolderReference
+        variable: models-folder
+      sub_path: '{{item}}/model'
+    - annotations: {}
+      type: TaskArgument
+      name: sensor-grid-count
+      from:
+        annotations: {}
+        type: ValueReference
+        value: 200
+    - annotations: {}
+      type: TaskPathArgument
+      name: input-grid
+      from:
+        annotations: {}
+        type: InputFolderReference
+        variable: models-folder
+      sub_path: '{{item}}/grid'
+    needs: null
     loop:
+      annotations: {}
       from:
-        type: inputs
+        annotations: {}
+        type: InputReference
         variable: model-names
-      value: null
     sub_folder: daylight-factor/{{item}}
-    outputs:
-      parameters:
-      - name: average
-      artifacts: []
-  outputs:
-    parameters: []
-    artifacts:
-    - name: daylight-factor-grids
-      from:
-        type: folder
-        path: daylight-factor
-digest: 2baf1598a7c37936a17d1f8df444e2013cd55cab067997cef788d95db5aab81c
+    returns:
+    - annotations: {}
+      type: TaskReturn
+      name: average
+      description: null
+digest: 9d5650242b3e73eae0f6d1eb05b629176dcd25b7fecd19ca8ca3b6641d076abc
 templates:
-- name: 4644db9ddecf989201a2ef085631987a54c08c6832a0514975cb01e85709f862/10000-lux-sky
+- annotations: {}
+  inputs: []
+  outputs:
+  - annotations: {}
+    type: FunctionFileOutput
+    name: sky
+    description: The resulting sky object
+    path: sky.sky
+  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/10000-lux-sky
   description: Generates a 10000 lux sky
-  inputs:
-    parameters: []
-    artifacts: []
   command: honeybee radiance sky illuminance 100000
-  outputs:
-    parameters: []
-    artifacts:
-    - name: sky
-      description: The resulting sky object
-      path: sky.sky
   config:
+    annotations: {}
     docker:
+      annotations: {}
       image: ladybugtools/honeybee-radiance:2.3.2
       registry: null
       workdir: /opt/run/
     local: null
-- name: 4644db9ddecf989201a2ef085631987a54c08c6832a0514975cb01e85709f862/create-octree
+- annotations: {}
+  inputs:
+  - annotations: {}
+    type: FunctionFileInput
+    name: model
+    description: null
+    default: null
+    spec: null
+    path: model.json
+    extensions: null
+  - annotations: {}
+    type: FunctionFileInput
+    name: sky
+    description: null
+    default: null
+    spec: null
+    path: sky.sky
+    extensions: null
+  outputs:
+  - annotations: {}
+    type: FunctionFileOutput
+    name: scene-file
+    description: null
+    path: scene.oct
+  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/create-octree
   description: Generate an octree
-  inputs:
-    parameters: []
-    artifacts:
-    - name: model
-      description: null
-      path: model.json
-    - name: sky
-      description: null
-      path: sky.sky
   command: honeybee radiance oconv -s sky.sky -m model.json --output scene.oct
-  outputs:
-    parameters: []
-    artifacts:
-    - name: scene-file
-      description: null
-      path: scene.oct
   config:
+    annotations: {}
     docker:
+      annotations: {}
       image: ladybugtools/honeybee-radiance:2.3.2
       registry: null
       workdir: /opt/run/
     local: null
-- name: 4644db9ddecf989201a2ef085631987a54c08c6832a0514975cb01e85709f862/post-process
+- annotations: {}
+  inputs:
+  - annotations: {}
+    type: FunctionFileInput
+    name: raw-results-folder
+    description: null
+    default: null
+    spec: null
+    path: raw
+    extensions: null
+  outputs:
+  - annotations: {}
+    type: FunctionNumberOutput
+    name: daylight-factor-average
+    description: null
+    path: output/avg
+  - annotations: {}
+    type: FunctionNumberOutput
+    name: daylight-factor-max
+    description: null
+    path: output/max
+  - annotations: {}
+    type: FunctionFileOutput
+    name: post-process-folder
+    description: null
+    path: output
+  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/post-process
   description: Post process your results and $$$
-  inputs:
-    parameters: []
-    artifacts:
-    - name: raw-results-folder
-      description: null
-      path: raw
   command: honeybee radiance grid merge raw --folder output
-  outputs:
-    parameters:
-    - name: daylight-factor-average
-      description: null
-      path: output/avg
-    - name: daylight-factor-max
-      description: null
-      path: output/max
-    artifacts:
-    - name: post-process-folder
-      description: null
-      path: output
   config:
+    annotations: {}
     docker:
+      annotations: {}
       image: ladybugtools/honeybee-radiance:2.3.2
       registry: null
       workdir: /opt/run/
     local: null
-- name: 4644db9ddecf989201a2ef085631987a54c08c6832a0514975cb01e85709f862/ray-tracing
+- annotations: {}
+  inputs:
+  - annotations: {}
+    type: FunctionFileInput
+    name: grid
+    description: null
+    default: null
+    spec: null
+    path: grid.pts
+    extensions: null
+  - annotations: {}
+    type: FunctionStringInput
+    name: radiance-parameters
+    description: a string of radiance parameters
+    default: -ab 5
+    spec: null
+  - annotations: {}
+    type: FunctionFileInput
+    name: scene-file
+    description: null
+    default: null
+    spec: null
+    path: scene.oct
+    extensions: null
+  outputs:
+  - annotations: {}
+    type: FunctionFileOutput
+    name: result-file
+    description: null
+    path: grid.res
+  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/ray-tracing
   description: Run ray tracing using some input data!
-  inputs:
-    parameters:
-    - name: radiance-parameters
-      default: -ab 5
-      description: a string of radiance parameters
-      required: false
-    artifacts:
-    - name: grid
-      description: null
-      path: grid.pts
-    - name: scene-file
-      description: null
-      path: scene.oct
   command: rtrace -I -h {{inputs.radiance-parameters}} scene.oct < grid.pts > grid.res
-  outputs:
-    parameters: []
-    artifacts:
-    - name: result-file
-      description: null
-      path: grid.res
   config:
+    annotations: {}
     docker:
+      annotations: {}
       image: ladybugtools/honeybee-radiance:2.3.2
       registry: null
       workdir: /opt/run/
     local: null
-- name: 4644db9ddecf989201a2ef085631987a54c08c6832a0514975cb01e85709f862/split-grid
+- annotations: {}
+  inputs:
+  - annotations: {}
+    type: FunctionFileInput
+    name: grid
+    description: The input grid to split
+    default: null
+    spec: null
+    path: grid.pts
+    extensions: null
+  - annotations: {}
+    type: FunctionIntegerInput
+    name: grid-count
+    description: null
+    default: null
+    spec: null
+  outputs:
+  - annotations: {}
+    type: FunctionArrayOutput
+    name: grid-list
+    description: null
+    path: output/grids.txt
+    items_type: String
+  - annotations: {}
+    type: FunctionFolderOutput
+    name: output-grids-folder
+    description: null
+    path: output
+  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/split-grid
   description: null
-  inputs:
-    parameters:
-    - name: grid-count
-      default: null
-      description: null
-      required: true
-    artifacts:
-    - name: grid
-      description: The input grid to split
-      path: grid.pts
   command: honeybee radiance grid split grid.pts --folder output --log-file output/grids.txt
-  outputs:
-    parameters:
-    - name: grid-list
-      description: null
-      path: output/grids.txt
-    artifacts:
-    - name: output-grids-folder
-      description: null
-      path: output
   config:
+    annotations: {}
     docker:
+      annotations: {}
       image: ladybugtools/honeybee-radiance:2.3.2
       registry: null
       workdir: /opt/run/
     local: null
-- name: d129f14181241f03cd8f6f1762fcce538917cfb2606e1c79dbbca9e7fc552cb6/main
+- annotations: {}
   inputs:
-    - name: sensor-grid-count
-    type: IntegerInput
-    annotations: {}
-    description: The maximum number of grid points per parallel execution
-    default: 100
-  - name: radiance-parameters
-    type: StringInput
-    annotations: {}
+  - annotations: {}
+    type: DAGFileInput
+    name: input-grid
+    description: A grid file
+    default: null
+    spec: null
+    extensions: null
+  - annotations: {}
+    type: DAGFolderInput
+    name: model
+    description: A Honeybee model with radiance properties
+    default: null
+    spec: null
+  - annotations: {}
+    type: DAGStringInput
+    name: radiance-parameters
     description: The radiance parameters for ray tracing
     default: -I -ab 2 -h
-  - name: model
-    type: FolderInput
-    annotations: {}
-    description: A Honeybee model with radiance properties
-  - name: input-grid
-    type: FileInput
-    annotations: {}
-    description: A grid file
+    spec: null
+  - annotations: {}
+    type: DAGIntegerInput
+    name: sensor-grid-count
+    description: The maximum number of grid points per parallel execution
+    default: null
+    spec: null
+  outputs:
+  - annotations: {}
+    type: DAGIntegerOutput
+    name: average
+    description: null
+    from:
+      annotations: {}
+      type: TaskReference
+      name: post-process
+      variable: daylight-factor-average
+  - annotations: {}
+    type: DAGFolderOutput
+    name: data
+    description: null
+    from:
+      annotations: {}
+      type: TaskReference
+      name: post-process
+      variable: post-process-folder
+  name: a85a19d988a1fdbcf775b1b8e9ed2b26a5af0ab137bbc57b4268729aa6e8a8d5/main
   fail_fast: true
   tasks:
-  - name: create-octree
-    template: 4644db9ddecf989201a2ef085631987a54c08c6832a0514975cb01e85709f862/create-octree
+  - annotations: {}
+    name: create-octree
+    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/create-octree
     arguments:
-      parameters: []
-      artifacts:
-      - name: model
-        from:
-          type: inputs
-          variable: model
-        sub_path: null
-      - name: sky
-        from:
-          type: tasks
-          name: generate-sky
-          variable: sky
-        sub_path: null
-    dependencies:
-    - generate-sky
+    - annotations: {}
+      type: TaskPathArgument
+      name: model
+      from:
+        annotations: {}
+        type: InputFolderReference
+        variable: model
+      sub_path: null
+    - annotations: {}
+      type: TaskPathArgument
+      name: sky
+      from:
+        annotations: {}
+        type: TaskFileReference
+        name: generate-sky
+        variable: sky
+      sub_path: null
+    needs: null
     loop: null
     sub_folder: null
-    outputs:
-      parameters: []
-      artifacts:
-      - name: scene-file
-        path: output/octree/scene.oct
-  - name: daylight-factor-simulation
-    template: 4644db9ddecf989201a2ef085631987a54c08c6832a0514975cb01e85709f862/ray-tracing
+    returns:
+    - annotations: {}
+      type: TaskPathReturn
+      name: scene-file
+      description: null
+      path: output/octree/scene.oct
+  - annotations: {}
+    name: daylight-factor-simulation
+    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/ray-tracing
     arguments:
-      parameters:
-      - name: radiance-parameters
-        from:
-          type: inputs
-          variable: radiance-parameters
-        value: null
-      artifacts:
-      - name: grid
-        from:
-          type: tasks
-          name: split-grid
-          variable: output-grids-folder
-        sub_path: '{{item.name}}'
-      - name: scene-file
-        from:
-          type: tasks
-          name: create-octree
-          variable: scene-file
-        sub_path: null
-    dependencies:
-    - split-grid
-    - create-octree
-    loop:
+    - annotations: {}
+      type: TaskArgument
+      name: radiance-parameters
       from:
-        type: tasks
+        annotations: {}
+        type: InputReference
+        variable: radiance-parameters
+    - annotations: {}
+      type: TaskPathArgument
+      name: grid
+      from:
+        annotations: {}
+        type: TaskFolderReference
+        name: split-grid
+        variable: output-grids-folder
+      sub_path: '{{item.name}}'
+    - annotations: {}
+      type: TaskPathArgument
+      name: scene-file
+      from:
+        annotations: {}
+        type: TaskFileReference
+        name: create-octree
+        variable: scene-file
+      sub_path: null
+    needs: null
+    loop:
+      annotations: {}
+      from:
+        annotations: {}
+        type: TaskReference
         name: split-grid
         variable: grid-list
-      value: null
     sub_folder: output/raw-results
-    outputs:
-      parameters: []
-      artifacts:
-      - name: result-file
-        path: '{{item.name}}.res'
-  - name: generate-sky
-    template: 4644db9ddecf989201a2ef085631987a54c08c6832a0514975cb01e85709f862/10000-lux-sky
-    arguments:
-      parameters: []
-      artifacts: []
-    dependencies: null
+    returns:
+    - annotations: {}
+      type: TaskPathReturn
+      name: result-file
+      description: null
+      path: '{{item.name}}.res'
+  - annotations: {}
+    name: generate-sky
+    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/10000-lux-sky
+    arguments: []
+    needs: null
     loop: null
     sub_folder: null
-    outputs:
-      parameters: []
-      artifacts:
-      - name: sky
-        path: asset/sky/10000_lux.sky
-  - name: post-process
-    template: 4644db9ddecf989201a2ef085631987a54c08c6832a0514975cb01e85709f862/post-process
+    returns:
+    - annotations: {}
+      type: TaskPathReturn
+      name: sky
+      description: null
+      path: asset/sky/10000_lux.sky
+  - annotations: {}
+    name: post-process
+    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/post-process
     arguments:
-      parameters: []
-      artifacts:
-      - name: raw-results-folder
-        from:
-          type: folder
-          path: output/raw-results
-        sub_path: null
-    dependencies:
-    - daylight-factor-simulation
-    loop: null
-    sub_folder: null
-    outputs:
-      parameters:
-      - name: daylight-factor-average
-      artifacts:
-      - name: post-process-folder
-        path: result
-  - name: split-grid
-    template: 4644db9ddecf989201a2ef085631987a54c08c6832a0514975cb01e85709f862/split-grid
-    arguments:
-      parameters:
-      - name: grid-count
-        from:
-          type: inputs
-          variable: sensor-grid-count
-        value: null
-      artifacts:
-      - name: grid
-        from:
-          type: inputs
-          variable: input-grid
-        sub_path: null
-    dependencies: null
-    loop: null
-    sub_folder: null
-    outputs:
-      parameters:
-      - name: grid-list
-      artifacts:
-      - name: output-grids-folder
-        path: output/temp
-  outputs:
-    parameters:
-    - name: average
+    - annotations: {}
+      type: TaskPathArgument
+      name: raw-results-folder
       from:
-        type: tasks
-        name: post-process
-        variable: daylight-factor-average
-    artifacts:
-    - name: data
+        annotations: {}
+        type: ValueFolderReference
+        path: output/raw-results
+      sub_path: null
+    needs: null
+    loop: null
+    sub_folder: null
+    returns:
+    - annotations: {}
+      type: TaskPathReturn
+      name: post-process-folder
+      description: null
+      path: result
+    - annotations: {}
+      type: TaskReturn
+      name: daylight-factor-average
+      description: null
+  - annotations: {}
+    name: split-grid
+    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/split-grid
+    arguments:
+    - annotations: {}
+      type: TaskArgument
+      name: grid-count
       from:
-        type: tasks
-        name: post-process
-        variable: post-process-folder
+        annotations: {}
+        type: InputReference
+        variable: sensor-grid-count
+    - annotations: {}
+      type: TaskPathArgument
+      name: grid
+      from:
+        annotations: {}
+        type: InputFileReference
+        variable: input-grid
+      sub_path: null
+    needs: null
+    loop: null
+    sub_folder: null
+    returns:
+    - annotations: {}
+      type: TaskReturn
+      name: grid-list
+      description: null
+    - annotations: {}
+      type: TaskPathReturn
+      name: output-grids-folder
+      description: null
+      path: output/temp
