@@ -9,7 +9,7 @@ from jsonschema import validate as json_schema_validator
 
 from .reference import FolderReference, FileReference, references_from_string
 from ..base.basemodel import BaseModel
-from ..base.variable import _validate_inputs_outputs_var_format, get_ref_variable
+from ..base.variable import validate_inputs_outputs_var_format, get_ref_variable
 
 
 class ItemType(str, Enum):
@@ -65,7 +65,7 @@ class GenericInput(BaseModel):
         ref_var = get_ref_variable(v)
         add_info = []
         for ref in ref_var:
-            add_info.append(_validate_inputs_outputs_var_format(ref))
+            add_info.append(validate_inputs_outputs_var_format(ref))
 
         if add_info:
             raise ValueError('\n'.join(add_info))
