@@ -4,7 +4,7 @@ from pydantic import Field, validator
 
 from ..io.common import IOBase
 from ..io.function import FunctionInputs, FunctionOutputs
-from ..base.variable import _validate_inputs_outputs_var_format, get_ref_variable
+from ..base.variable import validate_inputs_outputs_var_format, get_ref_variable
 
 
 class Function(IOBase):
@@ -56,7 +56,7 @@ class Function(IOBase):
         warns = []
         for ref in variables:
             ref = ref.replace('{{', '').replace('}}', '').strip()
-            add_info = _validate_inputs_outputs_var_format(ref)
+            add_info = validate_inputs_outputs_var_format(ref)
 
             if not add_info:
                 # check the value exist in inputs
