@@ -50,8 +50,8 @@ def new(name, path):
             - name: message
                 type: TaskArgument
                 from:
-                type: InputReference
-                variable: thing-to-say
+                  type: InputReference
+                  variable: thing-to-say
             returns:
             - name: whale-said
                 type: TaskReturn
