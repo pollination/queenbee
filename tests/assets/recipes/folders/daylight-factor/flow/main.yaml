@@ -9,10 +9,48 @@ inputs:
     annotations: {}
     description: The radiance parameters for ray tracing
     default: -I -ab 2 -h
-  - name: model
-    type: DAGFolderInput
-    annotations: {}
-    description: A Honeybee model with radiance properties
+  - annotations: {}
+    type: DAGFileInput
+    name: model_hbjson
+    description: Honeybee model as a hbjson file.
+    default: null
+    spec: null
+    handler:
+      - type: InputHandler
+        platform:
+        - grasshopper
+        name: model
+        description: |
+            A path to a HBJSON file or a HB model object built with Python or dotnet
+            libraries.
+        action:
+        - type: HandlerAction
+          case:
+          - python-object
+          script: |
+            import tempfile, os
+            path = os.path.join(tempfile.TemporaryDirectory().name, '%s.hbjson' % model.identifier)
+            with open(path, 'w') as outf:
+                json.dump(model.to_dict(), outf)
+          return: path
+        - type: HandlerAction
+          case:
+          - string
+          script: null
+      - type: InputHandler
+        platform:
+        - revit
+        - rhino
+        link: Model  # link to live Rhino / Revit model
+        action:
+        - type: HandlerAction
+          case:
+          - dotnet
+          script: |
+            {
+              //Some C# code here;
+            }
+          return: ModelJSONPath
   - name: input-grid
     type: DAGFileInput
     annotations: {}
@@ -56,7 +94,7 @@ tasks:
       type: TaskPathArgument
       from:
         type: InputFolderReference
-        variable: model
+        variable: model_hbjson
     - name: sky
       type: TaskPathArgument
       from:
@@ -119,7 +157,6 @@ tasks:
       path: result
     - name: daylight-factor-average
       type: TaskReturn
-
 
 outputs:
   - name: data

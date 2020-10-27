@@ -8,10 +8,30 @@ from jsonschema import validate as json_schema_validator
 
 from .common import ItemType, GenericInput, FromOutput
 from .artifact_source import HTTP, S3, ProjectFolder
+from .handler import OutputHandler, InputHandler
 from ..io.reference import FileReference, FolderReference, TaskReference
 
 
-class DAGStringInput(GenericInput):
+class DAGGenericInput(GenericInput):
+    """Base class for DAG inputs.
+
+    This class adds a handler to input to handle the process of loading the input
+    from different graphical interfaces.
+    """
+    type: constr(regex='^DAGGenericInput$') = 'DAGGenericInput'
+
+    handler: List[InputHandler] = Field(
+        None,
+        description='A list of additional processes for loading this input on different '
+        'platforms.'
+    )
+
+    @validator('handler', always=True)
+    def create_empty_handler_list(cls, v):
+        return [] if v is None else v
+
+
+class DAGStringInput(DAGGenericInput):
     """A String input.
 
     You can add additional validation by defining a JSONSchema specification.
@@ -48,7 +68,7 @@ class DAGStringInput(GenericInput):
         return value
 
 
-class DAGIntegerInput(GenericInput):
+class DAGIntegerInput(DAGGenericInput):
     """An integer input.
 
     You can add additional validation by defining a JSONSchema specification.
@@ -76,7 +96,7 @@ class DAGIntegerInput(GenericInput):
         return value
 
 
-class DAGNumberInput(GenericInput):
+class DAGNumberInput(DAGGenericInput):
     """A number input.
 
     You can add additional validation by defining a JSONSchema specification.
@@ -103,7 +123,7 @@ class DAGNumberInput(GenericInput):
         return value
 
 
-class DAGBooleanInput(GenericInput):
+class DAGBooleanInput(DAGGenericInput):
     """The boolean type matches only two special values: True and False.
 
     Note that values that evaluate to true or false, such as 1 and 0, are not accepted.
@@ -132,7 +152,7 @@ class DAGBooleanInput(GenericInput):
         return value
 
 
-class DAGFolderInput(GenericInput):
+class DAGFolderInput(DAGGenericInput):
     """A folder input.
 
     Folder is a special string input. Unlike other string inputs, a folder will be copied
@@ -273,7 +293,7 @@ class DAGPathInput(DAGFolderInput):
             json_schema_validator(value, spec)
 
 
-class DAGArrayInput(GenericInput):
+class DAGArrayInput(DAGGenericInput):
     """An array input.
 
     You can add additional validation by defining a JSONSchema specification.
@@ -310,7 +330,7 @@ class DAGArrayInput(GenericInput):
             json_schema_validator(value, spec)
 
 
-class DAGObjectInput(GenericInput):
+class DAGObjectInput(DAGGenericInput):
     """A JSON object input.
 
     JSON objects are similar to Python dictionaries.
@@ -343,12 +363,32 @@ class DAGObjectInput(GenericInput):
 
 
 DAGInputs = Union[
-    DAGStringInput, DAGIntegerInput, DAGNumberInput, DAGBooleanInput,
+    DAGGenericInput, DAGStringInput, DAGIntegerInput, DAGNumberInput, DAGBooleanInput,
     DAGFolderInput, DAGFileInput, DAGPathInput, DAGArrayInput, DAGObjectInput
 ]
 
 
-class DAGFileOutput(FromOutput):
+class DAGGenericOutput(FromOutput):
+    """DAG generic output.
+
+    In most cases, you should not be using the generic output unless you need a dynamic
+    output that changes its type in different platforms because of returning different
+    objects in handler.
+    """
+    type: constr(regex='^DAGGenericOutput$') = 'DAGGenericOutput'
+
+    handler: List[OutputHandler] = Field(
+        None,
+        description='A list of additional processes for loading this output on '
+        'different platforms.'
+    )
+
+    @validator('handler', always=True)
+    def create_empty_handler_list(cls, v):
+        return [] if v is None else v
+
+
+class DAGFileOutput(DAGGenericOutput):
     """DAG file output."""
     type: constr(regex='^DAGFileOutput$') = 'DAGFileOutput'
 
@@ -363,7 +403,7 @@ class DAGFileOutput(FromOutput):
         return True
 
 
-class DAGFolderOutput(FromOutput):
+class DAGFolderOutput(DAGGenericOutput):
     """DAG folder output."""
     type: constr(regex='^DAGFolderOutput$') = 'DAGFolderOutput'
 
@@ -378,7 +418,7 @@ class DAGFolderOutput(FromOutput):
         return True
 
 
-class DAGPathOutput(FromOutput):
+class DAGPathOutput(DAGGenericOutput):
     """DAG path output."""
     type: constr(regex='^DAGPathOutput$') = 'DAGPathOutput'
 
@@ -453,6 +493,7 @@ class DAGObjectOutput(DAGStringOutput):
 
 
 DAGOutputs = Union[
-    DAGStringOutput, DAGIntegerOutput, DAGNumberOutput, DAGBooleanOutput,
-    DAGFolderOutput, DAGFileOutput, DAGPathOutput, DAGArrayOutput, DAGObjectOutput
+    DAGGenericOutput, DAGStringOutput, DAGIntegerOutput, DAGNumberOutput,
+    DAGBooleanOutput, DAGFolderOutput, DAGFileOutput, DAGPathOutput, DAGArrayOutput,
+    DAGObjectOutput
 ]

@@ -34,25 +34,74 @@ flow:
     description: A grid file
     default: null
     spec: null
+    handler: []
     extensions: null
   - annotations: {}
-    type: DAGFolderInput
-    name: model
-    description: A Honeybee model with radiance properties
+    type: DAGFileInput
+    name: model_hbjson
+    description: Honeybee model as a hbjson file.
     default: null
     spec: null
+    handler:
+    - annotations: {}
+      type: InputHandler
+      platform:
+      - grasshopper
+      name: model
+      description: 'A path to a HBJSON file or a HB model object built with Python
+        or dotnet
+
+        libraries.
+
+        '
+      action:
+      - annotations: {}
+        type: HandlerAction
+        case:
+        - python-object
+        script: "import tempfile, os\npath = os.path.join(tempfile.TemporaryDirectory().name,\
+          \ '%s.hbjson' % model.identifier)\nwith open(path, 'w') as outf:\n    json.dump(model.to_dict(),\
+          \ outf)\n"
+        return: path
+      - annotations: {}
+        type: HandlerAction
+        case:
+        - string
+        script: null
+        return: null
+      link: null
+      spec: null
+    - annotations: {}
+      type: InputHandler
+      platform:
+      - revit
+      - rhino
+      name: null
+      description: null
+      action:
+      - annotations: {}
+        type: HandlerAction
+        case:
+        - dotnet
+        script: "{\n  //Some C# code here;\n}\n"
+        return: ModelJSONPath
+      link: Model
+      spec: null
+    extensions: null
   - annotations: {}
     type: DAGStringInput
     name: radiance-parameters
     description: The radiance parameters for ray tracing
     default: -I -ab 2 -h
     spec: null
+    handler: []
   - annotations: {}
     type: DAGIntegerInput
     name: sensor-grid-count
     description: The maximum number of grid points per parallel execution
     default: null
     spec: null
+    handler: []
   outputs:
   - annotations: {}
     type: DAGIntegerOutput
@@ -63,6 +112,7 @@ flow:
       type: TaskReference
       name: post-process
       variable: daylight-factor-average
+    handler: []
   - annotations: {}
     type: DAGFolderOutput
     name: data
@@ -72,12 +122,13 @@ flow:
       type: TaskReference
       name: post-process
       variable: post-process-folder
-  name: a85a19d988a1fdbcf775b1b8e9ed2b26a5af0ab137bbc57b4268729aa6e8a8d5/main
+    handler: []
+  name: 6d23b74a28d813d19754368c78f77a645d17821638806bfdd5f4d5adada388f5/main
   fail_fast: true
   tasks:
   - annotations: {}
     name: create-octree
-    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/create-octree
+    template: 30ceb4047959c504fac3ef8954d7970a3b5b2f66ea859d72e3fd80cd6ed35680/create-octree
     arguments:
     - annotations: {}
       type: TaskPathArgument
@@ -85,7 +136,7 @@ flow:
       from:
         annotations: {}
         type: InputFolderReference
-        variable: model
+        variable: model_hbjson
       sub_path: null
     - annotations: {}
       type: TaskPathArgument
@@ -107,7 +158,7 @@ flow:
       path: output/octree/scene.oct
   - annotations: {}
     name: daylight-factor-simulation
-    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/ray-tracing
+    template: 30ceb4047959c504fac3ef8954d7970a3b5b2f66ea859d72e3fd80cd6ed35680/ray-tracing
     arguments:
     - annotations: {}
       type: TaskArgument
@@ -151,7 +202,7 @@ flow:
       path: '{{item.name}}.res'
   - annotations: {}
     name: generate-sky
-    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/10000-lux-sky
+    template: 30ceb4047959c504fac3ef8954d7970a3b5b2f66ea859d72e3fd80cd6ed35680/10000-lux-sky
     arguments: []
     needs: null
     loop: null
@@ -164,7 +215,7 @@ flow:
       path: asset/sky/10000_lux.sky
   - annotations: {}
     name: post-process
-    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/post-process
+    template: 30ceb4047959c504fac3ef8954d7970a3b5b2f66ea859d72e3fd80cd6ed35680/post-process
     arguments:
     - annotations: {}
       type: TaskPathArgument
@@ -189,7 +240,7 @@ flow:
       description: null
   - annotations: {}
     name: split-grid
-    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/split-grid
+    template: 30ceb4047959c504fac3ef8954d7970a3b5b2f66ea859d72e3fd80cd6ed35680/split-grid
     arguments:
     - annotations: {}
       type: TaskArgument
@@ -219,7 +270,7 @@ flow:
       name: output-grids-folder
       description: null
       path: output/temp
-digest: a85a19d988a1fdbcf775b1b8e9ed2b26a5af0ab137bbc57b4268729aa6e8a8d5
+digest: 6d23b74a28d813d19754368c78f77a645d17821638806bfdd5f4d5adada388f5
 templates:
 - annotations: {}
   inputs: []
@@ -229,7 +280,7 @@ templates:
     name: sky
     description: The resulting sky object
     path: sky.sky
-  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/10000-lux-sky
+  name: 30ceb4047959c504fac3ef8954d7970a3b5b2f66ea859d72e3fd80cd6ed35680/10000-lux-sky
   description: Generates a 10000 lux sky
   command: honeybee radiance sky illuminance 100000
   config:
@@ -248,6 +299,7 @@ templates:
     description: null
     default: null
     spec: null
+    handler: []
     path: model.json
     extensions: null
   - annotations: {}
@@ -256,6 +308,7 @@ templates:
     description: null
     default: null
     spec: null
+    handler: []
     path: sky.sky
     extensions: null
   outputs:
@@ -264,7 +317,7 @@ templates:
     name: scene-file
     description: null
     path: scene.oct
-  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/create-octree
+  name: 30ceb4047959c504fac3ef8954d7970a3b5b2f66ea859d72e3fd80cd6ed35680/create-octree
   description: Generate an octree
   command: honeybee radiance oconv -s sky.sky -m model.json --output scene.oct
   config:
@@ -283,6 +336,7 @@ templates:
     description: null
     default: null
     spec: null
+    handler: []
     path: raw
     extensions: null
   outputs:
@@ -301,7 +355,7 @@ templates:
     name: post-process-folder
     description: null
     path: output
-  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/post-process
+  name: 30ceb4047959c504fac3ef8954d7970a3b5b2f66ea859d72e3fd80cd6ed35680/post-process
   description: Post process your results and $$$
   command: honeybee radiance grid merge raw --folder output
   config:
@@ -320,6 +374,7 @@ templates:
     description: null
     default: null
     spec: null
+    handler: []
     path: grid.pts
     extensions: null
   - annotations: {}
@@ -328,12 +383,14 @@ templates:
     description: a string of radiance parameters
     default: -ab 5
     spec: null
+    handler: []
   - annotations: {}
     type: FunctionFileInput
     name: scene-file
     description: null
     default: null
     spec: null
+    handler: []
     path: scene.oct
     extensions: null
   outputs:
@@ -342,7 +399,7 @@ templates:
     name: result-file
     description: null
     path: grid.res
-  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/ray-tracing
+  name: 30ceb4047959c504fac3ef8954d7970a3b5b2f66ea859d72e3fd80cd6ed35680/ray-tracing
   description: Run ray tracing using some input data!
   command: rtrace -I -h {{inputs.radiance-parameters}} scene.oct < grid.pts > grid.res
   config:
@@ -361,6 +418,7 @@ templates:
     description: The input grid to split
     default: null
     spec: null
+    handler: []
     path: grid.pts
     extensions: null
   - annotations: {}
@@ -369,6 +427,7 @@ templates:
     description: null
     default: null
     spec: null
+    handler: []
   outputs:
   - annotations: {}
     type: FunctionArrayOutput
@@ -381,7 +440,7 @@ templates:
     name: output-grids-folder
     description: null
     path: output
-  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/split-grid
+  name: 30ceb4047959c504fac3ef8954d7970a3b5b2f66ea859d72e3fd80cd6ed35680/split-grid
   description: null
   command: honeybee radiance grid split grid.pts --folder output --log-file output/grids.txt
   config:
