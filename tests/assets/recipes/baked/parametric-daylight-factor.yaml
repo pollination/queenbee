@@ -34,6 +34,7 @@ flow:
     description: null
     default: []
     spec: null
+    alias: []
     items_type: String
   - annotations: {}
     type: DAGFolderInput
@@ -41,6 +42,7 @@ flow:
     description: A folder full of honeybee models
     default: null
     spec: null
+    alias: []
   outputs:
   - annotations: {}
     type: DAGFolderOutput
@@ -50,12 +52,13 @@ flow:
       annotations: {}
       type: FolderReference
       path: daylight-factor
-  name: 9d5650242b3e73eae0f6d1eb05b629176dcd25b7fecd19ca8ca3b6641d076abc/main
+    alias: []
+  name: 5cbb36fd509b9f6091172ea737f18d2ad96c2af455fa16f42838d207a2c63826/main
   fail_fast: true
   tasks:
   - annotations: {}
     name: daylight-factor
-    template: a85a19d988a1fdbcf775b1b8e9ed2b26a5af0ab137bbc57b4268729aa6e8a8d5/main
+    template: 49c641f701b9985009dbbc9c01961c0422b59909f4e1efb6b389864bba2e916f/main
     arguments:
     - annotations: {}
       type: TaskPathArgument
@@ -93,7 +96,7 @@ flow:
       type: TaskReturn
       name: average
       description: null
-digest: 9d5650242b3e73eae0f6d1eb05b629176dcd25b7fecd19ca8ca3b6641d076abc
+digest: 5cbb36fd509b9f6091172ea737f18d2ad96c2af455fa16f42838d207a2c63826
 templates:
 - annotations: {}
   inputs: []
@@ -103,7 +106,7 @@ templates:
     name: sky
     description: The resulting sky object
     path: sky.sky
-  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/10000-lux-sky
+  name: 4a69b1a12f0aee18955ba1c692e4be0e590a89479667d228aa4b8934dc52d4e2/10000-lux-sky
   description: Generates a 10000 lux sky
   command: honeybee radiance sky illuminance 100000
   config:
@@ -122,6 +125,7 @@ templates:
     description: null
     default: null
     spec: null
+    alias: []
     path: model.json
     extensions: null
   - annotations: {}
@@ -130,6 +134,7 @@ templates:
     description: null
     default: null
     spec: null
+    alias: []
     path: sky.sky
     extensions: null
   outputs:
@@ -138,7 +143,7 @@ templates:
     name: scene-file
     description: null
     path: scene.oct
-  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/create-octree
+  name: 4a69b1a12f0aee18955ba1c692e4be0e590a89479667d228aa4b8934dc52d4e2/create-octree
   description: Generate an octree
   command: honeybee radiance oconv -s sky.sky -m model.json --output scene.oct
   config:
@@ -157,6 +162,7 @@ templates:
     description: null
     default: null
     spec: null
+    alias: []
     path: raw
     extensions: null
   outputs:
@@ -175,7 +181,7 @@ templates:
     name: post-process-folder
     description: null
     path: output
-  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/post-process
+  name: 4a69b1a12f0aee18955ba1c692e4be0e590a89479667d228aa4b8934dc52d4e2/post-process
   description: Post process your results and $$$
   command: honeybee radiance grid merge raw --folder output
   config:
@@ -194,6 +200,7 @@ templates:
     description: null
     default: null
     spec: null
+    alias: []
     path: grid.pts
     extensions: null
   - annotations: {}
@@ -202,12 +209,14 @@ templates:
     description: a string of radiance parameters
     default: -ab 5
     spec: null
+    alias: []
   - annotations: {}
     type: FunctionFileInput
     name: scene-file
     description: null
     default: null
     spec: null
+    alias: []
     path: scene.oct
     extensions: null
   outputs:
@@ -216,7 +225,7 @@ templates:
     name: result-file
     description: null
     path: grid.res
-  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/ray-tracing
+  name: 4a69b1a12f0aee18955ba1c692e4be0e590a89479667d228aa4b8934dc52d4e2/ray-tracing
   description: Run ray tracing using some input data!
   command: rtrace -I -h {{inputs.radiance-parameters}} scene.oct < grid.pts > grid.res
   config:
@@ -235,6 +244,7 @@ templates:
     description: The input grid to split
     default: null
     spec: null
+    alias: []
     path: grid.pts
     extensions: null
   - annotations: {}
@@ -243,6 +253,7 @@ templates:
     description: null
     default: null
     spec: null
+    alias: []
   outputs:
   - annotations: {}
     type: FunctionArrayOutput
@@ -255,7 +266,7 @@ templates:
     name: output-grids-folder
     description: null
     path: output
-  name: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/split-grid
+  name: 4a69b1a12f0aee18955ba1c692e4be0e590a89479667d228aa4b8934dc52d4e2/split-grid
   description: null
   command: honeybee radiance grid split grid.pts --folder output --log-file output/grids.txt
   config:
@@ -274,6 +285,7 @@ templates:
     description: A grid file
     default: null
     spec: null
+    alias: []
     extensions: null
   - annotations: {}
     type: DAGFolderInput
@@ -281,18 +293,21 @@ templates:
     description: A Honeybee model with radiance properties
     default: null
     spec: null
+    alias: []
   - annotations: {}
     type: DAGStringInput
     name: radiance-parameters
     description: The radiance parameters for ray tracing
     default: -I -ab 2 -h
     spec: null
+    alias: []
   - annotations: {}
     type: DAGIntegerInput
     name: sensor-grid-count
     description: The maximum number of grid points per parallel execution
     default: null
     spec: null
+    alias: []
   outputs:
   - annotations: {}
     type: DAGIntegerOutput
@@ -303,6 +318,7 @@ templates:
       type: TaskReference
       name: post-process
       variable: daylight-factor-average
+    alias: []
   - annotations: {}
     type: DAGFolderOutput
     name: data
@@ -312,12 +328,13 @@ templates:
       type: TaskReference
       name: post-process
       variable: post-process-folder
-  name: a85a19d988a1fdbcf775b1b8e9ed2b26a5af0ab137bbc57b4268729aa6e8a8d5/main
+    alias: []
+  name: 49c641f701b9985009dbbc9c01961c0422b59909f4e1efb6b389864bba2e916f/main
   fail_fast: true
   tasks:
   - annotations: {}
     name: create-octree
-    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/create-octree
+    template: 4a69b1a12f0aee18955ba1c692e4be0e590a89479667d228aa4b8934dc52d4e2/create-octree
     arguments:
     - annotations: {}
       type: TaskPathArgument
@@ -347,7 +364,7 @@ templates:
       path: output/octree/scene.oct
   - annotations: {}
     name: daylight-factor-simulation
-    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/ray-tracing
+    template: 4a69b1a12f0aee18955ba1c692e4be0e590a89479667d228aa4b8934dc52d4e2/ray-tracing
     arguments:
     - annotations: {}
       type: TaskArgument
@@ -391,7 +408,7 @@ templates:
       path: '{{item.name}}.res'
   - annotations: {}
     name: generate-sky
-    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/10000-lux-sky
+    template: 4a69b1a12f0aee18955ba1c692e4be0e590a89479667d228aa4b8934dc52d4e2/10000-lux-sky
     arguments: []
     needs: null
     loop: null
@@ -404,7 +421,7 @@ templates:
       path: asset/sky/10000_lux.sky
   - annotations: {}
     name: post-process
-    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/post-process
+    template: 4a69b1a12f0aee18955ba1c692e4be0e590a89479667d228aa4b8934dc52d4e2/post-process
     arguments:
     - annotations: {}
       type: TaskPathArgument
@@ -429,7 +446,7 @@ templates:
       description: null
   - annotations: {}
     name: split-grid
-    template: 5e6137c2d9a616f75ac9c8162d4de96e272a840109bbd54ba3ff6f4724755ac1/split-grid
+    template: 4a69b1a12f0aee18955ba1c692e4be0e590a89479667d228aa4b8934dc52d4e2/split-grid
     arguments:
     - annotations: {}
       type: TaskArgument
