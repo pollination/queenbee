@@ -6,7 +6,6 @@ from pydantic_openapi_helper.core import get_openapi
 from pydantic_openapi_helper.inheritance import class_mapper
 from queenbee.recipe.recipe import Recipe
 from queenbee.operator.operator import Operator
-from queenbee.io.dag import DAGBooleanInput
 
 
 parser = argparse.ArgumentParser(description='Generate OpenAPI JSON schemas')
@@ -21,7 +20,7 @@ VERSION = None
 if args.version:
     VERSION = args.version.replace('v', '')
 else:
-    VERSION = '.'.join(get_distribution('dragonfly_schema').version.split('.')[:3])
+    VERSION = '.'.join(get_distribution('queenbee').version.split('.')[:3])
 
 
 info = {
@@ -45,8 +44,8 @@ info = {
 
 
 modules = [
-    {'module': Recipe, 'name': 'Recipe'}
-    # {'module': Operator, 'name': 'Operator'}
+    {'module': Recipe, 'name': 'Recipe'},
+    {'module': Operator, 'name': 'Operator'}
 ]
 
 
@@ -65,8 +64,6 @@ for module in modules:
         description=f'Documentation for Queenbee {module["name"].lower()} schema.',
         version=VERSION, info=info,
         external_docs=external_docs)
-    # set the version default key in the Recipe schema
-    # openapi['components']['schemas']['Recipe']['properties']['version']['default'] = VERSION
     with open(f'./docs/{module["name"].lower()}.json', 'w') as out_file:
         json.dump(openapi, out_file, indent=2)
 
@@ -79,8 +76,6 @@ for module in modules:
         inheritance=True,
         external_docs=external_docs
     )
-    # set the version default key in the Recipe schema
-    # openapi['components']['schemas']['Recipe']['allOf'][1]['properties']['version']['default'] = VERSION
     with open(f'./docs/{module["name"].lower()}_inheritance.json', 'w') as out_file:
         json.dump(openapi, out_file, indent=2)
 
