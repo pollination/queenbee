@@ -34,25 +34,68 @@ flow:
     description: A grid file
     default: null
     spec: null
+    alias: []
     extensions: null
   - annotations: {}
-    type: DAGFolderInput
-    name: model
-    description: A Honeybee model with radiance properties
+    type: DAGFileInput
+    name: model_hbjson
+    description: Honeybee model as a hbjson file.
     default: null
     spec: null
+    alias:
+    - annotations: {}
+      type: DAGGenericInputAlias
+      name: model
+      description: 'A path to a HBJSON file or a HB model object built with Python
+        or dotnet
+
+        libraries.
+
+        '
+      default: null
+      spec: null
+      platform:
+      - grasshopper
+      handler:
+      - annotations: {}
+        type: IOAliasHandler
+        language: python
+        module: honeybee_rhino.handlers
+        function: hb_model_to_hbjson
+      - annotations: {}
+        type: IOAliasHandler
+        language: csharp
+        module: HBRhino.Model
+        function: HBModelToJSON
+    - annotations: {}
+      type: DAGGenericInputAlias
+      name: model
+      description: null
+      default: null
+      spec: null
+      platform:
+      - rhino
+      handler:
+      - annotations: {}
+        type: IOAliasHandler
+        language: dotnet
+        module: HBRhino.Model
+        function: ExportRhinoModel
+    extensions: null
   - annotations: {}
     type: DAGStringInput
     name: radiance-parameters
     description: The radiance parameters for ray tracing
     default: -I -ab 2 -h
     spec: null
+    alias: []
   - annotations: {}
     type: DAGIntegerInput
     name: sensor-grid-count
     description: The maximum number of grid points per parallel execution
     default: null
     spec: null
+    alias: []
   outputs:
   - annotations: {}
     type: DAGIntegerOutput
@@ -63,6 +106,7 @@ flow:
       type: TaskReference
       name: post-process
       variable: daylight-factor-average
+    alias: []
   - annotations: {}
     type: DAGFolderOutput
     name: data
@@ -72,6 +116,7 @@ flow:
       type: TaskReference
       name: post-process
       variable: post-process-folder
+    alias: []
   name: main
   fail_fast: true
   tasks:
@@ -85,7 +130,7 @@ flow:
       from:
         annotations: {}
         type: InputFolderReference
-        variable: model
+        variable: model_hbjson
       sub_path: null
     - annotations: {}
       type: TaskPathArgument
