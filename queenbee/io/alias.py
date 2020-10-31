@@ -1,4 +1,9 @@
-"""Queenbee input and output types for a DAG."""
+"""Queenbee alias input and output types.
+
+Use these alias inputs and outputs to create a different IO object for client side UIs.
+Alias inputs provide a handler object to convert the input provided to alias to what is
+required with the original input.
+"""
 
 import os
 from typing import Dict, Union, List
@@ -6,32 +11,77 @@ from typing import Dict, Union, List
 from pydantic import constr, Field, validator
 from jsonschema import validate as json_schema_validator
 
-from .common import ItemType, GenericInput, FromOutput
+from .common import ItemType, GenericInput, FromOutput, find_dup_items
 from .artifact_source import HTTP, S3, ProjectFolder
-from .alias import DAGAliasInputs, DAGAliasOutputs
 from ..io.reference import FileReference, FolderReference, TaskReference
+from ..base.basemodel import BaseModel
 
 
-class DAGGenericInput(GenericInput):
-    """Base class for DAG inputs.
+class IOAliasHandler(BaseModel):
+    """Input and output alias handler object."""
+
+    type: constr(regex='^IOAliasHandler$') = 'IOAliasHandler'
+
+    language: str = Field(
+        ...,
+        description='Declare the language (e.g. python, csharp, etc.). This '
+        'option allows the recipe to be flexible on handling different programming '
+        'languages.'
+    )
+
+    module: str = Field(
+        ...,
+        description='Target module or namespace to load the alias function.',
+        example='honeybee_rhino.handlers'
+    )
+
+    function: str = Field(
+        ...,
+        description='Name of the function. The input value will be passed to this '
+        'function as the first argument.'
+    )
+
+
+class DAGGenericInputAlias(GenericInput):
+    """Base class for DAG Alias inputs.
 
     This class adds a handler to input to handle the process of loading the input
     from different graphical interfaces.
     """
-    type: constr(regex='^DAGGenericInput$') = 'DAGGenericInput'
+    type: constr(regex='^DAGGenericInputAlias$') = 'DAGGenericInputAlias'
 
-    alias: List[DAGAliasInputs] = Field(
-        None,
-        description='A list of aliases for this input in different platforms.'
+    platform: List[str] = Field(
+        ...,
+        description='Name of the client platform (e.g. Grasshopper, Revit, etc). The '
+        'value can be any strings as long as it has been agreed between client-side '
+        'developer and author of the recipe.'
     )
 
-    @validator('alias', always=True)
-    def create_empty_handler_list(cls, v):
+    handler: List[IOAliasHandler] = Field(
+        ...,
+        description='List of process actions to process the input or output value.'
+    )
+
+    @validator('platform', always=True)
+    def create_empty_platform_list(cls, v):
         return [] if v is None else v
 
+    @validator('handler', always=True)
+    def check_duplicate_platform_name(cls, v, values):
+        v = [] if v is None else v
+        languages = [h.language for h in v]
+        dup_lang = find_dup_items(languages)
+        if dup_lang:
+            raise ValueError(
+                f'Duplicate use of language(s) found in alias handlers for '
+                f'{values["platform"]}: {dup_lang}. Each language can only be used once '
+                'in each platform.'
+            )
+        return v
 
-class DAGStringInput(DAGGenericInput):
-    """A String input.
+
+class DAGStringInputAlias(DAGGenericInputAlias):
+    """An Alias String input.
 
     You can add additional validation by defining a JSONSchema specification.
 
@@ -48,7 +98,7 @@ class DAGStringInput(DAGGenericInput):
 
     """
 
-    type: constr(regex='^DAGStringInput$') = 'DAGStringInput'
+    type: constr(regex='^DAGStringInputAlias$') = 'DAGStringInputAlias'
 
     default: str = Field(
         None,
@@ -67,8 +117,8 @@ class DAGStringInput(DAGGenericInput):
         return value
 
 
-class DAGIntegerInput(DAGGenericInput):
-    """An integer input.
+class DAGIntegerInputAlias(DAGGenericInputAlias):
+    """An alias integer input.
 
     You can add additional validation by defining a JSONSchema specification.
 
@@ -76,7 +126,7 @@ class DAGIntegerInput(DAGGenericInput):
     for more information.
 
     """
-    type: constr(regex='^DAGIntegerInput$') = 'DAGIntegerInput'
+    type: constr(regex='^DAGIntegerInputAlias$') = 'DAGIntegerInputAlias'
 
     default: int = Field(
         None,
@@ -95,15 +145,15 @@ class DAGIntegerInput(DAGGenericInput):
         return value
 
 
-class DAGNumberInput(DAGGenericInput):
-    """A number input.
+class DAGNumberInputAlias(DAGGenericInputAlias):
+    """An alias number input.
 
     You can add additional validation by defining a JSONSchema specification.
 
     See http://json-schema.org/understanding-json-schema/reference/numeric.html#numeric
     for more information.
     """
-    type: constr(regex='^DAGNumberInput$') = 'DAGNumberInput'
+    type: constr(regex='^DAGNumberInputAlias$') = 'DAGNumberInputAlias'
 
     default: float = Field(
         None,
@@ -122,7 +172,7 @@ class DAGNumberInput(DAGGenericInput):
         return value
 
 
-class DAGBooleanInput(DAGGenericInput):
+class DAGBooleanInputAlias(DAGGenericInputAlias):
     """The boolean type matches only two special values: True and False.
 
     Note that values that evaluate to true or false, such as 1 and 0, are not accepted.
@@ -132,7 +182,7 @@ class DAGBooleanInput(DAGGenericInput):
     See http://json-schema.org/understanding-json-schema/reference/boolean.html for more
     information.
     """
-    type: constr(regex='^DAGBooleanInput$') = 'DAGBooleanInput'
+    type: constr(regex='^DAGBooleanInputAlias$') = 'DAGBooleanInputAlias'
 
     default: bool = Field(
         None,
@@ -151,8 +201,8 @@ class DAGBooleanInput(DAGGenericInput):
         return value
 
 
-class DAGFolderInput(DAGGenericInput):
-    """A folder input.
+class DAGFolderInputAlias(DAGGenericInputAlias):
+    """An alias folder input.
 
     Folder is a special string input. Unlike other string inputs, a folder will be copied
     from its location to execution folder when a workflow is executed.
@@ -169,7 +219,7 @@ class DAGFolderInput(DAGGenericInput):
             "maxLength": 50,
         }
     """
-    type: constr(regex='^DAGFolderInput$') = 'DAGFolderInput'
+    type: constr(regex='^DAGFolderInputAlias$') = 'DAGFolderInputAlias'
 
     default: Union[HTTP, S3, ProjectFolder] = Field(
         None,
@@ -194,8 +244,8 @@ class DAGFolderInput(DAGGenericInput):
         return True
 
 
-class DAGFileInput(DAGFolderInput):
-    """A file input.
+class DAGFileInputAlias(DAGFolderInputAlias):
+    """An alias file input.
 
     File is a special string input. Unlike other string inputs, a file will be copied
     from its location to execution folder when a workflow is executed.
@@ -216,7 +266,7 @@ class DAGFileInput(DAGFolderInput):
         }
 
     """
-    type: constr(regex='^DAGFileInput$') = 'DAGFileInput'
+    type: constr(regex='^DAGFileInputAlias$') = 'DAGFileInputAlias'
 
     extensions: List[str] = Field(
         None,
@@ -241,7 +291,7 @@ class DAGFileInput(DAGFolderInput):
         return value
 
 
-class DAGPathInput(DAGFolderInput):
+class DAGPathInputAlias(DAGFolderInputAlias):
     """A file or a folder input.
 
     Use this input only in cases that the input can be either a file or folder. For file
@@ -266,7 +316,7 @@ class DAGPathInput(DAGFolderInput):
         }
 
     """
-    type: constr(regex='^DAGPathInput$') = 'DAGPathInput'
+    type: constr(regex='^DAGPathInputAlias$') = 'DAGPathInputAlias'
 
     extensions: List[str] = Field(
         None,
@@ -292,7 +342,7 @@ class DAGPathInput(DAGFolderInput):
             json_schema_validator(value, spec)
 
 
-class DAGArrayInput(DAGGenericInput):
+class DAGArrayInputAlias(DAGGenericInputAlias):
     """An array input.
 
     You can add additional validation by defining a JSONSchema specification.
@@ -300,7 +350,7 @@ class DAGArrayInput(DAGGenericInput):
     See http://json-schema.org/understanding-json-schema/reference/array.html for
     more information.
     """
-    type: constr(regex='^DAGArrayInput$') = 'DAGArrayInput'
+    type: constr(regex='^DAGArrayInputAlias$') = 'DAGArrayInputAlias'
 
     default: List = Field(
         None,
@@ -329,8 +379,8 @@ class DAGArrayInput(DAGGenericInput):
             json_schema_validator(value, spec)
 
 
-class DAGObjectInput(DAGGenericInput):
-    """A JSON object input.
+class DAGObjectInputAlias(DAGGenericInputAlias):
+    """An alias JSON object input.
 
     JSON objects are similar to Python dictionaries.
 
@@ -339,7 +389,7 @@ class DAGObjectInput(DAGGenericInput):
     See http://json-schema.org/understanding-json-schema/reference/object.html for
     more information.
     """
-    type: constr(regex='^DAGObjectInput$') = 'DAGObjectInput'
+    type: constr(regex='^DAGObjectInputAlias$') = 'DAGObjectInputAlias'
 
     default: Dict = Field(
         None,
@@ -361,35 +411,55 @@ class DAGObjectInput(DAGGenericInput):
             json_schema_validator(value, spec)
 
 
-DAGInputs = Union[
-    DAGGenericInput, DAGStringInput, DAGIntegerInput, DAGNumberInput, DAGBooleanInput,
-    DAGFolderInput, DAGFileInput, DAGPathInput, DAGArrayInput, DAGObjectInput
+DAGAliasInputs = Union[
+    DAGGenericInputAlias, DAGStringInputAlias, DAGIntegerInputAlias, DAGNumberInputAlias,
+    DAGBooleanInputAlias, DAGFolderInputAlias, DAGFileInputAlias, DAGPathInputAlias,
+    DAGArrayInputAlias, DAGObjectInputAlias
 ]
 
 
-class DAGGenericOutput(FromOutput):
-    """DAG generic output.
+class DAGGenericOutputAlias(FromOutput):
+    """DAG generic alias output.
 
     In most cases, you should not be using the generic output unless you need a dynamic
     output that changes its type in different platforms because of returning different
     objects in handler.
     """
-    type: constr(regex='^DAGGenericOutput$') = 'DAGGenericOutput'
+    type: constr(regex='^DAGGenericOutputAlias$') = 'DAGGenericOutputAlias'
 
-    alias: List[DAGAliasOutputs] = Field(
-        None,
-        description='A list of additional processes for loading this output on '
-        'different platforms.'
+    platform: List[str] = Field(
+        ...,
+        description='Name of the client platform (e.g. Grasshopper, Revit, etc). The '
+        'value can be any strings as long as it has been agreed between client-side '
+        'developer and author of the recipe.'
     )
 
-    @validator('alias', always=True)
-    def create_empty_handler_list(cls, v):
+    handler: List[IOAliasHandler] = Field(
+        ...,
+        description='List of process actions to process the input or output value.'
+    )
+
+    @validator('platform', always=True)
+    def create_empty_platform_list(cls, v):
         return [] if v is None else v
 
+    @validator('handler', always=True)
+    def check_duplicate_platform_name(cls, v, values):
+        v = [] if v is None else v
+        languages = [h.language for h in v]
+        dup_lang = find_dup_items(languages)
+        if dup_lang:
+            raise ValueError(
+                f'Duplicate use of language(s) found in alias handlers for '
+                f'{values["platform"]}: {dup_lang}. Each language can only be used once '
+                'in each platform.'
+            )
+        return v
 
-class DAGFileOutput(DAGGenericOutput):
-    """DAG file output."""
-    type: constr(regex='^DAGFileOutput$') = 'DAGFileOutput'
+
+class DAGFileOutputAlias(DAGGenericOutputAlias):
+    """DAG alias file output."""
+    type: constr(regex='^DAGFileOutputAlias$') = 'DAGFileOutputAlias'
 
     from_: Union[TaskReference, FileReference] = Field(
         ...,
@@ -402,9 +472,9 @@ class DAGFileOutput(DAGGenericOutput):
         return True
 
 
-class DAGFolderOutput(DAGGenericOutput):
-    """DAG folder output."""
-    type: constr(regex='^DAGFolderOutput$') = 'DAGFolderOutput'
+class DAGFolderOutputAlias(DAGGenericOutputAlias):
+    """DAG alias folder output."""
+    type: constr(regex='^DAGFolderOutputAlias$') = 'DAGFolderOutputAlias'
 
     from_: Union[TaskReference, FolderReference] = Field(
         ...,
@@ -417,9 +487,9 @@ class DAGFolderOutput(DAGGenericOutput):
         return True
 
 
-class DAGPathOutput(DAGGenericOutput):
-    """DAG path output."""
-    type: constr(regex='^DAGPathOutput$') = 'DAGPathOutput'
+class DAGPathOutputAlias(DAGGenericOutputAlias):
+    """DAG alias path output."""
+    type: constr(regex='^DAGPathOutputAlias$') = 'DAGPathOutputAlias'
 
     from_: Union[TaskReference, FileReference, FolderReference] = Field(
         ...,
@@ -433,48 +503,48 @@ class DAGPathOutput(DAGGenericOutput):
         return True
 
 
-class DAGStringOutput(DAGFileOutput):
-    """DAG string output.
+class DAGStringOutputAlias(DAGFileOutputAlias):
+    """DAG alias string output.
 
     This output loads the content from a file as a string.
     """
-    type: constr(regex='^DAGStringOutput$') = 'DAGStringOutput'
+    type: constr(regex='^DAGStringOutputAlias$') = 'DAGStringOutputAlias'
 
     @property
     def is_artifact(self):
         return False
 
 
-class DAGIntegerOutput(DAGStringOutput):
-    """DAG integer output.
+class DAGIntegerOutputAlias(DAGStringOutputAlias):
+    """DAG alias integer output.
 
     This output loads the content from a file as an integer.
     """
-    type: constr(regex='^DAGIntegerOutput$') = 'DAGIntegerOutput'
+    type: constr(regex='^DAGIntegerOutputAlias$') = 'DAGIntegerOutputAlias'
 
 
-class DAGNumberOutput(DAGStringOutput):
-    """DAG number output.
+class DAGNumberOutputAlias(DAGStringOutputAlias):
+    """DAG alias number output.
 
     This output loads the content from a file as a floating number.
     """
-    type: constr(regex='^DAGNumberOutput$') = 'DAGNumberOutput'
+    type: constr(regex='^DAGNumberOutputAlias$') = 'DAGNumberOutputAlias'
 
 
-class DAGBooleanOutput(DAGStringOutput):
-    """DAG boolean output.
+class DAGBooleanOutputAlias(DAGStringOutputAlias):
+    """DAG alias boolean output.
 
     This output loads the content from a file as a boolean.
     """
-    type: constr(regex='^DAGBooleanOutput$') = 'DAGBooleanOutput'
+    type: constr(regex='^DAGBooleanOutputAlias$') = 'DAGBooleanOutputAlias'
 
 
-class DAGArrayOutput(DAGStringOutput):
-    """DAG array output.
+class DAGArrayOutputAlias(DAGStringOutputAlias):
+    """DAG alias array output.
 
     This output loads the content from a JSON file which must be a JSON Array.
     """
-    type: constr(regex='^DAGArrayOutput$') = 'DAGArrayOutput'
+    type: constr(regex='^DAGArrayOutputAlias$') = 'DAGArrayOutputAlias'
 
     items_type: ItemType = Field(
         ItemType.String,
@@ -483,16 +553,16 @@ class DAGArrayOutput(DAGStringOutput):
     )
 
 
-class DAGObjectOutput(DAGStringOutput):
-    """DAG object output.
+class DAGObjectOutputAlias(DAGStringOutputAlias):
+    """DAG alias object output.
 
     This output loads the content from a file as a JSON object.
     """
-    type: constr(regex='^DAGObjectOutput$') = 'DAGObjectOutput'
+    type: constr(regex='^DAGObjectOutputAlias$') = 'DAGObjectOutputAlias'
 
 
-DAGOutputs = Union[
-    DAGGenericOutput, DAGStringOutput, DAGIntegerOutput, DAGNumberOutput,
-    DAGBooleanOutput, DAGFolderOutput, DAGFileOutput, DAGPathOutput, DAGArrayOutput,
-    DAGObjectOutput
+DAGAliasOutputs = Union[
+    DAGGenericOutputAlias, DAGStringOutputAlias, DAGIntegerOutputAlias,
+    DAGNumberOutputAlias, DAGBooleanOutputAlias, DAGFolderOutputAlias,
+    DAGFileOutputAlias, DAGPathOutputAlias, DAGArrayOutputAlias, DAGObjectOutputAlias
 ]
