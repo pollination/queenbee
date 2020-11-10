@@ -11,7 +11,7 @@ from jsonschema import validate as json_schema_validator
 
 from .common import PathOutput, ItemType
 from .dag import DAGStringInput, DAGIntegerInput, DAGNumberInput, DAGBooleanInput, \
-    DAGFolderInput, DAGArrayInput, DAGObjectInput
+    DAGFolderInput, DAGArrayInput, DAGJSONObjectInput
 
 
 class FunctionStringInput(DAGStringInput):
@@ -212,7 +212,7 @@ class FunctionArrayInput(DAGArrayInput):
     type: constr(regex='^FunctionArrayInput$') = 'FunctionArrayInput'
 
 
-class FunctionObjectInput(DAGObjectInput):
+class FunctionJSONObjectInput(DAGJSONObjectInput):
     """A JSON object input.
 
     JSON objects are similar to Python dictionaries.
@@ -222,13 +222,13 @@ class FunctionObjectInput(DAGObjectInput):
     See http://json-schema.org/understanding-json-schema/reference/object.html for
     more information.
     """
-    type: constr(regex='^FunctionObjectInput$') = 'FunctionObjectInput'
+    type: constr(regex='^FunctionJSONObjectInput$') = 'FunctionJSONObjectInput'
 
 
 FunctionInputs = Union[
     FunctionStringInput, FunctionIntegerInput, FunctionNumberInput,
     FunctionBooleanInput, FunctionFolderInput, FunctionFileInput, FunctionPathInput,
-    FunctionArrayInput, FunctionObjectInput
+    FunctionArrayInput, FunctionJSONObjectInput
 ]
 
 
@@ -328,16 +328,16 @@ class FunctionArrayOutput(FunctionStringOutput):
     )
 
 
-class FunctionObjectOutput(FunctionStringOutput):
+class FunctionJSONObjectOutput(FunctionStringOutput):
     """Function object output.
 
     This output loads the content from a file as a JSON object.
     """
-    type: constr(regex='^FunctionObjectOutput$') = 'FunctionObjectOutput'
+    type: constr(regex='^FunctionJSONObjectOutput$') = 'FunctionJSONObjectOutput'
 
 
 FunctionOutputs = Union[
     FunctionStringOutput, FunctionIntegerOutput, FunctionNumberOutput,
     FunctionBooleanOutput, FunctionFolderOutput, FunctionFileOutput, FunctionPathOutput,
-    FunctionArrayOutput, FunctionObjectOutput
+    FunctionArrayOutput, FunctionJSONObjectOutput
 ]
