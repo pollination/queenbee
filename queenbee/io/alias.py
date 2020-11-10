@@ -379,7 +379,7 @@ class DAGArrayInputAlias(DAGGenericInputAlias):
             json_schema_validator(value, spec)
 
 
-class DAGObjectInputAlias(DAGGenericInputAlias):
+class DAGJSONObjectInputAlias(DAGGenericInputAlias):
     """An alias JSON object input.
 
     JSON objects are similar to Python dictionaries.
@@ -389,7 +389,7 @@ class DAGObjectInputAlias(DAGGenericInputAlias):
     See http://json-schema.org/understanding-json-schema/reference/object.html for
     more information.
     """
-    type: constr(regex='^DAGObjectInputAlias$') = 'DAGObjectInputAlias'
+    type: constr(regex='^DAGJSONObjectInputAlias$') = 'DAGJSONObjectInputAlias'
 
     default: Dict = Field(
         None,
@@ -414,7 +414,7 @@ class DAGObjectInputAlias(DAGGenericInputAlias):
 DAGAliasInputs = Union[
     DAGGenericInputAlias, DAGStringInputAlias, DAGIntegerInputAlias, DAGNumberInputAlias,
     DAGBooleanInputAlias, DAGFolderInputAlias, DAGFileInputAlias, DAGPathInputAlias,
-    DAGArrayInputAlias, DAGObjectInputAlias
+    DAGArrayInputAlias, DAGJSONObjectInputAlias
 ]
 
 
@@ -553,16 +553,16 @@ class DAGArrayOutputAlias(DAGStringOutputAlias):
     )
 
 
-class DAGObjectOutputAlias(DAGStringOutputAlias):
+class DAGJSONObjectOutputAlias(DAGStringOutputAlias):
     """DAG alias object output.
 
     This output loads the content from a file as a JSON object.
     """
-    type: constr(regex='^DAGObjectOutputAlias$') = 'DAGObjectOutputAlias'
+    type: constr(regex='^DAGJSONObjectOutputAlias$') = 'DAGJSONObjectOutputAlias'
 
 
 DAGAliasOutputs = Union[
     DAGGenericOutputAlias, DAGStringOutputAlias, DAGIntegerOutputAlias,
     DAGNumberOutputAlias, DAGBooleanOutputAlias, DAGFolderOutputAlias,
-    DAGFileOutputAlias, DAGPathOutputAlias, DAGArrayOutputAlias, DAGObjectOutputAlias
+    DAGFileOutputAlias, DAGPathOutputAlias, DAGArrayOutputAlias, DAGJSONObjectOutputAlias
 ]
