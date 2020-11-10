@@ -329,7 +329,7 @@ class DAGArrayInput(DAGGenericInput):
             json_schema_validator(value, spec)
 
 
-class DAGObjectInput(DAGGenericInput):
+class DAGJSONObjectInput(DAGGenericInput):
     """A JSON object input.
 
     JSON objects are similar to Python dictionaries.
@@ -339,7 +339,7 @@ class DAGObjectInput(DAGGenericInput):
     See http://json-schema.org/understanding-json-schema/reference/object.html for
     more information.
     """
-    type: constr(regex='^DAGObjectInput$') = 'DAGObjectInput'
+    type: constr(regex='^DAGJSONObjectInput$') = 'DAGJSONObjectInput'
 
     default: Dict = Field(
         None,
@@ -363,7 +363,7 @@ class DAGObjectInput(DAGGenericInput):
 
 DAGInputs = Union[
     DAGGenericInput, DAGStringInput, DAGIntegerInput, DAGNumberInput, DAGBooleanInput,
-    DAGFolderInput, DAGFileInput, DAGPathInput, DAGArrayInput, DAGObjectInput
+    DAGFolderInput, DAGFileInput, DAGPathInput, DAGArrayInput, DAGJSONObjectInput
 ]
 
 
@@ -483,16 +483,16 @@ class DAGArrayOutput(DAGStringOutput):
     )
 
 
-class DAGObjectOutput(DAGStringOutput):
+class DAGJSONObjectOutput(DAGStringOutput):
     """DAG object output.
 
     This output loads the content from a file as a JSON object.
     """
-    type: constr(regex='^DAGObjectOutput$') = 'DAGObjectOutput'
+    type: constr(regex='^DAGJSONObjectOutput$') = 'DAGJSONObjectOutput'
 
 
 DAGOutputs = Union[
     DAGGenericOutput, DAGStringOutput, DAGIntegerOutput, DAGNumberOutput,
     DAGBooleanOutput, DAGFolderOutput, DAGFileOutput, DAGPathOutput, DAGArrayOutput,
-    DAGObjectOutput
+    DAGJSONObjectOutput
 ]
