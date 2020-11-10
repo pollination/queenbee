@@ -44,8 +44,9 @@ info = {
 
 
 modules = [
-    {'module': Recipe, 'name': 'Recipe'},
-    {'module': Operator, 'name': 'Operator'}
+    {'module': [Recipe], 'name': 'Recipe'},
+    {'module': [Operator], 'name': 'Operator'},
+    {'module': [Recipe, Operator], 'name': 'Queenbee'}
 ]
 
 
@@ -59,7 +60,7 @@ for module in modules:
     }
 
     openapi = get_openapi(
-        [module['module']],
+        module['module'],
         title=f'Queenbee {module["name"]} Schema',
         description=f'Documentation for Queenbee {module["name"].lower()} schema.',
         version=VERSION, info=info,
@@ -69,7 +70,7 @@ for module in modules:
 
     # with inheritance
     openapi = get_openapi(
-        [module['module']],
+        module['module'],
         title=f'Queenbee {module["name"]} Schema',
         description=f'Documentation for Queenbee {module["name"].lower()} schema.',
         version=VERSION, info=info,
@@ -81,4 +82,4 @@ for module in modules:
 
     # add the mapper file
     with open(f'./docs/{module["name"].lower()}_mapper.json', 'w') as out_file:
-        json.dump(class_mapper([module['module']]), out_file, indent=2)
+        json.dump(class_mapper(module['module']), out_file, indent=2)
