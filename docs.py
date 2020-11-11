@@ -82,4 +82,7 @@ for module in modules:
 
     # add the mapper file
     with open(f'./docs/{module["name"].lower()}_mapper.json', 'w') as out_file:
-        json.dump(class_mapper(module['module']), out_file, indent=2)
+        json.dump(
+            class_mapper(module['module'], ['queenbee', 'queenbee.interface']),
+            out_file, indent=2
+        )
