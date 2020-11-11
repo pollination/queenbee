@@ -55,16 +55,6 @@ class TestFolder(BaseTestClass):
     def recipe_instances(self):
         return self.fixture_instances('valid', Recipe)
 
-    def test_from_folder(self, folder):
-        parsed_instance = BakedRecipe.from_folder(folder)
-
-        parsed_test_path = os.path.join(
-            ASSET_FOLDER, 'baked', f'{parsed_instance.metadata.name}.yaml')
-        if os.path.exists(parsed_test_path):
-            compare_instance = BakedRecipe.from_file(parsed_test_path)
-
-            assert compare_instance == parsed_instance
-
     def test_from_recipe_instance(self, recipe):
         parsed_instance = BakedRecipe.from_recipe(recipe)
 
