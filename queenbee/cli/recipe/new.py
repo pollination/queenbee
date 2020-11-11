@@ -32,7 +32,7 @@ def new(name, path):
             name: <input-name>
             tag: 0.1.0
         dependencies:
-        - type: operator
+        - kind: operator_kind
         name: whalesay
         tag: 0.1.0
         source: https://pollination.github.io/shed # Replace with name of repo
