@@ -6,7 +6,7 @@ specific task.
 """
 from queenbee.io.task import TaskPathReturn, TaskReturn
 from typing import List, Set, Union
-from pydantic import Field, validator, root_validator
+from pydantic import Field, validator, root_validator, constr
 
 from .task import DAGTask
 from ..io.common import IOBase, find_dup_items
@@ -17,6 +17,7 @@ from ..io.reference import FileReference, FolderReference, TaskReference, \
 
 class DAG(IOBase):
     """A Directed Acyclic Graph containing a list of tasks."""
+    type: constr(regex='^DAG$') = 'DAG'
 
     name: str = Field(
         ...,

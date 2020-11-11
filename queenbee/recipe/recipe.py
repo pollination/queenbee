@@ -9,7 +9,7 @@ import json
 from typing import List, Union, Dict
 
 import yaml
-from pydantic import Field, validator, root_validator
+from pydantic import Field, validator, root_validator, constr
 
 from ..base.basemodel import BaseModel
 from ..base.metadata import MetaData
@@ -17,14 +17,15 @@ from ..base.metadata import MetaData
 from ..config import Config
 from ..operator import Operator
 from ..operator.function import Function
-from ..operator.operator import Config as OperatorConfig
+from ..operator.operator import OperatorConfig
 
 from .dag import DAG, DAGInputs, DAGOutputs
-from .dependency import Dependency, DependencyType
+from .dependency import Dependency, DependencyKind
 
 
 class TemplateFunction(Function):
     """Function template."""
+    type: constr(regex='^TemplateFunction$') = 'TemplateFunction'
 
     config: OperatorConfig = Field(
         ...,
@@ -45,6 +46,7 @@ class TemplateFunction(Function):
 
         for function in operator.functions:
             input_dict = function.to_dict()
+            input_dict['type'] = 'TemplateFunction'
             input_dict['name'] = f'{operator.__hash__}/{function.name}'
             input_dict['config'] = operator.config.to_dict()
             functions.append(cls.parse_obj(input_dict))
@@ -54,6 +56,7 @@ class TemplateFunction(Function):
 
 class Recipe(BaseModel):
     """A Queenbee Recipe"""
+    type: constr(regex='^Recipe$') = 'Recipe'
 
     metadata: MetaData = Field(
         None,
@@ -356,7 +359,7 @@ class Recipe(BaseModel):
             package_version = dependency.fetch(auth_header=auth_header)
             dep = package_version.manifest
 
-            if dependency.type == DependencyType.recipe:
+            if dependency.kind == DependencyKind.recipe:
                 dep.write_dependencies(
                     folder_path=os.path.join(
                         recipes_folder, dependency.ref_name),
@@ -365,7 +368,8 @@ class Recipe(BaseModel):
 
             dep.to_folder(
                 folder_path=os.path.join(
-                    folder_path, '.dependencies', dependency.type, dependency.ref_name),
+                    folder_path, '.dependencies',
+                    dependency.dependency_kind, dependency.ref_name),
                 readme_string=package_version.readme,
                 license_string=package_version.license,
             )
@@ -377,6 +381,7 @@ class BakedRecipe(Recipe):
     A Baked Recipe contains all the templates referred to in the DAG within a templates
     list.
     """
+    type: constr(regex='^BakedRecipe$') = 'BakedRecipe'
 
     digest: str
 
@@ -419,20 +424,20 @@ class BakedRecipe(Recipe):
             package_version = dependency.fetch(auth_header=auth_header)
             dep = package_version.manifest
 
-            if dependency.type == 'recipe':
+            if dependency.kind == DependencyKind.recipe:
                 sub_recipe = cls.from_recipe(recipe=dep, config=config)
 
                 templates.extend(sub_recipe.templates)
                 templates.extend(sub_recipe.flow)
                 digest_dict[dependency.ref_name] = sub_recipe.digest
 
-            elif dependency.type == 'operator':
+            elif dependency.kind == DependencyKind.operator:
                 templates.extend(TemplateFunction.from_operator(dep))
                 digest_dict[dependency.ref_name] = dep.__hash__
 
             else:
                 raise ValueError(
-                    f'Dependency of type {dependency.type} not recognized')
+                    f'Dependency of type {dependency.kind} not recognized')
 
         flow = cls.replace_template_refs(
             dependencies=recipe.dependencies,
@@ -441,6 +446,7 @@ class BakedRecipe(Recipe):
         )
 
         input_dict = recipe.to_dict()
+        input_dict['type'] = 'BakedRecipe'
         input_dict['digest'] = digest
         input_dict['flow'] = [dag.to_dict() for dag in flow]
         input_dict['templates'] = [template.to_dict()
@@ -534,6 +540,7 @@ class BakedRecipe(Recipe):
         )
 
         input_dict = recipe.to_dict()
+        input_dict['type'] = 'BakedRecipe'
         input_dict['digest'] = digest
         input_dict['flow'] = [dag.to_dict() for dag in flow]
         input_dict['templates'] = [template.to_dict()
@@ -595,7 +602,7 @@ class BakedRecipe(Recipe):
                     )
 
                 # Template name is another Recipe
-                if dep.type == DependencyType.recipe:
+                if dep.kind == DependencyKind.recipe:
                     assert len(template_dep_list) == 1, \
                         ValueError(
                             f'Unresolvable Recipe template dependency {task.template}'
@@ -603,14 +610,15 @@ class BakedRecipe(Recipe):
                     template_dep = f'{dep_hash}/main'
 
                 # Template name is an Operator Function
-                elif dep.type == DependencyType.operator:
+                elif dep.kind == DependencyKind.operator:
                     assert len(template_dep_list) == 2, \
                         ValueError(
                             f'Unresolvable Operator function template dependency'
                             f' {task.template}'
                     )
                     template_dep = f'{dep_hash}/{template_dep_list[1]}'
-
+                else:
+                    raise ValueError(f'Invalid dependency type: {dep.kind}')
                 task.template = template_dep
 
         return dags

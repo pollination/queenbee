@@ -1,6 +1,6 @@
 """Queenbee Function class."""
 from typing import List
-from pydantic import Field, validator
+from pydantic import Field, validator, constr
 
 from ..io.common import IOBase
 from ..io.function import FunctionInputs, FunctionOutputs
@@ -9,6 +9,8 @@ from ..base.variable import validate_inputs_outputs_var_format, get_ref_variable
 
 class Function(IOBase):
     """A Function with a single command"""
+
+    type: constr(regex='^Function$') = 'Function'
 
     name: str = Field(
         ...,

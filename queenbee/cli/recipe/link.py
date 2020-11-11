@@ -34,7 +34,11 @@ def link(dependency_name, dependency_path, recipe_path):
         raise click.ClickException(error)
 
     destination = os.path.join(
-        recipe_path, '.dependencies', dependency.type, dependency_name)
+        recipe_path,
+        '.dependencies',
+        dependency.dependency_kind,
+        dependency_name
+    )
     destination = os.path.abspath(destination)
 
     source = os.path.abspath(dependency_path)

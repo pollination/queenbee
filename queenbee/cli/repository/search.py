@@ -15,9 +15,9 @@ from ...config.repositories import RepositoryReference
 
 @click.command('search')
 @click.option('-r', '--repository', help='Only search within the named repository')
-@click.option('-t', '--type', 'package_type', help='Only search for a certain type of package')
+@click.option('-t', '--type', 'kind', help='Only search for a certain type of package')
 @click.option('-s', '--search', help='A search query')
-def search(repository, package_type, search):
+def search(repository, kind, search):
     """search for packages inside a repository
 
     Use this command to search for packages inside of one of the
@@ -42,7 +42,7 @@ def search(repository, package_type, search):
 
     for r in repos:
         packages.extend(r.search(
-            package_type=package_type,
+            kind=kind,
             search_string=search,
         ))
 
@@ -88,7 +88,7 @@ def get_by_tag(type, repo, name, tag):
 
     try:
         package = repo_index.package_by_tag(
-            package_type=type,
+            kind=type,
             package_name=name,
             package_tag=tag,
         )

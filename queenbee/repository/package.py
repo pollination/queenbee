@@ -6,19 +6,18 @@ from datetime import datetime
 from tarfile import TarInfo, TarFile
 from typing import Union, Tuple
 
-from pydantic import Field
+from pydantic import Field, constr
 
 from ..operator import Operator
 from ..recipe import Recipe, BakedRecipe
 
-from ..base.basemodel import BaseModel
 from ..base.request import make_request, urljoin
 from ..base.metadata import MetaData
 
 
 def reset_tar(tarinfo: TarInfo) -> TarInfo:
     tarinfo.uid = tarinfo.gid = 0
-    tarinfo.uname = tarinfo.gname = "0"
+    tarinfo.uname = tarinfo.gname = '0'
     return tarinfo
 
 
@@ -29,7 +28,7 @@ def add_to_tar(tar: TarFile, data: bytes, filename: str):
     tarinfo.mode = 436
     tarinfo.type = b'0'
     tarinfo.uid = tarinfo.gid = 0
-    tarinfo.uname = tarinfo.gname = "0"
+    tarinfo.uname = tarinfo.gname = '0'
 
     tar.addfile(tarinfo, BytesIO(data))
 
@@ -40,6 +39,7 @@ class PackageVersion(MetaData):
     A MetaData object to distinguish a specific package version within a repository
     index.
     """
+    type: constr(regex='^PackageVersion$') = 'PackageVersion'
 
     url: str
 
@@ -52,7 +52,7 @@ class PackageVersion(MetaData):
         description='A slug of the repository name and the package name.'
     )
 
-    type: str = Field(
+    kind: str = Field(
         '',
         description='The type of Queenbee package (ie: recipe or operator)'
     )
@@ -100,14 +100,15 @@ class PackageVersion(MetaData):
             created = datetime.utcnow()
 
         input_dict = resource.metadata.to_dict()
+        input_dict['type'] = 'PackageVersion'
         input_dict['digest'] = resource.__hash__
         input_dict['created'] = created
         input_dict['url'] = package_path
 
         if isinstance(resource, Operator):
-            input_dict['type'] = 'operator'
+            input_dict['kind'] = 'operator'
         elif isinstance(resource, Recipe):
-            input_dict['type'] = 'recipe'
+            input_dict['kind'] = 'recipe'
 
         if include_manifest:
             input_dict['manifest'] = resource.to_dict()
@@ -235,11 +236,11 @@ class PackageVersion(MetaData):
 
         try:
             manifest = Operator.parse_raw(manifest_bytes)
-            version.type = 'operator'
+            version.kind = 'operator'
         except Exception as error:
             try:
                 manifest = Recipe.parse_raw(manifest_bytes)
-                version.type = 'recipe'
+                version.kind = 'recipe'
             except Exception as error:
                 raise ValueError(
                     'Package resource.json could not be read as a Recipe or an Operator')
@@ -270,13 +271,14 @@ class PackageVersion(MetaData):
 
         return version
 
-    def fetch_package(self, source_url: str = None, verify_digest: bool = True, auth_header: str = '') -> 'PackageVersion':
+    def fetch_package(self, source_url: str = None, verify_digest: bool = True,
+                      auth_header: str = '') -> 'PackageVersion':
         if source_url.startswith('file:'):
             source_path = source_url.split('file:///')[1]
             if os.path.isabs(source_path):
                 package_path = os.path.join(source_path, self.url)
             else:
-                package_path = os.path.join(os.getcwd(), subfolder, self.url)
+                package_path = os.path.join(os.getcwd(), source_path, self.url)
 
             return self.from_package(package_path)
 
