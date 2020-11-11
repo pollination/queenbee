@@ -1,6 +1,6 @@
 dependencies:
-- type: recipe
+- kind: recipe_kind
   name: daylight-factor
-  hash: 044132bd4ace30a9b2340dc5e2b445e5366651287f981b87ca2efd62d8b00e1b
+  hash: 91d2c0727a0d749c710d71f5cbcee77cbc6a0cc2af29596f6ea236497eccf19b
   tag: 0.0.1
   source: https://example.com/test-repo

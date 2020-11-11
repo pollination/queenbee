@@ -1,17 +1,20 @@
 {
+  "type": "RepositoryIndex",
   "annotations": {},
-  "generated": "2020-10-26T22:45:44.138419",
+  "generated": "2020-11-11T14:01:41.901230",
   "metadata": {
+    "type": "RepositoryMetadata",
     "annotations": {},
-    "name": "test-repo",
+    "name": "",
     "description": "A Queenbee package repository",
     "source": null,
-    "operator_count": 0,
-    "recipe_count": 0
+    "operator_count": 1,
+    "recipe_count": 1
   },
   "operator": {
     "honeybee-radiance": [
       {
+        "type": "PackageVersion",
         "annotations": {},
         "name": "honeybee-radiance",
         "tag": "1.2.3",
@@ -23,6 +26,7 @@
         ],
         "maintainers": [
           {
+            "type": "Maintainer",
             "annotations": {},
             "name": "mostapha",
             "email": "mostapha@ladybug.tools"
@@ -36,16 +40,17 @@
         "deprecated": null,
         "description": "An operator to run all things honeybee and radiance!",
         "url": "operators/honeybee-radiance-1.2.3.tgz",
-        "created": "2020-10-26T13:21:59.577119",
-        "digest": "3975f9c3104ac18e6559b4c92f4c4d23e1eeb1070a1298df4343e1c7e7307cff",
-        "slug": null,
-        "type": "operator"
+        "created": "2020-11-11T14:01:20.374294",
+        "digest": "69b43aedf58787f103d597b39f5e9a44c0a6ff3017208ad8f3a973a2143d7d03",
+        "slug": "/honeybee-radiance",
+        "kind": "operator"
       }
     ]
   },
   "recipe": {
     "daylight-factor": [
       {
+        "type": "PackageVersion",
         "annotations": {},
         "name": "daylight-factor",
         "tag": "0.0.1",
@@ -56,6 +61,7 @@
         ],
         "maintainers": [
           {
+            "type": "Maintainer",
             "annotations": {},
             "name": "mostapha",
             "email": "mostapha@ladybug.tools"
@@ -67,10 +73,10 @@
         "deprecated": null,
         "description": "An awesome workflow to run daylight factor!",
         "url": "recipes/daylight-factor-0.0.1.tgz",
-        "created": "2020-10-26T22:44:30.509875",
-        "digest": "044132bd4ace30a9b2340dc5e2b445e5366651287f981b87ca2efd62d8b00e1b",
-        "slug": null,
-        "type": "recipe"
+        "created": "2020-11-11T14:01:31.624136",
+        "digest": "91d2c0727a0d749c710d71f5cbcee77cbc6a0cc2af29596f6ea236497eccf19b",
+        "slug": "/daylight-factor",
+        "kind": "recipe"
       }
     ]
   }

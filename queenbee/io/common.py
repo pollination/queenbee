@@ -14,7 +14,7 @@ from ..base.variable import validate_inputs_outputs_var_format, get_ref_variable
 
 class ItemType(str, Enum):
     """Type enum for items in a list."""
-    Any = 'Any'  # a generic type to be used when different types can be used.
+    Any = 'Any'  # generic type for inputs with no type hint.
     String = 'String'
     Integer = 'Integer'
     Number = 'Number'
@@ -257,6 +257,8 @@ class IOBase(BaseModel):
 
     IOBase is the baseclass for Function, DAG and Workflow.
     """
+
+    type: constr(regex='^IOBase$') = 'IOBase'
 
     inputs: List[Any] = Field(
         None,

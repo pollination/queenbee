@@ -7,13 +7,15 @@ https://swagger.io/specification/#infoObject
 """
 
 from typing import List
-from pydantic import Field
+from pydantic import Field, constr
 
 from .basemodel import BaseModel
 
 
 class Maintainer(BaseModel):
     """Maintainer information"""
+    type: constr(regex='^Maintainer$') = 'Maintainer'
+
     name: str = Field(
         ...,
         description='The name of the author/maintainer person or organization.'
@@ -27,6 +29,8 @@ class Maintainer(BaseModel):
 
 class License(BaseModel):
     """License information for the Package"""
+    type: constr(regex='^License$') = 'License'
+
     name: str = Field(
         ...,
         description='The license name used for the package.'
@@ -40,6 +44,7 @@ class License(BaseModel):
 
 class MetaData(BaseModel):
     """Package metadata information."""
+    type: constr(regex='^MetaData$') = 'MetaData'
 
     name: str = Field(
         ...,

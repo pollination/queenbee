@@ -1,25 +1,27 @@
 """Queenbee dependency class."""
 import os
 from enum import Enum
-from pydantic import Field
+from pydantic import Field, constr
 
 from ..base.basemodel import BaseModel
 from ..base.request import make_request, urljoin
 
 
-class DependencyType(str, Enum):
+class DependencyKind(str, Enum):
+    """Dependency kind."""
+    recipe = 'recipe_kind'
 
-    recipe = 'recipe'
-
-    operator = 'operator'
+    operator = 'operator_kind'
 
 
 class Dependency(BaseModel):
     """Configuration to fetch a Recipe or Operator that another Recipe depends on."""
+    type: constr(regex='^Dependency$') = 'Dependency'
 
-    type: DependencyType = Field(
+    kind: DependencyKind = Field(
         ...,
-        description='The type of dependency'
+        description='The kind of dependency. It can be a recipe_kind or an '
+        'operator_kind.'
     )
 
     name: str = Field(
@@ -54,6 +56,14 @@ class Dependency(BaseModel):
             'https://some-random-user.github.io/registry'
         ]
     )
+
+    @property
+    def dependency_kind(self):
+        """Return a clean version of dependency kind.
+
+        The value is either `recipe` or `operator`.
+        """
+        return self.kind.split('_')[0]
 
     @property
     def is_locked(self) -> bool:
@@ -118,7 +128,7 @@ class Dependency(BaseModel):
 
         if self.digest is None:
             package_meta = index.package_by_tag(
-                package_type=self.type,
+                kind=self.dependency_kind,
                 package_name=self.name,
                 package_tag=self.tag
             )
@@ -127,7 +137,7 @@ class Dependency(BaseModel):
         else:
             try:
                 package_meta = index.package_by_digest(
-                    package_type=self.type,
+                    kind=self.dependency_kind,
                     package_name=self.name,
                     package_digest=self.digest
                 )
@@ -135,10 +145,10 @@ class Dependency(BaseModel):
                 # If hash does not exist then try to download
                 # by tag. This is in the case where some package
                 # owner overwrote the tag of the dependency
-                if str(error) == f'No {self.type} package with name {self.name} ' \
-                        'and digest {self.digest} exists in this index':
+                if str(error) == f'No {self.dependency_kind} package with name ' \
+                    f'{self.name} and digest {self.digest} exists in this index':
                     package_meta = index.package_by_tag(
-                        package_type=self.type,
+                        kind=self.dependency_kind,
                         package_name=self.name,
                         package_tag=self.tag
                     )
