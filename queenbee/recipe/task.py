@@ -1,6 +1,6 @@
 """DAGTask module."""
 from typing import Union, List
-from pydantic import Field, validator
+from pydantic import Field, validator, constr
 
 from ..base.basemodel import BaseModel
 from ..io.common import find_io_by_name
@@ -18,6 +18,7 @@ class DAGTaskLoop(BaseModel):
     This will run the template provided multiple times and in parallel relative to an
     input or task parameter which should be a list.
     """
+    type: constr(regex='^DAGTaskLoop$') = 'DAGTaskLoop'
 
     from_: Union[InputReference, TaskReference, ValueListReference] = Field(
         None,
@@ -28,6 +29,8 @@ class DAGTaskLoop(BaseModel):
 
 class DAGTask(BaseModel):
     """A single task in a DAG flow."""
+
+    type: constr(regex='^DAGTask$') = 'DAGTask'
 
     name: str = Field(
         ...,

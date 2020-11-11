@@ -1,4 +1,4 @@
-type: function
+type: Function
 name: generate-overcast-sky
 operator: radiance-operator
 inputs:

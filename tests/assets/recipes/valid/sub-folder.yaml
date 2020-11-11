@@ -1,17 +1,21 @@
 metadata:
+  type: MetaData
   name: minimal-recipe
   tag: 0.2.1
 
 dependencies:
-- type: operator
+- type: Dependency
+  kind: operator_kind
   name: honeybee-radiance
   tag: 1.2.3
   source: https://example.com/test-repo
 
 flow:
 - name: main
+  type: DAG
   tasks:
   - name: minimal-task
+    type: DAGTask
     template: honeybee-radiance/10000-lux-sky
     arguments:
       - name: foo

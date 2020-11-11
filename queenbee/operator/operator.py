@@ -2,7 +2,7 @@
 import os
 import yaml
 from typing import List
-from pydantic import Field, validator
+from pydantic import Field, validator, constr
 
 from ..base.basemodel import BaseModel
 from ..base.metadata import MetaData
@@ -11,6 +11,8 @@ from .function import Function
 
 class DockerConfig(BaseModel):
     """Operator Configuration to run in a Docker container"""
+
+    type: constr(regex='^DockerConfig') = 'DockerConfig'
 
     image: str = Field(
         ...,
@@ -34,15 +36,16 @@ class DockerConfig(BaseModel):
 class LocalConfig(BaseModel):
     """Operator Configuration to run on a desktop."""
 
-    pass
+    type: constr(regex='^LocalConfig') = 'LocalConfig'
 
 
-class Config(BaseModel):
+class OperatorConfig(BaseModel):
     """Operator configuration.
 
     The config is used to schedule functions on a desktop or in other contexts
     (ie: Docker).
     """
+    type: constr(regex='^OperatorConfig') = 'OperatorConfig'
 
     docker: DockerConfig = Field(
         ...,
@@ -61,13 +64,14 @@ class Operator(BaseModel):
     An Operator contains runtime configuration for a Command Line Interface (CLI) and
     a list of functions that can be executed using this CLI tool.
     """
+    type: constr(regex='^Operator') = 'Operator'
 
     metadata: MetaData = Field(
         ...,
         description='The Operator metadata information'
     )
 
-    config: Config = Field(
+    config: OperatorConfig = Field(
         ...,
         description='The configuration information to run this operator'
     )

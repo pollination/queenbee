@@ -3,11 +3,11 @@ metadata:
   tag: 0.2.1
 
 dependencies:
-- type: operator
+- kind: operator_kind
   name: whale-operator
   tag: 1.2.3
   source: https://ladybug.tools/queenbee-repo
-- type: recipe
+- kind: recipe_kind
   name: some-recipe
   tag: 2.3.2
   source: https://ladybug.tools/queenbee-repo

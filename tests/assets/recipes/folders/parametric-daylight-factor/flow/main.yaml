@@ -22,7 +22,7 @@ tasks:
       variable: model-names
   sub_folder: 'daylight-factor/{{item}}'
   arguments:
-    - name: model
+    - name: model_hbjson
       type: TaskPathArgument
       from:
         type: InputFolderReference
@@ -49,6 +49,3 @@ outputs:
     from:
       type: FolderReference
       path: daylight-factor
-
-
-      

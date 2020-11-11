@@ -3,7 +3,7 @@ metadata:
   tag: 0.2.1
 
 dependencies:
-- type: operator
+- kind: operator_kind
   name: whale-operator
   tag: 1.2.3
   source: https://ladybug.tools/queenbee-repo

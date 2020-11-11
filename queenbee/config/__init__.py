@@ -1,6 +1,6 @@
 from typing import List, Union
 from urllib.parse import urlparse
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, constr
 
 from ..base.basemodel import BaseModel
 from .auth import JWTAuth, PollinationAuth
@@ -8,6 +8,7 @@ from .repositories import RepositoryReference
 
 
 class Config(BaseModel):
+    type: constr(regex='^Config$') = 'Config'
 
     auth: List[Union[PollinationAuth, JWTAuth]] = Field(
         [],
@@ -75,10 +76,11 @@ class Config(BaseModel):
         for i, existing_repo in enumerate(self.repositories):
             if existing_repo.name == repo.name:
                 existing_index = i
+                break
 
         if existing_index is not None:
             if force:
-                self.repositories[i] = repo
+                self.repositories[existing_index] = repo
                 return
 
             raise ValueError(

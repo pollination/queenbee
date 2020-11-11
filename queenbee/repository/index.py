@@ -1,7 +1,7 @@
 import os
 from typing import List, Union, Dict
 from datetime import datetime
-from pydantic import Field, root_validator, validator
+from pydantic import Field, root_validator, validator, constr
 
 from ..base.basemodel import BaseModel
 
@@ -12,6 +12,8 @@ from .package import PackageVersion
 
 
 class RepositoryMetadata(BaseModel):
+
+    type: constr(regex='^RepositoryMetadata$') = 'RepositoryMetadata'
 
     name: str = Field(
         None,
@@ -42,6 +44,8 @@ class RepositoryMetadata(BaseModel):
 class RepositoryIndex(BaseModel):
     """A searchable index for a Queenbee Operator and Recipe repository"""
 
+    type: constr(regex='^RepositoryIndex$') = 'RepositoryIndex'
+
     generated: datetime = Field(
         None,
         description='The timestamp at which the index was generated'
@@ -68,7 +72,7 @@ class RepositoryIndex(BaseModel):
     def set_operator_type(cls, v):
         for _, package in v.items():
             for pv in package:
-                pv.type = 'operator'
+                pv.kind = 'operator'
 
         return v
 
@@ -76,7 +80,7 @@ class RepositoryIndex(BaseModel):
     def set_recipe_type(cls, v):
         for _, package in v.items():
             for pv in package:
-                pv.type = 'recipe'
+                pv.kind = 'recipe'
 
         return v
 
@@ -378,7 +382,7 @@ class RepositoryIndex(BaseModel):
 
     def package_by_tag(
         self,
-        package_type: str,
+        kind: str,
         package_name: str,
         package_tag: str
     ) -> PackageVersion:
@@ -388,7 +392,7 @@ class RepositoryIndex(BaseModel):
         version of the package will be retrieved.
 
         Arguments:
-            package_type {str} -- The type of package (operator or recipe)
+            kind {str} -- The type of package (operator or recipe)
             package_name {str} -- The name of the package
             package_tag {str} -- The package tag
 
@@ -398,13 +402,13 @@ class RepositoryIndex(BaseModel):
         Returns:
             PackageVersion -- A resource version object
         """
-        package_dict = getattr(self, package_type)
+        package_dict = getattr(self, kind)
 
         package_list = package_dict.get(package_name)
 
         if package_list is None:
             raise ValueError(
-                f'No {package_type} package with name {package_name} exists'
+                f'No {kind} package with name {package_name} exists'
                 f' in this index'
             )
 
@@ -415,7 +419,7 @@ class RepositoryIndex(BaseModel):
 
         if res is None:
             raise ValueError(
-                f'No {package_type} package with name {package_name} and version '
+                f'No {kind} package with name {package_name} and version '
                 f'{package_tag} exists in this index'
             )
 
@@ -423,14 +427,14 @@ class RepositoryIndex(BaseModel):
 
     def package_by_digest(
         self,
-        package_type: str,
+        kind: str,
         package_name: str,
         package_digest: str
     ) -> PackageVersion:
         """Retrieve a Resource Version by its hash digest
 
         Arguments:
-            package_type {str} -- The type of package (operator or recipe)
+            kind {str} -- The type of package (operator or recipe)
             package_name {str} -- The name of the package
             package_digest {str} -- The package digest
 
@@ -440,13 +444,13 @@ class RepositoryIndex(BaseModel):
         Returns:
             PackageVersion -- A resource version object
         """
-        package_dict = getattr(self, package_type)
+        package_dict = getattr(self, kind)
 
         package_list = package_dict.get(package_name)
 
         if package_list is None:
             raise ValueError(
-                f'No {package_type} package with name {package_name} exists'
+                f'No {kind} package with name {package_name} exists'
                 f' in this index'
             )
 
@@ -455,7 +459,7 @@ class RepositoryIndex(BaseModel):
 
         if res is None:
             raise ValueError(
-                f'No {package_type} package with name {package_name} and digest '
+                f'No {kind} package with name {package_name} and digest '
                 f'{package_digest} exists in this index'
             )
 
@@ -463,13 +467,14 @@ class RepositoryIndex(BaseModel):
 
     def search(
         self,
-        package_type: str = None,
+        kind: str = None,
         search_string: str = None,
     ) -> List[PackageVersion]:
         """Search for a package inside of a repository using a search string
 
         Args:
-            package_type (str, optional): The type of package to search for (ie: operator or recipe). Defaults to None.
+            kind (str, optional): The type of package to search for
+                (ie: operator or recipe). Defaults to None.
             search_string (str, optional): The search string to use. Defaults to None.
 
         Returns:
@@ -478,14 +483,14 @@ class RepositoryIndex(BaseModel):
 
         packages = []
 
-        if package_type is None or package_type == 'recipe':
+        if kind is None or kind == 'recipe':
             for name, package_versions in self.recipe.items():
                 package = self.get_latest(package_versions=package_versions)
 
                 if package.search_match(search_string=search_string):
                     packages.append(package)
 
-        if package_type is None or package_type == 'operator':
+        if kind is None or kind == 'operator':
             for name, package_versions in self.operator.items():
                 package = self.get_latest(package_versions=package_versions)
 
