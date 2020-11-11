@@ -1,5 +1,5 @@
 name: generate-overcast-sky
-type: function
+type: Function
 inputs:
     - name: desired-irradiance
       type: FunctionIntegerInput
