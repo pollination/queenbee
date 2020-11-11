@@ -5,7 +5,7 @@ from typing import List, Dict
 
 import yaml
 from pydantic import BaseModel as PydanticBaseModel
-from pydantic import validator, Field
+from pydantic import validator, Field, constr
 
 from .parser import parse_file
 from .variable import get_ref_variable
@@ -27,6 +27,8 @@ class BaseModel(PydanticBaseModel):
     """BaseModel with functionality to return the object as a yaml string
 
     """
+    type: constr(regex='^BaseModel$') = 'BaseModel'
+
     annotations: Dict[str, str] = Field(
         None,
         description='An optional dictionary to add annotations to inputs. These '
@@ -36,6 +38,17 @@ class BaseModel(PydanticBaseModel):
     @validator('annotations', always=True)
     def replace_none_value(cls, v):
         return {} if not v else v
+
+    @validator('type')
+    def ensure_type_match(cls, v):
+        name = cls.__name__
+        if name != v:
+            raise ValueError(
+                f'The value for "type" ({v}) must be the same as class name ({name}). '
+                'In most cases, this is the result of not adding the type field to the '
+                f'Pydantic object. In this case: {name}'
+            )
+        return v
 
     def yaml(self, exclude_unset=False, **kwargs):
         """Get a YAML string from the model
