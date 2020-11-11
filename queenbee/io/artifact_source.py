@@ -15,6 +15,7 @@ class _ArtifactSource(BaseModel):
 
     An Artifact Source System.
     """
+    type: constr(regex='^_ArtifactSource$') = '_ArtifactSource'
 
     @staticmethod
     def _referenced_values(values: list = []) -> Dict[str, List[str]]:
