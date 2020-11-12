@@ -14,14 +14,14 @@ from ..base.variable import validate_inputs_outputs_var_format, get_ref_variable
 
 class ItemType(str, Enum):
     """Type enum for items in a list."""
-    Any = 'Any'  # generic type for inputs with no type hint.
+    Generic = 'Generic'  # generic type for inputs with no type hint.
     String = 'String'
     Integer = 'Integer'
     Number = 'Number'
     Boolean = 'Boolean'
     Folder = 'Folder'
     Array = 'Array'  # set item type to a generic type
-    Object = 'Object'
+    JSONObject = 'JSONObject'
 
 
 class GenericInput(BaseModel):
