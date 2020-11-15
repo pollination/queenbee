@@ -44,6 +44,13 @@ class GenericInput(BaseModel):
         description='Place-holder. Overwrite this!'
     )
 
+    # see: https://github.com/ladybug-tools/queenbee/issues/172
+    required: bool = Field(
+        False,
+        description='A field to indicate if this input is required. This input needs to '
+        'be set explicitly even when a default value is provided.'
+    )
+
     spec: Dict = Field(
         None,
         description='An optional JSON Schema specification to validate the input value. '
@@ -71,6 +78,18 @@ class GenericInput(BaseModel):
         if add_info:
             raise ValueError('\n'.join(add_info))
 
+        return v
+
+    @validator('required', always=True)
+    def check_required(cls, v, values):
+        """Ensure required is set to True when default value is not provided."""
+        default = values.get('default', None)
+        name = values.get('name', None)
+        if default is None and v is False:
+            raise ValueError(
+                f'{cls.__name__}.{name} -> required should be true if no default'
+                f' is provided (default: {default}).'
+            )
         return v
 
     @validator('spec')
@@ -109,11 +128,6 @@ class GenericInput(BaseModel):
             spec = dict(self.spec)
             json_schema_validator(value, spec)
         return value
-
-    @property
-    def required(self):
-        """Check if input is required."""
-        return True if not self.default else False
 
     @property
     def referenced_values(self) -> Dict[str, List[str]]:
