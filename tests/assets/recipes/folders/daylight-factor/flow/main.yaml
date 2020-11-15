@@ -4,6 +4,7 @@ inputs:
     type: DAGIntegerInput
     annotations: {}
     description: The maximum number of grid points per parallel execution
+    required: true
   - name: radiance-parameters
     type: DAGStringInput
     annotations: {}
@@ -14,6 +15,7 @@ inputs:
     name: model_hbjson
     description: Honeybee model as a hbjson file.
     default: null
+    required: true
     spec: null
     alias:
       - type: DAGGenericInputAlias
@@ -21,6 +23,7 @@ inputs:
         description: |
             A path to a HBJSON file or a HB model object built with Python or dotnet
             libraries.
+        required: true
         platform:
         - grasshopper
         handler:
@@ -35,6 +38,7 @@ inputs:
           function: HBModelToJSON
       - type: DAGGenericInputAlias
         name: model
+        required: true
         platform:
         - rhino
         handler:
@@ -46,6 +50,7 @@ inputs:
     type: DAGFileInput
     annotations: {}
     description: A grid file
+    required: true
 
 tasks:
 

@@ -4,9 +4,11 @@ inputs:
   - name: model
     type: FunctionFileInput
     path: model.json
+    required: true
   - name: sky
     type: FunctionFileInput
     path: sky.sky
+    required: true
 command: honeybee radiance oconv -s sky.sky -m model.json --output scene.oct
 outputs:
   - name: scene-file
