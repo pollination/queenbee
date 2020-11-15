@@ -8,9 +8,11 @@ inputs:
   - name: grid
     type: FunctionFileInput
     path: grid.pts
+    required: true
   - name: scene-file
     type: FunctionFileInput
     path: scene.oct
+    required: true
 command: rtrace -I -h {{inputs.radiance-parameters}} scene.oct < grid.pts > grid.res
 outputs:
   - name: result-file

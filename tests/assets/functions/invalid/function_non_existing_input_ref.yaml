@@ -5,6 +5,7 @@ inputs:
     - name: desired-irradiance
       type: FunctionStringInput
       description: desired sky horizontal irradiance
+      required: true
 command: gensky -c -B "{{inputs.not-desired-irradiance}}" > file.sky
 outputs:
     - name: sky
