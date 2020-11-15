@@ -4,6 +4,7 @@ inputs:
     - name: desired-irradiance
       type: FunctionIntegerInput
       description: desired sky horizontal irradiance
+      required: true
     - name: sky-file
       type: FunctionStringInput
       description: full path to output sky file

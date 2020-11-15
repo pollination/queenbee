@@ -38,6 +38,7 @@ flow:
     name: input-grid
     description: A grid file
     default: null
+    required: true
     spec: null
     alias: []
     extensions: null
@@ -46,6 +47,7 @@ flow:
     name: model_hbjson
     description: Honeybee model as a hbjson file.
     default: null
+    required: true
     spec: null
     alias:
     - type: DAGGenericInputAlias
@@ -58,6 +60,7 @@ flow:
 
         '
       default: null
+      required: true
       spec: null
       platform:
       - grasshopper
@@ -77,6 +80,7 @@ flow:
       name: model
       description: null
       default: null
+      required: true
       spec: null
       platform:
       - rhino
@@ -92,6 +96,7 @@ flow:
     name: radiance-parameters
     description: The radiance parameters for ray tracing
     default: -I -ab 2 -h
+    required: false
     spec: null
     alias: []
   - type: DAGIntegerInput
@@ -99,6 +104,7 @@ flow:
     name: sensor-grid-count
     description: The maximum number of grid points per parallel execution
     default: null
+    required: true
     spec: null
     alias: []
   outputs:
