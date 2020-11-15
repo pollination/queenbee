@@ -4,9 +4,11 @@ inputs:
   - name: weather
     type: FunctionFileInput
     path: weather.epw
+    required: true
   - name: idf
     type: FunctionFileInput
     path: input.idf
+    required: true
 command: energyplus -w weather.epw -x -d simulation-outputs input.idf
 outputs:
   - name: outputs
