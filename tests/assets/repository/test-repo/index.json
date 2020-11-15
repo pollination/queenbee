@@ -1,7 +1,7 @@
 {
   "type": "RepositoryIndex",
   "annotations": {},
-  "generated": "2020-11-11T14:01:41.901230",
+  "generated": "2020-11-15T22:41:59.405696",
   "metadata": {
     "type": "RepositoryMetadata",
     "annotations": {},
@@ -40,8 +40,8 @@
         "deprecated": null,
         "description": "An operator to run all things honeybee and radiance!",
         "url": "operators/honeybee-radiance-1.2.3.tgz",
-        "created": "2020-11-11T14:01:20.374294",
-        "digest": "69b43aedf58787f103d597b39f5e9a44c0a6ff3017208ad8f3a973a2143d7d03",
+        "created": "2020-11-15T22:38:46.653441",
+        "digest": "836fa98f905c1eb7209b1ab10894e121dbf06eea05f9f08b2602236091506ddc",
         "slug": "/honeybee-radiance",
         "kind": "operator"
       }
@@ -73,8 +73,8 @@
         "deprecated": null,
         "description": "An awesome workflow to run daylight factor!",
         "url": "recipes/daylight-factor-0.0.1.tgz",
-        "created": "2020-11-11T14:01:31.624136",
-        "digest": "91d2c0727a0d749c710d71f5cbcee77cbc6a0cc2af29596f6ea236497eccf19b",
+        "created": "2020-11-15T22:41:06.333993",
+        "digest": "cc5293c7794b14532b7177b81bad1eca6e86361bb14dd0b3624a7eae67f72baf",
         "slug": "/daylight-factor",
         "kind": "recipe"
       }
