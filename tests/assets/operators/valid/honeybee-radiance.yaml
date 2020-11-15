@@ -46,6 +46,7 @@ functions:
     name: model
     description: null
     default: null
+    required: true
     spec: null
     path: model.json
     extensions: null
@@ -54,6 +55,7 @@ functions:
     name: sky
     description: null
     default: null
+    required: true
     spec: null
     path: sky.sky
     extensions: null
@@ -73,6 +75,7 @@ functions:
     name: raw-results-folder
     description: null
     default: null
+    required: true
     spec: null
     path: raw
     extensions: null
@@ -102,6 +105,7 @@ functions:
     name: grid
     description: null
     default: null
+    required: true
     spec: null
     path: grid.pts
     extensions: null
@@ -116,6 +120,7 @@ functions:
     name: scene-file
     description: null
     default: null
+    required: true
     spec: null
     path: scene.oct
     extensions: null
@@ -135,6 +140,7 @@ functions:
     name: grid
     description: The input grid to split
     default: null
+    required: true
     spec: null
     path: grid.pts
     extensions: null
@@ -143,6 +149,7 @@ functions:
     name: grid-count
     description: null
     default: null
+    required: true
     spec: null
   outputs:
   - annotations: {}

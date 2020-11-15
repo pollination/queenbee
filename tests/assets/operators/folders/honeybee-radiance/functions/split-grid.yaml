@@ -2,10 +2,12 @@ name: split-grid
 inputs:
   - name: grid-count
     type: FunctionIntegerInput
+    required: true
   - name: grid
     type: FunctionFileInput
     description: The input grid to split
     path: grid.pts
+    required: true
 command: honeybee radiance grid split grid.pts --folder output --log-file output/grids.txt
 outputs:
   - name: grid-list

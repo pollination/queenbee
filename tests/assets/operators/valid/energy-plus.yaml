@@ -30,6 +30,7 @@ functions:
     name: idf
     description: null
     default: null
+    required: true
     spec: null
     path: input.idf
     extensions: null
@@ -38,6 +39,7 @@ functions:
     type: FunctionFileOutput
     name: outputs
     description: null
+    required: true
     path: simulation-outputs
   name: design-day-simulation
   description: Run an EnergyPlus Design Day simulation using a weather file and an
@@ -50,6 +52,7 @@ functions:
     name: idf
     description: null
     default: null
+    required: true
     spec: null
     path: input.idf
     extensions: null
@@ -58,6 +61,7 @@ functions:
     name: weather
     description: null
     default: null
+    required: true
     spec: null
     path: weather.epw
     extensions: null
