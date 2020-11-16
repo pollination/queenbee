@@ -1,4 +1,4 @@
-Operators
+Plugins
 =========
 
 
@@ -27,7 +27,7 @@ Schema
       NProgress.start();
     </script>
     <script>
-      jsonSchemaViewer(window, '../_static/schemas/operator-schema.json')
+      jsonSchemaViewer(window, '../_static/schemas/plugin-schema.json')
     </script>
     <script>
       NProgress.done();
@@ -40,48 +40,48 @@ Schema
 
 OpenAPI Docs 
 -------------
-You can find the Open API Docs formatted by redoc `here <../_static/redoc-operator.html#tag/operator_model>`_.
+You can find the Open API Docs formatted by redoc `here <../_static/redoc-plugin.html#tag/plugin_model>`_.
 
 OpenAPI Definition 
 -------------------
-You can find the OpenAPI JSON definition `here <../_static/schemas/operator-openapi.json>`_.
+You can find the OpenAPI JSON definition `here <../_static/schemas/plugin-openapi.json>`_.
 
 JSON Schema Definition 
 -----------------------
-You can find the JSON Schema definition `here <../_static/schemas/operator-schema.json>`_.
+You can find the JSON Schema definition `here <../_static/schemas/plugin-schema.json>`_.
 
 Examples
 --------
 
 Minimal
 ^^^^^^^
-The minimal configuration for an operator can be found below. The keys indicated here are the ones
-you **absolutely** have to fill in for this operator to be validated by Queenbee.
+The minimal configuration for a plugin can be found below. The keys indicated here are the ones
+you **absolutely** have to fill in for this plugin to be validated by Queenbee.
 
-..  literalinclude:: ../../tests/assets/operators/valid/minimum.yaml
+..  literalinclude:: ../../tests/assets/plugins/valid/minimum.yaml
     :language: yaml
 
 
 Fully Configured
 ^^^^^^^^^^^^^^^^
-The operator below shows example values for every possible key in the Operator object.
+The plugin below shows example values for every possible key in the Plugin object.
 
-..  literalinclude:: ../../tests/assets/operators/valid/full.yaml
+..  literalinclude:: ../../tests/assets/plugins/valid/full.yaml
     :language: yaml
 
 
 Energy Plus
 ^^^^^^^^^^^
-This operator is the one created when following the `Operator Creation Guide </guides/operator.html>`_. 
+This plugin is the one created when following the `Plugin Creation Guide </guides/plugin.html>`_. 
 
 
-..  literalinclude:: ../../tests/assets/operators/valid/energy-plus.yaml
+..  literalinclude:: ../../tests/assets/plugins/valid/energy-plus.yaml
     :language: yaml
 
 
 Honeybee Radiance
 ^^^^^^^^^^^^^^^^^
-This is an example operator called ``honeybee-radiance``. This operator uses the ``honeybee-radiance`` CLI in a Docker container
+This is an example plugin called ``honeybee-radiance``. This plugin uses the ``honeybee-radiance`` CLI in a Docker container
 which has radiance installed on it. Each function is templated with parameter inputs and explicitely indicates the artifacts (files)
 it expects to find at a certain path.
 
@@ -89,5 +89,5 @@ it expects to find at a certain path.
 
   The ``app_version`` matches the docker container release tag.
 
-..  literalinclude:: ../../tests/assets/operators/valid/honeybee-radiance.yaml
+..  literalinclude:: ../../tests/assets/plugins/valid/honeybee-radiance.yaml
     :language: yaml

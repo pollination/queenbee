@@ -17,7 +17,7 @@ except ImportError:
 def main(ctx):
     """create, lint and package recipes
 
-    A recipe is a template used to connect multiple operator functions and
+    A recipe is a template used to connect multiple plugin functions and
     even other recipes into a re-usable flow of actions. 
 
     Recipes should be written to file using a specific folder structure
@@ -26,18 +26,18 @@ def main(ctx):
         \b
         .
         ├── .dependencies
-        │   ├── operator
-        │   │   └── operator-dep-name
+        │   ├── plugin
+        │   │   └── plugin-dep-name
         │   │       ├── functions
         │   │       │   ├── func-1.yaml
         │   │       │   ├── ...
         │   │       │   └── func-n.yaml
         │   │       ├── config.yaml
-        │   │       └── operator.yaml
+        │   │       └── plugin.yaml
         │   └── recipe
         │       └── recipe-dep-name
         │           ├── .dependencies
-        │           │   ├── operator
+        │           │   ├── plugin
         │           │   └── recipe
         │           ├── flow
         │           │   └── main.yaml

@@ -2,7 +2,7 @@ metadata:
   tag: 0.1.0
 dependencies:
 - type: Dependency
-  kind: operator_kind
+  kind: plugin
   name: whalesay
   tag: 0.1.0
   source: https://pollination.github.io/shed # Replace with name of repo

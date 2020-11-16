@@ -8,7 +8,7 @@ from typing import Union, Tuple
 
 from pydantic import Field, constr
 
-from ..operator import Operator
+from ..plugin import Plugin
 from ..recipe import Recipe, BakedRecipe
 
 from ..base.request import make_request, urljoin
@@ -54,7 +54,7 @@ class PackageVersion(MetaData):
 
     kind: str = Field(
         '',
-        description='The type of Queenbee package (ie: recipe or operator)'
+        description='The type of Queenbee package (ie: recipe or plugin)'
     )
 
     readme: str = Field(
@@ -67,22 +67,22 @@ class PackageVersion(MetaData):
         description='The License file string for this package'
     )
 
-    manifest: Union[Recipe, Operator] = Field(
+    manifest: Union[Recipe, Plugin] = Field(
         None,
-        description="The package Recipe or Operator manifest"
+        description="The package Recipe or Plugin manifest"
     )
 
     @classmethod
     def from_resource(
         cls,
-        resource: Union[Operator, Recipe],
+        resource: Union[Plugin, Recipe],
         created: datetime = None,
         include_manifest: bool = False,
     ):
         """Generate a Package Version from a resource
 
         Arguments:
-            resource {Union[Operator, Recipe]} -- A resource to be versioned (operator
+            resource {Union[Plugin, Recipe]} -- A resource to be versioned (plugin
                 or recipe)
 
         Keyword Arguments:
@@ -105,8 +105,8 @@ class PackageVersion(MetaData):
         input_dict['created'] = created
         input_dict['url'] = package_path
 
-        if isinstance(resource, Operator):
-            input_dict['kind'] = 'operator'
+        if isinstance(resource, Plugin):
+            input_dict['kind'] = 'plugin'
         elif isinstance(resource, Recipe):
             input_dict['kind'] = 'recipe'
 
@@ -117,7 +117,7 @@ class PackageVersion(MetaData):
 
     @classmethod
     def pack_tar(cls,
-                 resource: Union[Operator, Recipe],
+                 resource: Union[Plugin, Recipe],
                  readme: str = None,
                  license: str = None,
                  include_manifest: bool = False,
@@ -125,7 +125,7 @@ class PackageVersion(MetaData):
         """Package a resource into a gzipped tar archive
 
         Arguments:
-            resource {Union[Operator, Recipe]} -- A resource to be packaged (operator or
+            resource {Union[Plugin, Recipe]} -- A resource to be packaged (plugin or
                 recipe)
 
         Keyword Arguments:
@@ -235,15 +235,15 @@ class PackageVersion(MetaData):
             )
 
         try:
-            manifest = Operator.parse_raw(manifest_bytes)
-            version.kind = 'operator'
+            manifest = Plugin.parse_raw(manifest_bytes)
+            version.kind = 'plugin'
         except Exception as error:
             try:
                 manifest = Recipe.parse_raw(manifest_bytes)
                 version.kind = 'recipe'
             except Exception as error:
                 raise ValueError(
-                    'Package resource.json could not be read as a Recipe or an Operator')
+                    'Package resource.json could not be read as a Recipe or a plugin')
 
         version.manifest = manifest
         version.readme = readme_string
@@ -342,15 +342,15 @@ class PackageVersion(MetaData):
 
     @classmethod
     def package_resource(cls,
-                         resource: Union[Operator, Recipe],
+                         resource: Union[Plugin, Recipe],
                          check_deps: bool = True,
                          readme: str = None,
                          license: str = None,
                          ) -> Tuple['PackageVersion', BytesIO]:
-        """Package a Recipe or Operator into a gzipped tar file
+        """Package a Recipe or Plugin into a gzipped tar file
 
         Arguments:
-            resource {Union[Operator, Recipe]} -- An operator or recipe
+            resource {Union[Plugin, Recipe]} -- A plugin or recipe
 
         Keyword Arguments:
             readme {str} -- resource README.md file text if it exists
@@ -359,7 +359,7 @@ class PackageVersion(MetaData):
                 (default: {None})
 
         Returns:
-            PackageVersion -- An operator or recipe version object
+            PackageVersion -- A plugin or recipe version object
             BytesIO -- A BytesIO stream of the gzipped tar file
         """
 
@@ -379,26 +379,26 @@ class PackageVersion(MetaData):
         folder_path: str,
         check_deps: bool = True,
     ) -> Tuple['PackageVersion', BytesIO]:
-        """Package an Operator or Recipe from its folder into a gzipped tar file
+        """Package a plugin or Recipe from its folder into a gzipped tar file
 
         Arguments:
-            folder_path {str} -- Path to the folder where the Operator or Recipe is defined
+            folder_path {str} -- Path to the folder where the Plugin or Recipe is defined
 
         Keyword Arguments:
             check_deps {bool} -- Fetch the dependencies from their source and validate
                 the recipe by baking it (default: {True})
 
         Returns:
-            PackageVersion -- A recipe or operator version object
+            PackageVersion -- A recipe or plugin version object
             BytesIO -- A BytesIO stream of the gzipped tar file
         """
         if resource_type == 'recipe':
             resource = Recipe.from_folder(folder_path=folder_path)
-        elif resource_type == 'operator':
-            resource = Operator.from_folder(folder_path=folder_path)
+        elif resource_type == 'plugin':
+            resource = Plugin.from_folder(folder_path=folder_path)
         else:
             raise ValueError(
-                f'resource_type must be one of ["recipe", "operator"], not: {resource_type}')
+                f'resource_type must be one of ["recipe", "plugin"], not: {resource_type}')
 
         return cls.package_resource(
             resource=resource,
