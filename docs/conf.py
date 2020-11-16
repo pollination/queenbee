@@ -15,7 +15,7 @@
 from queenbee.repository import RepositoryIndex
 from queenbee.workflow import Workflow
 from queenbee.recipe import Recipe
-from queenbee.operator import Operator
+from queenbee.plugin import Plugin
 from queenbee._openapi import get_openapi
 import json
 import sphinx_bootstrap_theme
@@ -260,10 +260,10 @@ with open(os.path.join(folder, 'workflow-openapi.json'), 'w') as out_file:
         indent=2
     )
 
-with open(os.path.join(folder, 'operator-openapi.json'), 'w') as out_file:
+with open(os.path.join(folder, 'plugin-openapi.json'), 'w') as out_file:
     json.dump(
-        get_openapi(schema_class=Operator, title='Queenbee Operator Schema',
-                    description='Schema documentation for Queenbee Operators'),
+        get_openapi(schema_class=Plugin, title='Queenbee Plugin Schema',
+                    description='Schema documentation for Queenbee Plugins'),
         out_file,
         indent=2
     )
@@ -287,8 +287,8 @@ with open(os.path.join(folder, 'repository-openapi.json'), 'w') as out_file:
 with open(os.path.join(folder, 'workflow-schema.json'), 'w') as out_file:
     out_file.write(Workflow.schema_json())
 
-with open(os.path.join(folder, 'operator-schema.json'), 'w') as out_file:
-    out_file.write(Operator.schema_json())
+with open(os.path.join(folder, 'plugin-schema.json'), 'w') as out_file:
+    out_file.write(Plugin.schema_json())
 
 with open(os.path.join(folder, 'recipe-schema.json'), 'w') as out_file:
     out_file.write(Recipe.schema_json())

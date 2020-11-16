@@ -9,7 +9,7 @@ inputs:
       type: FunctionStringInput
       description: full path to output sky file
       default: "{{workflow.sky-file}}"
-operator: radiance-operator
+plugin: radiance-plugin
 command: gensky -c -B "{{inputs.desired-irradiance}}" > file.sky
 outputs:
   - name: sky

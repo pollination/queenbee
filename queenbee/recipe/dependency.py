@@ -9,19 +9,19 @@ from ..base.request import make_request, urljoin
 
 class DependencyKind(str, Enum):
     """Dependency kind."""
-    recipe = 'recipe_kind'
+    recipe = 'recipe'
 
-    operator = 'operator_kind'
+    plugin = 'plugin'
 
 
 class Dependency(BaseModel):
-    """Configuration to fetch a Recipe or Operator that another Recipe depends on."""
+    """Configuration to fetch a Recipe or Plugin that another Recipe depends on."""
     type: constr(regex='^Dependency$') = 'Dependency'
 
     kind: DependencyKind = Field(
         ...,
-        description='The kind of dependency. It can be a recipe_kind or an '
-        'operator_kind.'
+        description='The kind of dependency. It can be a recipe or an '
+        'plugin.'
     )
 
     name: str = Field(
@@ -61,7 +61,7 @@ class Dependency(BaseModel):
     def dependency_kind(self):
         """Return a clean version of dependency kind.
 
-        The value is either `recipe` or `operator`.
+        The value is either `recipe` or `plugin`.
         """
         return self.kind.split('_')[0]
 

@@ -1,6 +1,6 @@
 """Queenbee input and output types for functions.
 
-    For more information on operators see operator module.
+    For more information on plugins see plugin module.
 
 """
 

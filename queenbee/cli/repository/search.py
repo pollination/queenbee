@@ -69,7 +69,7 @@ def get_by_tag(type, repo, name, tag):
 
     Use this command to print out a specific package version from a given repository.
 
-    type: Package type. It should be either an operator or a repository.
+    type: Package type. It should be either a plugin or a repository.
 
     repo: The name of the repository.
 

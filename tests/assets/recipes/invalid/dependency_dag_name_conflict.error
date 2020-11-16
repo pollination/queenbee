@@ -1,1 +1,1 @@
- DAG name whale-operator cannot be used because a recipe dependency already uses it
+((.|\n)*) DAG name whale-plugin cannot be used because a recipe dependency already uses it \(type=assertion_error\)

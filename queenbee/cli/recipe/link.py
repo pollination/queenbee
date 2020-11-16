@@ -19,9 +19,9 @@ except ImportError:
 @click.argument('dependency_path', type=click.Path(exists=True))
 @click.option('-r', '--recipe-path', help='Path to the recipe folder where link should be created', show_default=True, default='.', type=click.Path(exists=False))
 def link(dependency_name, dependency_path, recipe_path):
-    """link a local recipe/operator to a dependency of another recipe
+    """link a local recipe/plugin to a dependency of another recipe
 
-    This subcommand helps develop recipes and operators at the same time without
+    This subcommand helps develop recipes and plugins at the same time without
     needing to update source repositories.
     """
 
