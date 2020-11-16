@@ -9,7 +9,7 @@ inputs:
       type: FunctionIntegerInput
       description: full path to output sky file
       required: true
-operator: radiance-operator
+plugin: radiance-plugin
 command: gensky -c -B "{{ inputs.desired-irradiance }}" > file.sky
 outputs:
     - name: sky

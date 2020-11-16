@@ -5,7 +5,7 @@ from pkg_resources import get_distribution
 from pydantic_openapi_helper.core import get_openapi
 from pydantic_openapi_helper.inheritance import class_mapper
 from queenbee.recipe.recipe import Recipe
-from queenbee.operator.operator import Operator
+from queenbee.plugin.plugin import Plugin
 
 
 parser = argparse.ArgumentParser(description='Generate OpenAPI JSON schemas')
@@ -45,8 +45,8 @@ info = {
 
 modules = [
     {'module': [Recipe], 'name': 'Recipe'},
-    {'module': [Operator], 'name': 'Operator'},
-    {'module': [Recipe, Operator], 'name': 'Queenbee'}
+    {'module': [Plugin], 'name': 'Plugin'},
+    {'module': [Recipe, Plugin], 'name': 'Queenbee'}
 ]
 
 

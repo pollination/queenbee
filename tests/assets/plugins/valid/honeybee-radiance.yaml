@@ -17,7 +17,7 @@ metadata:
   - https://github.com/ladybug-tools/honeybee-radiance
   icon: https://www.ladybug.tools/assets/img/logo.png
   deprecated: null
-  description: An operator to run all things honeybee and radiance!
+  description: A plugin to run all things honeybee and radiance!
   license: null
 config:
   annotations: {}

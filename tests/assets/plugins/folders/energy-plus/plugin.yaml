@@ -1,0 +1,10 @@
+name: energy-plus
+tag: 0.1.0
+app_version: 9.0.1   # The version of EnergyPlus the plugin uses
+description: A plugin to run EnergyPlus functions
+keywords:
+- energyplus
+home: https://energyplus.net
+sources:
+- https://github.com/nrel/energyplus
+icon: https://energyplus.net/sites/default/files/eplus_logo.png

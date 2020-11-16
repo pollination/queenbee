@@ -11,7 +11,7 @@ import os
 from pkg_resources import iter_entry_points
 
 from .context import Context
-from .operator import main as operator
+from .plugin import main as plugin
 from .recipe import main as recipe
 from .repository import main as repository
 from .config import main as config
@@ -29,7 +29,7 @@ def main(ctx):
 
     Making new things::
 
-        queenbee operator new
+        queenbee plugin new
 
 
         queenbee recipe new
@@ -37,7 +37,7 @@ def main(ctx):
 
     Packaging things::
 
-        queenbee operator package PATH/TO/OPERATOR
+        queenbee plugin package PATH/TO/PLUGIN
 
 
         queenbee recipe package PATH/TO/RECIPE
@@ -45,7 +45,7 @@ def main(ctx):
 
     Checking things are ok::
 
-        queenbee operator lint PATH/TO/OPERATOR
+        queenbee plugin lint PATH/TO/PLUGIN
 
 
         queenbee recipe lint PATH/TO/RECIPE
@@ -77,6 +77,6 @@ def viz():
 
 
 main.add_command(config)
-main.add_command(operator)
+main.add_command(plugin)
 main.add_command(recipe)
 main.add_command(repository)

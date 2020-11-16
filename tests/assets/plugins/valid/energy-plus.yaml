@@ -12,7 +12,7 @@ metadata:
   - https://github.com/nrel/energyplus
   icon: https://energyplus.net/sites/default/files/eplus_logo.png
   deprecated: null
-  description: An operator to run EnergyPlus functions
+  description: A plugin to run EnergyPlus functions
   license: null
 config:
   annotations: {}
