@@ -1,6 +1,6 @@
 from pydantic import ValidationError
 
-from ...operator import Operator
+from ...plugin import Plugin
 
 try:
     import click
@@ -14,15 +14,15 @@ except ImportError:
 @click.command('lint')
 @click.argument('path', type=click.Path(exists=True))
 def lint(path):
-    """lint an operator
+    """lint a plugin
 
-    Use this command to check that an operator folder is valid.
+    Use this command to check that a plugin folder is valid.
     """
 
     try:
-        op = Operator.from_folder(path)
+        op = Plugin.from_folder(path)
         obj = op.to_dict()
-        Operator.parse_obj(obj)
+        Plugin.parse_obj(obj)
     except ValidationError as error:
         raise click.ClickException(error)
     except FileNotFoundError as error:
@@ -30,4 +30,4 @@ def lint(path):
     except Exception as error:
         raise error
 
-    click.echo('Your operator is looking good!')
+    click.echo('Your plugin is looking good!')

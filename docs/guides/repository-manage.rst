@@ -6,7 +6,7 @@ a local index of repositories that you can reference.
 
 The Queenbee CLI can be used to `add`, `list` and `remove` repositories from your local
 index. Once a repository has been added to your local index you can search through the available
-Queenbee packages (both operators and recipes) and fetch specific package versions for 
+Queenbee packages (both plugins and recipes) and fetch specific package versions for 
 use in a workflow.
 
 Local Index Management
@@ -31,14 +31,14 @@ This sections walks through the basic management commands.
         "name": "local-repo",
         "description": "A Queenbee package repository",
         "source": "file:C:\path\to\local-queenbee-repo",
-        "operator_count": 1,
+        "plugin_count": 1,
         "recipe_count": 0
       },
       {
         "name": "ladybug",
         "description": "The official Ladybug-Tools Queenbee repository",
         "source": "https://api.pollination.cloud/registries/ladybug-tools",
-        "operator_count": 3,
+        "plugin_count": 3,
         "recipe_count": 8
       }
     ]
@@ -60,18 +60,18 @@ This sections walks through the basic management commands.
               "energy"
             ],
             "maintainers": null,
-            "home": "https://app.pollination.cloud/operators/ladybug-tools/honeybee-energy",
+            "home": "https://app.pollination.cloud/plugins/ladybug-tools/honeybee-energy",
             "sources": [
               "https://github.com/ladybug-tools/honeybee-energy"
             ],
             "icon": "https://www.ladybug.tools/assets/img/logo.png",
             "deprecated": null,
-            "description": "An operator to run energyplus using Honeybee and OpenStudio",
-            "url": "operator/honeybee-energy/36dec1c7b2c169f62ae08d64f6cac6de4b3c192320ed10a0f8283a3be03aa4af",
+            "description": "A plugin to run energyplus using Honeybee and OpenStudio",
+            "url": "plugin/honeybee-energy/36dec1c7b2c169f62ae08d64f6cac6de4b3c192320ed10a0f8283a3be03aa4af",
             "created": "2020-06-30T11:07:15.744710",
             "digest": "36dec1c7b2c169f62ae08d64f6cac6de4b3c192320ed10a0f8283a3be03aa4af",
             "slug": "ladybug/honeybee-energy",
-            "type": "operator"
+            "type": "plugin"
         },
         {
             "name": "annual-energy-use",
@@ -115,12 +115,12 @@ This sections walks through the basic management commands.
             ],
             "icon": "https://energyplus.net/sites/default/files/eplus_logo.png",
             "deprecated": null,
-            "description": "An operator to run EnergyPlus functions",
-            "url": "operators/energy-plus-0.1.0.tgz",
+            "description": "A plugin to run EnergyPlus functions",
+            "url": "plugins/energy-plus-0.1.0.tgz",
             "created": "2020-05-19T07:42:20.496003",
             "digest": "bff20aae42e62aa084f0f08bf3833674e2bfccd0c6309f65848f089f402716f5",
             "slug": "local-queenbee-repo/energy-plus",
-            "type": "operator"
+            "type": "plugin"
         }
     ]
 

@@ -1,5 +1,5 @@
 metadata:
-  name: minimum-viable-operator
+  name: minimum-viable-plugin
 config:
   docker:
     image: some/docker-image:latest
