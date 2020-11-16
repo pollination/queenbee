@@ -1,7 +1,7 @@
 import os
 
 from ...base.parser import parse_file
-from ...operator import Operator
+from ...plugin import Plugin
 
 try:
     import click
@@ -19,14 +19,14 @@ MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 @click.option(
     '-p',
     '--path',
-    help='The path at which to create the new operator. Defaults to the current'
+    help='The path at which to create the new plugin. Defaults to the current'
     ' directory if not specified.'
 )
 def new(name, path):
-    """create a new operator folder
+    """create a new plugin folder
 
-    Use this command to create a new operator. The folder will compile to the following
-    operator definition::
+    Use this command to create a new plugin. The folder will compile to the following
+    plugin definition::
 
         \b
         metadata:
@@ -53,7 +53,7 @@ def new(name, path):
             type: DAGFileOutput
             path: /tmp/hello_world.txt
 
-    You can indicate where you want to create the operator folder by
+    You can indicate where you want to create the plugin folder by
     specifying the ``--path`` option.
     """
 
@@ -66,27 +66,27 @@ def new(name, path):
 
     if os.path.exists(folder_path):
         raise click.ClickException(
-            f'Cannot create new operator at path {folder_path} because there is'
+            f'Cannot create new plugin at path {folder_path} because there is'
             f' already something there'
         )
 
-    path = os.path.join(MODULE_PATH, '../assets/new-operator.yaml')
+    path = os.path.join(MODULE_PATH, '../assets/new-plugin.yaml')
     input_dict = parse_file(path)
     input_dict['metadata']['name'] = name
 
-    operator = Operator.parse_obj(input_dict)
+    plugin = Plugin.parse_obj(input_dict)
 
     # Readme
     readme_string = f"""
-    # {name} Operator
+    # {name} Plugin
 
-    A Queenbee Operator.
+    A Queenbee Plugin.
     """
 
     # Create entire path to folder if it does not exist
     os.makedirs(folder_path, exist_ok=True)
 
-    operator.to_folder(
+    plugin.to_folder(
         folder_path=folder_path,
         readme_string=readme_string,
     )

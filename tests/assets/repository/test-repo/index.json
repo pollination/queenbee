@@ -1,17 +1,17 @@
 {
   "type": "RepositoryIndex",
   "annotations": {},
-  "generated": "2020-11-15T22:41:59.405696",
+  "generated": "2020-11-16T01:58:22.623531",
   "metadata": {
     "type": "RepositoryMetadata",
     "annotations": {},
     "name": "",
     "description": "A Queenbee package repository",
     "source": null,
-    "operator_count": 1,
+    "plugin_count": 1,
     "recipe_count": 1
   },
-  "operator": {
+  "plugin": {
     "honeybee-radiance": [
       {
         "type": "PackageVersion",
@@ -38,12 +38,12 @@
         ],
         "icon": "https://www.ladybug.tools/assets/img/logo.png",
         "deprecated": null,
-        "description": "An operator to run all things honeybee and radiance!",
-        "url": "operators/honeybee-radiance-1.2.3.tgz",
-        "created": "2020-11-15T22:38:46.653441",
-        "digest": "836fa98f905c1eb7209b1ab10894e121dbf06eea05f9f08b2602236091506ddc",
+        "description": "A plugin to run all things honeybee and radiance!",
+        "url": "plugins/honeybee-radiance-1.2.3.tgz",
+        "created": "2020-11-16T01:58:07.874259",
+        "digest": "0ef7e92c6b6b0d4b737850f680ad2577b4229a4c82dc72746dc88d72bfa1b919",
         "slug": "/honeybee-radiance",
-        "kind": "operator"
+        "kind": "plugin"
       }
     ]
   },
@@ -73,8 +73,8 @@
         "deprecated": null,
         "description": "An awesome workflow to run daylight factor!",
         "url": "recipes/daylight-factor-0.0.1.tgz",
-        "created": "2020-11-15T22:41:06.333993",
-        "digest": "cc5293c7794b14532b7177b81bad1eca6e86361bb14dd0b3624a7eae67f72baf",
+        "created": "2020-11-16T01:58:15.647939",
+        "digest": "caa9af9a09ee0775dd7d8ef5ff76d758c2546a2cf68215e46354c612d2570791",
         "slug": "/daylight-factor",
         "kind": "recipe"
       }

@@ -1,6 +1,6 @@
 """Queenbee recipe class.
 
-Recipe is a collection of operators and inter-related tasks that describes an end to
+Recipe is a collection of plugins and inter-related tasks that describes an end to
 end steps for the recipe.
 """
 import os
@@ -15,9 +15,9 @@ from ..base.basemodel import BaseModel
 from ..base.metadata import MetaData
 
 from ..config import Config
-from ..operator import Operator
-from ..operator.function import Function
-from ..operator.operator import OperatorConfig
+from ..plugin import Plugin
+from ..plugin.function import Function
+from ..plugin.plugin import PluginConfig
 
 from .dag import DAG, DAGInputs, DAGOutputs
 from .dependency import Dependency, DependencyKind
@@ -27,28 +27,28 @@ class TemplateFunction(Function):
     """Function template."""
     type: constr(regex='^TemplateFunction$') = 'TemplateFunction'
 
-    config: OperatorConfig = Field(
+    config: PluginConfig = Field(
         ...,
-        description='The operator config to use for this function'
+        description='The plugin config to use for this function'
     )
 
     @classmethod
-    def from_operator(cls, operator: Operator) -> list:
-        """Generate a list of template functions from an operator
+    def from_plugin(cls, plugin: Plugin) -> list:
+        """Generate a list of template functions from a plugin
 
         Arguments:
-            operator {Operator} -- An Operator
+            plugin {Plugin} -- A plugin
 
         Returns:
             list -- A list of template functions
         """
         functions = []
 
-        for function in operator.functions:
+        for function in plugin.functions:
             input_dict = function.to_dict()
             input_dict['type'] = 'TemplateFunction'
-            input_dict['name'] = f'{operator.__hash__}/{function.name}'
-            input_dict['config'] = operator.config.to_dict()
+            input_dict['name'] = f'{plugin.__hash__}/{function.name}'
+            input_dict['config'] = plugin.config.to_dict()
             functions.append(cls.parse_obj(input_dict))
 
         return functions
@@ -65,7 +65,7 @@ class Recipe(BaseModel):
 
     dependencies: List[Dependency] = Field(
         None,
-        description='A list of operators and other recipes this recipe depends on.'
+        description='A list of plugins and other recipes this recipe depends on.'
     )
 
     flow: List[DAG] = Field(
@@ -83,7 +83,7 @@ class Recipe(BaseModel):
 
                 .
                 ├── .dependencies
-                │   ├── operators
+                │   ├── plugins
                 │   │   └── <sha-256>.yaml
                 │   └── recipes
                 │       └── <sha-256>.yaml
@@ -164,8 +164,8 @@ class Recipe(BaseModel):
 
         for dag in v:
             for template in dag.templates:
-                operator = template.split('/')[0]
-                assert operator in op_names, \
+                plugin = template.split('/')[0]
+                assert plugin in op_names, \
                     ValueError(
                         f'Cannot use template {template} from DAG {dag.name} because no'
                         f' dependency or other DAG matching that name was found.'
@@ -280,18 +280,18 @@ class Recipe(BaseModel):
 
                 .
                 ├── .dependencies
-                │   ├── operator
-                │   │   └── operator-dep-name
+                │   ├── plugin
+                │   │   └── plugin-dep-name
                 │   │       ├── functions
                 │   │       │   ├── func-1.yaml
                 │   │       │   ├── ...
                 │   │       │   └── func-n.yaml
                 │   │       ├── config.yaml
-                │   │       └── operator.yaml
+                │   │       └── plugin.yaml
                 │   └── recipe
                 │       └── recipe-dep-name
                 │           ├── .dependencies
-                │           │   ├── operator
+                │           │   ├── plugin
                 │           │   └── recipe
                 │           ├── flow
                 │           │   └── main.yaml
@@ -341,14 +341,14 @@ class Recipe(BaseModel):
             config {Config} -- A queenbee config object (default: {Config()})
         """
         dependencies_folder = os.path.join(folder_path, '.dependencies')
-        operator_folder = os.path.join(dependencies_folder, 'operator')
+        plugin_folder = os.path.join(dependencies_folder, 'plugin')
         recipes_folder = os.path.join(dependencies_folder, 'recipe')
 
         if not os.path.isdir(dependencies_folder):
             os.makedirs(dependencies_folder, exist_ok=True)
 
-        if not os.path.isdir(operator_folder):
-            os.makedirs(operator_folder, exist_ok=True)
+        if not os.path.isdir(plugin_folder):
+            os.makedirs(plugin_folder, exist_ok=True)
 
         if not os.path.isdir(recipes_folder):
             os.makedirs(recipes_folder, exist_ok=True)
@@ -431,8 +431,8 @@ class BakedRecipe(Recipe):
                 templates.extend(sub_recipe.flow)
                 digest_dict[dependency.ref_name] = sub_recipe.digest
 
-            elif dependency.kind == DependencyKind.operator:
-                templates.extend(TemplateFunction.from_operator(dep))
+            elif dependency.kind == DependencyKind.plugin:
+                templates.extend(TemplateFunction.from_plugin(dep))
                 digest_dict[dependency.ref_name] = dep.__hash__
 
             else:
@@ -464,7 +464,7 @@ class BakedRecipe(Recipe):
 
                 .
                 ├── .dependencies
-                │   ├── operators
+                │   ├── plugins
                 │   │   └── <sha-256>.yaml
                 │   └── recipes
                 │       └── <sha-256>.yaml
@@ -507,16 +507,16 @@ class BakedRecipe(Recipe):
 
         templates = []
 
-        operators_folder = os.path.join(dependencies_folder, 'operator')
-        if os.path.isdir(operators_folder):
-            for operator_dep_name in os.listdir(operators_folder):
-                operator = Operator.from_folder(
+        plugins_folder = os.path.join(dependencies_folder, 'plugin')
+        if os.path.isdir(plugins_folder):
+            for plugin_dep_name in os.listdir(plugins_folder):
+                plugin = Plugin.from_folder(
                     folder_path=os.path.join(
-                        dependencies_folder, 'operator', operator_dep_name
+                        dependencies_folder, 'plugin', plugin_dep_name
                     )
                 )
-                templates.extend(TemplateFunction.from_operator(operator))
-                digest_dict[operator_dep_name] = operator.__hash__
+                templates.extend(TemplateFunction.from_plugin(plugin))
+                digest_dict[plugin_dep_name] = plugin.__hash__
 
         recipes_folder = os.path.join(dependencies_folder, 'recipe')
         if os.path.isdir(recipes_folder):
@@ -609,11 +609,11 @@ class BakedRecipe(Recipe):
                     )
                     template_dep = f'{dep_hash}/main'
 
-                # Template name is an Operator Function
-                elif dep.kind == DependencyKind.operator:
+                # Template name is a plugin Function
+                elif dep.kind == DependencyKind.plugin:
                     assert len(template_dep_list) == 2, \
                         ValueError(
-                            f'Unresolvable Operator function template dependency'
+                            f'Unresolvable Plugin function template dependency'
                             f' {task.template}'
                     )
                     template_dep = f'{dep_hash}/{template_dep_list[1]}'

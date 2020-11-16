@@ -1,4 +1,4 @@
-"""Queenbee Operator class."""
+"""Queenbee Plugin class."""
 import os
 import yaml
 from typing import List
@@ -10,7 +10,7 @@ from .function import Function
 
 
 class DockerConfig(BaseModel):
-    """Operator Configuration to run in a Docker container"""
+    """Plugin Configuration to run in a Docker container"""
 
     type: constr(regex='^DockerConfig') = 'DockerConfig'
 
@@ -34,51 +34,51 @@ class DockerConfig(BaseModel):
 
 
 class LocalConfig(BaseModel):
-    """Operator Configuration to run on a desktop."""
+    """Plugin Configuration to run on a desktop."""
 
     type: constr(regex='^LocalConfig') = 'LocalConfig'
 
 
-class OperatorConfig(BaseModel):
-    """Operator configuration.
+class PluginConfig(BaseModel):
+    """Plugin configuration.
 
     The config is used to schedule functions on a desktop or in other contexts
     (ie: Docker).
     """
-    type: constr(regex='^OperatorConfig') = 'OperatorConfig'
+    type: constr(regex='^PluginConfig') = 'PluginConfig'
 
     docker: DockerConfig = Field(
         ...,
-        description='The configuration to use this operator in a docker container'
+        description='The configuration to use this plugin in a docker container'
     )
 
     local: LocalConfig = Field(
         None,
-        description='The configuration to use this operator locally'
+        description='The configuration to use this plugin locally'
     )
 
 
-class Operator(BaseModel):
-    """A Queenbee Operator.
+class Plugin(BaseModel):
+    """A Queenbee Plugin.
 
-    An Operator contains runtime configuration for a Command Line Interface (CLI) and
+    A plugin contains runtime configuration for a Command Line Interface (CLI) and
     a list of functions that can be executed using this CLI tool.
     """
-    type: constr(regex='^Operator') = 'Operator'
+    type: constr(regex='^Plugin') = 'Plugin'
 
     metadata: MetaData = Field(
         ...,
-        description='The Operator metadata information'
+        description='The Plugin metadata information'
     )
 
-    config: OperatorConfig = Field(
+    config: PluginConfig = Field(
         ...,
-        description='The configuration information to run this operator'
+        description='The configuration information to run this plugin'
     )
 
     functions: List[Function] = Field(
         ...,
-        description='List of Operator functions'
+        description='List of Plugin functions'
     )
 
     @validator('functions')
@@ -96,10 +96,10 @@ class Operator(BaseModel):
 
     @classmethod
     def from_folder(cls, folder_path: str):
-        """Generate an Operator from a folder
+        """Generate a plugin from a folder
 
         Note:
-            Here is an example of an Operator folder:
+            Here is an example of a plugin folder:
             ::
 
                 .
@@ -109,20 +109,20 @@ class Operator(BaseModel):
                 │   ├── ....yaml
                 │   └── function-n.yaml
                 ├── config.yaml
-                └── operator.yaml
+                └── plugin.yaml
 
         Arguments:
             folder_path {str} -- Path to the folder
 
         Returns:
-            Operator -- An operator
+            Plugin -- A plugin
         """
         folder_path = os.path.realpath(folder_path)
-        meta_path = os.path.join(folder_path, 'operator.yaml')
+        meta_path = os.path.join(folder_path, 'plugin.yaml')
         config_path = os.path.join(folder_path, 'config.yaml')
         functions_path = os.path.join(folder_path, 'functions')
 
-        operator = {}
+        plugin = {}
         functions = []
 
         with open(meta_path, 'r') as f:
@@ -135,17 +135,17 @@ class Operator(BaseModel):
             with open(os.path.join(functions_path, function), 'r') as f:
                 functions.append(yaml.load(f, yaml.FullLoader))
 
-        operator['metadata'] = metadata
-        operator['config'] = config
-        operator['functions'] = functions
+        plugin['metadata'] = metadata
+        plugin['config'] = config
+        plugin['functions'] = functions
 
-        return cls.parse_obj(operator)
+        return cls.parse_obj(plugin)
 
     def to_folder(self, folder_path: str, readme_string: str = None, license_string: str = None):
-        """Write an Operator to a folder
+        """Write a plugin to a folder
 
         Note:
-            Here is an example of an Operator folder:
+            Here is an example of a plugin folder:
             ::
 
                 .
@@ -155,7 +155,7 @@ class Operator(BaseModel):
                 │   ├── ....yaml
                 │   └── function-n.yaml
                 ├── config.yaml
-                └── operator.yaml
+                └── plugin.yaml
 
         Arguments:
             folder_path {str} -- Path to write the folder to
@@ -167,7 +167,7 @@ class Operator(BaseModel):
         os.makedirs(os.path.join(folder_path, 'functions'), exist_ok=True)
 
         self.metadata.to_yaml(
-            os.path.join(folder_path, 'operator.yaml'),
+            os.path.join(folder_path, 'plugin.yaml'),
             exclude_unset=True
         )
         self.config.to_yaml(os.path.join(

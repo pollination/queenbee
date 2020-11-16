@@ -3,11 +3,11 @@ metadata:
   tag: 0.2.1
 
 dependencies:
-- kind: operator_kind
-  name: whale-operator
+- kind: plugin
+  name: whale-plugin
   tag: 1.2.3
   source: https://ladybug.tools/queenbee-repo
-- kind: recipe_kind
+- kind: recipe
   name: some-recipe
   tag: 2.3.2
   source: https://ladybug.tools/queenbee-repo
@@ -16,8 +16,8 @@ flow:
 - name: main
   tasks:
   - name: minimal-task
-    template: whale-operator
-- name: whale-operator
+    template: whale-plugin
+- name: whale-plugin
   tasks:
   - name: minimal-task
     template: som-recipe/whalesay

@@ -46,7 +46,7 @@ class RepositoryReference(BaseModel):
 
         repo.add_slugs(
             root=f'{self.name}',
-            packages=repo.operator
+            packages=repo.plugin
         )
 
         repo.add_slugs(

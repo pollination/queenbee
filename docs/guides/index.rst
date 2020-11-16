@@ -27,7 +27,7 @@ Guides
 .. toctree::
    :maxdepth: 1
 
-   operator
+   plugin
    recipe
    repository-create
    repository-manage

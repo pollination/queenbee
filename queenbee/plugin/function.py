@@ -14,7 +14,7 @@ class Function(IOBase):
 
     name: str = Field(
         ...,
-        description='Function name. Must be unique within an operator.'
+        description='Function name. Must be unique within a plugin.'
     )
 
     description: str = Field(
@@ -36,7 +36,7 @@ class Function(IOBase):
     command: str = Field(
         ...,
         description=u'Full shell command for this function. Each function accepts only '
-        'one command. The command will be executed as a shell command in operator. '
+        'one command. The command will be executed as a shell command in plugin. '
         'For running several commands after each other use && between the commands '
         'or pipe data from one to another using |'
     )
