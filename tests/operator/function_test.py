@@ -2,7 +2,7 @@ import yaml
 from tests.base.io_test import BaseIOTest
 from tests.base.value_error import BaseValueErrorTest
 
-from queenbee.operator.function import Function
+from queenbee.plugin.function import Function
 
 ASSET_FOLDER = 'tests/assets/functions'
 

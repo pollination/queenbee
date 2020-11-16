@@ -5,7 +5,7 @@ from pydantic import Field, root_validator, validator, constr
 
 from ..base.basemodel import BaseModel
 
-from ..operator import Operator
+from ..plugin import Plugin
 from ..recipe import Recipe
 
 from .package import PackageVersion
@@ -30,9 +30,9 @@ class RepositoryMetadata(BaseModel):
         description='The source path (url or local) to the repository'
     )
 
-    operator_count: int = Field(
+    plugin_count: int = Field(
         0,
-        description='The number of operators hosted by the repository'
+        description='The number of plugins hosted by the repository'
     )
 
     recipe_count: int = Field(
@@ -42,7 +42,7 @@ class RepositoryMetadata(BaseModel):
 
 
 class RepositoryIndex(BaseModel):
-    """A searchable index for a Queenbee Operator and Recipe repository"""
+    """A searchable index for a Queenbee Plugin and Recipe repository"""
 
     type: constr(regex='^RepositoryIndex$') = 'RepositoryIndex'
 
@@ -56,10 +56,10 @@ class RepositoryIndex(BaseModel):
         description='Extra information about the repository'
     )
 
-    operator: Dict[str, List[PackageVersion]] = Field(
+    plugin: Dict[str, List[PackageVersion]] = Field(
         {},
-        description='A dict of operators accessible by name. Each name key points to'
-        ' a list of operator versions'
+        description='A dict of plugins accessible by name. Each name key points to'
+        ' a list of plugin versions'
     )
 
     recipe: Dict[str, List[PackageVersion]] = Field(
@@ -68,11 +68,11 @@ class RepositoryIndex(BaseModel):
         ' list of recipesversions'
     )
 
-    @validator('operator')
-    def set_operator_type(cls, v):
+    @validator('plugin')
+    def set_plugin_type(cls, v):
         for _, package in v.items():
             for pv in package:
-                pv.kind = 'operator'
+                pv.kind = 'plugin'
 
         return v
 
@@ -86,7 +86,7 @@ class RepositoryIndex(BaseModel):
 
     @root_validator
     def metadata_counts(cls, values):
-        values['metadata'].operator_count = len(values.get('operator'))
+        values['metadata'].plugin_count = len(values.get('plugin'))
         values['metadata'].recipe_count = len(values.get('recipe'))
 
         return values
@@ -100,7 +100,7 @@ class RepositoryIndex(BaseModel):
 
         cls.add_slugs(
             root=name,
-            packages=values.get('operator')
+            packages=values.get('plugin')
         )
 
         cls.add_slugs(
@@ -114,7 +114,7 @@ class RepositoryIndex(BaseModel):
     def from_folder(cls, folder_path):
         """Generate a Repository Index from a folder
 
-        This will scrape the folder for operator and recipe packages and
+        This will scrape the folder for plugin and recipe packages and
         add their version information to the index.
 
         Arguments:
@@ -129,16 +129,16 @@ class RepositoryIndex(BaseModel):
 
         index.metadata.name = tail
 
-        operators_folder = os.path.join(folder_path, 'operators')
+        plugins_folder = os.path.join(folder_path, 'plugins')
         recipes_folder = os.path.join(folder_path, 'recipes')
 
-        if os.path.exists(operators_folder):
-            for package in os.listdir(operators_folder):
-                package_path = os.path.join(folder_path, 'operators', package)
+        if os.path.exists(plugins_folder):
+            for package in os.listdir(plugins_folder):
+                package_path = os.path.join(folder_path, 'plugins', package)
                 resource_version = PackageVersion.from_package(package_path)
                 resource_version.url = \
-                    os.path.join('operators', package).replace('\\', '/')
-                index.index_operator_version(resource_version)
+                    os.path.join('plugins', package).replace('\\', '/')
+                index.index_plugin_version(resource_version)
 
         if os.path.exists(recipes_folder):
             for package in os.listdir(recipes_folder):
@@ -152,7 +152,7 @@ class RepositoryIndex(BaseModel):
 
         cls.add_slugs(
             root=tail,
-            packages=index.operator,
+            packages=index.plugin,
         )
 
         cls.add_slugs(
@@ -160,7 +160,7 @@ class RepositoryIndex(BaseModel):
             packages=index.recipe,
         )
 
-        index.metadata.operator_count = len(index.operator)
+        index.metadata.plugin_count = len(index.plugin)
         index.metadata.recipe_count = len(index.recipe)
 
         return index
@@ -169,16 +169,16 @@ class RepositoryIndex(BaseModel):
     def index_resource(
         cls,
         index_folder: str,
-        resource: Union[Operator, Recipe],
+        resource: Union[Plugin, Recipe],
         readme: str = None,
         license: str = None,
         overwrite: bool = False,
     ):
-        """Package an Operator or Workflow and add it to an existing index.json file
+        """Package a plugin or Workflow and add it to an existing index.json file
 
         Arguments:
             index_folder {str} -- The folder where the repository index is located
-            resource {Union[Operator, Recipe]} -- The Operator or Recipe to package
+            resource {Union[Plugin, Recipe]} -- The Plugin or Recipe to package
 
         Keyword Arguments:
             readme {str} -- Text of the recipe README.md file if it exists
@@ -198,12 +198,12 @@ class RepositoryIndex(BaseModel):
 
         index = cls.from_file(os.path.join(index_folder, 'index.json'))
 
-        if isinstance(resource, Operator):
-            type_path = 'operators'
+        if isinstance(resource, Plugin):
+            type_path = 'plugins'
         elif isinstance(resource, Recipe):
             type_path = 'recipes'
         else:
-            raise ValueError(f"Resource should be an Operator or a Recipe")
+            raise ValueError(f"Resource should be a plugin or a Recipe")
 
         resource_version, file_object = PackageVersion.package_resource(
             resource=resource,
@@ -213,8 +213,8 @@ class RepositoryIndex(BaseModel):
 
         tar_path = os.path.join(index_folder, type_path, resource_version.url)
 
-        if isinstance(resource, Operator):
-            index.index_operator_version(resource_version, overwrite)
+        if isinstance(resource, Plugin):
+            index.index_plugin_version(resource_version, overwrite)
         elif isinstance(resource, Recipe):
             index.index_recipe_version(resource_version, overwrite)
 
@@ -325,19 +325,19 @@ class RepositoryIndex(BaseModel):
         )
         self.generated = datetime.utcnow()
 
-    def index_operator_version(self, operator_version: PackageVersion,
+    def index_plugin_version(self, plugin_version: PackageVersion,
                                overwrite: bool = False):
-        """Add a Operator Version to an Index of Operators
+        """Add a Plugin Version to an Index of Plugins
 
         Arguments:
-            operator_version {PackageVersion} -- A operator version object
+            plugin_version {PackageVersion} -- A plugin version object
 
         Keyword Arguments:
-            overwrite {bool} -- Overwrite the Operator Version if it already exists in
+            overwrite {bool} -- Overwrite the Plugin Version if it already exists in
                 the index (default: {False})
         """
-        self.operator = self._index_resource_version(
-            self.operator, operator_version, overwrite=overwrite
+        self.plugin = self._index_resource_version(
+            self.plugin, plugin_version, overwrite=overwrite
         )
         self.generated = datetime.utcnow()
 
@@ -354,13 +354,13 @@ class RepositoryIndex(BaseModel):
         Raises:
             ValueError: Resource version already exists or is invalid
         """
-        for package in os.listdir(os.path.join(folder_path, 'operators')):
-            package_path = os.path.join(folder_path, 'operators', package)
+        for package in os.listdir(os.path.join(folder_path, 'plugins')):
+            package_path = os.path.join(folder_path, 'plugins', package)
             resource_version = PackageVersion.from_package(package_path)
             resource_version.url = \
-                    os.path.join('operators', package).replace('\\', '/')
+                    os.path.join('plugins', package).replace('\\', '/')
             try:
-                self.index_operator_version(resource_version, overwrite)
+                self.index_plugin_version(resource_version, overwrite)
             except ValueError as error:
                 if 'already has a version ' in str(error):
                     if skip:
@@ -392,7 +392,7 @@ class RepositoryIndex(BaseModel):
         version of the package will be retrieved.
 
         Arguments:
-            kind {str} -- The type of package (operator or recipe)
+            kind {str} -- The type of package (plugin or recipe)
             package_name {str} -- The name of the package
             package_tag {str} -- The package tag
 
@@ -434,7 +434,7 @@ class RepositoryIndex(BaseModel):
         """Retrieve a Resource Version by its hash digest
 
         Arguments:
-            kind {str} -- The type of package (operator or recipe)
+            kind {str} -- The type of package (plugin or recipe)
             package_name {str} -- The name of the package
             package_digest {str} -- The package digest
 
@@ -474,7 +474,7 @@ class RepositoryIndex(BaseModel):
 
         Args:
             kind (str, optional): The type of package to search for
-                (ie: operator or recipe). Defaults to None.
+                (ie: plugin or recipe). Defaults to None.
             search_string (str, optional): The search string to use. Defaults to None.
 
         Returns:
@@ -490,8 +490,8 @@ class RepositoryIndex(BaseModel):
                 if package.search_match(search_string=search_string):
                     packages.append(package)
 
-        if kind is None or kind == 'operator':
-            for name, package_versions in self.operator.items():
+        if kind is None or kind == 'plugin':
+            for name, package_versions in self.plugin.items():
                 package = self.get_latest(package_versions=package_versions)
 
                 if package.search_match(search_string=search_string):
@@ -506,12 +506,12 @@ class RepositoryIndex(BaseModel):
         needed in a serialized index object.
         """
         exclude_keys = {
-            'operator': {},
+            'plugin': {},
             'recipe': {},
         }
 
-        for key in self.operator:
-            exclude_keys['operator'][key] = {
+        for key in self.plugin:
+            exclude_keys['plugin'][key] = {
                 '__all__': {
                     'readme',
                     'license',

@@ -1,17 +1,17 @@
-Create A New Operator
+Create A New Plugin
 =====================
 
-In this section we will walk you through how to create a new operator from an existing Command Line Interface (CLI) tool. We will create a folder to save our
-operator definition, write the operator package metadata and define a few functions exposed by the operator.
+In this section we will walk you through how to create a new plugin from an existing Command Line Interface (CLI) tool. We will create a folder to save our
+plugin definition, write the plugin package metadata and define a few functions exposed by the plugin.
 
-We will be creating an Operator that uses EnergyPlus. This Operator will transform commands provided in the `examples <https://github.com/NREL/EnergyPlus/blob/370d5b8f4d8a27a80d9b6ed21b1fa7a989f75dc1/doc/running-energyplus-from-command-line.md#examples>`_ 
-section of the CLI documentation into Queenbee Operator Functions.
+We will be creating a plugin that uses EnergyPlus. This Plugin will transform commands provided in the `examples <https://github.com/NREL/EnergyPlus/blob/370d5b8f4d8a27a80d9b6ed21b1fa7a989f75dc1/doc/running-energyplus-from-command-line.md#examples>`_ 
+section of the CLI documentation into Queenbee Plugin Functions.
 
 Getting Started
 ---------------
-First we need to create a new Operator folder. We will do so using the Queenbee CLI tool::
+First we need to create a new Plugin folder. We will do so using the Queenbee CLI tool::
 
-  queenbee operator new energy-plus
+  queenbee plugin new energy-plus
 
 
 This will create a folder called ``energy-plus`` with a pre-populated template. Have a look at the
@@ -20,30 +20,30 @@ default template by opening the ``energy-plus`` folder with your code editor.
 Folder Structure
 ----------------
 When you open the folder in your code editor you will notice their is a folder called ``functions``,
-a file called ``config.yaml`` and another file called ``operator.yaml``::
+a file called ``config.yaml`` and another file called ``plugin.yaml``::
 
     energy-plus
-    ├── functions           # Contains all the functions the operator can run
+    ├── functions           # Contains all the functions the plugin can run
     │   └── say-hi.yaml     # A function that executes a `say-hi` command
     ├── config.yaml         # Configuration information to execute this function locally or using Docker
-    └── operator.yaml       # The Operator metadata information (name, version etc...)
+    └── plugin.yaml       # The Plugin metadata information (name, version etc...)
 
 
 
 Configuration
 -------------
 The ``config.yaml`` file contains information to indicate what underlying software should execute
-the operator's functions. We will be focusing on the ``docker`` configuration.
+the plugin's functions. We will be focusing on the ``docker`` configuration.
 
-You can check the full schema definition for an Operator Config `here <../_static/redoc-operator.html#tag/config_model>`_
+You can check the full schema definition for a plugin Config `here <../_static/redoc-plugin.html#tag/config_model>`_
 
 Docker Config
 ^^^^^^^^^^^^^
 The Docker configuration tells the workflow execution engine which container to use when executing a Function
-from this Operator. It will also indicate what path within the folder each artifact (file or folder) should be
+from this Plugin. It will also indicate what path within the folder each artifact (file or folder) should be
 loaded to.
 
-Our energy-plus operator will use `a container image produced by NREL <https://hub.docker.com/r/nrel/energyplus>`_.
+Our energy-plus plugin will use `a container image produced by NREL <https://hub.docker.com/r/nrel/energyplus>`_.
 We want to use a specific version of energyplus (``v9.0.1``), therefore the name of the container image we want to use
 is ``nrel/energyplus:9.0.1``.
 
@@ -61,13 +61,13 @@ is what we call the Working Directory or ``wordir`` for short.
 
 Overwrite the contents of the ``config.yaml`` file with the YAML code block below:
 
-..  literalinclude:: ../../tests/assets/operators/folders/energy-plus/config.yaml
+..  literalinclude:: ../../tests/assets/plugins/folders/energy-plus/config.yaml
     :language: yaml
 
 
-Operator.yaml
+Plugin.yaml
 -------------
-This file contains the metadata information that defines your Operator. You can compare this to the
+This file contains the metadata information that defines your Plugin. You can compare this to the
 ``package.json`` for Node, ``setup.py`` for Python or ``<package-name>.sln`` for C#.
 
 The file currently contains name and version information:
@@ -78,20 +78,20 @@ The file currently contains name and version information:
   version: 0.1.0
 
 These are the two mandatory fields for this file. You can view a full list of other available 
-fields `here <../_static/redoc-operator.html#tag/metadata_model>`_.
+fields `here <../_static/redoc-plugin.html#tag/metadata_model>`_.
 
 We will be adding a few more fields for demonstration purposes. Overwrite the contents of
-``operator.yaml`` with the YAML code block below.
+``plugin.yaml`` with the YAML code block below.
 
-..  literalinclude:: ../../tests/assets/operators/folders/energy-plus/operator.yaml
+..  literalinclude:: ../../tests/assets/plugins/folders/energy-plus/plugin.yaml
     :language: yaml
 
 
 Your First Function
 -------------------
-We are now finally ready to write a Function. Functions are the key ingredients of an Operator. A Function
+We are now finally ready to write a Function. Functions are the key ingredients of a plugin. A Function
 defines a parametrized command run in a terminal. You can refer to the 
-`function schema definition  <../_static/redoc-operator.html#tag/function_model>`_ to understand the components of a function.
+`function schema definition  <../_static/redoc-plugin.html#tag/function_model>`_ to understand the components of a function.
 
 
 We listed some function we wanted to create based on examples provided by the EneryPlus documentation. 
@@ -105,7 +105,7 @@ Now create a new file called ``run-simulation.yaml`` in the ``functions`` folder
     ``command``. The ``weather.epw`` and ``input.idf`` are explicitly called and the ``outputs`` directory is
     created by specifying ``-d outputs`` in the command.
 
-..  literalinclude:: ../../tests/assets/operators/folders/energy-plus/functions/run-simulation.yaml
+..  literalinclude:: ../../tests/assets/plugins/folders/energy-plus/functions/run-simulation.yaml
     :language: yaml
 
 
@@ -115,25 +115,25 @@ Your folder should now look something like this::
     ├── functions
     │   └── run-simulation.yaml
     ├── config.yaml
-    └── operator.yaml
+    └── plugin.yaml
 
 
 Packaging and Sharing
 ---------------------
-You can package an operator by running the following command::
+You can package a plugin by running the following command::
 
-  queenbee operator package energy-plus
+  queenbee plugin package energy-plus
 
 
 You should see a file called ``energy-plus-0.1.0.tgz`` appear in your local
-directory. This is a packaged Operator file which can be saved in a Queenbee
+directory. This is a packaged Plugin file which can be saved in a Queenbee
 Repository to share with others or be used in a Recipe.
 
 You should go to the `Repository Guide <repository.html>`_ section to understand
-how Operators are packaged and shared. 
+how Plugins are packaged and shared. 
 
 
-Using Operators
+Using Plugins
 ---------------
 You should move to the `Recipe Guide <recipe.html>`_ section to understand how
-Operators are used by recipes.
+Plugins are used by recipes.

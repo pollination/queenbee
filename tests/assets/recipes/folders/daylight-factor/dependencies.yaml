@@ -1,5 +1,5 @@
 dependencies:
-- kind: operator_kind
+- kind: plugin
   name: honeybee-radiance
   hash: 69b43aedf58787f103d597b39f5e9a44c0a6ff3017208ad8f3a973a2143d7d03
   tag: 1.2.3

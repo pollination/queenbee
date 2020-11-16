@@ -18,19 +18,19 @@ except ImportError:
 @click.option('-d', '--destination', help='location to write the package', show_default=True, default='.', type=click.Path(exists=False))
 @click.option('-f', '--force', help='Boolean toggle to overwrite existing package with same name and version', default=False, type=bool, is_flag=True)
 def package(path, destination, force):
-    """package an operator
+    """package a plugin
 
-    This command helps your package operators and add them to repository folders. A
-    packaged operator is essentially a gzipped version of its folder.
+    This command helps your package plugins and add them to repository folders. A
+    packaged plugin is essentially a gzipped version of its folder.
 
-    You can package an operator in a specific folder or repository by using the
+    You can package a plugin in a specific folder or repository by using the
     ``--destination``
 
     flag::
 
-        queenbee operator package path/to/my/operator --destination path/to/my/repository/operators
+        queenbee plugin package path/to/my/plugin --destination path/to/my/repository/plugins
 
-    If you do not specify a ``--destination`` the command will package the operator in the
+    If you do not specify a ``--destination`` the command will package the plugin in the
     directory the command is invoked from (ie: ``.``)
     """
     path = os.path.abspath(path)
@@ -38,8 +38,8 @@ def package(path, destination, force):
     os.chdir(path)
 
     try:
-        operator_version, file_object = PackageVersion.package_folder(
-            resource_type='operator',
+        plugin_version, file_object = PackageVersion.package_folder(
+            resource_type='plugin',
             folder_path=path,
         )
     except ValidationError as error:
@@ -49,7 +49,7 @@ def package(path, destination, force):
     except ValueError as error:
         raise click.ClickException(error)
 
-    file_path = os.path.join(destination, operator_version.url)
+    file_path = os.path.join(destination, plugin_version.url)
 
     if not force and os.path.isfile(file_path):
         raise click.ClickException(

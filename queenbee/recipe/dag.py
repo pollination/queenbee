@@ -157,9 +157,9 @@ class DAG(IOBase):
         """Check that a task name does not refer to itself in a template."""
         name = values.get('name')
 
-        operator = v.template.split('/')[0]
+        plugin = v.template.split('/')[0]
 
-        assert operator != name, \
+        assert plugin != name, \
             ValueError('Task cannot refer to its own DAG as a template.')
 
         return v

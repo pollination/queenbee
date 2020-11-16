@@ -1,17 +1,17 @@
 metadata:
-  name: full-operator
+  name: full-plugin
   tag: 0.0.1
   app_version: 3.4.3
-  description: A test operator with every possible bit of metadata included
+  description: A test plugin with every possible bit of metadata included
   keywords:
   - test
   - full
   maintainers:
   - name: ladybugbot
     email: ladybugbot@ladybug.tools
-  home: https://ladybug.tools/full-operator
+  home: https://ladybug.tools/full-plugin
   sources:
-  - https://github.com/ladybug-tools/full-operator
+  - https://github.com/ladybug-tools/full-plugin
   - https://gihtub.com/ladybug-tools/queenbee
   icon: https://www.ladybug.tools/assets/img/logo.png
   deprecated: false

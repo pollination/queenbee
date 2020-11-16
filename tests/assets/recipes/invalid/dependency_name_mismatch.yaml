@@ -3,8 +3,8 @@ metadata:
   tag: 0.2.1
 
 dependencies:
-- kind: operator_kind
-  name: not-whale-operator
+- kind: plugin
+  name: not-whale-plugin
   tag: 1.2.3
   source: https://ladybug.tools/queenbee-reppo
 
@@ -12,4 +12,4 @@ flow:
 - name: main
   tasks:
   - name: minimal-task
-    template: whale-operator/whalesay
+    template: whale-plugin/whalesay

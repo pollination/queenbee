@@ -19,7 +19,7 @@ Commands
    :maxdepth: 1
 
    main
-   operator
+   plugin
    recipe
    repository
 
