@@ -326,34 +326,34 @@ class IOBase(BaseModel):
             Dict -- A dictionary with two keys for inputs and outputs. Each key includes
                 a list of artifacts.
         """
-        input_artifacts = [inp for inp in self.inputs if inp.is_artifact]
-        output_artifacts = [inp for inp in self.outputs if inp.is_artifact]
+        artifact_inputs = [inp for inp in self.inputs if inp.is_artifact]
+        artifact_outputs = [inp for inp in self.outputs if inp.is_artifact]
 
-        return {'inputs': input_artifacts, 'outputs': output_artifacts}
+        return {'inputs': artifact_inputs, 'outputs': artifact_outputs}
 
     @property
-    def input_artifacts(self) -> List:
+    def artifact_inputs(self) -> List:
         """Get input artifacts. Artifacts are file, folder and path inputs.
 
         Returns:
             A list -- A list of input artifacts.
         """
-        input_artifacts = [inp for inp in self.inputs if inp.is_artifact]
+        artifact_inputs = [inp for inp in self.inputs if inp.is_artifact]
 
-        return input_artifacts
+        return artifact_inputs
 
     @property
-    def output_artifacts(self) -> List:
+    def artifact_outputs(self) -> List:
         """Get output artifacts. Artifacts are file, folder and path inputs.
 
         Returns:
             A list -- A list of output artifacts.
         """
-        output_artifacts = [inp for inp in self.outputs if inp.is_artifact]
+        artifact_outputs = [inp for inp in self.outputs if inp.is_artifact]
 
-        return output_artifacts
+        return artifact_outputs
 
-    def input_artifact_by_name(self, name: str):
+    def artifact_input_by_name(self, name: str):
         """Retrieve an artifact from the inputs by name
 
         Arguments:
@@ -362,9 +362,9 @@ class IOBase(BaseModel):
         Returns:
             IOItem -- An IO Item with the input name
         """
-        return find_io_by_name(self.input_artifacts, name)
+        return find_io_by_name(self.artifact_inputs, name)
 
-    def output_artifact_by_name(self, name: str):
+    def artifact_output_by_name(self, name: str):
         """Retrieve an artifact from the outputs by name
 
         Arguments:
@@ -373,7 +373,7 @@ class IOBase(BaseModel):
         Returns:
             IOItem -- An IO Item with the input name
         """
-        return find_io_by_name(self.output_artifacts, name)
+        return find_io_by_name(self.artifact_outputs, name)
 
     @property
     def parameters(self) -> Dict:
@@ -383,34 +383,34 @@ class IOBase(BaseModel):
             Dict -- A dictionary with two keys for inputs and outputs. Each key includes
                 a list of parameters.
         """
-        input_parameters = [inp for inp in self.inputs if not inp.is_artifact]
-        output_parameters = [inp for inp in self.outputs if not inp.is_artifact]
+        parameter_inputs = [inp for inp in self.inputs if not inp.is_artifact]
+        parameter_outputs = [inp for inp in self.outputs if not inp.is_artifact]
 
-        return {'inputs': input_parameters, 'outputs': output_parameters}
+        return {'inputs': parameter_inputs, 'outputs': parameter_outputs}
 
     @property
-    def input_parameters(self) -> List:
-        """Get input parameters. Parameters are file, folder and path inputs.
+    def parameter_inputs(self) -> List:
+        """Get input parameters. Parameters are non file, folder and path inputs.
 
         Returns:
             A list -- A list of input parameters.
         """
-        input_parameters = [inp for inp in self.inputs if inp.is_parameter]
+        parameter_inputs = [inp for inp in self.inputs if inp.is_parameter]
 
-        return input_parameters
+        return parameter_inputs
 
     @property
-    def output_parameters(self) -> List:
-        """Get output parameters. Parameters are file, folder and path inputs.
+    def parameter_outputs(self) -> List:
+        """Get output parameters. Parameters are non file, folder and path inputs.
 
         Returns:
             A list -- A list of output parameters.
         """
-        output_parameters = [inp for inp in self.outputs if inp.is_parameter]
+        parameter_outputs = [inp for inp in self.outputs if inp.is_parameter]
 
-        return output_parameters
+        return parameter_outputs
 
-    def input_parameter_by_name(self, name: str):
+    def parameter_input_by_name(self, name: str):
         """Retrieve an parameter from the inputs by name
 
         Arguments:
@@ -419,9 +419,9 @@ class IOBase(BaseModel):
         Returns:
             IOItem -- An IO Item with the input name
         """
-        return find_io_by_name(self.input_parameters, name)
+        return find_io_by_name(self.parameter_inputs, name)
 
-    def output_parameter_by_name(self, name: str):
+    def parameter_output_by_name(self, name: str):
         """Retrieve an parameter from the outputs by name
 
         Arguments:
@@ -430,4 +430,4 @@ class IOBase(BaseModel):
         Returns:
             IOItem -- An IO Item with the input name
         """
-        return find_io_by_name(self.output_parameters, name)
+        return find_io_by_name(self.parameter_outputs, name)
