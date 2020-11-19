@@ -269,3 +269,47 @@ class DAGTask(BaseModel):
             )
 
         return [x for x in arguments if isinstance(x.from_, source_class)]
+
+    @property
+    def artifact_arguments(self) -> List:
+        """Get artifact arguments. Artifacts are file, folder and path inputs.
+
+        Returns:
+            A list -- A list of artifact arguments.
+        """
+        artifact_args = [arg for arg in self.arguments if arg.is_artifact]
+
+        return artifact_args
+
+    @property
+    def parameter_arguments(self) -> List:
+        """Get parameter arguments. Parameters are file, folder and path inputs.
+
+        Returns:
+            A list -- A list of parameter arguments.
+        """
+        parameter_args = [arg for arg in self.arguments if arg.is_parameter]
+
+        return parameter_args
+
+    @property
+    def artifact_returns(self) -> List:
+        """Get artifact returns. Artifacts are file, folder and path inputs.
+
+        Returns:
+            A list -- A list of artifact returns.
+        """
+        artifacts_out = [out for out in self.returns if out.is_artifact]
+
+        return artifacts_out
+
+    @property
+    def parameter_returns(self) -> List:
+        """Get artifact returns. Artifacts are file, folder and path inputs.
+
+        Returns:
+            A list -- A list of artifact returns.
+        """
+        parameter_out = [out for out in self.returns if out.is_parameter]
+
+        return parameter_out
