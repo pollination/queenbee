@@ -43,15 +43,15 @@ class DAGTask(BaseModel):
         'must be available in the dependencies.'
     )
 
-    arguments: List[TaskArguments] = Field(
-        None,
-        description='The input arguments for this task.'
-    )
-
     needs: List[str] = Field(
         None,
         description='List of DAG tasks that this task depends on and needs to be'
         ' executed before this task.'
+    )
+
+    arguments: List[TaskArguments] = Field(
+        None,
+        description='The input arguments for this task.'
     )
 
     loop: DAGTaskLoop = Field(
@@ -116,6 +116,30 @@ class DAGTask(BaseModel):
     @validator('returns', always=True)
     def set_default_returns(cls, v):
         return [] if v is None else v
+
+    @validator('arguments')
+    def check_referenced_values(cls, v, values):
+        deps = []
+        for arg in v:
+            try:
+                dep = arg.from_.name
+            except AttributeError:
+                # non-referenced arguments
+                pass
+            else:
+                deps.append(dep)
+
+        needs = values.get('needs', [])
+
+        missing = [d for d in deps if d not in needs]
+
+        if missing:
+            raise ValueError(
+                f'Missing task name(s) from `needs` field for task {values["name"]}:'
+                f'\n\t-> {missing}'
+            )
+
+        return v
 
     @property
     def is_root(self) -> bool:
