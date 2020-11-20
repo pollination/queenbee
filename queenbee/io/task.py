@@ -38,9 +38,11 @@ class TaskArgument(BaseModel):
         alias='from'
     )
 
+    @property
     def is_artifact(self):
         return False
 
+    @property
     def is_parameter(self):
         return not self.is_artifact
 
@@ -72,9 +74,11 @@ class TaskPathArgument(BaseModel):
         ' copying all the files and folders inside the path.'
     )
 
+    @property
     def is_artifact(self):
         return True
 
+    @property
     def is_parameter(self):
         return not self.is_artifact
 
@@ -88,6 +92,7 @@ class TaskReturn(GenericOutput):
 
     type: constr(regex='^TaskReturn$') = 'TaskReturn'
 
+    @property
     def is_artifact(self):
         return False
 
@@ -97,6 +102,7 @@ class TaskPathReturn(PathOutput):
 
     type: constr(regex='^TaskPathReturn$') = 'TaskPathReturn'
 
+    @property
     def is_artifact(self):
         return True
 
