@@ -83,7 +83,7 @@ tasks:
 
 - name: create-octree
   template: honeybee-radiance/create-octree
-  dependencies:
+  needs:
   - generate-sky
   arguments:
     - name: model
@@ -104,7 +104,7 @@ tasks:
   
 - name: daylight-factor-simulation
   template: honeybee-radiance/ray-tracing
-  dependencies:
+  needs:
   - split-grid
   - create-octree
   loop:
@@ -139,7 +139,7 @@ tasks:
 
 - name: post-process
   template: honeybee-radiance/post-process
-  dependencies:
+  needs:
   - daylight-factor-simulation
   arguments:
     - name: raw-results-folder

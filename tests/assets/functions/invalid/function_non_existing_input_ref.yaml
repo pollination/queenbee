@@ -1,6 +1,5 @@
 type: Function
 name: generate-overcast-sky
-plugin: radiance-plugin
 inputs:
     - name: desired-irradiance
       type: FunctionStringInput
