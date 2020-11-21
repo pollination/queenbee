@@ -19,6 +19,8 @@ flow:
     template: honeybee-radiance/10000-lux-sky
     loop:
       type: DAGTaskLoop
-      value:
-      - name: foo
-      - name: bar
+      from:
+        type: ValueListReference
+        value:
+          - name: foo
+          - name: bar

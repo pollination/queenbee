@@ -135,6 +135,8 @@ flow:
     annotations: {}
     name: create-octree
     template: honeybee-radiance/create-octree
+    needs:
+    - generate-sky
     arguments:
     - type: TaskPathArgument
       annotations: {}
@@ -153,7 +155,6 @@ flow:
         name: generate-sky
         variable: sky
       sub_path: null
-    needs: null
     loop: null
     sub_folder: null
     returns:
@@ -166,6 +167,9 @@ flow:
     annotations: {}
     name: daylight-factor-simulation
     template: honeybee-radiance/ray-tracing
+    needs:
+    - split-grid
+    - create-octree
     arguments:
     - type: TaskArgument
       annotations: {}
@@ -192,7 +196,6 @@ flow:
         name: create-octree
         variable: scene-file
       sub_path: null
-    needs: null
     loop:
       type: DAGTaskLoop
       annotations: {}
@@ -212,8 +215,8 @@ flow:
     annotations: {}
     name: generate-sky
     template: honeybee-radiance/10000-lux-sky
-    arguments: []
     needs: null
+    arguments: []
     loop: null
     sub_folder: null
     returns:
@@ -226,6 +229,8 @@ flow:
     annotations: {}
     name: post-process
     template: honeybee-radiance/post-process
+    needs:
+    - daylight-factor-simulation
     arguments:
     - type: TaskPathArgument
       annotations: {}
@@ -235,7 +240,6 @@ flow:
         annotations: {}
         path: output/raw-results
       sub_path: null
-    needs: null
     loop: null
     sub_folder: null
     returns:
@@ -252,6 +256,7 @@ flow:
     annotations: {}
     name: split-grid
     template: honeybee-radiance/split-grid
+    needs: null
     arguments:
     - type: TaskArgument
       annotations: {}
@@ -268,7 +273,6 @@ flow:
         annotations: {}
         variable: input-grid
       sub_path: null
-    needs: null
     loop: null
     sub_folder: null
     returns:

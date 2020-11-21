@@ -60,13 +60,14 @@ flow:
       annotations: {}
       path: daylight-factor
     alias: []
-  name: 3d913106885c136b3b311c8e60c108f0bc87f053f248119c511ab7492123868c/main
+  name: d4cb034409b5af823041cf44c480bcf6fae81623f47a642f84bacf49a5cc4099/main
   fail_fast: true
   tasks:
   - type: DAGTask
     annotations: {}
     name: daylight-factor
-    template: caa9af9a09ee0775dd7d8ef5ff76d758c2546a2cf68215e46354c612d2570791/main
+    template: 32af3ba087eecc58bf76969d1e9eef8161c3e9afd870c63ca849d1df37e01d56/main
+    needs: null
     arguments:
     - type: TaskPathArgument
       annotations: {}
@@ -91,7 +92,6 @@ flow:
         annotations: {}
         variable: models-folder
       sub_path: '{{item}}/grid'
-    needs: null
     loop:
       type: DAGTaskLoop
       annotations: {}
@@ -105,7 +105,7 @@ flow:
       annotations: {}
       name: average
       description: null
-digest: 3d913106885c136b3b311c8e60c108f0bc87f053f248119c511ab7492123868c
+digest: d4cb034409b5af823041cf44c480bcf6fae81623f47a642f84bacf49a5cc4099
 templates:
 - type: TemplateFunction
   annotations: {}
@@ -407,13 +407,15 @@ templates:
       name: post-process
       variable: post-process-folder
     alias: []
-  name: caa9af9a09ee0775dd7d8ef5ff76d758c2546a2cf68215e46354c612d2570791/main
+  name: 32af3ba087eecc58bf76969d1e9eef8161c3e9afd870c63ca849d1df37e01d56/main
   fail_fast: true
   tasks:
   - type: DAGTask
     annotations: {}
     name: create-octree
     template: c4ced4f4f581060f77be20f6ead4bb1850687e3e400948b88fd21e8d857036bb/create-octree
+    needs:
+    - generate-sky
     arguments:
     - type: TaskPathArgument
       annotations: {}
@@ -432,7 +434,6 @@ templates:
         name: generate-sky
         variable: sky
       sub_path: null
-    needs: null
     loop: null
     sub_folder: null
     returns:
@@ -445,6 +446,9 @@ templates:
     annotations: {}
     name: daylight-factor-simulation
     template: c4ced4f4f581060f77be20f6ead4bb1850687e3e400948b88fd21e8d857036bb/ray-tracing
+    needs:
+    - split-grid
+    - create-octree
     arguments:
     - type: TaskArgument
       annotations: {}
@@ -471,7 +475,6 @@ templates:
         name: create-octree
         variable: scene-file
       sub_path: null
-    needs: null
     loop:
       type: DAGTaskLoop
       annotations: {}
@@ -491,8 +494,8 @@ templates:
     annotations: {}
     name: generate-sky
     template: c4ced4f4f581060f77be20f6ead4bb1850687e3e400948b88fd21e8d857036bb/10000-lux-sky
-    arguments: []
     needs: null
+    arguments: []
     loop: null
     sub_folder: null
     returns:
@@ -505,6 +508,8 @@ templates:
     annotations: {}
     name: post-process
     template: c4ced4f4f581060f77be20f6ead4bb1850687e3e400948b88fd21e8d857036bb/post-process
+    needs:
+    - daylight-factor-simulation
     arguments:
     - type: TaskPathArgument
       annotations: {}
@@ -514,7 +519,6 @@ templates:
         annotations: {}
         path: output/raw-results
       sub_path: null
-    needs: null
     loop: null
     sub_folder: null
     returns:
@@ -531,6 +535,7 @@ templates:
     annotations: {}
     name: split-grid
     template: c4ced4f4f581060f77be20f6ead4bb1850687e3e400948b88fd21e8d857036bb/split-grid
+    needs: null
     arguments:
     - type: TaskArgument
       annotations: {}
@@ -547,7 +552,6 @@ templates:
         annotations: {}
         variable: input-grid
       sub_path: null
-    needs: null
     loop: null
     sub_folder: null
     returns:

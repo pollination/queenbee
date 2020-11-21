@@ -1,5 +1,4 @@
 import pytest
-import os
 import yaml
 import json
 from ._base import BaseTestClass

@@ -2,7 +2,6 @@ type: Function
 name: split-grid
 description: Split the daylight sensor grid into multiple smaller files for parallel
   simulation
-plugin: honeybee-radiance
 inputs:
   - name: grid-name
     type: FunctionStringInput
