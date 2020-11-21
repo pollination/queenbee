@@ -109,16 +109,15 @@ class DAGTask(BaseModel):
                 find_io_by_name(arguments, ref_list[1])
         return v
 
-    @validator('arguments', always=True)
-    def set_default_args(cls, v):
-        return [] if v is None else v
-
     @validator('returns', always=True)
     def set_default_returns(cls, v):
         return [] if v is None else v
 
-    @validator('arguments')
+    @validator('arguments', always=True)
     def check_referenced_values(cls, v, values):
+        if v is None:
+            return []
+
         deps = []
         for arg in v:
             try:
@@ -137,6 +136,23 @@ class DAGTask(BaseModel):
             raise ValueError(
                 f'Missing task name(s) from `needs` field for task {values["name"]}:'
                 f'\n\t-> {missing}'
+            )
+
+        return v
+
+    @validator('loop')
+    def check_loop_referenced_task(cls, v, values):
+        try:
+            dep = v.from_.name
+        except AttributeError:
+            # non-referenced arguments
+            return v
+        needs = values.get('needs', [])
+
+        if dep not in needs:
+            raise ValueError(
+                f'Missing loop reference from `needs` field for task {values["name"]}:'
+                f'\n\t-> {dep}'
             )
 
         return v
