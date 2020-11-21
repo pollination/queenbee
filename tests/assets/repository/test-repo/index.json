@@ -1,11 +1,11 @@
 {
   "type": "RepositoryIndex",
   "annotations": {},
-  "generated": "2020-11-16T01:58:22.623531",
+  "generated": "2020-11-21T22:03:51.346663",
   "metadata": {
     "type": "RepositoryMetadata",
     "annotations": {},
-    "name": "",
+    "name": "test-repo",
     "description": "A Queenbee package repository",
     "source": null,
     "plugin_count": 1,
@@ -40,9 +40,9 @@
         "deprecated": null,
         "description": "A plugin to run all things honeybee and radiance!",
         "url": "plugins/honeybee-radiance-1.2.3.tgz",
-        "created": "2020-11-16T01:58:07.874259",
-        "digest": "0ef7e92c6b6b0d4b737850f680ad2577b4229a4c82dc72746dc88d72bfa1b919",
-        "slug": "/honeybee-radiance",
+        "created": "2020-11-21T22:01:21.355354",
+        "digest": "38e9b4ebb5e7f13b92f162975af3fc3dc1b0cd023c9b0c3a87d3a18f3ad906df",
+        "slug": "test-repo/honeybee-radiance",
         "kind": "plugin"
       }
     ]
@@ -73,9 +73,9 @@
         "deprecated": null,
         "description": "An awesome workflow to run daylight factor!",
         "url": "recipes/daylight-factor-0.0.1.tgz",
-        "created": "2020-11-16T01:58:15.647939",
-        "digest": "caa9af9a09ee0775dd7d8ef5ff76d758c2546a2cf68215e46354c612d2570791",
-        "slug": "/daylight-factor",
+        "created": "2020-11-21T22:02:46.451382",
+        "digest": "32af3ba087eecc58bf76969d1e9eef8161c3e9afd870c63ca849d1df37e01d56",
+        "slug": "test-repo/daylight-factor",
         "kind": "recipe"
       }
     ]

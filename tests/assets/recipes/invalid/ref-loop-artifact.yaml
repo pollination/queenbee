@@ -14,9 +14,11 @@ flow:
   - name: minimal-task
     template: honeybee-radiance/10000-lux-sky
     loop:
-      value:
-      - 1
-      - 2
+      from:
+        type: ValueListReference
+        value:
+        - 1
+        - 2
     returns:
         - name: sky
           type: TaskPathReturn

@@ -5,7 +5,7 @@ from typing import List, Dict
 
 import yaml
 from pydantic import BaseModel as PydanticBaseModel
-from pydantic import validator, Field, constr
+from pydantic import validator, Field, constr, Extra
 
 from .parser import parse_file
 from .variable import get_ref_variable
@@ -158,3 +158,6 @@ class BaseModel(PydanticBaseModel):
                     ref_values[name] = ref_var
 
         return ref_values
+
+    class Config:
+        extra = Extra.forbid
