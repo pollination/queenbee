@@ -1,6 +1,6 @@
 import warnings
 from typing import Dict, List
-from pydantic import Field, validator
+from pydantic import Field, validator, constr
 
 from ..base.basemodel import BaseModel
 from ..recipe import BakedRecipe
@@ -14,6 +14,7 @@ class Workflow(BaseModel):
     A Workflow is a Baked Recipe with some arguments that will be used to execute the
     recipe.
     """
+    type: constr(regex='^Workflow$') = 'Workflow'
 
     recipe: BakedRecipe = Field(
         ...,
