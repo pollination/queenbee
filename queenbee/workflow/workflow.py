@@ -1,9 +1,10 @@
-from typing import Dict
+import warnings
+from typing import Dict, List
 from pydantic import Field, validator
 
 from ..base.basemodel import BaseModel
 from ..recipe import BakedRecipe
-from .arguments import Arguments
+from ..io.workflow import WorkflowArguments
 from .status import WorkflowStatus
 
 
@@ -26,7 +27,7 @@ class Workflow(BaseModel):
         ' only and will not be used in the execution of the workflow.'
     )
 
-    arguments: Arguments = Field(
+    arguments: List[WorkflowArguments] = Field(
         None,
         description='Input arguments for this workflow'
     )
@@ -39,49 +40,50 @@ class Workflow(BaseModel):
     @validator('arguments', always=True)
     def check_entrypoint_inputs(cls, v, values):
         """Check the arguments match the recipe entrypoint inputs"""
+        # replace a None argument with an empty list
+        if v is None:
+            return []
 
         recipe = values.get('recipe')
 
-        recipe_inputs = recipe.inputs
+        recipe_inputs = {inp.name: inp for inp in recipe.inputs}
+        workflow_args = {inp.name: inp for inp in v}
 
-        if recipe_inputs is not None:
+        if not recipe_inputs:
+            return v
 
-            artifacts = []
-            parameters = []
+        # check provided values against DAG's inputs
+        # 1. ensure all the required values are provided.
+        # 2. test the input against the spec and make sure it is valid.
+        for name, inp in recipe_inputs.items():
+            if not inp.required:
+                continue
+            if name not in workflow_args:
+                raise ValueError(
+                    f'Value for required input {name} is missing from workflow input'
+                    ' arguments.'
+                )
 
-            if v is None:
-                return Arguments()
+        valid_args = []
+        for name, arg in workflow_args:
+            try:
+                recipe_inputs[name].validate_spec(arg.value)
+            except KeyError:
+                # argument provided which is not an input for DAG. We can just ignore it.
+                warnings.warn(
+                    f'No recipe input with name "{name}". The input value will be'
+                    ' ignored.'
+                )
+            else:
+                valid_args.append(arg)
 
-            artifacts = v.artifacts
-            parameters = v.parameters
-
-            for parameter in recipe_inputs.parameters:
-                if parameter.required:
-                    exists = next(
-                        filter(lambda x: x.name ==
-                               parameter.name, parameters), None
-                    )
-                    assert exists is not None, \
-                        ValueError(
-                            f'Workflow must provide argument for parameter'
-                            f' {parameter.name}'
-                        )
-
-            for artifact in recipe_inputs.artifacts:
-                exists = next(filter(lambda x: x.name ==
-                                     artifact.name, artifacts), None)
-                assert exists is not None, \
-                    ValueError(
-                        f'Workflow must provide argument for artifact {artifact.name}'
-                    )
-
-        return v
+        return valid_args
 
     @classmethod
     def from_baked_recipe(
         cls,
         recipe: BakedRecipe,
-        arguments: Arguments = Arguments(),
+        arguments: List[WorkflowArguments] = [],
         labels: Dict = {}
     ):
         """Generate a workflow from a Baked Recipe
@@ -90,7 +92,7 @@ class Workflow(BaseModel):
             recipe {BakedRecipe} -- A Baked Recipe
 
         Keyword Arguments:
-            arguments {Arguments} -- Workflow arguments (default: {Arguments()})
+            arguments {Arguments} -- Workflow arguments (default: {[]})
             labels {Dict} -- A dictionary of labels used to mark/differentiate a workflow
                 (default: {{}})
 

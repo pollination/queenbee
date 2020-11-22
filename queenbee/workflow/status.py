@@ -8,7 +8,7 @@ from pydantic import Field
 from typing import List, Dict
 
 from ..base.basemodel import BaseModel
-from .arguments import Arguments
+from ..io.task import TaskArguments, TaskReturns
 
 
 class StatusType(str, Enum):
@@ -76,12 +76,12 @@ class TaskStatus(BaseStatus):
         description='The command used to run this task. Only applies to Function tasks.'
     )
 
-    inputs: Arguments = Field(
+    inputs: TaskArguments = Field(
         ...,
         description='The inputs used by this task'
     )
 
-    outputs: Arguments = Field(
+    outputs: TaskReturns = Field(
         ...,
         description='The outputs produced by this task'
     )
