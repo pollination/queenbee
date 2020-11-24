@@ -1,10 +1,10 @@
-from typing import List, Union
+from typing import Dict, List, Union
 
 from pydantic import Field, constr
 
-from .artifact_source import HTTP, S3, ProjectFolder
-from ..base.basemodel import BaseModel
-from ..base.parser import parse_file
+from ..artifact_source import HTTP, S3, ProjectFolder
+from ...base.basemodel import BaseModel
+from ...base.parser import parse_file
 
 
 class WorkflowArgument(BaseModel):
@@ -68,6 +68,18 @@ def load_workflow_arguments(fp: str) -> List[WorkflowArguments]:
         List - A list of of WorkflowArgument and WorkflowPathArgument objects.
     """
     data = parse_file(fp)
+    return load_workflow_arguments_from_dict(data)
+
+
+def load_workflow_arguments_from_dict(data: List[Dict]) -> List[WorkflowArguments]:
+    """Load Workflow arguments from a list of dictionaries.
+
+    Args:
+        data: A list of workflow arguments as dictionaries.
+
+    Returns:
+        List - A list of of WorkflowArgument and WorkflowPathArgument objects.
+    """
     args = []
     for d in data:
         try:
