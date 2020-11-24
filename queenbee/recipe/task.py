@@ -345,7 +345,7 @@ class DAGTask(BaseModel):
 
     @property
     def parameter_returns(self) -> List:
-        """Get artifact returns. Artifacts are file, folder and path inputs.
+        """Get parameter returns. Artifacts are file, folder and path inputs.
 
         Returns:
             A list -- A list of artifact returns.
@@ -353,3 +353,11 @@ class DAGTask(BaseModel):
         parameter_out = [out for out in self.returns if out.is_parameter]
 
         return parameter_out
+
+    def argument_by_name(self, name: str) -> TaskArguments:
+        """Find a task argument by name."""
+        return find_io_by_name(self.arguments, name)
+
+    def return_by_name(self, name: str) -> TaskReturns:
+        """Find a task return by name."""
+        return find_io_by_name(self.returns, name)

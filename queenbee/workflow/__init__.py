@@ -1,1 +1,1 @@
-from .workflow import Workflow
+from .workflow import Workflow, WorkflowArguments

@@ -61,22 +61,24 @@ class Workflow(BaseModel):
                 continue
             if name not in workflow_args:
                 raise ValueError(
-                    f'Value for required input {name} is missing from workflow input'
+                    f'Value for required input "{name}" is missing from workflow input'
                     ' arguments.'
                 )
 
         valid_args = []
-        for name, arg in workflow_args:
-            try:
-                recipe_inputs[name].validate_spec(arg.value)
-            except KeyError:
+        for name, arg in workflow_args.items():
+            if name not in recipe_inputs:
                 # argument provided which is not an input for DAG. We can just ignore it.
                 warnings.warn(
                     f'No recipe input with name "{name}". The input value will be'
                     ' ignored.'
                 )
-            else:
-                valid_args.append(arg)
+                continue
+            if arg.is_parameter:
+                recipe_inputs[name].validate_spec(arg.value)
+            elif arg.source.type == 'ProjectFolder':
+                recipe_inputs[name].validate_spec(arg.source.path)
+            valid_args.append(arg)
 
         return valid_args
 
@@ -102,7 +104,7 @@ class Workflow(BaseModel):
         """
         input_dict = {
             'recipe': recipe.to_dict(),
-            'arguments': arguments.to_dict(),
+            'arguments': [arg.to_dict() for arg in arguments],
             'labels': labels,
         }
 
