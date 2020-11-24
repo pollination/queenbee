@@ -1,9 +1,10 @@
-from typing import Union
+from typing import List, Union
 
 from pydantic import Field, constr
 
 from .artifact_source import HTTP, S3, ProjectFolder
 from ..base.basemodel import BaseModel
+from ..base.parser import parse_file
 
 
 class WorkflowArgument(BaseModel):
@@ -40,7 +41,7 @@ class WorkflowPathArgument(BaseModel):
         'Workflow\'s template which can be a function or DAG.'
     )
 
-    value: Union[HTTP, S3, ProjectFolder] = Field(
+    source: Union[HTTP, S3, ProjectFolder] = Field(
         ...,
         description='The path to source the file from.'
     )
@@ -55,3 +56,36 @@ class WorkflowPathArgument(BaseModel):
 
 
 WorkflowArguments = Union[WorkflowArgument, WorkflowPathArgument]
+
+
+def load_workflow_arguments(fp: str) -> List[WorkflowArguments]:
+    """Load Workflow arguments from a JSON or YAML file.
+
+    Args:
+        fp: File path to a JSON or YAML file with a list of WorkflowArguments.
+
+    Returns:
+        List - A list of of WorkflowArgument and WorkflowPathArgument objects.
+    """
+    data = parse_file(fp)
+    args = []
+    for d in data:
+        try:
+            arg_type = d['type']
+        except KeyError:
+            raise ValueError(
+                'Input argument with missing "type" key. Valid types are: '
+                f'WorkflowArgument and WorkflowPathArgument:\n{d}'
+            )
+        if arg_type == 'WorkflowArgument':
+            arg = WorkflowArgument.parse_obj(d)
+        elif arg_type == 'WorkflowPathArgument':
+            arg = WorkflowPathArgument.parse_obj(d)
+        else:
+            raise ValueError(
+                f'Invalid type for Workflow argument: {arg_type}.'
+                'Valid types are: WorkflowArgument and WorkflowPathArgument.'
+            )
+        args.append(arg)
+
+    return args

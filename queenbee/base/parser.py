@@ -76,7 +76,10 @@ def parse_file(input_file: str) -> dict:
 
     # populate full dictionary
     folder = os.path.dirname(input_file)
-    return _import_dict_data(data, folder)
+    if isinstance(data, list):
+        return [_import_dict_data(d, folder) for d in data]
+    else:
+        return _import_dict_data(data, folder)
 
 
 def parse_double_quotes_vars(input: str) -> list:
