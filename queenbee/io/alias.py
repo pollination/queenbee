@@ -145,6 +145,15 @@ class DAGGenericInputAlias(GenericInput):
         return v
 
 
+class DAGLinkedInputAlias(DAGGenericInputAlias):
+    """An Alias for Linked Inputs.
+
+    A linked input alias will be hidden in the UI and will be linked to an object in 
+    the UI using the input handler.
+    """
+    type: constr(regex='^DAGGenericInputAlias$') = 'DAGGenericInputAlias'
+
+
 class DAGStringInputAlias(DAGGenericInputAlias):
     """An Alias String input.
 
@@ -520,6 +529,15 @@ class DAGGenericOutputAlias(FromOutput):
                 'in each platform.'
             )
         return v
+
+
+class DAGLinkedOutputAlias(DAGGenericOutputAlias):
+    """An Alias for Linked Outputs.
+
+    A linked output alias will be translated to an object in the UI and stay linked to
+    it.
+    """
+    type: constr(regex='^DAGLinkedOutputAlias$') = 'DAGLinkedOutputAlias'
 
 
 class DAGFileOutputAlias(DAGGenericOutputAlias):
