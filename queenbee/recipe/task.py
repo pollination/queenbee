@@ -8,7 +8,8 @@ from ..io.reference import InputReference, TaskReference, ValueListReference, \
     InputFileReference, InputFolderReference, InputPathReference, \
     TaskFileReference, TaskFolderReference, TaskPathReference, \
     ValueFileReference, ValueFolderReference, ItemReference, ValueReference
-from ..io.task import TaskArguments, TaskReturns
+from ..io.inputs.task import TaskArguments
+from ..io.outputs.task import TaskReturns
 from ..base.parser import parse_double_quotes_vars
 
 

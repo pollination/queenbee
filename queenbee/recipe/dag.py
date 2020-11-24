@@ -4,13 +4,14 @@ A DAG defines a single step in a Recipe. Each DAG is a collection of tasks/steps
 step indicates what function template should be used and maps inputs and outputs for the
 specific task.
 """
-from queenbee.io.task import TaskPathReturn, TaskReturn
+from queenbee.io.outputs.task import TaskPathReturn, TaskReturn
 from typing import List, Set, Union
 from pydantic import Field, validator, root_validator, constr
 
 from .task import DAGTask
 from ..io.common import IOBase, find_dup_items
-from ..io.dag import DAGInputs, DAGOutputs
+from ..io.inputs.dag import DAGInputs
+from ..io.outputs.dag import DAGOutputs
 from ..io.reference import FileReference, FolderReference, TaskReference, \
     TaskFileReference, TaskFolderReference, TaskPathReference
 

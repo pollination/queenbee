@@ -12,12 +12,11 @@ Task argument and return objects provide the interface to connect:
 
 from typing import Union
 from pydantic import Field, constr
-from ..base.basemodel import BaseModel
-from .reference import InputReference, ItemReference, TaskReference, ValueReference, \
+from ...base.basemodel import BaseModel
+from ..reference import InputReference, ItemReference, TaskReference, ValueReference, \
     InputFileReference, InputFolderReference, InputPathReference, \
     TaskFileReference, TaskFolderReference, TaskPathReference, \
     ValueFileReference, ValueFolderReference
-from .common import GenericOutput, PathOutput
 
 
 class TaskArgument(BaseModel):
@@ -84,27 +83,3 @@ class TaskPathArgument(BaseModel):
 
 
 TaskArguments = Union[TaskArgument, TaskPathArgument]
-
-
-# Task returns
-class TaskReturn(GenericOutput):
-    """A Task return output that exposes the values from a function or a DAG."""
-
-    type: constr(regex='^TaskReturn$') = 'TaskReturn'
-
-    @property
-    def is_artifact(self):
-        return False
-
-
-class TaskPathReturn(PathOutput):
-    """A Task output that returns a file or a folder output from a function or a DAG."""
-
-    type: constr(regex='^TaskPathReturn$') = 'TaskPathReturn'
-
-    @property
-    def is_artifact(self):
-        return True
-
-
-TaskReturns = Union[TaskReturn, TaskPathReturn]

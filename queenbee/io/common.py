@@ -5,7 +5,6 @@ from enum import Enum
 from typing import Dict, List, Any
 
 from pydantic import constr, Field, validator
-from jsonschema import validate as json_schema_validator
 
 from .reference import FolderReference, FileReference, references_from_string
 from ..base.basemodel import BaseModel
