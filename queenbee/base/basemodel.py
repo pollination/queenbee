@@ -23,11 +23,12 @@ def _keep_name_order_in_yaml():
 _keep_name_order_in_yaml()
 
 
-class BaseModel(PydanticBaseModel):
-    """BaseModel with functionality to return the object as a yaml string
+class BaseModelNoType(PydanticBaseModel):
+    """BaseModel with functionality to return the object as a yaml string.
 
+    This BaseModel does not enforce adding a type. This is useful for subclasses in
+    extensions.
     """
-    type: constr(regex='^BaseModel$') = 'BaseModel'
 
     annotations: Dict[str, str] = Field(
         None,
@@ -38,17 +39,6 @@ class BaseModel(PydanticBaseModel):
     @validator('annotations', always=True)
     def replace_none_value(cls, v):
         return {} if not v else v
-
-    @validator('type')
-    def ensure_type_match(cls, v):
-        name = cls.__name__
-        if name != v:
-            raise ValueError(
-                f'The value for "type" ({v}) must be the same as class name ({name}). '
-                'In most cases, this is the result of not adding the type field to the '
-                f'Pydantic object. In this case: {name}'
-            )
-        return v
 
     def yaml(self, exclude_unset=False, **kwargs):
         """Get a YAML string from the model
@@ -158,6 +148,23 @@ class BaseModel(PydanticBaseModel):
                     ref_values[name] = ref_var
 
         return ref_values
+
+
+class BaseModel(BaseModelNoType):
+    """BaseModel with functionality to return the object as a yaml string."""
+
+    type: constr(regex='^BaseModel$') = 'BaseModel'
+
+    @validator('type')
+    def ensure_type_match(cls, v):
+        name = cls.__name__
+        if name != v:
+            raise ValueError(
+                f'The value for "type" ({v}) must be the same as class name ({name}). '
+                'In most cases, this is the result of not adding the type field to the '
+                f'Pydantic object. In this case: {name}'
+            )
+        return v
 
     class Config:
         extra = Extra.forbid
