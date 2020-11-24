@@ -8,7 +8,8 @@ from pydantic import Field, constr
 from typing import List, Dict
 
 from ..base.basemodel import BaseModel
-from ..io.task import TaskArguments, TaskReturns
+from ..io.inputs.task import TaskArguments
+from ..io.outputs.task import TaskReturns
 
 
 class StatusType(str, Enum):

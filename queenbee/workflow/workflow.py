@@ -4,7 +4,7 @@ from pydantic import Field, validator, constr
 
 from ..base.basemodel import BaseModel
 from ..recipe import BakedRecipe
-from ..io.workflow import WorkflowArguments
+from ..io.inputs.workflow import WorkflowArguments
 from .status import WorkflowStatus
 
 
