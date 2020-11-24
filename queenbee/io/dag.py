@@ -10,6 +10,7 @@ from .common import ItemType, GenericInput, FromOutput
 from .artifact_source import HTTP, S3, ProjectFolder
 from .alias import DAGAliasInputs, DAGAliasOutputs
 from ..io.reference import FileReference, FolderReference, TaskReference
+from ..base.variable import validate_inputs_outputs_var_format, get_ref_variable
 
 
 class DAGGenericInput(GenericInput):
@@ -20,10 +21,100 @@ class DAGGenericInput(GenericInput):
     """
     type: constr(regex='^DAGGenericInput$') = 'DAGGenericInput'
 
+    default: str = Field(
+        None,
+        description='Default value for generic input.'
+    )
+
     alias: List[DAGAliasInputs] = Field(
         None,
         description='A list of aliases for this input in different platforms.'
     )
+
+    # see: https://github.com/ladybug-tools/queenbee/issues/172
+    required: bool = Field(
+        False,
+        description='A field to indicate if this input is required. This input needs to '
+        'be set explicitly even when a default value is provided.'
+    )
+
+    spec: Dict = Field(
+        None,
+        description='An optional JSON Schema specification to validate the input value. '
+        'You can use validate_spec method to validate a value against the spec.'
+    )
+
+    def validate_spec(self, value):
+        """Validate an input value against specification.
+
+        Use this for validating workflow inputs against a recipe.
+        """
+        if self.spec:
+            spec = dict(self.spec)
+            json_schema_validator(value, spec)
+        return value
+
+    @validator('required', always=True)
+    def check_required(cls, v, values):
+        """Ensure required is set to True when default value is not provided."""
+        default = values.get('default', None)
+        name = values.get('name', None)
+        if default is None and v is False:
+            raise ValueError(
+                f'{cls.__name__}.{name} -> required should be true if no default'
+                f' is provided (default: {default}).'
+            )
+        return v
+
+    @validator('spec')
+    def validate_default_value(cls, v, values):
+        """Validate default value against spec if provided."""
+        try:
+            type_ = values['type']
+        except KeyError:
+            raise ValueError(f'Input with missing type: {cls.__name__}')
+
+        if type_ != cls.__name__:
+            # this is a check to ensure the default value only gets validated againt the
+            # correct class type. The reason we need to do this is that Pydantic doesn't
+            # support discriminators (https://github.com/samuelcolvin/pydantic/issues/619).
+            # As a result in case of checking for Union it checks every possible item
+            # from the start until it finds one. For inputs it causes this check to fail
+            # on a string before it gets to the integer class for an integer input.
+            return v
+
+        try:
+            default = values['default']
+        except KeyError:
+            # spec is not set
+            return v
+
+        if v is not None and default is not None:
+            json_schema_validator(default, v)
+        return v
+
+    @validator('default')
+    def validate_default_refs(cls, v, values):
+        """Validate referenced variables in the command"""
+        try:
+            type_ = values['type']
+        except KeyError:
+            raise ValueError(f'Input with missing type: {cls.__name__}')
+
+        if type_ != cls.__name__ or not isinstance(v, (str, bytes)):
+            # this is a check to ensure the default value only gets validated againt the
+            # correct class type. See spec validation for more information
+            return v
+
+        ref_var = get_ref_variable(v)
+        add_info = []
+        for ref in ref_var:
+            add_info.append(validate_inputs_outputs_var_format(ref))
+
+        if add_info:
+            raise ValueError('\n'.join(add_info))
+
+        return v
 
     @validator('alias', always=True)
     def create_empty_handler_list(cls, v):
