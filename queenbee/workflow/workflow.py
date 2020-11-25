@@ -70,14 +70,13 @@ class Workflow(BaseModel):
             if name not in recipe_inputs:
                 # argument provided which is not an input for DAG. We can just ignore it.
                 warnings.warn(
-                    f'No recipe input with name "{name}". The input value will be'
-                    ' ignored.'
+                    f'No input with name "{name}". The input value will be ignored.'
                 )
                 continue
-            if arg.is_parameter:
-                recipe_inputs[name].validate_spec(arg.value)
-            elif arg.source.type == 'ProjectFolder':
-                recipe_inputs[name].validate_spec(arg.source.path)
+            # if arg.is_parameter:
+            #     recipe_inputs[name].validate_spec(arg.value)
+            # elif arg.source.type == 'ProjectFolder':
+            #     recipe_inputs[name].validate_spec(arg.source.path)
             valid_args.append(arg)
 
         return valid_args
