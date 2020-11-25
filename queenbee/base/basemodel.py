@@ -30,16 +30,6 @@ class BaseModelNoType(PydanticBaseModel):
     extensions.
     """
 
-    annotations: Dict[str, str] = Field(
-        None,
-        description='An optional dictionary to add annotations to inputs. These '
-        'annotations will be used by the client side libraries.'
-    )
-
-    @validator('annotations', always=True)
-    def replace_none_value(cls, v):
-        return {} if not v else v
-
     def yaml(self, exclude_unset=False, **kwargs):
         """Get a YAML string from the model
 
@@ -155,6 +145,12 @@ class BaseModel(BaseModelNoType):
 
     type: constr(regex='^BaseModel$') = 'BaseModel'
 
+    annotations: Dict[str, str] = Field(
+        None,
+        description='An optional dictionary to add annotations to inputs. These '
+        'annotations will be used by the client side libraries.'
+    )
+
     @validator('type')
     def ensure_type_match(cls, v):
         name = cls.__name__
@@ -165,6 +161,10 @@ class BaseModel(BaseModelNoType):
                 f'Pydantic object. In this case: {name}'
             )
         return v
+
+    @validator('annotations', always=True)
+    def replace_none_value(cls, v):
+        return {} if not v else v
 
     class Config:
         extra = Extra.forbid
