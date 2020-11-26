@@ -8,8 +8,8 @@ from pydantic import Field, constr
 from typing import List, Dict
 
 from ..base.basemodel import BaseModel
-from ..io.inputs.task import TaskArguments
-from ..io.outputs.task import TaskReturns
+from ..io.inputs.node import NodeInputs
+from ..io.outputs.node import NodeOutputs
 
 
 class StatusType(str, Enum):
@@ -19,6 +19,8 @@ class StatusType(str, Enum):
     DAG = 'DAG'
 
     Loop = 'Loop'
+
+    Unknown = 'Unknown'
 
 
 class BaseStatus(BaseModel):
@@ -47,9 +49,9 @@ class BaseStatus(BaseModel):
     )
 
 
-class TaskStatus(BaseStatus):
+class NodeStatus(BaseStatus):
     """The Status of a Workflow Task"""
-    type: constr(regex='^TaskStatus$') = 'TaskStatus'
+    type: constr(regex='^NoneStatus$') = 'NoneStatus'
 
     id: str = Field(
         ...,
@@ -79,12 +81,12 @@ class TaskStatus(BaseStatus):
         description='The command used to run this task. Only applies to Function tasks.'
     )
 
-    inputs: TaskArguments = Field(
+    inputs: NodeInputs = Field(
         ...,
         description='The inputs used by this task'
     )
 
-    outputs: TaskReturns = Field(
+    outputs: NodeOutputs = Field(
         ...,
         description='The outputs produced by this task'
     )
