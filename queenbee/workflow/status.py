@@ -51,7 +51,7 @@ class BaseStatus(BaseModel):
 
 class NodeStatus(BaseStatus):
     """The Status of a Workflow Task"""
-    type: constr(regex='^NoneStatus$') = 'NoneStatus'
+    type: constr(regex='^NodeStatus$') = 'NodeStatus'
 
     id: str = Field(
         ...,
@@ -81,12 +81,12 @@ class NodeStatus(BaseStatus):
         description='The command used to run this task. Only applies to Function tasks.'
     )
 
-    inputs: NodeInputs = Field(
+    inputs: List[NodeInputs] = Field(
         ...,
         description='The inputs used by this task'
     )
 
-    outputs: NodeOutputs = Field(
+    outputs: List[NodeOutputs] = Field(
         ...,
         description='The outputs produced by this task'
     )
@@ -98,7 +98,7 @@ class NodeStatus(BaseStatus):
             parent DAG for example.'
     )
 
-    children: List[str] = Field(
+    children_ids: List[str] = Field(
         ...,
         description='A list of child task IDs'
     )
@@ -125,4 +125,4 @@ class WorkflowStatus(BaseStatus):
         description='The ID of the first task in the workflow'
     )
 
-    tasks: Dict[str, TaskStatus] = {}
+    nodes: Dict[str, NodeStatus] = {}

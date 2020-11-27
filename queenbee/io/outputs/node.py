@@ -4,16 +4,18 @@ For more information on plugins see plugin module.
 """
 
 import os
+import json
 from typing import Union, List, Dict, Any
-from pydantic import constr, Field
+from pydantic import constr, Field, validator
 
-from .function import FunctionStringOutput, FunctionIntegerOutput, FunctionNumberOutput, FunctionBooleanOutput, \
-    FunctionFolderOutput, FunctionFileOutput, FunctionPathOutput, FunctionArrayOutput, FunctionJSONObjectOutput, \
-    FunctionOutputs
+from .function import FunctionStringOutput, FunctionIntegerOutput, \
+    FunctionNumberOutput, FunctionBooleanOutput, FunctionFolderOutput, \
+    FunctionFileOutput, FunctionPathOutput, FunctionArrayOutput, \
+    FunctionJSONObjectOutput, FunctionOutputs
 
-from .dag import DAGStringOutput, DAGIntegerOutput, DAGNumberOutput, DAGBooleanOutput, \
-    DAGFolderOutput, DAGFileOutput, DAGPathOutput, DAGArrayOutput, DAGJSONObjectOutput, \
-    DAGOutputs
+from .dag import DAGStringOutput, DAGIntegerOutput, DAGNumberOutput, \
+    DAGBooleanOutput, DAGFolderOutput, DAGFileOutput, DAGPathOutput, \
+    DAGArrayOutput, DAGJSONObjectOutput, DAGOutputs
 
 from ..artifact_source import HTTP, S3, ProjectFolder
 
@@ -108,40 +110,50 @@ def from_template(template: Union[DAGOutputs, FunctionOutputs], value: Any) -> N
     """Generate a node output from a template output type and a value
 
     Args:
-        template {Union[DAGOutputs, FunctionOutputs]} -- An output from a template (DAG or Function)
-        value {Any} -- The output value calculated for this template in the workflow node
+        template {Union[DAGOutputs, FunctionOutputs]} -- An output from a 
+            template (DAG or Function)
+        value {Any} -- The output value calculated for this template in 
+            the workflow node
 
     Returns:
         NodeOutputs -- A Node Output object
     """
 
-    output_dict = template.to_dict()
-    output_dict['value'] = value
+    template_dict = template.to_dict()
+    del template_dict['type']
+
+    if template.is_artifact:
+        template_dict['source'] = value
+    elif template.is_parameter:
+        template_dict['value'] = value
 
     if template.__class__ in [DAGStringOutput, FunctionStringOutput]:
-        return NodeStringOutput.parse_obj(output_dict)
+        return NodeStringOutput.parse_obj(template_dict)
 
     if template.__class__ in [DAGIntegerOutput, FunctionIntegerOutput]:
-        return NodeIntegerOutput.parse_obj(output_dict)
-    
-    if template.__class__ in [DAGNumberOutput, FunctionNumberOutput]:
-        return NodeNumberOutput.parse_obj(output_dict)
-    
-    if template.__class__ in [DAGBooleanOutput, FunctionBooleanOutput]:
-        return NodeBooleanOutput.parse_obj(output_dict)
-    
-    if template.__class__ in [DAGFolderOutput, FunctionFolderOutput]:
-        return NodeFolderOutput.parse_obj(output_dict)
-    
-    if template.__class__ in [DAGFileOutput, FunctionFileOutput]:
-        return NodeFileOutput.parse_obj(output_dict)
-    
-    if template.__class__ in [DAGPathOutput, FunctionPathOutput]:
-        return NodePathOutput.parse_obj(output_dict)
-    
-    if template.__class__ in [DAGArrayOutput, FunctionArrayOutput]:
-        return NodeArrayOutput.parse_obj(output_dict)
-         
-    if template.__class__ in [DAGJSONObjectOutput, FunctionJSONObjectOutput]:
-        return NodeJSONObjectOutput.parse_obj(output_dict)
+        return NodeIntegerOutput.parse_obj(template_dict)
 
+    if template.__class__ in [DAGNumberOutput, FunctionNumberOutput]:
+        return NodeNumberOutput.parse_obj(template_dict)
+
+    if template.__class__ in [DAGBooleanOutput, FunctionBooleanOutput]:
+        return NodeBooleanOutput.parse_obj(template_dict)
+
+    if template.__class__ in [DAGFolderOutput, FunctionFolderOutput]:
+        return NodeFolderOutput.parse_obj(template_dict)
+
+    if template.__class__ in [DAGFileOutput, FunctionFileOutput]:
+        return NodeFileOutput.parse_obj(template_dict)
+
+    if template.__class__ in [DAGPathOutput, FunctionPathOutput]:
+        return NodePathOutput.parse_obj(template_dict)
+
+    if template.__class__ in [DAGArrayOutput, FunctionArrayOutput]:
+        if isinstance(template_dict['value'], str):
+            template_dict['value'] = json.loads(template_dict['value'])
+        return NodeArrayOutput.parse_obj(template_dict)
+
+    if template.__class__ in [DAGJSONObjectOutput, FunctionJSONObjectOutput]:
+        if isinstance(template_dict['value'], str):
+            template_dict['value'] = json.loads(template_dict['value'])
+        return NodeJSONObjectOutput.parse_obj(template_dict)
