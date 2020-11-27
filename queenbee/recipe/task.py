@@ -199,9 +199,10 @@ class DAGTask(BaseModel):
         output_names = [output.name for output in template.outputs]
         for ret in self.returns:
             assert ret.name in output_names, \
-                f'Validation Error for Task {self.name} and Template {template.name}:' \
-                f'\n\tInvalid task return: {ret.name}. {template.name} does not have ' \
-                'an output wit this name.'
+                f'Validation Error for Task "{self.name}" and Template ' \
+                f'"{template.name}":' \
+                f'\n\tInvalid task return: "{ret.name}". "{template.name}"" does not ' \
+                'have an output with this name.'
 
     @staticmethod
     def artifacts_by_ref_source(artifacts, source) -> List[TaskArguments]:
