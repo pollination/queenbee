@@ -1,0 +1,81 @@
+---
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: install python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r dev-requirements.txt
+      - name: run tests
+        run: python -m pytest --cov=queenbee tests/
+      - name: run test coverage
+        run: |
+          coverage report
+          coveralls
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    name: Deploy to GitHub and PyPI
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/master'  # only build on master branch
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: set up node  # we need node for for semantic release
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: 14.2.0
+      - name: install semantic-release
+        run:
+          npm install @semantic-release/exec
+      - name: run semantic release
+        run:
+          npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+          PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
+
+  docs:
+    name: Generate docs
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/master'  # only generate docs on master branch
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: install dependencies
+        run: |
+          pip install -U .
+          pip install -r dev-requirements.txt
+          sphinx-apidoc -f -e -d 4 -o ./docs/modules ./queenbee
+          sphinx-build -b html ./docs ./docs/_build
+
+      - name: deploy to github pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          # this will use ladybugbot token
+          personal_token: ${{ secrets.GH_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: docs/_build/
