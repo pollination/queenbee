@@ -84,5 +84,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: docs/_build/
+          force_orphan: true
           keep_files: false
           full_commit_message: 'deploy: update docs'
