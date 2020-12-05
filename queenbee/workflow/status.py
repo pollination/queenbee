@@ -8,6 +8,7 @@ from pydantic import Field, constr
 from typing import List, Dict
 
 from ..base.basemodel import BaseModel
+from ..io.common import IOBase
 from ..io.inputs.node import NodeInputs
 from ..io.outputs.node import NodeOutputs
 
@@ -23,7 +24,7 @@ class StatusType(str, Enum):
     Unknown = 'Unknown'
 
 
-class BaseStatus(BaseModel):
+class BaseStatus(IOBase):
     """Base Status model"""
     type: constr(regex='^BaseStatus$') = 'BaseStatus'
 
@@ -126,3 +127,8 @@ class WorkflowStatus(BaseStatus):
     )
 
     nodes: Dict[str, NodeStatus] = {}
+
+    outputs: List[NodeOutputs] = Field(
+        ...,
+        description='The outputs produced by this task'
+    )
