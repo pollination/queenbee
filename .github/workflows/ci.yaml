@@ -35,7 +35,7 @@ jobs:
     name: Deploy to GitHub and PyPI
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/master' && github.repository_owner == 'ladybug-tools'
+    if: github.ref == 'refs/heads/master' && github.repository_owner == 'pollination'
     steps:
       - uses: actions/checkout@v2
       - name: set up Python
@@ -58,7 +58,7 @@ jobs:
         run:
           npx semantic-release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
           PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
 
@@ -66,7 +66,7 @@ jobs:
     name: Generate docs
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/master' && github.repository_owner == 'ladybug-tools'
+    if: github.ref == 'refs/heads/master' && github.repository_owner == 'pollination'
     steps:
       - uses: actions/checkout@v2
       - name: set up Python
@@ -84,7 +84,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           # this will use ladybugbot token
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_TOKEN }}
           publish_branch: gh-pages
           publish_dir: docs/_build/
           force_orphan: true
