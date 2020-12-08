@@ -35,7 +35,7 @@ def main(ctx):
         │   ├── ....yaml
         │   └── function-n.yaml
         ├── config.yaml
-        └── plugin.yaml
+        └── package.yaml
 
     Here is an example "flow" to build and manage a plugin::
 

@@ -20,13 +20,13 @@ default template by opening the ``energy-plus`` folder with your code editor.
 Folder Structure
 ----------------
 When you open the folder in your code editor you will notice their is a folder called ``functions``,
-a file called ``config.yaml`` and another file called ``plugin.yaml``::
+a file called ``config.yaml`` and another file called ``package.yaml``::
 
     energy-plus
     ├── functions           # Contains all the functions the plugin can run
     │   └── say-hi.yaml     # A function that executes a `say-hi` command
     ├── config.yaml         # Configuration information to execute this function locally or using Docker
-    └── plugin.yaml       # The Plugin metadata information (name, version etc...)
+    └── package.yaml       # The Plugin metadata information (name, version etc...)
 
 
 
@@ -65,7 +65,7 @@ Overwrite the contents of the ``config.yaml`` file with the YAML code block belo
     :language: yaml
 
 
-Plugin.yaml
+Package.yaml
 -------------
 This file contains the metadata information that defines your Plugin. You can compare this to the
 ``package.json`` for Node, ``setup.py`` for Python or ``<package-name>.sln`` for C#.
@@ -81,9 +81,9 @@ These are the two mandatory fields for this file. You can view a full list of ot
 fields `here <../_static/redoc-plugin.html#tag/metadata_model>`_.
 
 We will be adding a few more fields for demonstration purposes. Overwrite the contents of
-``plugin.yaml`` with the YAML code block below.
+``package.yaml`` with the YAML code block below.
 
-..  literalinclude:: ../../tests/assets/plugins/folders/energy-plus/plugin.yaml
+..  literalinclude:: ../../tests/assets/plugins/folders/energy-plus/package.yaml
     :language: yaml
 
 
@@ -115,7 +115,7 @@ Your folder should now look something like this::
     ├── functions
     │   └── run-simulation.yaml
     ├── config.yaml
-    └── plugin.yaml
+    └── package.yaml
 
 
 Packaging and Sharing
