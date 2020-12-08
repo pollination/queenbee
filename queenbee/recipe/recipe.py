@@ -680,3 +680,38 @@ class BakedRecipe(Recipe):
             raise ValueError(f'No dependency with reference name {name} found')
 
         return res
+
+
+class RecipeInfo(BaseModel):
+    """Recipe information.
+
+    Recipe information only includes metadata, inputs and outputs of a Recipe.
+    This object is useful for creating user interface for Recipes.
+    """
+    metadata: MetaData = Field(
+        ...,
+        description='Recipe metadata information.'
+    )
+
+    inputs: List[DAGInputs] = Field(
+        None,
+        description='A list of recipe inputs.'
+    )
+
+    outputs: List[DAGOutputs] = Field(
+        None,
+        description='A list of recipe outputs.'
+    )
+
+    @validator('inputs', 'outputs')
+    def create_empty_list(cls, v):
+        return [] if not v else v
+
+    @classmethod
+    def from_recipe(cls, recipe: Union[Recipe, BakedRecipe]):
+        """Create a Recipe info from a recipe."""
+        return cls(
+            metadata=recipe.metadata,
+            inputs=recipe.inputs,
+            outputs=recipe.outputs
+        )
