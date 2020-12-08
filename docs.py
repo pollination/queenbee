@@ -6,7 +6,7 @@ from pydantic_openapi_helper.core import get_openapi
 from pydantic_openapi_helper.inheritance import class_mapper
 from queenbee.recipe.recipe import Recipe
 from queenbee.plugin.plugin import Plugin
-from queenbee.workflow.workflow import Workflow
+from queenbee.job.job import Job
 
 
 parser = argparse.ArgumentParser(description='Generate OpenAPI JSON schemas')
@@ -45,10 +45,10 @@ info = {
 
 
 modules = [
-    {'module': [Workflow], 'name': 'Workflow'},
+    {'module': [Job], 'name': 'Job'},
     {'module': [Recipe], 'name': 'Recipe'},
     {'module': [Plugin], 'name': 'Plugin'},
-    {'module': [Recipe, Plugin, Workflow], 'name': 'Queenbee'}
+    {'module': [Recipe, Plugin, Job], 'name': 'Queenbee'}
 ]
 
 
