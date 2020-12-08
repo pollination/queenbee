@@ -5,8 +5,6 @@ from pkg_resources import get_distribution
 from typing import Dict
 from pydantic.schema import schema
 
-from .workflow import Workflow
-
 BASE_OPEN_API = {
     "openapi": "3.0.2",
     "servers": [],
