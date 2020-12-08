@@ -682,15 +682,22 @@ class BakedRecipe(Recipe):
         return res
 
 
-class RecipeInfo(BaseModel):
-    """Recipe information.
+class RecipeInterface(BaseModel):
+    """An interface object for creating a Recipe.
 
-    Recipe information only includes metadata, inputs and outputs of a Recipe.
+    Recipe information only includes metadata, source, inputs and outputs of a Recipe.
     This object is useful for creating user interface for Recipes.
     """
+    type: constr(regex='^RecipeInterface$') = 'RecipeInterface'
+
     metadata: MetaData = Field(
         ...,
         description='Recipe metadata information.'
+    )
+
+    source: str = Field(
+        None,
+        description='A URL to the source this recipe from a registry.'
     )
 
     inputs: List[DAGInputs] = Field(
@@ -708,10 +715,11 @@ class RecipeInfo(BaseModel):
         return [] if not v else v
 
     @classmethod
-    def from_recipe(cls, recipe: Union[Recipe, BakedRecipe]):
+    def from_recipe(cls, recipe: Union[Recipe, BakedRecipe], source: str = None):
         """Create a Recipe info from a recipe."""
         return cls(
             metadata=recipe.metadata,
+            source=source,
             inputs=recipe.inputs,
             outputs=recipe.outputs
         )
