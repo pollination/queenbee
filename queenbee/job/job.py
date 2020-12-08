@@ -33,7 +33,7 @@ class Job(BaseModel):
         description='Run description.'
     )
 
-    labels: Dict = Field(
+    labels: Dict[str, str] = Field(
         None,
         description='Optional user data as a dictionary. User data is for user reference'
         ' only and will not be used in the execution of the job.'
