@@ -33,7 +33,7 @@ def main(ctx):
         │   │       │   ├── ...
         │   │       │   └── func-n.yaml
         │   │       ├── config.yaml
-        │   │       └── plugin.yaml
+        │   │       └── package.yaml
         │   └── recipe
         │       └── recipe-dep-name
         │           ├── .dependencies
@@ -42,11 +42,11 @@ def main(ctx):
         │           ├── flow
         │           │   └── main.yaml
         │           ├── dependencies.yaml
-        │           └── recipe.yaml
+        │           └── package.yaml
         ├── flow
         │   └── main.yaml
         ├── dependencies.yaml
-        └── recipe.yaml
+        └── package.yaml
 
 
     Here is an example "flow" to build and manage a recipe::

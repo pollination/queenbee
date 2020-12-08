@@ -109,7 +109,7 @@ class Plugin(BaseModel):
                 │   ├── ....yaml
                 │   └── function-n.yaml
                 ├── config.yaml
-                └── plugin.yaml
+                └── package.yaml
 
         Arguments:
             folder_path {str} -- Path to the folder
@@ -118,7 +118,7 @@ class Plugin(BaseModel):
             Plugin -- A plugin
         """
         folder_path = os.path.realpath(folder_path)
-        meta_path = os.path.join(folder_path, 'plugin.yaml')
+        meta_path = os.path.join(folder_path, 'package.yaml')
         config_path = os.path.join(folder_path, 'config.yaml')
         functions_path = os.path.join(folder_path, 'functions')
 
@@ -155,7 +155,7 @@ class Plugin(BaseModel):
                 │   ├── ....yaml
                 │   └── function-n.yaml
                 ├── config.yaml
-                └── plugin.yaml
+                └── package.yaml
 
         Arguments:
             folder_path {str} -- Path to write the folder to
@@ -167,7 +167,7 @@ class Plugin(BaseModel):
         os.makedirs(os.path.join(folder_path, 'functions'), exist_ok=True)
 
         self.metadata.to_yaml(
-            os.path.join(folder_path, 'plugin.yaml'),
+            os.path.join(folder_path, 'package.yaml'),
             exclude_unset=True
         )
         self.config.to_yaml(os.path.join(

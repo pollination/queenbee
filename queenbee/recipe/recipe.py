@@ -91,7 +91,7 @@ class Recipe(BaseModel):
                 |   ├── sub-dag.yaml
                 │   └── main.yaml
                 ├── dependencies.yaml
-                └── recipe.yaml
+                └── package.yaml
 
         Arguments:
             folder_path {str} -- Path to the folder
@@ -100,7 +100,7 @@ class Recipe(BaseModel):
             Recipe -- A Recipe
         """
         folder_path = os.path.realpath(folder_path)
-        meta_path = os.path.join(folder_path, 'recipe.yaml')
+        meta_path = os.path.join(folder_path, 'package.yaml')
         dependencies_path = os.path.join(folder_path, 'dependencies.yaml')
         flow_path = os.path.join(folder_path, 'flow')
 
@@ -287,7 +287,7 @@ class Recipe(BaseModel):
                 │   │       │   ├── ...
                 │   │       │   └── func-n.yaml
                 │   │       ├── config.yaml
-                │   │       └── plugin.yaml
+                │   │       └── package.yaml
                 │   └── recipe
                 │       └── recipe-dep-name
                 │           ├── .dependencies
@@ -296,11 +296,11 @@ class Recipe(BaseModel):
                 │           ├── flow
                 │           │   └── main.yaml
                 │           ├── dependencies.yaml
-                │           └── recipe.yaml
+                │           └── package.yaml
                 ├── flow
                 │   └── main.yaml
                 ├── dependencies.yaml
-                └── recipe.yaml
+                └── package.yaml
 
         Arguments:
             folder_path {str} -- The path to the Recipe folder
@@ -313,7 +313,7 @@ class Recipe(BaseModel):
         os.makedirs(os.path.join(folder_path, 'flow'), exist_ok=True)
 
         self.metadata.to_yaml(
-            os.path.join(folder_path, 'recipe.yaml'), exclude_unset=True
+            os.path.join(folder_path, 'package.yaml'), exclude_unset=True
         )
 
         self.write_dependency_file(folder_path)
@@ -472,7 +472,7 @@ class BakedRecipe(Recipe):
                 |   ├── sub-dag.yaml
                 │   └── main.yaml
                 ├── dependencies.yaml
-                └── recipe.yaml
+                └── package.yaml
 
 
         Arguments:
