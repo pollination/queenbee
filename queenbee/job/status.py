@@ -49,7 +49,7 @@ class BaseStatus(IOBase):
     )
 
     source: str = Field(
-        ...,
+        None,
         description='Source url for the status object. It can be a recipe or a function.'
     )
 
