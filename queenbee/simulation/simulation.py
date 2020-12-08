@@ -3,39 +3,34 @@ from typing import Dict, List
 from pydantic import Field, validator, constr
 
 from ..base.basemodel import BaseModel
+from ..base.metadata import MetaData
 from ..recipe import BakedRecipe
-from ..io.inputs.workflow import WorkflowArguments
-from .status import WorkflowStatus
+from ..io.inputs.submission import SubmissionArguments
 
 
-class Workflow(BaseModel):
-    """Queenbee Workflow.
+class SimulationSubmission(BaseModel):
+    """Queenbee Simulation Submission object.
 
-    A Workflow is a Baked Recipe with some arguments that will be used to execute the
-    recipe.
+    A Simulation submission is a Baked Recipe with the arguments that will be used to
+    execute the recipe as a simulation.
     """
-    type: constr(regex='^Workflow$') = 'Workflow'
+    type: constr(regex='^SimulationSubmission$') = 'SimulationSubmission'
 
     recipe: BakedRecipe = Field(
         ...,
         description='The baked recipe to be used by the execution engine to generate a '
-        'workflow'
+        'simulation.'
     )
 
     labels: Dict = Field(
         None,
         description='Optional user data as a dictionary. User data is for user reference'
-        ' only and will not be used in the execution of the workflow.'
+        ' only and will not be used in the execution of the simulation.'
     )
 
-    arguments: List[WorkflowArguments] = Field(
+    arguments: List[SubmissionArguments] = Field(
         None,
-        description='Input arguments for this workflow'
-    )
-
-    status: WorkflowStatus = Field(
-        None,
-        description='The status of the workflow'
+        description='Input arguments for this simulation.'
     )
 
     @validator('arguments', always=True)
@@ -85,10 +80,10 @@ class Workflow(BaseModel):
     def from_baked_recipe(
         cls,
         recipe: BakedRecipe,
-        arguments: List[WorkflowArguments] = [],
+        arguments: List[SubmissionArguments] = [],
         labels: Dict = {}
     ):
-        """Generate a workflow from a Baked Recipe
+        """Generate a simulation from a Baked Recipe
 
         Arguments:
             recipe {BakedRecipe} -- A Baked Recipe
@@ -101,10 +96,27 @@ class Workflow(BaseModel):
         Returns:
             Workflow -- A workflow object
         """
-        input_dict = {
-            'recipe': recipe.to_dict(),
-            'arguments': [arg.to_dict() for arg in arguments],
-            'labels': labels,
-        }
+        return cls(recipe=recipe, labels=labels, arguments=arguments)
 
-        return cls.parse_obj(input_dict)
+
+class SubmissionInfo(BaseModel):
+    """Simulation submission information.
+
+    This object includes minimum information for submitting a simulation.
+    """
+    type: constr(regex='^SimulationSubmission$') = 'SimulationSubmission'
+
+    metadata: MetaData = Field(
+        ...,
+        description='Recipe metadata.'
+    )
+
+    arguments: List[SubmissionArguments]
+
+    @classmethod
+    def from_simulation_submission(cls, submission: SimulationSubmission):
+        """Create simulation submission info from Simulation object."""
+        return cls(
+            metadata=submission.recipe.metadata,
+            arguments=submission.arguments
+        )

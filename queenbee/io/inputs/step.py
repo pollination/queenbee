@@ -1,12 +1,11 @@
-"""Queenbee input types for status nodes.
+"""Queenbee input types for simulation step status.
 
 For more information on plugins see plugin module.
 """
 
-import os
 import json
 from typing import Union, List, Dict, Any
-from pydantic import constr, Field, validator
+from pydantic import constr, Field
 
 from .function import FunctionStringInput, FunctionIntegerInput, \
     FunctionNumberInput, FunctionBooleanInput, FunctionFolderInput, \
@@ -20,41 +19,41 @@ from .dag import DAGStringInput, DAGIntegerInput, DAGNumberInput, \
 from ..artifact_source import HTTP, S3, ProjectFolder
 
 
-class NodeStringInput(FunctionStringInput):
+class StepStringInput(FunctionStringInput):
     """A String input."""
 
-    type: constr(regex='^NodeStringInput$') = 'NodeStringInput'
+    type: constr(regex='^StepStringInput$') = 'StepStringInput'
 
     value: str
 
 
-class NodeIntegerInput(FunctionIntegerInput):
+class StepIntegerInput(FunctionIntegerInput):
     """An integer input."""
 
-    type: constr(regex='^NodeIntegerInput$') = 'NodeIntegerInput'
+    type: constr(regex='^StepIntegerInput$') = 'StepIntegerInput'
 
     value: int
 
 
-class NodeNumberInput(FunctionNumberInput):
+class StepNumberInput(FunctionNumberInput):
     """A number input."""
 
-    type: constr(regex='^NodeNumberInput$') = 'NodeNumberInput'
+    type: constr(regex='^StepNumberInput$') = 'StepNumberInput'
 
     value: float
 
 
-class NodeBooleanInput(FunctionBooleanInput):
+class StepBooleanInput(FunctionBooleanInput):
     """The boolean type matches only two special values: True and False."""
 
-    type: constr(regex='^NodeBooleanInput$') = 'NodeBooleanInput'
+    type: constr(regex='^StepBooleanInput$') = 'StepBooleanInput'
 
     value: bool
 
 
-class NodeFolderInput(FunctionFolderInput):
+class StepFolderInput(FunctionFolderInput):
     """A folder input."""
-    type: constr(regex='^NodeFolderInput$') = 'NodeFolderInput'
+    type: constr(regex='^StepFolderInput$') = 'StepFolderInput'
 
     source: Union[HTTP, S3, ProjectFolder] = Field(
         ...,
@@ -71,10 +70,10 @@ class NodeFolderInput(FunctionFolderInput):
     )
 
 
-class NodeFileInput(FunctionFileInput):
+class StepFileInput(FunctionFileInput):
     """A file input."""
 
-    type: constr(regex='^NodeFileInput$') = 'NodeFileInput'
+    type: constr(regex='^StepFileInput$') = 'StepFileInput'
 
     source: Union[HTTP, S3, ProjectFolder] = Field(
         ...,
@@ -91,10 +90,10 @@ class NodeFileInput(FunctionFileInput):
     )
 
 
-class NodePathInput(FunctionPathInput):
+class StepPathInput(FunctionPathInput):
     """A file or a folder input."""
 
-    type: constr(regex='^NodePathInput$') = 'NodePathInput'
+    type: constr(regex='^StepPathInput$') = 'StepPathInput'
 
     source: Union[HTTP, S3, ProjectFolder] = Field(
         ...,
@@ -111,39 +110,40 @@ class NodePathInput(FunctionPathInput):
     )
 
 
-class NodeArrayInput(FunctionArrayInput):
+class StepArrayInput(FunctionArrayInput):
     """An array input."""
 
-    type: constr(regex='^NodeArrayInput$') = 'NodeArrayInput'
+    type: constr(regex='^StepArrayInput$') = 'StepArrayInput'
 
     value: List
 
 
-class NodeJSONObjectInput(FunctionJSONObjectInput):
+class StepJSONObjectInput(FunctionJSONObjectInput):
     """A JSON object input."""
 
-    type: constr(regex='^NodeJSONObjectInput$') = 'NodeJSONObjectInput'
+    type: constr(regex='^StepJSONObjectInput$') = 'StepJSONObjectInput'
 
     value: Dict
 
 
-NodeInputs = Union[
-    NodeStringInput, NodeIntegerInput, NodeNumberInput,
-    NodeBooleanInput, NodeFolderInput, NodeFileInput, NodePathInput,
-    NodeArrayInput, NodeJSONObjectInput
+StepInputs = Union[
+    StepStringInput, StepIntegerInput, StepNumberInput,
+    StepBooleanInput, StepFolderInput, StepFileInput, StepPathInput,
+    StepArrayInput, StepJSONObjectInput
 ]
 
-def from_template(template: Union[DAGInputs, FunctionInputs], value: Any) -> NodeInputs:
-    """Generate a node input from a template input type and a value
+
+def from_template(template: Union[DAGInputs, FunctionInputs], value: Any) -> StepInputs:
+    """Generate a step input from a template input type and a value
 
     Args:
-        template {Union[DAGInputs, FunctionInputs]} -- An input from a 
+        template {Union[DAGInputs, FunctionInputs]} -- An input from a
             template (DAG or Function)
-        value {Any} -- The input value calculated for this template in 
-            the workflow node
+        value {Any} -- The input value calculated for this template in
+            the workflow step
 
     Returns:
-        NodeInputs -- A Node Input object
+        StepInputs -- A Step Input object
     """
 
     template_dict = template.to_dict()
@@ -155,32 +155,32 @@ def from_template(template: Union[DAGInputs, FunctionInputs], value: Any) -> Nod
         template_dict['value'] = value
 
     if template.__class__ in [DAGStringInput, FunctionStringInput]:
-        return NodeStringInput.parse_obj(template_dict)
+        return StepStringInput.parse_obj(template_dict)
 
     if template.__class__ in [DAGIntegerInput, FunctionIntegerInput]:
-        return NodeIntegerInput.parse_obj(template_dict)
+        return StepIntegerInput.parse_obj(template_dict)
 
     if template.__class__ in [DAGNumberInput, FunctionNumberInput]:
-        return NodeNumberInput.parse_obj(template_dict)
+        return StepNumberInput.parse_obj(template_dict)
 
     if template.__class__ in [DAGBooleanInput, FunctionBooleanInput]:
-        return NodeBooleanInput.parse_obj(template_dict)
+        return StepBooleanInput.parse_obj(template_dict)
 
     if template.__class__ in [DAGFolderInput, FunctionFolderInput]:
-        return NodeFolderInput.parse_obj(template_dict)
+        return StepFolderInput.parse_obj(template_dict)
 
     if template.__class__ in [DAGFileInput, FunctionFileInput]:
-        return NodeFileInput.parse_obj(template_dict)
+        return StepFileInput.parse_obj(template_dict)
 
     if template.__class__ in [DAGPathInput, FunctionPathInput]:
-        return NodePathInput.parse_obj(template_dict)
+        return StepPathInput.parse_obj(template_dict)
 
     if template.__class__ in [DAGArrayInput, FunctionArrayInput]:
         if isinstance(template_dict['value'], str):
             template_dict['value'] = json.loads(template_dict['value'])
-        return NodeArrayInput.parse_obj(template_dict)
+        return StepArrayInput.parse_obj(template_dict)
 
     if template.__class__ in [DAGJSONObjectInput, FunctionJSONObjectInput]:
         if isinstance(template_dict['value'], str):
             template_dict['value'] = json.loads(template_dict['value'])
-        return NodeJSONObjectInput.parse_obj(template_dict)
+        return StepJSONObjectInput.parse_obj(template_dict)
