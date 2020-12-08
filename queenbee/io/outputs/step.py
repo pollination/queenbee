@@ -1,4 +1,4 @@
-"""Queenbee output types for simulation steps.
+"""Output types for a Queenbee Job steps.
 
 For more information on plugins see plugin module.
 """

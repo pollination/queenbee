@@ -1,4 +1,4 @@
-"""Queenbee input types for simulation step status.
+"""Input types for Queenbee job steps.
 
 For more information on plugins see plugin module.
 """

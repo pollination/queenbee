@@ -52,7 +52,7 @@ class ProjectFolder(_ArtifactSource):
     path: str = Field(
         None,
         description='The path to a folder where files and folders can be sourced. For a '
-        'local filesystem this can be "C:\\Users\\me\\simulations\\test".'
+        'local filesystem this can be "C:\\Users\\me\\jobs\\test".'
     )
 
     @property
