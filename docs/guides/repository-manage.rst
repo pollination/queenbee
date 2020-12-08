@@ -7,7 +7,7 @@ a local index of repositories that you can reference.
 The Queenbee CLI can be used to `add`, `list` and `remove` repositories from your local
 index. Once a repository has been added to your local index you can search through the available
 Queenbee packages (both plugins and recipes) and fetch specific package versions for 
-use in a workflow.
+use in a job.
 
 Local Index Management
 ----------------------

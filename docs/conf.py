@@ -13,7 +13,7 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 from queenbee.repository import RepositoryIndex
-from queenbee.workflow import Workflow
+from queenbee.job import Job
 from queenbee.recipe import Recipe
 from queenbee.plugin import Plugin
 from queenbee._openapi import get_openapi
@@ -252,10 +252,10 @@ folder = os.path.join(os.path.dirname(__file__), '_static/schemas')
 if not os.path.isdir(folder):
     os.mkdir(folder)
 
-with open(os.path.join(folder, 'workflow-openapi.json'), 'w') as out_file:
+with open(os.path.join(folder, 'job-openapi.json'), 'w') as out_file:
     json.dump(
-        get_openapi(schema_class=Workflow, title='Queenbee Workflow Schema',
-                    description='Schema documentation for Queenbee Workflows'),
+        get_openapi(schema_class=Job, title='Queenbee Job Schema',
+                    description='Schema documentation for Queenbee Jobs'),
         out_file,
         indent=2
     )
@@ -284,8 +284,8 @@ with open(os.path.join(folder, 'repository-openapi.json'), 'w') as out_file:
         indent=2
     )
 
-with open(os.path.join(folder, 'workflow-schema.json'), 'w') as out_file:
-    out_file.write(Workflow.schema_json())
+with open(os.path.join(folder, 'job-schema.json'), 'w') as out_file:
+    out_file.write(Job.schema_json())
 
 with open(os.path.join(folder, 'plugin-schema.json'), 'w') as out_file:
     out_file.write(Plugin.schema_json())

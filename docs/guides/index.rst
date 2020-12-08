@@ -1,7 +1,7 @@
 How To
 ======
 
-This section of the documentation aims to provide guided examples for users to familiarize themselves with the use of Queenbee to create reusable workflow templates and store them.
+This section of the documentation aims to provide guided examples for users to familiarize themselves with the use of Queenbee to create reusable recipe templates and store them.
 
 Pre-Flight Check
 ----------------

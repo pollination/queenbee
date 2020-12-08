@@ -39,7 +39,7 @@ You can check the full schema definition for a plugin Config `here <../_static/r
 
 Docker Config
 ^^^^^^^^^^^^^
-The Docker configuration tells the workflow execution engine which container to use when executing a Function
+The Docker configuration tells the recipe execution engine which container to use when executing a Function
 from this Plugin. It will also indicate what path within the folder each artifact (file or folder) should be
 loaded to.
 

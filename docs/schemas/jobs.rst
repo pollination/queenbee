@@ -1,4 +1,4 @@
-Workflows
+Jobs
 =========
 
 Schema
@@ -26,7 +26,7 @@ Schema
       NProgress.start();
     </script>
     <script>
-      jsonSchemaViewer(window, '../_static/schemas/workflow-schema.json')
+      jsonSchemaViewer(window, '../_static/schemas/job-schema.json')
     </script>
     <script>
       NProgress.done();
@@ -40,15 +40,15 @@ Schema
 
 OpenAPI Docs 
 -------------
-You can find the Open API Docs formatted by redoc `here <../_static/redoc-workflow.html#tag/workflow_model>`_.
+You can find the Open API Docs formatted by redoc `here <../_static/redoc-job.html#tag/job_model>`_.
 
 OpenAPI Definition 
 -------------------
-You can find the OpenAPI JSON definition `here <../_static/schemas/workflow-openapi.json>`_.
+You can find the OpenAPI JSON definition `here <../_static/schemas/job-openapi.json>`_.
 
 JSON Schema Definition 
 -----------------------
-You can find the JSON Schema definition `here <../_static/schemas/workflow-schema.json>`_.
+You can find the JSON Schema definition `here <../_static/schemas/job-schema.json>`_.
 
 
 Examples

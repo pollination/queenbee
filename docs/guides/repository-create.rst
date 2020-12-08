@@ -1,7 +1,7 @@
 Create A New Repository
 =======================
 
-Queenbee repositories are essential to store and share Plugins and Recipes that can be executed as Workflows.
+Queenbee repositories are essential to store and share Plugins and Recipes that can be executed as Jobs.
 
 A Repository is a folder that consists of an ``index.json`` index file and a series of packaged Plugins and Recipes.
 It is used to manage Recipe dependencies (which can be Plugins or other Recipes).
