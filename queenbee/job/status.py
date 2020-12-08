@@ -1,6 +1,6 @@
-"""Queenbee Simulation step status class.
+"""Queenbee status class.
 
-A step status keeps track of the outcome of a given simulation step.
+A step status keeps track of the outcome of a given job or a job step.
 """
 from enum import Enum
 from datetime import datetime
@@ -48,9 +48,14 @@ class BaseStatus(IOBase):
         description='The time at which the task was completed'
     )
 
+    source: str = Field(
+        ...,
+        description='Source url for the status object. It can be a recipe or a function.'
+    )
+
 
 class StepStatus(BaseStatus):
-    """The Status of a Simulation Step"""
+    """The Status of a Job Step"""
     type: constr(regex='^StepStatus$') = 'StepStatus'
 
     id: str = Field(
@@ -62,7 +67,7 @@ class StepStatus(BaseStatus):
         ...,
         description='A human readable name for the step. Usually defined by the '
         'DAG task name but can be extended if the step is part of a loop for example. '
-        'This name is unique within the boundary of the DAG/Simulation that generated it.'
+        'This name is unique within the boundary of the DAG/Job that generated it.'
     )
 
     status_type: StatusType = Field(
@@ -106,23 +111,23 @@ class StepStatus(BaseStatus):
     outbound_steps: List[str] = Field(
         ...,
         description='A list of the last step to ran in the context of this '
-        'step. In the case of a DAG or a simulation this will be the last step that has '
+        'step. In the case of a DAG or a job this will be the last step that has '
         'been executed. It will remain empty for functions.'
     )
 
 
-class SimulationStatus(BaseStatus):
-    """Simulation Status."""
-    type: constr(regex='^SimulationStatus$') = 'SimulationStatus'
+class JobStatus(BaseStatus):
+    """Job Status."""
+    type: constr(regex='^JobStatus$') = 'JobStatus'
 
     id: str = Field(
         ...,
-        description='The ID of the individual simulation.'
+        description='The ID of the individual job.'
     )
 
     entrypoint: str = Field(
         None,
-        description='The ID of the first step in the simulation.'
+        description='The ID of the first step in the job.'
     )
 
     steps: Dict[str, StepStatus] = {}
