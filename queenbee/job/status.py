@@ -132,7 +132,12 @@ class JobStatus(BaseStatus):
 
     steps: Dict[str, StepStatus] = {}
 
+    inputs: List[StepInputs] = Field(
+        ...,
+        description='The inputs used for this job.'
+    )
+
     outputs: List[StepOutputs] = Field(
         ...,
-        description='The outputs produced by this step.'
+        description='The outputs produced by this job.'
     )
