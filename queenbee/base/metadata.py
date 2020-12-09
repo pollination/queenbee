@@ -7,7 +7,7 @@ https://swagger.io/specification/#infoObject
 """
 
 from typing import List
-from pydantic import Field, constr
+from pydantic import Field, constr, AnyUrl
 
 from .basemodel import BaseModel
 
@@ -36,7 +36,7 @@ class License(BaseModel):
         description='The license name used for the package.'
     )
 
-    url: str = Field(
+    url: AnyUrl = Field(
         None,
         description='A URL to the license used for the package.'
     )
