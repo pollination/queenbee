@@ -12,11 +12,12 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+from pkg_resources import get_distribution
 from queenbee.repository import RepositoryIndex
 from queenbee.job import Job
 from queenbee.recipe import Recipe
 from queenbee.plugin import Plugin
-from queenbee._openapi import get_openapi
+from pydantic_openapi_helper.core import get_openapi
 import json
 import sphinx_bootstrap_theme
 import os
@@ -252,34 +253,48 @@ folder = os.path.join(os.path.dirname(__file__), '_static/schemas')
 if not os.path.isdir(folder):
     os.mkdir(folder)
 
+VERSION = '.'.join(get_distribution('queenbee').version.split('.')[:3])
+
 with open(os.path.join(folder, 'job-openapi.json'), 'w') as out_file:
     json.dump(
-        get_openapi(schema_class=Job, title='Queenbee Job Schema',
-                    description='Schema documentation for Queenbee Jobs'),
+        get_openapi(
+            base_object=[Job], title='Queenbee Job Schema',
+            description='Schema documentation for Queenbee Jobs',
+            version=VERSION
+        ),
         out_file,
         indent=2
     )
 
 with open(os.path.join(folder, 'plugin-openapi.json'), 'w') as out_file:
     json.dump(
-        get_openapi(schema_class=Plugin, title='Queenbee Plugin Schema',
-                    description='Schema documentation for Queenbee Plugins'),
+        get_openapi(
+            base_object=[Plugin], title='Queenbee Plugin Schema',
+            description='Schema documentation for Queenbee Plugins',
+            version=VERSION
+        ),
         out_file,
         indent=2
     )
 
 with open(os.path.join(folder, 'recipe-openapi.json'), 'w') as out_file:
     json.dump(
-        get_openapi(schema_class=Recipe, title='Queenbee Recipe Schema',
-                    description='Schema documentation for Queenbee Recipes'),
+        get_openapi(
+            base_object=[Recipe], title='Queenbee Recipe Schema',
+            description='Schema documentation for Queenbee Recipes',
+            version=VERSION
+        ),
         out_file,
         indent=2
     )
 
 with open(os.path.join(folder, 'repository-openapi.json'), 'w') as out_file:
     json.dump(
-        get_openapi(schema_class=RepositoryIndex, title='Queenbee Repository Schema',
-                    description='Schema documentation for Queenbee Recipes'),
+        get_openapi(
+            base_object=[RepositoryIndex], title='Queenbee Repository Schema',
+            description='Schema documentation for Queenbee Recipes',
+            version=VERSION
+        ),
         out_file,
         indent=2
     )
