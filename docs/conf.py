@@ -12,13 +12,6 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-from pkg_resources import get_distribution
-from queenbee.repository import RepositoryIndex
-from queenbee.job import Job
-from queenbee.recipe import Recipe
-from queenbee.plugin import Plugin
-from pydantic_openapi_helper.core import get_openapi
-import json
 import sphinx_bootstrap_theme
 import os
 import sys
@@ -248,65 +241,5 @@ epub_exclude_files = ['search.html']
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
-
-folder = os.path.join(os.path.dirname(__file__), '_static/schemas')
-if not os.path.isdir(folder):
-    os.mkdir(folder)
-
-VERSION = '.'.join(get_distribution('queenbee').version.split('.')[:3])
-
-with open(os.path.join(folder, 'job-openapi.json'), 'w') as out_file:
-    json.dump(
-        get_openapi(
-            base_object=[Job], title='Queenbee Job Schema',
-            description='Schema documentation for Queenbee Jobs',
-            version=VERSION
-        ),
-        out_file,
-        indent=2
-    )
-
-with open(os.path.join(folder, 'plugin-openapi.json'), 'w') as out_file:
-    json.dump(
-        get_openapi(
-            base_object=[Plugin], title='Queenbee Plugin Schema',
-            description='Schema documentation for Queenbee Plugins',
-            version=VERSION
-        ),
-        out_file,
-        indent=2
-    )
-
-with open(os.path.join(folder, 'recipe-openapi.json'), 'w') as out_file:
-    json.dump(
-        get_openapi(
-            base_object=[Recipe], title='Queenbee Recipe Schema',
-            description='Schema documentation for Queenbee Recipes',
-            version=VERSION
-        ),
-        out_file,
-        indent=2
-    )
-
-with open(os.path.join(folder, 'repository-openapi.json'), 'w') as out_file:
-    json.dump(
-        get_openapi(
-            base_object=[RepositoryIndex], title='Queenbee Repository Schema',
-            description='Schema documentation for Queenbee Recipes',
-            version=VERSION
-        ),
-        out_file,
-        indent=2
-    )
-
-with open(os.path.join(folder, 'job-schema.json'), 'w') as out_file:
-    out_file.write(Job.schema_json())
-
-with open(os.path.join(folder, 'plugin-schema.json'), 'w') as out_file:
-    out_file.write(Plugin.schema_json())
-
-with open(os.path.join(folder, 'recipe-schema.json'), 'w') as out_file:
-    out_file.write(Recipe.schema_json())
-
-with open(os.path.join(folder, 'repository-schema.json'), 'w') as out_file:
-    out_file.write(RepositoryIndex.schema_json())
+# generate schemas
+import gen_schemas
