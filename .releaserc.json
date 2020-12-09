@@ -2,7 +2,25 @@
     "plugins": [
         "@semantic-release/commit-analyzer",
         "@semantic-release/release-notes-generator",
-        "@semantic-release/github",
+        [
+            "@semantic-release/github",
+            {
+                "assets": [
+                    {
+                        "path": "docs/_static/schemas/queenbee.json",
+                        "label": "Queenbee schema"
+                    },
+                    {
+                        "path": "docs/_static/schemas/queenbee_inheritance.json",
+                        "label": "Queenbee schema with inheritance"
+                    },
+                    {
+                        "path": "docs/_static/schemas/queenbee_mapper.json",
+                        "label": "Queenbee schema mapper"
+                    }
+                ]
+            }
+        ],
         [
             "@semantic-release/exec",
             {
