@@ -118,6 +118,8 @@ class StepStatus(BaseStatus):
 
 class JobStatus(BaseStatus):
     """Job Status."""
+    api_version: constr(regex='^v1beta1$') = 'v1beta1'
+
     type: constr(regex='^JobStatus$') = 'JobStatus'
 
     id: str = Field(

@@ -56,6 +56,8 @@ class TemplateFunction(Function):
 
 class Recipe(BaseModel):
     """A Queenbee Recipe"""
+    api_version: constr(regex='^v1beta1$') = 'v1beta1'
+
     type: constr(regex='^Recipe$') = 'Recipe'
 
     metadata: MetaData = Field(
@@ -688,6 +690,8 @@ class RecipeInterface(BaseModel):
     Recipe information only includes metadata, source, inputs and outputs of a Recipe.
     This object is useful for creating user interface for Recipes.
     """
+    api_version: constr(regex='^v1beta1$') = 'v1beta1'
+
     type: constr(regex='^RecipeInterface$') = 'RecipeInterface'
 
     metadata: MetaData = Field(

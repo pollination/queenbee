@@ -10,6 +10,8 @@ class Job(BaseModel):
 
     A Job is an object to submit a list of arguments to execute a Queenbee recipe.
     """
+    api_version: constr(regex='^Job$') = 'Job'
+
     type: constr(regex='^Job$') = 'Job'
 
     source: str = Field(

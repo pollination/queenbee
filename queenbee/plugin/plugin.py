@@ -64,6 +64,8 @@ class Plugin(BaseModel):
     A plugin contains runtime configuration for a Command Line Interface (CLI) and
     a list of functions that can be executed using this CLI tool.
     """
+    api_version: constr(regex='^v1beta1$') = 'v1beta1'
+
     type: constr(regex='^Plugin') = 'Plugin'
 
     metadata: MetaData = Field(
