@@ -1,4 +1,5 @@
 """Queenbee Plugin class."""
+import json
 import os
 import yaml
 from typing import List
@@ -143,7 +144,7 @@ class Plugin(BaseModel):
 
         return cls.parse_obj(plugin)
 
-    def to_folder(self, folder_path: str, readme_string: str = None, license_string: str = None):
+    def to_folder(self, folder_path: str, *, readme_string: str = None):
         """Write a plugin to a folder
 
         Note:
@@ -164,7 +165,6 @@ class Plugin(BaseModel):
 
         Keyword Arguments:
             readme_string {str} -- The README file string (default: {None})
-            license_string {str} -- The LICENSE file string (default: {None})
         """
         os.makedirs(os.path.join(folder_path, 'functions'), exist_ok=True)
 
@@ -186,6 +186,5 @@ class Plugin(BaseModel):
             with open(os.path.join(folder_path, 'README.md'), 'w') as f:
                 f.write(readme_string)
 
-        if license_string is not None:
-            with open(os.path.join(folder_path, 'LICENSE'), 'w') as f:
-                f.write(license_string)
+        with open(os.path.join(folder_path, 'LICENSE'), 'w') as f:
+            f.write('To see the license for this package refer to package.yaml')

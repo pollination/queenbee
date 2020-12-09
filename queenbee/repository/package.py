@@ -62,11 +62,6 @@ class PackageVersion(MetaData):
         description='The README file string for this package'
     )
 
-    license: str = Field(
-        None,
-        description='The License file string for this package'
-    )
-
     manifest: Union[Recipe, Plugin] = Field(
         None,
         description="The package Recipe or Plugin manifest"
@@ -119,7 +114,6 @@ class PackageVersion(MetaData):
     def pack_tar(cls,
                  resource: Union[Plugin, Recipe],
                  readme: str = None,
-                 license: str = None,
                  include_manifest: bool = False,
                  ) -> Tuple['PackageVersion', BytesIO]:
         """Package a resource into a gzipped tar archive
@@ -130,8 +124,6 @@ class PackageVersion(MetaData):
 
         Keyword Arguments:
             readme {str} -- resource README.md file text if it exists
-                (default: {None})
-            license {str} -- resource LICENSE file text if it exists
                 (default: {None})
 
         Raises:
@@ -176,17 +168,9 @@ class PackageVersion(MetaData):
                 filename='README.md'
             )
 
-        if license is not None:
-            add_to_tar(
-                tar=tar,
-                data=bytes(license, 'utf-8'),
-                filename='LICENSE'
-            )
-
         tar.close()
 
         resource_version.readme = readme
-        resource_version.license = license
 
         if include_manifest:
             resource_version.manifest = resource
@@ -206,7 +190,6 @@ class PackageVersion(MetaData):
         manifest_bytes = None
         version = None
         readme_string = None
-        license_string = None
         read_digest = None
 
         for member in tar.getmembers():
@@ -225,8 +208,6 @@ class PackageVersion(MetaData):
                 version = cls.parse_raw(tar.extractfile(member).read())
             elif member.name == 'README.md':
                 readme_string = tar.extractfile(member).read().decode('utf-8')
-            elif member.name == 'LICENSE':
-                license_string = tar.extractfile(member).read().decode('utf-8')
 
         if manifest_bytes is None:
             raise ValueError(
@@ -247,7 +228,6 @@ class PackageVersion(MetaData):
 
         version.manifest = manifest
         version.readme = readme_string
-        version.license = license_string
         version.digest = read_digest
 
         return version
@@ -317,35 +297,11 @@ class PackageVersion(MetaData):
             with open(path_to_readme, 'r') as f:
                 return f.read()
 
-    @staticmethod
-    def read_license(folder_path: str) -> str:
-        """Infer the path to the license file within a folder and read it
-
-        Arguments:
-            folder_path {str} -- Path to the folder where a license file should be found
-
-        Returns:
-            str -- The found licence text (or None if no license file is found)
-        """
-        path_to_license = None
-
-        license_pattern = r'^license$'
-
-        for file in os.listdir(folder_path):
-            res = re.match(license_pattern, file, re.IGNORECASE)
-            if res is not None:
-                path_to_license = os.path.join(folder_path, file)
-
-        if path_to_license is not None:
-            with open(path_to_license, 'r') as f:
-                return f.read()
-
     @classmethod
     def package_resource(cls,
                          resource: Union[Plugin, Recipe],
                          check_deps: bool = True,
-                         readme: str = None,
-                         license: str = None,
+                         readme: str = None
                          ) -> Tuple['PackageVersion', BytesIO]:
         """Package a Recipe or Plugin into a gzipped tar file
 
@@ -354,8 +310,6 @@ class PackageVersion(MetaData):
 
         Keyword Arguments:
             readme {str} -- resource README.md file text if it exists
-                (default: {None})
-            license {str} -- resource LICENSE file text if it exists
                 (default: {None})
 
         Returns:
@@ -368,8 +322,7 @@ class PackageVersion(MetaData):
 
         return cls.pack_tar(
             resource=resource,
-            readme=readme,
-            license=license,
+            readme=readme
         )
 
     @classmethod
@@ -403,8 +356,7 @@ class PackageVersion(MetaData):
         return cls.package_resource(
             resource=resource,
             check_deps=check_deps,
-            readme=cls.read_readme(folder_path),
-            license=cls.read_license(folder_path),
+            readme=cls.read_readme(folder_path)
         )
 
     def search_match(self, search_string: str = None) -> bool:

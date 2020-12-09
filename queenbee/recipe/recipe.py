@@ -273,7 +273,7 @@ class Recipe(BaseModel):
                 )
             )
 
-    def to_folder(self, folder_path: str, readme_string: str = None, license_string: str = None):
+    def to_folder(self, folder_path: str, readme_string: str = None):
         """Write a Recipe to a folder
 
         Note:
@@ -309,7 +309,6 @@ class Recipe(BaseModel):
 
         Keyword Arguments:
             readme_string {str} -- The README file string (default: {None})
-            license_string {str} -- The LICENSE file string (default: {None})
         """
 
         os.makedirs(os.path.join(folder_path, 'flow'), exist_ok=True)
@@ -330,9 +329,8 @@ class Recipe(BaseModel):
             with open(os.path.join(folder_path, 'README.md'), 'w') as f:
                 f.write(readme_string)
 
-        if license_string is not None:
-            with open(os.path.join(folder_path, 'LICENSE'), 'w') as f:
-                f.write(license_string)
+        with open(os.path.join(folder_path, 'LICENSE'), 'w') as f:
+            f.write('To see the license for this package refer to package.yaml')
 
     def write_dependencies(self, folder_path: str, config: Config = Config()):
         """Fetch dependencies manifests and write them to the `.dependencies` folder
@@ -372,8 +370,7 @@ class Recipe(BaseModel):
                 folder_path=os.path.join(
                     folder_path, '.dependencies',
                     dependency.dependency_kind, dependency.ref_name),
-                readme_string=package_version.readme,
-                license_string=package_version.license,
+                readme_string=package_version.readme
             )
 
 
