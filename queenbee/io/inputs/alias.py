@@ -151,7 +151,7 @@ class DAGLinkedInputAlias(DAGGenericInputAlias):
     A linked input alias will be hidden in the UI and will be linked to an object in 
     the UI using the input handler.
     """
-    type: constr(regex='^DAGGenericInputAlias$') = 'DAGGenericInputAlias'
+    type: constr(regex='^DAGLinkedInputAlias$') = 'DAGLinkedInputAlias'
 
 
 class DAGStringInputAlias(DAGGenericInputAlias):
