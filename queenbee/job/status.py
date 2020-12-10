@@ -118,7 +118,7 @@ class StepStatus(BaseStatus):
 
 class JobStatus(BaseStatus):
     """Job Status."""
-    api_version: constr(regex='^v1beta1$') = 'v1beta1'
+    api_version: constr(regex='^v1beta1$') = Field('v1beta1', readOnly=True)
 
     type: constr(regex='^JobStatus$') = 'JobStatus'
 

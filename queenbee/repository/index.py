@@ -43,7 +43,7 @@ class RepositoryMetadata(BaseModel):
 
 class RepositoryIndex(BaseModel):
     """A searchable index for a Queenbee Plugin and Recipe repository"""
-    api_version: constr(regex='^v1beta1$') = 'v1beta1'
+    api_version: constr(regex='^v1beta1$') = Field('v1beta1', readOnly=True)
 
     type: constr(regex='^RepositoryIndex$') = 'RepositoryIndex'
 
