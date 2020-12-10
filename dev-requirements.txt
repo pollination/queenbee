@@ -1,4 +1,4 @@
-pydantic_openapi_helper==0.2.3
+pydantic_openapi_helper==0.2.4
 coverage==5.3
 coveralls==2.2.0
 pytest==6.1.2
