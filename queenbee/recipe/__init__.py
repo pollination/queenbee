@@ -1,1 +1,1 @@
-from .recipe import Recipe, BakedRecipe
+from .recipe import Recipe, BakedRecipe, RecipeInterface

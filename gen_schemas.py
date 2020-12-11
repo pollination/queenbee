@@ -9,8 +9,8 @@ from pydantic_openapi_helper.core import get_openapi
 from pydantic_openapi_helper.inheritance import class_mapper
 
 from queenbee.repository import RepositoryIndex
-from queenbee.job import Job
-from queenbee.recipe import Recipe
+from queenbee.job import Job, JobStatus
+from queenbee.recipe import Recipe, RecipeInterface
 from queenbee.plugin import Plugin
 
 folder = os.path.join(os.path.dirname(__file__), 'docs/_static/schemas')
@@ -101,8 +101,9 @@ external_docs = {
     "url": "./queenbee_inheritance.json"
 }
 
+models = [Recipe, Plugin, Job, RepositoryIndex, RecipeInterface, JobStatus]
 openapi = get_openapi(
-    [Recipe, Plugin, Job],
+    models,
     title='Queenbee Schema',
     description='Documentation for Queenbee schema.',
     version=VERSION, info=info,
@@ -113,7 +114,7 @@ with open(os.path.join(folder, 'queenbee.json'), 'w') as out_file:
 
 # with inheritance
 openapi = get_openapi(
-    [Recipe, Plugin, Job],
+    models,
     title='Queenbee Schema with Inheritance',
     description='Documentation for Queenbee schema.',
     version=VERSION, info=info,
@@ -127,7 +128,7 @@ with open(os.path.join(folder, 'queenbee_inheritance.json'), 'w') as out_file:
 with open(os.path.join(folder, 'queenbee_mapper.json'), 'w') as out_file:
     json.dump(
         class_mapper(
-            [Recipe, Plugin, Job],
+            models,
             ['queenbee', 'queenbee.interface']
         ),
         out_file, indent=2
