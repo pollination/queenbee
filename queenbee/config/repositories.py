@@ -1,4 +1,5 @@
 import os
+from typing import Dict
 from urllib.parse import urlparse
 from pydantic import Field, validator
 from ..base.basemodel import BaseModel
@@ -22,7 +23,7 @@ class RepositoryReference(BaseModel):
         """Determine whether the path is local or remote (ie: http)"""
         return get_uri(v)
 
-    def fetch(self, auth_header: str = '') -> 'RepositoryIndex':
+    def fetch(self, auth_header: Dict[str, str] = {}) -> 'RepositoryIndex':
         """Fetch the referenced repository index
 
         Returns:

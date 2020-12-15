@@ -1,16 +1,16 @@
-from typing import List, Union
+from typing import List, Union, Dict
 from urllib.parse import urlparse
 from pydantic import Field, SecretStr, constr
 
 from ..base.basemodel import BaseModel
-from .auth import JWTAuth, PollinationAuth
+from .auth import JWTAuth, HeaderAuth
 from .repositories import RepositoryReference
 
 
 class Config(BaseModel):
     type: constr(regex='^Config$') = 'Config'
 
-    auth: List[Union[PollinationAuth, JWTAuth]] = Field(
+    auth: List[Union[JWTAuth, HeaderAuth]] = Field(
         [],
         description='A list of authentication configurations for different repository domains'
     )
@@ -20,7 +20,7 @@ class Config(BaseModel):
         description='A list of repositories used for local execution'
     )
 
-    def get_auth_header(self, repository_url: str) -> str:
+    def get_auth_header(self, repository_url: str) -> Dict[str, str]:
         """Get auth headers for the given repository url
 
         Args:
@@ -45,11 +45,11 @@ class Config(BaseModel):
         """
         [auth.refresh_token() for auth in self.auth]
 
-    def add_auth(self, auth: Union[PollinationAuth, JWTAuth]):
+    def add_auth(self, auth: Union[JWTAuth, HeaderAuth]):
         """add an authentication method for a specific repository domain
 
         Args:
-            auth (Union[PollinationAuth, JWTAuth]): An authentication config object
+            auth (Union[JWTAuth, HeaderAuth]): An authentication config object
         """
         found = False
 

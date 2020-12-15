@@ -1,4 +1,4 @@
-from ...config.auth import PollinationAuth
+from ...config.auth import PollinationAuth, HeaderAuth
 
 try:
     import click
@@ -20,9 +20,15 @@ def add():
     """add auth domains and methods to your queenbee config"""
     pass
 
-
-@add.command('pollination')
+@add.command('api_token')
 @click.argument('api_token')
+@click.option(
+    '-n',
+    '--header-name',
+    help='API token header name',
+    show_default=True,
+    default='x-pollination-token'
+)
 @click.option(
     '-d',
     '--domain',
@@ -30,15 +36,16 @@ def add():
     show_default=True,
     default='api.pollination.cloud'
 )
-def add_pollination(api_token, domain):
-    """add a pollination auth domain"""
+def add_api_token(api_token, header_name, domain):
+    """add an API token auth config"""
     ctx = click.get_current_context()
 
-    auth_conf = PollinationAuth(
+    auth_conf = HeaderAuth(
         domain=domain,
-        api_token=api_token,
+        header_name=header_name,
+        access_token=api_token,
     )
-
     ctx.obj.config.add_auth(auth=auth_conf)
 
     ctx.obj.write_config()
+    

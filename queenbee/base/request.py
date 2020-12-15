@@ -1,7 +1,7 @@
 import pathlib
 import os
 from urllib import request
-from typing import Union
+from typing import Union, Dict
 from .basemodel import BaseModel
 
 USER_AGENT_STRING = 'Queenbee'
@@ -36,7 +36,7 @@ def urljoin(*args):
     return url
 
 
-def make_request(url: str, auth_header: str = '') -> str:
+def make_request(url: str, auth_header: Dict[str, str] = {}) -> str:
     """Fetch data from a url to a local file or using the http protocol
 
     Args:
@@ -46,11 +46,12 @@ def make_request(url: str, auth_header: str = '') -> str:
     Returns:
         str: [description]
     """
-    auth_header = auth_header or ''
-    headers = {
-        'Authorization': auth_header,
-        'User-Agent': USER_AGENT_STRING
-    }
+    if auth_header == None:
+        auth_header = {}
 
-    req = request.Request(url=url, headers=headers)
+    auth_header.update({
+        'User-Agent': USER_AGENT_STRING
+    })
+
+    req = request.Request(url=url, headers=auth_header)
     return request.urlopen(req)

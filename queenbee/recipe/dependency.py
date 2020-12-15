@@ -1,5 +1,6 @@
 """Queenbee dependency class."""
 import os
+from typing import Dict
 from enum import Enum
 from pydantic import Field, constr
 
@@ -85,7 +86,7 @@ class Dependency(BaseModel):
             return self.alias
         return self.name
 
-    def _fetch_index(self, auth_header: str = ''):
+    def _fetch_index(self, auth_header: Dict[str, str] = {}):
         """Fetch the source repository index object.
 
         Returns:
@@ -107,7 +108,7 @@ class Dependency(BaseModel):
         raw_bytes = res.read()
         return RepositoryIndex.parse_raw(raw_bytes)
 
-    def fetch(self, verify_digest: bool = True, auth_header: str = '') -> 'PackageVersion':
+    def fetch(self, verify_digest: bool = True, auth_header: Dict[str, str] = {}) -> 'PackageVersion':
         """Fetch the dependency from its source
 
         Keyword Arguments:
