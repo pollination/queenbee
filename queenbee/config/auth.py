@@ -56,7 +56,7 @@ class HeaderAuth(BaseAuth):
         Returns:
             Dict[str, str]: a header with an API token
         """
-        return {self.header_name: self.access_token}
+        return {self.header_name: self.access_token.get_secret_value()}
 
 
 class JWTAuth(BaseAuth):
