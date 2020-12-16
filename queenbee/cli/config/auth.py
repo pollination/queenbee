@@ -1,4 +1,4 @@
-from ...config.auth import PollinationAuth, HeaderAuth
+from ...config.auth import HeaderAuth
 
 try:
     import click
