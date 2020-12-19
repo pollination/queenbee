@@ -131,6 +131,7 @@ def from_template(template: Union[DAGOutputs, FunctionOutputs], value: Any) -> S
         return StepStringOutput.parse_obj(template_dict)
 
     if template.__class__ in [DAGIntegerOutput, FunctionIntegerOutput]:
+        template_dict['value'] = int(template_dict['value'])
         return StepIntegerOutput.parse_obj(template_dict)
 
     if template.__class__ in [DAGNumberOutput, FunctionNumberOutput]:
