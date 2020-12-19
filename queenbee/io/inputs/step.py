@@ -158,7 +158,7 @@ def from_template(template: Union[DAGInputs, FunctionInputs], value: Any) -> Ste
         return StepStringInput.parse_obj(template_dict)
 
     if template.__class__ in [DAGIntegerInput, FunctionIntegerInput]:
-        template_dict['value'] = int(template_dict['value'])
+        template_dict['value'] = int(float(template_dict['value']))
         return StepIntegerInput.parse_obj(template_dict)
 
     if template.__class__ in [DAGNumberInput, FunctionNumberInput]:
