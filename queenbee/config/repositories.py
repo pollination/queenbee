@@ -1,6 +1,5 @@
 import os
 from typing import Dict
-from urllib.parse import urlparse
 from pydantic import Field, validator
 from ..base.basemodel import BaseModel
 from ..base.request import make_request, urljoin, get_uri

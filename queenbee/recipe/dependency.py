@@ -94,12 +94,12 @@ class Dependency(BaseModel):
         """
         from ..repository.index import RepositoryIndex
 
-        if self.source.startswith('file:'):
-            rel_path = self.source.split('file:')[1]
+        if self.source.startswith('file:///'):
+            rel_path = self.source.split('file:///')[1]
 
             abs_path = os.path.join(os.getcwd(), rel_path, 'index.json')
 
-            url = f'file:{abs_path}'
+            url = f'file:///{abs_path}'
         else:
             url = urljoin(self.source, 'index.json')
 
