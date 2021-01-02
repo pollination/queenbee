@@ -383,7 +383,7 @@ class DAGPathInput(DAGFolderInput):
 
 
 class DAGArrayInput(DAGGenericInput):
-    """An array input.
+    """A JSON array input.
 
     You can add additional validation by defining a JSONSchema specification.
 

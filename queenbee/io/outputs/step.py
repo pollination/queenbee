@@ -84,7 +84,7 @@ class StepPathOutput(FunctionPathOutput):
 
 
 class StepArrayOutput(FunctionArrayOutput):
-    """An array output."""
+    """A JSON array output."""
 
     type: constr(regex='^StepArrayOutput$') = 'StepArrayOutput'
 
