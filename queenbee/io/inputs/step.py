@@ -111,7 +111,7 @@ class StepPathInput(FunctionPathInput):
 
 
 class StepArrayInput(FunctionArrayInput):
-    """An array input."""
+    """A JSON array input."""
 
     type: constr(regex='^StepArrayInput$') = 'StepArrayInput'
 

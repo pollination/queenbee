@@ -11,15 +11,16 @@ from ..base.basemodel import BaseModel
 
 
 class ItemType(str, Enum):
-    """Type enum for items in a list."""
+    """Type enum for items in a list.
+
+    Items can not be files or folder. For a list of files you should copy them to a
+    folder and use FolderInput input instead of using ArrayInput.
+    """
     Generic = 'Generic'  # generic type for inputs with no type hint.
     String = 'String'
     Integer = 'Integer'
     Number = 'Number'
     Boolean = 'Boolean'
-    File = 'File'
-    Folder = 'Folder'
-    Path = 'Path'
     Array = 'Array'  # set item type to a generic type
     JSONObject = 'JSONObject'
 

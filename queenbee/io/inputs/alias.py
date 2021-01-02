@@ -417,7 +417,7 @@ class DAGPathInputAlias(DAGFolderInputAlias):
 
 
 class DAGArrayInputAlias(DAGGenericInputAlias):
-    """An array input.
+    """A JSON array input.
 
     You can add additional validation by defining a JSONSchema specification.
 
