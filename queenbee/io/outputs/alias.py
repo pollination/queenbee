@@ -7,11 +7,11 @@ from typing import Union, List
 
 from pydantic import constr, Field, validator
 
-from ..common import ItemType, FromOutput, find_dup_items, IOAliasHandler
+from ..common import ItemType, GenericOutput, find_dup_items, IOAliasHandler
 from ..reference import FileReference, FolderReference, TaskReference
 
 
-class DAGGenericOutputAlias(FromOutput):
+class DAGGenericOutputAlias(GenericOutput):
     """DAG generic alias output.
 
     In most cases, you should not be using the generic output unless you need a dynamic
