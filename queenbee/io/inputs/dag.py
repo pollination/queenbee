@@ -1,6 +1,7 @@
 """Queenbee input types for a DAG."""
 
 import os
+import warnings
 from typing import Dict, Union, List
 
 from pydantic import constr, Field, validator
@@ -266,6 +267,17 @@ class DAGFolderInput(DAGGenericInput):
         description='The default source for file if the value is not provided.'
     )
 
+    @validator('required', always=True)
+    def check_required(cls, v, values):
+        """Overwrite check_required fro artifacts to allow optional artifacts."""
+        default = values.get('default', None)
+        name = values.get('name', None)
+        if default is None and v is False:
+            warnings.warn(
+                f'{cls.__name__}.{name} -> set to optional input artifact.'
+            )
+        return v
+
     def validate_spec(self, value):
         """Validate an input value against specification.
 
@@ -282,6 +294,11 @@ class DAGFolderInput(DAGGenericInput):
     @property
     def is_artifact(self):
         return True
+
+    @property
+    def is_optional(self):
+        """A boolean that indicates if an artifact is optional."""
+        return self.default is None and self.required is False
 
 
 class DAGFileInput(DAGFolderInput):
