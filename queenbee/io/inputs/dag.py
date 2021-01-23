@@ -274,7 +274,8 @@ class DAGFolderInput(DAGGenericInput):
         name = values.get('name', None)
         if default is None and v is False:
             warnings.warn(
-                f'{cls.__name__}.{name} -> set to optional input artifact.'
+                f'{cls.__name__}.{name} has no default value and is not required. '
+                'Set to optional input artifact.'
             )
         return v
 
