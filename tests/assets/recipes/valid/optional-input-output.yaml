@@ -1,0 +1,46 @@
+type: Recipe
+
+metadata:
+  type: MetaData
+  name: minimal-recipe
+  tag: 0.2.1
+
+dependencies:
+- type: Dependency
+  kind: plugin
+  name: honeybee-radiance
+  tag: 1.2.3
+  source: https://example.com/test-repo
+
+flow:
+- name: main
+  type: DAG
+  inputs:
+  - name: folder-path
+    type: DAGStringInput
+    default: something
+  - name: input-file-optional
+    type: DAGFileInput
+    required: False
+  tasks:
+  - name: minimal-task
+    type: DAGTask
+    template: honeybee-radiance/10000-lux-sky
+    arguments:
+      - name: foo
+        type: TaskArgument
+        from:
+          type: ValueReference
+          value: test-value
+      - name: bar
+        type: TaskArgument
+        from:
+          type: ValueReference
+          value: test-value
+  outputs:
+    - name: optional-output
+      type: DAGFolderOutput
+      from:
+        type: FolderReference
+        path: path/to/file
+      required: False
