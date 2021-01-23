@@ -59,7 +59,23 @@ class DAGLinkedOutputAlias(DAGGenericOutputAlias):
     type: constr(regex='^DAGLinkedOutputAlias$') = 'DAGLinkedOutputAlias'
 
 
-class DAGFileOutputAlias(DAGGenericOutputAlias):
+class _DAGArtifactOutputAlias(DAGGenericOutputAlias):
+    """Base class for DAG artifact output aliases.
+
+    This class add a required input. By default all artifact outputs are required.
+    """
+    required: bool = Field(
+        True,
+        description='A boolean to indicate if an artifact output is required. A False '
+        'value makes the artifact optional.'
+    )
+
+    @property
+    def is_optional(self):
+        return not self.required
+
+
+class DAGFileOutputAlias(_DAGArtifactOutputAlias):
     """DAG alias file output."""
     type: constr(regex='^DAGFileOutputAlias$') = 'DAGFileOutputAlias'
 
@@ -74,7 +90,7 @@ class DAGFileOutputAlias(DAGGenericOutputAlias):
         return True
 
 
-class DAGFolderOutputAlias(DAGGenericOutputAlias):
+class DAGFolderOutputAlias(_DAGArtifactOutputAlias):
     """DAG alias folder output."""
     type: constr(regex='^DAGFolderOutputAlias$') = 'DAGFolderOutputAlias'
 
@@ -89,7 +105,7 @@ class DAGFolderOutputAlias(DAGGenericOutputAlias):
         return True
 
 
-class DAGPathOutputAlias(DAGGenericOutputAlias):
+class DAGPathOutputAlias(_DAGArtifactOutputAlias):
     """DAG alias path output."""
     type: constr(regex='^DAGPathOutputAlias$') = 'DAGPathOutputAlias'
 

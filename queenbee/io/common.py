@@ -100,6 +100,12 @@ class PathOutput(GenericOutput):
         'is executed.'
         )
 
+    required: bool = Field(
+        True,
+        description='A boolean to indicate if an artifact output is required. A False '
+        'value makes the artifact optional.'
+    )
+
     @property
     def referenced_values(self) -> Dict[str, List[str]]:
         """Get referenced variables if any.
@@ -109,6 +115,10 @@ class PathOutput(GenericOutput):
                 are lists contain referenced value string.
         """
         return self._referenced_values(['path'])
+
+    @property
+    def is_optional(self):
+        return not self.required
 
 
 class FromOutput(GenericOutput):

@@ -29,7 +29,23 @@ class DAGGenericOutput(FromOutput):
         return [] if v is None else v
 
 
-class DAGFileOutput(DAGGenericOutput):
+class _DAGArtifactOutput(DAGGenericOutput):
+    """Base class for DAG artifact outputs.
+
+    This class add a required input. By default all artifact outputs are required.
+    """
+    required: bool = Field(
+        True,
+        description='A boolean to indicate if an artifact output is required. A False '
+        'value makes the artifact optional.'
+    )
+
+    @property
+    def is_optional(self):
+        return not self.required
+
+
+class DAGFileOutput(_DAGArtifactOutput):
     """DAG file output."""
     type: constr(regex='^DAGFileOutput$') = 'DAGFileOutput'
 
@@ -44,7 +60,7 @@ class DAGFileOutput(DAGGenericOutput):
         return True
 
 
-class DAGFolderOutput(DAGGenericOutput):
+class DAGFolderOutput(_DAGArtifactOutput):
     """DAG folder output."""
     type: constr(regex='^DAGFolderOutput$') = 'DAGFolderOutput'
 
@@ -59,7 +75,7 @@ class DAGFolderOutput(DAGGenericOutput):
         return True
 
 
-class DAGPathOutput(DAGGenericOutput):
+class DAGPathOutput(_DAGArtifactOutput):
     """DAG path output."""
     type: constr(regex='^DAGPathOutput$') = 'DAGPathOutput'
 
