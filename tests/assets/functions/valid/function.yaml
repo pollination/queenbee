@@ -6,6 +6,8 @@ inputs:
       description: desired sky horizontal irradiance
       required: true
     - name: sky-file
+      type: FunctionFileInput
+      path: file.sky
       required: true
 command: gensky -c -B "{{ inputs.desired-irradiance }}" > file.sky
 outputs:

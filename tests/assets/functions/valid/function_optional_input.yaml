@@ -1,0 +1,36 @@
+type: Function
+name: split-grid
+description: Split the daylight sensor grid into multiple smaller files for parallel
+  simulation
+inputs:
+  - name: grid-name
+    type: FunctionStringInput
+    default: grid
+    description: Name of the grid
+  - name: sensor-count
+    type: FunctionIntegerInput
+    default: 250
+    description: Number of sensors per split grid
+  - name: input-grid-folder
+    type: FunctionFolderInput
+    description: The folder containing the grids to split # this is important for copying the files.
+    path: asset/grid
+    required: true
+  - name: bsdf-folder
+    type: FunctionFolderInput
+    description: An optional input that should only be copied if available.
+    path: asset/xml
+    required: False
+
+command: |
+  honeybee radiance grid split "asset/grid/{{inputs.grid-name}}.pts"
+  "{{inputs.sensor-count}}" --folder "output/temp/"
+  --log-file "output/temp/{{inputs.grid-name}}_grids.txt"
+
+outputs:
+  - name: grid-list
+    type: FunctionArrayOutput
+    path: "output/temp/{{inputs.grid-name}}_grids.txt"
+  - name: output-grids-folder
+    type: FunctionFolderOutput
+    path: output/temp/
