@@ -165,6 +165,3 @@ class BaseModel(BaseModelNoType):
     @validator('annotations', always=True)
     def replace_none_value(cls, v):
         return {} if not v else v
-
-    class Config:
-        extra = Extra.forbid
