@@ -24,6 +24,7 @@
         [
             "@semantic-release/exec",
             {
+                "prepareCmd": "python gen_schemas.py --version ${nextRelease.version}",
                 "publishCmd": "bash deploy.sh"
             }
         ]

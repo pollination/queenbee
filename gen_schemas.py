@@ -2,6 +2,7 @@
 
 import json
 import os
+import argparse
 
 from pkg_resources import get_distribution
 
@@ -17,7 +18,17 @@ folder = os.path.join(os.path.dirname(__file__), 'docs/_static/schemas')
 if not os.path.isdir(folder):
     os.mkdir(folder)
 
-VERSION = '.'.join(get_distribution('queenbee').version.split('.')[:3])
+
+parser = argparse.ArgumentParser(description='Generate OpenAPI JSON schemas')
+
+parser.add_argument('--version', help='Set the version of the new OpenAPI Schema')
+
+args = parser.parse_args()
+
+if args.version:
+    VERSION = args.version.replace('v', '')
+else:
+    VERSION = '.'.join(get_distribution('queenbee').version.split('.')[:3])
 
 info = {
     "description": "",
