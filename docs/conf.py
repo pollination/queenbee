@@ -20,11 +20,12 @@ sys.path.insert(0, os.path.abspath('../'))
 # -- Project information -----------------------------------------------------
 
 project = 'queenbee'
-copyright = '2020, Ladybug Tools'
+copyright = '2021, Ladybug Tools'
 author = 'Ladybug Tools'
 
 # The short X.Y version
 version = ''
+
 
 # The full version, including alpha/beta/rc tags
 release = ''
@@ -240,6 +241,3 @@ epub_exclude_files = ['search.html']
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
-
-# generate schemas
-import gen_schemas

@@ -58,18 +58,23 @@ jobs:
         run:
           python ./gen_schemas.py
       - name: run semantic release
+        id: new_release
         run:
+          nextRelease="`npx semantic-release --dryRun | grep -oP 'Published release \K.*? ' || true`"
           npx semantic-release
+          echo "::set-output name=tag::$nextRelease"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
           PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
+    outputs:
+      tag: ${{ steps.new_release.outputs.tag }}
 
   docs:
     name: Generate docs
     runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/master' && github.repository_owner == 'pollination'
+    needs: deploy
+    if: ${{ github.ref == 'refs/heads/master' && github.repository_owner == 'pollination' && contains(needs.deploy.outputs.tag, '.') }}
     steps:
       - uses: actions/checkout@v2
       - name: set up Python
@@ -82,6 +87,7 @@ jobs:
           pip install -r dev-requirements.txt
           sphinx-apidoc -f -e -d 4 -o ./docs/modules ./queenbee
           sphinx-build -b html ./docs ./docs/_build
+          python gen_schemas.py --version ${{needs.deploy.outputs.tag}}
 
       - name: deploy to github pages
         uses: peaceiris/actions-gh-pages@v3
