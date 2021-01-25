@@ -59,7 +59,7 @@ jobs:
           python ./gen_schemas.py
       - name: run semantic release
         id: new_release
-        run:
+        run: |
           nextRelease="`npx semantic-release --dryRun | grep -oP 'Published release \K.*? ' || true`"
           npx semantic-release
           echo "::set-output name=tag::$nextRelease"
