@@ -16,7 +16,7 @@ setuptools.setup(
     "DAG workflows which empowers all workflow libraries in Ladybug Tools!",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/ladybug-tools/queenbee",
+    url="https://github.com/pollination/queenbee",
     packages=setuptools.find_packages(exclude=["tests", "docs"]),
     install_requires=requirements,
     extras_require={
