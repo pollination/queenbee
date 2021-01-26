@@ -170,16 +170,16 @@ class Plugin(BaseModel):
 
         self.metadata.to_yaml(
             os.path.join(folder_path, 'package.yaml'),
-            exclude_unset=True
+            exclude_unset=False
         )
         self.config.to_yaml(os.path.join(
-            folder_path, 'config.yaml'), exclude_unset=True)
+            folder_path, 'config.yaml'), exclude_unset=False)
 
         for function in self.functions:
             function.to_yaml(
                 os.path.join(folder_path, 'functions',
                              f'{function.name}.yaml'),
-                exclude_unset=True
+                exclude_unset=False
             )
 
         if readme_string is not None:
