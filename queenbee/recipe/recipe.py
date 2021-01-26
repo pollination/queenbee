@@ -263,7 +263,7 @@ class Recipe(BaseModel):
             folder_path {str} -- The path to the recipe folder
         """
 
-        self_dict = json.loads(self.json(by_alias=True, exclude_unset=True))
+        self_dict = json.loads(self.json(by_alias=True, exclude_unset=False))
 
         with open(os.path.join(folder_path, 'dependencies.yaml'), 'w') as f:
             f.write(
@@ -314,7 +314,7 @@ class Recipe(BaseModel):
         os.makedirs(os.path.join(folder_path, 'flow'), exist_ok=True)
 
         self.metadata.to_yaml(
-            os.path.join(folder_path, 'package.yaml'), exclude_unset=True
+            os.path.join(folder_path, 'package.yaml'), exclude_unset=False
         )
 
         self.write_dependency_file(folder_path)
@@ -322,7 +322,7 @@ class Recipe(BaseModel):
         for dag in self.flow:
             dag.to_yaml(
                 os.path.join(folder_path, 'flow', f'{dag.name}.yaml'),
-                exclude_unset=True
+                exclude_unset=False
             )
 
         if readme_string is not None:
