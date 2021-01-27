@@ -449,7 +449,7 @@ class DAGJSONObjectInput(DAGGenericInput):
     """
     type: constr(regex='^DAGJSONObjectInput$') = 'DAGJSONObjectInput'
 
-    default: Dict = Field(
+    default: Union[List, Dict] = Field(
         None,
         description='Default value to use for an input if a value was not supplied.'
     )
