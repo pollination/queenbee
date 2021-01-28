@@ -482,7 +482,7 @@ class DAGJSONObjectInputAlias(DAGGenericInputAlias):
     """
     type: constr(regex='^DAGJSONObjectInputAlias$') = 'DAGJSONObjectInputAlias'
 
-    default: Union[List, Dict] = Field(
+    default: Dict = Field(
         None,
         description='Default value to use for an input if a value was not supplied.'
     )

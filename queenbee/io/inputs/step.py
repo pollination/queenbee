@@ -123,7 +123,7 @@ class StepJSONObjectInput(FunctionJSONObjectInput):
 
     type: constr(regex='^StepJSONObjectInput$') = 'StepJSONObjectInput'
 
-    value: Union[List, Dict]
+    value: Dict
 
 
 StepInputs = Union[
