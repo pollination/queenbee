@@ -96,7 +96,7 @@ class StepJSONObjectOutput(FunctionJSONObjectOutput):
 
     type: constr(regex='^StepJSONObjectOutput$') = 'StepJSONObjectOutput'
 
-    value: Union[List, Dict]
+    value: Dict
 
 
 StepOutputs = Union[
