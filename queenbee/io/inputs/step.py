@@ -184,4 +184,9 @@ def from_template(template: Union[DAGInputs, FunctionInputs], value: Any) -> Ste
     if template.__class__ in [DAGJSONObjectInput, FunctionJSONObjectInput]:
         if isinstance(template_dict['value'], str):
             template_dict['value'] = json.loads(template_dict['value'])
-        return StepJSONObjectInput.parse_obj(template_dict)
+        try:
+            # Try to parse JSON as a dict
+            return StepJSONObjectInput.parse_obj(template_dict)
+        except:
+            # Try to parse JSON as an array
+            return StepArrayInput.parse_obj(template_dict)
