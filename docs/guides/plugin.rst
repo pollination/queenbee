@@ -91,9 +91,8 @@ We will be adding a few more fields for demonstration purposes. Overwrite the co
 Your First Function
 -------------------
 We are now finally ready to write a Function. Functions are the key ingredients of a plugin. A Function
-defines a parametrized command run in a terminal. You can refer to the 
+defines a parameterized command run in a terminal. You can refer to the 
 `function schema definition  <../_static/redoc-plugin.html#tag/function_model>`_ to understand the components of a function.
-
 
 We listed some function we wanted to create based on examples provided by the EneryPlus documentation. 
 
@@ -109,6 +108,9 @@ Now create a new file called ``run-simulation.yaml`` in the ``functions`` folder
 ..  literalinclude:: ../../tests/assets/plugins/folders/energy-plus/functions/run-simulation.yaml
     :language: yaml
 
+The paths of the files that are referenced in the ``inputs`` block will be
+interpreted relative to the ``workdir`` of the container used to execute the
+function.
 
 Your folder should now look something like this::
 
