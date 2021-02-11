@@ -56,8 +56,9 @@ The container image documentation explains that::
 
   > docker run -it --rm -v $(pwd):/var/simdata nrel/energyplus EnergyPlus
 
-This means that when the Docker container is run, the command is run from the ``/var/simdata`` directory. This
-is what we call the Working Directory or ``wordir`` for short.
+This means that when the Docker container is run, the daemon will mount the
+current directory into the container's ``/var/simdata`` directory. This
+is also the container's Working Directory or ``workdir`` for short.
 
 Overwrite the contents of the ``config.yaml`` file with the YAML code block below:
 
