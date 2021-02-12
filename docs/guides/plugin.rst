@@ -36,7 +36,7 @@ The ``config.yaml`` file contains information to indicate what underlying softwa
 the plugin's functions. We will be focusing on the ``docker`` configuration.
 
 If you are unfamiliar with ``docker``, you can refer to the introduction
-here <https://www.docker.com/resources/what-container>.
+`here <https://www.docker.com/resources/what-container>`_.
 
 You can check the full schema definition for a plugin Config `here <../_static/redoc-plugin.html#tag/config_model>`_
 
