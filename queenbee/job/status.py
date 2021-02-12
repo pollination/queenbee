@@ -5,8 +5,9 @@ A step status keeps track of the outcome of a given job or a job step.
 from enum import Enum
 from datetime import datetime
 from pydantic import Field, constr
-from typing import List, Dict
+from typing import List, Dict, Union
 
+from ..base.basemodel import BaseModel
 from ..io.common import IOBase
 from ..io.inputs.step import StepStringInput, StepInputs
 from ..io.outputs.step import StepOutputs

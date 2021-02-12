@@ -57,7 +57,7 @@ class ParametricJob(Job):
         description='Input arguments for this job.'
     )
 
-    def yield_jobs(self) -> Generator[Job]:
+    def yield_jobs(self) -> Generator[Job, None, None]:
         for args in self.arguments:
             yield Job(
                 source=self.source,

@@ -5,7 +5,7 @@ For more information on plugins see plugin module.
 
 import json
 from typing import Union, List, Dict, Any
-from pydantic import constr, Field
+from pydantic import constr, Field, root_validator
 
 from .function import FunctionStringInput, FunctionIntegerInput, \
     FunctionNumberInput, FunctionBooleanInput, FunctionFolderInput, \
