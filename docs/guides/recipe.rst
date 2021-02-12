@@ -112,7 +112,7 @@ is, surprisingly, the main graph.
 DAG Tasks
 ---------
 
-As mentioned above, a Task can itself be a DAG. This both allows comlpex graphs
+As mentioned above, a Task can itself be a DAG. This both allows complex graphs
 to be reused inside other graphs and allows isolating related Tasks into a logical unit.
 
 Add a new file at the path ``flow/dag.yaml``. Inside that file, place the following snippet:
