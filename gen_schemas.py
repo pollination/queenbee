@@ -10,7 +10,7 @@ from pydantic_openapi_helper.core import get_openapi
 from pydantic_openapi_helper.inheritance import class_mapper
 
 from queenbee.repository import RepositoryIndex
-from queenbee.job import Job, JobStatus
+from queenbee.job import Job, JobStatus, RunStatus
 from queenbee.recipe import Recipe, RecipeInterface
 from queenbee.plugin import Plugin
 
@@ -52,7 +52,7 @@ info = {
 with open(os.path.join(folder, 'job-openapi.json'), 'w') as out_file:
     json.dump(
         get_openapi(
-            base_object=[Job], title='Queenbee Job Schema',
+            base_object=[Job, JobStatus, RunStatus], title='Queenbee Job Schema',
             description='Schema documentation for Queenbee Jobs',
             version=VERSION
         ),
@@ -93,8 +93,28 @@ with open(os.path.join(folder, 'repository-openapi.json'), 'w') as out_file:
         indent=2
     )
 
+
+with open(os.path.join(folder, 'job-schemas-combined.json'), 'w') as out_file:
+    from pydantic import BaseModel
+    from queenbee.io.inputs.step import StepInputs
+    from queenbee.io.outputs.step import StepOutputs
+    from typing import List, Union
+    class JobSchemas(BaseModel):
+        job: Job
+        job_status: JobStatus
+        run_status: RunStatus
+        results: List[Union[StepInputs, StepOutputs]]
+
+    out_file.write(JobSchemas.schema_json())
+
 with open(os.path.join(folder, 'job-schema.json'), 'w') as out_file:
     out_file.write(Job.schema_json())
+
+with open(os.path.join(folder, 'job-status-schema.json'), 'w') as out_file:
+    out_file.write(JobStatus.schema_json())
+
+with open(os.path.join(folder, 'run-status-schema.json'), 'w') as out_file:
+    out_file.write(RunStatus.schema_json())
 
 with open(os.path.join(folder, 'plugin-schema.json'), 'w') as out_file:
     out_file.write(Plugin.schema_json())

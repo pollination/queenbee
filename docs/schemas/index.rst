@@ -14,5 +14,5 @@ executor.
 
    plugins
    recipes
-   repository
    jobs
+   repository

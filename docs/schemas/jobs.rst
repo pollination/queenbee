@@ -26,7 +26,7 @@ Schema
       NProgress.start();
     </script>
     <script>
-      jsonSchemaViewer(window, '../_static/schemas/job-schema.json')
+      jsonSchemaViewer(window, '../_static/schemas/job-schemas-combined.json')
     </script>
     <script>
       NProgress.done();
@@ -40,7 +40,11 @@ Schema
 
 OpenAPI Docs 
 -------------
-You can find the Open API Docs formatted by redoc `here <../_static/redoc-job.html#tag/job_model>`_.
+You can find the Open API Docs formatted by redoc: 
+
+- `Job Schema <../_static/redoc-job.html#tag/job_model>`_.
+- `Job Status Schema <../_static/redoc-job.html#tag/jobstatus_model>`_.
+- `Run Status Schema <../_static/redoc-job.html#tag/runstatus_model>`_.
 
 OpenAPI Definition 
 -------------------
@@ -48,7 +52,11 @@ You can find the OpenAPI JSON definition `here <../_static/schemas/job-openapi.j
 
 JSON Schema Definition 
 -----------------------
-You can find the JSON Schema definition `here <../_static/schemas/job-schema.json>`_.
+You can find the JSON Schema definitions:
+
+- `Job Schema <../_static/schemas/job-schema.json>`_.
+- `Job Status Schema <../_static/schemas/job-status-schema.json>`_.
+- `Run Status Schema <../_static/schemas/run-status-schema.json>`_.
 
 
 Examples
