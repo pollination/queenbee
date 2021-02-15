@@ -1,9 +1,11 @@
 from typing import Dict, List, Generator
+from datetime import datetime
+
 from pydantic import Field, constr
 
 from ..base.basemodel import BaseModel
 from ..io.inputs.job import JobArguments
-
+from .status import BaseStatus
 
 class Job(BaseModel):
     """Queenbee Job.
@@ -19,7 +21,7 @@ class Job(BaseModel):
         description='The source url for downloading the recipe.'
     )
 
-    arguments: List[JobArguments] = Field(
+    arguments: List[List[JobArguments]] = Field(
         None,
         description='Input arguments for this job.'
     )
@@ -42,25 +44,61 @@ class Job(BaseModel):
     )
 
 
-class ParametricJob(Job):
-    """Queenbee Parametric Job.
+class JobStatus(BaseModel):
+    """Parametric Job Status."""
 
-    A ParametricJob is an object to submit a list of arguments to execute
-    the same Queenbee Recipe using multiple combinations of arguments.
-    """
     api_version: constr(regex='^v1beta1$') = Field('v1beta1', readOnly=True)
 
-    type: constr(regex='^ParametricJob$') = 'ParametricJob'
+    type: constr(regex='^JobStatus$') = 'JobStatus'
 
-    arguments: List[List[JobArguments]] = Field(
-        None,
-        description='Input arguments for this job.'
+    id: str = Field(
+        ...,
+        description='The ID of the individual job.'
     )
 
-    def yield_jobs(self) -> Generator[Job, None, None]:
-        for args in self.arguments:
-            yield Job(
-                source=self.source,
-                arguments=args,
-                labels=self.labels,
-            )
+    status: str = Field(
+        ...,
+        description='The status of this task. Can be "Running", "Succeeded", "Failed" '
+        'or "Error"'
+    )
+
+    message: str = Field(
+        None,
+        description='Any message produced by the task. Usually error/debugging hints.'
+    )
+
+    started_at: datetime = Field(
+        ...,
+        description='The time at which the task was started'
+    )
+
+    finished_at: datetime = Field(
+        None,
+        description='The time at which the task was completed'
+    )
+
+    source: str = Field(
+        None,
+        description='Source url for the status object. It can be a recipe or a function.'
+    )
+
+    runs_pending: int = Field(
+        0,
+        description='The count of runs that are pending'
+    )
+
+    runs_running: int = Field(
+        0,
+        description='The count of runs that are running'
+    )
+
+    runs_completed: int = Field(
+        0,
+        description='The count of runs that have completed'
+    )
+
+    runs_failed: int = Field(
+        0,
+        description='The count of runs that have failed'
+    )
+
