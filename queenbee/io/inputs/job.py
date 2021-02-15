@@ -1,5 +1,5 @@
 """Input objects for Queenbee jobs."""
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Any
 
 from pydantic import Field, constr
 
@@ -19,7 +19,7 @@ class JobArgument(BaseModel):
         'Job\'s DAG template.'
     )
 
-    value: str = Field(
+    value: Any = Field(
         ...,
         description='The value of the job argument.'
     )
