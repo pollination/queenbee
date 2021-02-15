@@ -6,6 +6,7 @@ runs.
 
 from typing import List, Dict, Union
 from ..io.inputs.step import StepStringInput, StepInputs
+from ..io.outputs.step import StepOutputs
 from .run import RunStatus
 
 class Results(List[Union[StepInputs, StepOutputs]]):
