@@ -132,7 +132,7 @@ external_docs = {
     "url": "./queenbee_inheritance.json"
 }
 
-models = [Recipe, Plugin, Job, RepositoryIndex, RecipeInterface, JobStatus]
+models = [Recipe, Plugin, Job, RepositoryIndex, RecipeInterface, JobStatus, RunStatus]
 openapi = get_openapi(
     models,
     title='Queenbee Schema',
