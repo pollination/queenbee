@@ -11,7 +11,7 @@ from pydantic import Field, constr
 from ..plugin import Plugin
 from ..recipe import Recipe, BakedRecipe
 
-from ..base.request import make_request, urljoin
+from ..base.request import make_request, urljoin, resolve_local_source
 from ..base.metadata import MetaData
 
 
@@ -242,7 +242,10 @@ class PackageVersion(MetaData):
         Returns:
             PackageVersion -- A package version object
         """
-        file_path = os.path.normpath(os.path.abspath(package_path)).replace('\\', '/')
+        if package_path.startswith('file:'):
+            file_path = resolve_local_source(package_path, as_uri=False)
+        else:
+            file_path = package_path.replace('\\', '/')
 
         with open(file_path, 'rb') as f:
             filebytes = BytesIO(f.read())
@@ -254,11 +257,8 @@ class PackageVersion(MetaData):
     def fetch_package(self, source_url: str = None, verify_digest: bool = True,
                       auth_header: Dict[str, str] = {}) -> 'PackageVersion':
         if source_url.startswith('file:'):
-            source_path = source_url.split('file:///')[1]
-            if os.path.isabs(source_path):
-                package_path = os.path.join(source_path, self.url)
-            else:
-                package_path = os.path.join(os.getcwd(), source_path, self.url)
+            source_path = resolve_local_source(source_url)
+            package_path = os.path.join(source_path, self.url)
 
             return self.from_package(package_path)
 

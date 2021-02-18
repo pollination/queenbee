@@ -19,7 +19,7 @@ class RepositoryReference(BaseModel):
 
     @validator('path')
     def remote_or_local(cls, v):
-        """Determine whether the path is local or remote (ie: http)"""
+        """Format local uri as needed (ie: file:///)"""
         return get_uri(v)
 
     def fetch(self, auth_header: Dict[str, str] = {}) -> 'RepositoryIndex':
