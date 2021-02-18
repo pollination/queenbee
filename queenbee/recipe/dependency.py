@@ -1,11 +1,11 @@
 """Queenbee dependency class."""
-import os
 from typing import Dict
 from enum import Enum
 from pydantic import Field, constr
 
+
 from ..base.basemodel import BaseModel
-from ..base.request import make_request, urljoin
+from ..base.request import make_request, urljoin, resolve_local_source
 
 
 class DependencyKind(str, Enum):
@@ -94,12 +94,8 @@ class Dependency(BaseModel):
         """
         from ..repository.index import RepositoryIndex
 
-        if self.source.startswith('file:///'):
-            rel_path = self.source.split('file:///')[1]
-
-            abs_path = os.path.join(os.getcwd(), rel_path, 'index.json')
-
-            url = f'file:///{abs_path}'
+        if self.source.startswith('file:'):
+            url = resolve_local_source(self.source) + '/index.json'
         else:
             url = urljoin(self.source, 'index.json')
 

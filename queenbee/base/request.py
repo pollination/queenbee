@@ -1,25 +1,40 @@
-import pathlib
 import os
+import pathlib
+import platform
 from urllib import request
-from typing import Union, Dict
-from .basemodel import BaseModel
+from typing import Dict
 
 USER_AGENT_STRING = 'Queenbee'
 
 
 def get_uri(url):
     """Resolve uri for urls and local files."""
-
-    if url.startswith('file:///'):
+    if url.startswith('file://'):
         return url.replace('\\', '/')
     elif url.startswith('http://') or url.startswith('https://'):
         return url
 
-    # a local file 
+    # a local file but is not formatted as local url
+    pre = 'file:///' if platform.system() == 'Windows' else 'file://'
+    return resolve_local_source(pre + url)
+
+
+def resolve_local_source(path, as_uri=True):
+    """Get an absolute path for a file:// or file:/// path.
+
+    Apparently both of them are used: https://en.wikipedia.org/wiki/File_URI_scheme
+    """
+    sep = 'file:///' if platform.system() == 'Windows' else 'file://'
+
     try:
-        uri = pathlib.Path(os.path.abspath(url)).as_uri()
-    except ValueError:
-        uri = url
+        rel_path = path.split(sep)[1]
+    except IndexError:
+        raise ValueError('Invalid local path: {path}')
+
+    abs_path = os.path.abspath(rel_path)
+
+    uri = pathlib.Path(abs_path).as_uri() if as_uri \
+        else pathlib.Path(abs_path).as_posix()
 
     return uri
 
@@ -46,7 +61,7 @@ def make_request(url: str, auth_header: Dict[str, str] = {}) -> str:
     Returns:
         str: [description]
     """
-    if auth_header == None:
+    if auth_header is None:
         auth_header = {}
 
     auth_header.update({
