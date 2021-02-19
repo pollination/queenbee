@@ -7,4 +7,4 @@ class OS:
     is_windows: bool = platform.system() == 'Windows'
     is_nix: bool = platform.system() == 'Linux'
 
-    file_uri_prefix = 'file:///' if is_windows else 'file://'
+    file_uri_prefix: str = 'file:///' if is_windows else 'file://'
