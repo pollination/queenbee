@@ -4,6 +4,8 @@ import platform
 from urllib import request
 from typing import Dict
 
+from ..env.os import OS
+
 USER_AGENT_STRING = 'Queenbee'
 
 
@@ -14,9 +16,7 @@ def get_uri(url):
     elif url.startswith('http://') or url.startswith('https://'):
         return url
 
-    # a local file but is not formatted as local url
-    pre = 'file:///' if platform.system() == 'Windows' else 'file://'
-    return resolve_local_source(pre + url)
+    return resolve_local_source(OS.file_uri_prefix + url)
 
 
 def resolve_local_source(path, as_uri=True):
@@ -24,10 +24,9 @@ def resolve_local_source(path, as_uri=True):
 
     Apparently both of them are used: https://en.wikipedia.org/wiki/File_URI_scheme
     """
-    sep = 'file:///' if platform.system() == 'Windows' else 'file://'
 
     try:
-        rel_path = path.split(sep)[1]
+        rel_path = path.split(OS.file_uri_prefix)[1]
     except IndexError:
         raise ValueError('Invalid local path: {path}')
 
