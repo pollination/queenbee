@@ -110,9 +110,170 @@ the Recipe.
 Flow
 ----
 
-The ``flow/`` directory contains the YAML definitions of the DAGs of the recipe
-as YAML files. At a minimum, the directory must contain a ``main.yaml`` which
-is, surprisingly, the main graph.
+The ``flow`` key of the Recipe can be though of as its ``main`` method. It
+describes how all of the Tasks of the Recipe feed pass inputs and outputs
+between themselves. The following snippet is quite long, but shows a working
+flow of a parametric energy analysis Recipe.
+
+.. code-block:: yaml
+
+  flow:
+  - type: DAG
+    annotations: {}
+    inputs:
+    - type: DAGFileInput
+      annotations: {}
+      name: idf
+      description: Input energyplus idf file.
+      default: null
+      alias: []
+      required: true
+      spec: null
+      extensions:
+      - .idf
+    - type: DAGFileInput
+      annotations: {}
+      name: weather
+      description: Input wea weather file.
+      default: null
+      alias: []
+      required: true
+      spec: null
+      extensions:
+      - .epw
+    outputs:
+    - type: DAGFolderOutput
+      annotations: {}
+      name: outputs
+      description: output folder
+      from:
+        type: FolderReference
+        annotations: {}
+        path: ep-results
+      alias: []
+      required: true
+    name: f634208a54c93a7f08a38336187e7e17b437bd929e4f56d3b16b7b9510b496cb/ep-run
+    fail_fast: true
+    tasks:
+    - type: DAGTask
+      annotations: {}
+      name: run-ep-simulation
+      template: 31686b3b4a263a7cffa4048d70eed36e7b294a0a0cb8318ae9f296fa400f9501/run-simulation
+      needs: []
+      arguments:
+      - type: TaskPathArgument
+        annotations: {}
+        name: weather
+        from:
+          type: InputFileReference
+          annotations: {}
+          variable: weather
+        sub_path: null
+      - type: TaskPathArgument
+        annotations: {}
+        name: idf
+        from:
+          type: InputFileReference
+          annotations: {}
+          variable: idf
+        sub_path: null
+      loop: null
+      sub_folder: null
+      returns:
+      - type: TaskPathReturn
+        annotations: {}
+        name: outputs
+        description: null
+        path: ep-results
+        required: true
+  - type: DAG
+    annotations: {}
+    inputs:
+    - type: DAGArrayInput
+      annotations: {}
+      name: cities
+      description: A list of names that matches the name of the weather file. Without
+        the epw (e.g. chicago). A weather file name chicago.epw should exist in weather_files
+        folder.
+      default: []
+      alias: []
+      required: true
+      spec: null
+      items_type: String
+    - type: DAGFileInput
+      annotations: {}
+      name: idf
+      description: Path to input idf file.
+      default: null
+      alias: []
+      required: true
+      spec: null
+      extensions:
+      - idf
+    - type: DAGFolderInput
+      annotations: {}
+      name: weather-files
+      description: A folder with several epw files. The simulation will be executed
+        for each weather file in parallel.
+      default: null
+      alias: []
+      required: true
+      spec: null
+    outputs: []
+    name: f634208a54c93a7f08a38336187e7e17b437bd929e4f56d3b16b7b9510b496cb/main
+    fail_fast: true
+    tasks:
+    - type: DAGTask
+      annotations: {}
+      name: energy-simulation-parallel-run
+      template: f634208a54c93a7f08a38336187e7e17b437bd929e4f56d3b16b7b9510b496cb/ep-run
+      needs: []
+      arguments:
+      - type: TaskPathArgument
+        annotations: {}
+        name: weather
+        from:
+          type: InputFolderReference
+          annotations: {}
+          variable: weather-files
+        sub_path: '{{item}}.epw'
+      - type: TaskPathArgument
+        annotations: {}
+        name: idf
+        from:
+          type: InputFileReference
+          annotations: {}
+          variable: idf
+        sub_path: null
+      loop:
+        type: DAGTaskLoop
+        annotations: {}
+        from:
+          type: InputReference
+          annotations: {}
+          variable: cities
+      sub_folder: runs/{{item}}
+      returns: []
+
+The ``flow`` is made of an array of two Tasks. The first, ``run-ep-simulation``
+references the function named ``run-simulation`` from the hash of a particular
+plugin. The function requries two arguments corresponding to the elements of
+its ``arguments`` array, a ``weather`` file and an ``idf`` file.
+
+The second element in the array is slightly more interesting. The ``DAG`` takes
+in several inputs as a ``DAGArrayInput``. The ones to focus on are
+``weather-files`` and ``cities``. When this Recipe is run against a project
+folder, that folder needs to provide a directory on the file system that is
+populated with multiple ``.epw`` files.
+
+In the first element of the ``tasks`` array of the ``DAG`` both of these inputs
+are referenced. When the Recipe is executed on a workflow executor like Luigi,
+the elements of the input array will execute the function referenced in the
+``template`` field in parallel. This is the key to the reduced execution times
+that ``queenbee`` is able to offer: complex simulations can be packaged into
+plugins which can then be re-used across many inputs trivially by specifying
+arrays of inputs. The executor that runs these can then run them in parallel
+without dealing with complex OS or runtime specific concurrency models.
 
 DAG Tasks
 ---------
@@ -121,17 +282,84 @@ As mentioned above, a Task can itself be a DAG. This both allows complex graphs
 to be reused inside other graphs and allows isolating related Tasks into a
 logical unit.
 
-Add a new file at the path ``flow/dag.yaml``. Inside that file, place the
-following snippet:
+The ``DAG`` examined above, for instance:
 
 .. code-block:: yaml
 
-  type: DAG
+  - type: DAG
+    annotations: {}
+    inputs:
+    - type: DAGArrayInput
+      annotations: {}
+      name: cities
+      description: A list of names that matches the name of the weather file. Without
+        the epw (e.g. chicago). A weather file name chicago.epw should exist in weather_files
+        folder.
+      default: []
+      alias: []
+      required: true
+      spec: null
+      items_type: String
+    - type: DAGFileInput
+      annotations: {}
+      name: idf
+      description: Path to input idf file.
+      default: null
+      alias: []
+      required: true
+      spec: null
+      extensions:
+      - idf
+    - type: DAGFolderInput
+      annotations: {}
+      name: weather-files
+      description: A folder with several epw files. The simulation will be executed
+        for each weather file in parallel.
+      default: null
+      alias: []
+      required: true
+      spec: null
+    outputs: []
+    name: f634208a54c93a7f08a38336187e7e17b437bd929e4f56d3b16b7b9510b496cb/main
+    fail_fast: true
+    tasks:
+    - type: DAGTask
+      annotations: {}
+      name: energy-simulation-parallel-run
+      template: f634208a54c93a7f08a38336187e7e17b437bd929e4f56d3b16b7b9510b496cb/ep-run
+      needs: []
+      arguments:
+      - type: TaskPathArgument
+        annotations: {}
+        name: weather
+        from:
+          type: InputFolderReference
+          annotations: {}
+          variable: weather-files
+        sub_path: '{{item}}.epw'
+      - type: TaskPathArgument
+        annotations: {}
+        name: idf
+        from:
+          type: InputFileReference
+          annotations: {}
+          variable: idf
+        sub_path: null
+      loop:
+        type: DAGTaskLoop
+        annotations: {}
+        from:
+          type: InputReference
+          annotations: {}
+          variable: cities
+      sub_folder: runs/{{item}}
+      returns: []
 
-This file ties three key concepts together. The files itself defines that it is
-of ``type: DAG`` and has a ``tasks`` array of Task objects. The single Task
-that we define uses the function ``daylight-coefficient`` from the
-``honeybee-radiance`` Plugin that is defined in ``dependencies.yaml``.
+...contains a ``tasks`` array which is analogous to the ``flow`` array from the
+top-level Recipe. Within this DAG, nested Tasks can be sequenced and have their
+inputs and outputs linked together to form useful subroutines, analogous to
+defining resuable methods in a typical programming language. This is what
+allows ``queenbee`` to isolate complex flows into reusable chunks.
 
 Referencing Outputs to Inputs
 -----------------------------
