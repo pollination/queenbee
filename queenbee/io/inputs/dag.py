@@ -270,7 +270,9 @@ class DAGFolderInput(DAGGenericInput):
     @validator('required', always=True)
     def check_required(cls, v, values):
         """Overwrite check_required fro artifacts to allow optional artifacts."""
-        default = values.get('default', None)
+        if 'default' not in values:
+            return v
+        default = values.get('default')
         name = values.get('name', None)
         if default is None and v is False:
             warnings.warn(
