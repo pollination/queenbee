@@ -72,14 +72,14 @@ non-executable fields of ``package.json`` such as ``name``, ``version``,
 * **tag**: The tag of the recipe.
 * **app_version**: The version of the application.
 * **keywords**: A list of strings that are related to the package.
-* **maintainers**: A list of ``Maintainer`` objects that describe the contact
+* **maintainers**: A list of ``Maintainer`` `objects <https://pollination.github.io/queenbee/_static/redoc-recipe.html#tag/maintainer_model>`_ that describe the contact
   information of the people responsible for the recipe (you, in this case).
 * **home**: The homepage for this Recipe.
-* **sources**: A list of necessary container image URIs.
+* **sources**: A list of necessary container image URIs, relevant issue trackers, source code, etc.
 * **icon**: A publicly-accessible image URI to give the recipe a friendly face.
 * **deprecated**: Whether or not the recipe is in active development.
 * **description**: A textual description, analogous to a README.
-* **license**: A valid `SPDX Identifier <https://spdx.org/licenses/>`_ which
+* **license**: A valid ``License`` `object <https://pollination.github.io/queenbee/_static/redoc-recipe.html#tag/license_model>`_ which
   corresponds to the text in the ``LICENSE`` file.
 
 Into the ``package.yaml`` file you can paste the following snippet:
@@ -87,7 +87,6 @@ Into the ``package.yaml`` file you can paste the following snippet:
 .. code-block:: yaml
 
   type: MetaData
-  annotations: {}
   name: annual-daylight
   tag: 0.4.0
   app_version: null
@@ -98,7 +97,6 @@ Into the ``package.yaml`` file you can paste the following snippet:
   - annual-daylight
   maintainers:
   - type: Maintainer
-    annotations: {}
     name: Your Name
     email: your@email.com
   sources:
@@ -108,7 +106,6 @@ Into the ``package.yaml`` file you can paste the following snippet:
   description: Annual daylight recipe for Pollination.
   license:
     type: License
-    annotations: {}
     name: MIT
     url: https://spdx.org/licenses/MIT.html
 
@@ -129,7 +126,6 @@ with the following snippet:
 
   dependencies:
   - type: Dependency
-    annotations: {}
     kind: plugin
     name: honeybee-radiance
     hash: null
@@ -180,7 +176,6 @@ this:
 
   tasks:
   - type: DAGTask
-    annotations: {}
     name: annual-daylight-raytracing
     template: annual-daylight-ray-tracing
     needs:
@@ -193,104 +188,80 @@ this:
     - create-rad-folder
     arguments:
     - type: TaskArgument
-      annotations: {}
       name: sensor-count
       from:
         type: InputReference
-        annotations: {}
         variable: sensor-count
     - type: TaskArgument
-      annotations: {}
       name: radiance-parameters
       from:
         type: InputReference
-        annotations: {}
         variable: radiance-parameters
     - type: TaskPathArgument
-      annotations: {}
       name: octree-file-with-suns
       from:
         type: TaskFileReference
-        annotations: {}
         name: create-octree-with-suns
         variable: scene-file
       sub_path: null
     - type: TaskPathArgument
-      annotations: {}
       name: octree-file
       from:
         type: TaskFileReference
-        annotations: {}
         name: create-octree
         variable: scene-file
       sub_path: null
     - type: TaskArgument
-      annotations: {}
       name: grid-name
       from:
         type: ValueReference
-        annotations: {}
         value: '{{item.full_id}}'
     - type: TaskPathArgument
-      annotations: {}
       name: sensor-grid
       from:
         type: TaskFolderReference
-        annotations: {}
         name: create-rad-folder
         variable: model-folder
       sub_path: grid/{{item.full_id}}.pts
     - type: TaskPathArgument
-      annotations: {}
       name: sky-matrix
       from:
         type: TaskFileReference
-        annotations: {}
         name: create-total-sky
         variable: sky-matrix
       sub_path: null
     - type: TaskPathArgument
-      annotations: {}
       name: sky-dome
       from:
         type: TaskFileReference
-        annotations: {}
         name: create-sky-dome
         variable: sky-dome
       sub_path: null
     - type: TaskPathArgument
-      annotations: {}
       name: sky-matrix-direct
       from:
         type: TaskFileReference
-        annotations: {}
         name: create-direct-sky
         variable: sky-matrix
       sub_path: null
     - type: TaskPathArgument
-      annotations: {}
       name: sunpath
       from:
         type: TaskFileReference
-        annotations: {}
         name: generate-sunpath
         variable: sunpath
       sub_path: null
     - type: TaskPathArgument
-      annotations: {}
       name: sun-modifiers
       from:
         type: TaskFileReference
-        annotations: {}
         name: generate-sunpath
         variable: sun-modifiers
       sub_path: null
     loop:
       type: DAGTaskLoop
-      annotations: {}
       from:
         type: TaskReference
-        annotations: {}
         name: create-rad-folder
         variable: sensor-grids
     sub_folder: initial_results/{{item.name}}
@@ -315,18 +286,15 @@ like this:
 .. code-block:: yaml
 
   - type: DAGTask
-    annotations: {}
     name: create-octree
     template: honeybee-radiance/create-octree
     needs:
     - create-rad-folder
     arguments:
     - type: TaskPathArgument
-      annotations: {}
       name: model
       from:
         type: TaskFolderReference
-        annotations: {}
         name: create-rad-folder
         variable: model-folder
       sub_path: null
@@ -334,7 +302,6 @@ like this:
     sub_folder: null
     returns:
     - type: TaskPathReturn
-      annotations: {}
       name: scene-file
       description: null
       path: resources/scene.oct
@@ -354,30 +321,25 @@ element in the ``tasks`` array which looks like this:
 .. code-block:: yaml
 
   - type: DAGTask
-    annotations: {}
     name: create-rad-folder
     template: honeybee-radiance/create-radiance-folder
     needs: []
     arguments:
     - type: TaskPathArgument
-      annotations: {}
       name: input-model
       from:
         type: InputFileReference
-        annotations: {}
         variable: model
       sub_path: null
     loop: null
     sub_folder: null
     returns:
     - type: TaskPathReturn
-      annotations: {}
       name: model-folder
       description: null
       path: model
       required: true
     - type: TaskReturn
-      annotations: {}
       name: sensor-grids
       description: Sensor grids information.
 
@@ -422,10 +384,8 @@ array has a non-null ``loop`` key that looks like this:
 
   loop:
     type: DAGTaskLoop
-    annotations: {}
     from:
       type: TaskReference
-      annotations: {}
       name: split-grid
       variable: grids-list
 
@@ -437,35 +397,28 @@ This task the fifth element in the array and looks like this:
 .. code-block:: yaml
 
   - type: DAGTask
-    annotations: {}
     name: split-grid
     template: honeybee-radiance/split-grid
     needs: []
     arguments:
     - type: TaskArgument
-      annotations: {}
       name: sensor-count
       from:
         type: InputReference
-        annotations: {}
         variable: sensor-count
     - type: TaskPathArgument
-      annotations: {}
       name: input-grid
       from:
         type: InputFileReference
-        annotations: {}
         variable: sensor-grid
       sub_path: null
     loop: null
     sub_folder: null
     returns:
     - type: TaskReturn
-      annotations: {}
       name: grids-list
       description: null
     - type: TaskPathReturn
-      annotations: {}
       name: output-folder
       description: null
       path: sub_grids
