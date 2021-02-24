@@ -5,7 +5,7 @@ from typing import List, Dict
 
 import yaml
 from pydantic import BaseModel as PydanticBaseModel
-from pydantic import validator, Field, constr, Extra
+from pydantic import validator, Field, constr
 
 from .parser import parse_file
 from .variable import get_ref_variable
