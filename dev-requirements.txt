@@ -13,6 +13,6 @@ recommonmark==0.7.1
 twine==3.3.0
 click>=7.0
 click-plugins==1.1.1
-importlib-metadata==3.6.0
+importlib-metadata==3.7.0
 wheel==0.36.2
 setuptools==53.0.0
