@@ -5,12 +5,12 @@ In this section we will walk you through how to create a new Recipe.
 
 It should be noted though, that the recommended way to create a recipe from
 scratch is using
-`pollination-dsl<https://github.com/pollination/pollination-dsl>_`. The
+`pollination-dsl <https://github.com/pollination/pollination-dsl>`_. The
 ``pollination dsl translate`` command can create a ``queenbee`` recipe like the
 one that we will see here. However, creating the recipes by hand is tedious and
 error-prone. This example should primarily be a reference for learning more
 about how the schema works and seeing a use case than about the most practical
-way to author a.
+way to author the YAML files.
 
 Getting Started
 ---------------
@@ -74,9 +74,9 @@ non-executable fields of ``package.json`` such as ``name``, ``version``,
 * **keywords**: A list of strings that are related to the package.
 * **maintainers**: A list of ``Maintainer`` objects that describe the contact
   information of the people responsible for the recipe (you, in this case).
-* **home**: ?
-* **sources**: ?
-* **icon**: A publicly-accessible URI to give the recipe a friendly face.
+* **home**: The homepage for this Recipe.
+* **sources**: A list of necessary container image URIs.
+* **icon**: A publicly-accessible image URI to give the recipe a friendly face.
 * **deprecated**: Whether or not the recipe is in active development.
 * **description**: A textual description, analogous to a README.
 * **license**: A valid `SPDX Identifier <https://spdx.org/licenses/>`_ which
@@ -154,8 +154,9 @@ Because the recipe files are verbose, we will simply link to them and examine
 some snippets. These should be saved with the name of the link inside the
 ``flow`` directory.
 
-`main.yaml <https://storage.googleapis.com/lbt-blobs/documentation-samples/main.yaml>_`
-`annual-daylight-ray-tracing.yaml <https://storage.googleapis.com/lbt-blobs/documentation-samples/annual-daylight-ray-tracing.yaml>_`
+`main.yaml <https://storage.googleapis.com/lbt-blobs/documentation-samples/main.yaml>`_
+
+`annual-daylight-ray-tracing.yaml <https://storage.googleapis.com/lbt-blobs/documentation-samples/annual-daylight-ray-tracing.yaml>`_
 
 After downloading these, the directory should now look like this::
 
@@ -479,10 +480,10 @@ allows the Recipe to vary across parameters like this that cannot be known
 until runtime and allows it to discover inputs as it executes without require
 imperative instructions from the author (you).
 
-Working With Loops
+Conclusion
 ------------------
 
 Hopefully this gives a deeper understanding of the Recipe schema and how it
 allows workflows to be flexible and reused across execution environments. If
 you have questions, always feel free to open an issue or reach out on the
-`forum <https://discourse.ladybug.tools>_`. Thank you!
+`forum <https://discourse.ladybug.tools>`_. Thank you!
