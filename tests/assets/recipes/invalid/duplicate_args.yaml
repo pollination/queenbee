@@ -1,0 +1,30 @@
+metadata:
+  name: minimal-recipe
+  tag: 0.2.1
+
+dependencies:
+- kind: plugin
+  name: honeybee-radiance
+  tag: 1.2.3
+  source: https://example.com/test-repo
+
+flow:
+- name: main
+  inputs:
+  - name: folder-path
+    type: DAGStringInput
+    default: something
+  tasks:
+  - name: minimal-task
+    template: honeybee-radiance/10000-lux-sky
+    arguments:
+      - name: foo
+        type: TaskArgument
+        from:
+          type: ValueReference
+          value: test-value
+      - name: foo
+        type: TaskArgument
+        from:
+          type: ValueReference
+          value: test-value
