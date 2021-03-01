@@ -3,7 +3,7 @@ from typing import Union, List
 from pydantic import Field, validator, constr
 
 from ..base.basemodel import BaseModel
-from ..io.common import find_io_by_name
+from ..io.common import find_io_by_name, find_dup_items
 from ..io.reference import InputReference, TaskReference, ValueListReference, \
     InputFileReference, InputFolderReference, InputPathReference, \
     TaskFileReference, TaskFolderReference, TaskPathReference, \
@@ -110,9 +110,29 @@ class DAGTask(BaseModel):
                 find_io_by_name(arguments, ref_list[1])
         return v
 
+    @validator('arguments')
+    def check_duplicate_argument_name(cls, v, values):
+        v = [] if v is None else v
+        names = [arg.name for arg in v]
+        dup_arg = find_dup_items(names)
+        if dup_arg:
+            raise ValueError(
+                f'Duplicate argument name in task "{values["name"]}": {dup_arg}. '
+                f'Each task argument name should be unique.'
+            )
+        return v
+
     @validator('returns', always=True)
-    def set_default_returns(cls, v):
-        return [] if v is None else v
+    def check_duplicate_return_name(cls, v, values):
+        v = [] if v is None else v
+        names = [arg.name for arg in v]
+        dup_arg = find_dup_items(names)
+        if dup_arg:
+            raise ValueError(
+                f'Duplicate return name in task "{values["name"]}": {dup_arg}. '
+                f'Each task return name should be unique.'
+            )
+        return v
 
     @validator('arguments', always=True)
     def check_referenced_values(cls, v, values):

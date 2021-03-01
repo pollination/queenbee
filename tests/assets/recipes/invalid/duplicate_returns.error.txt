@@ -1,0 +1,1 @@
+((.|\n)*) Duplicate return name in task "minimal-task": \[\'foo\'\]. Each task return name should be unique. \(type=value_error\)
