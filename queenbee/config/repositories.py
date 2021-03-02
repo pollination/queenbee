@@ -1,11 +1,13 @@
 import os
 from typing import Dict
-from pydantic import Field, validator
+from pydantic import Field, validator, constr
 from ..base.basemodel import BaseModel
 from ..base.request import make_request, urljoin, get_uri
 
 
 class RepositoryReference(BaseModel):
+
+    type: constr(regex='^RepositoryReference$') = 'RepositoryReference'
 
     name: str = Field(
         ...,
