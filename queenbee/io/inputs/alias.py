@@ -7,7 +7,6 @@ the original input.
 """
 
 import os
-import warnings
 from typing import Dict, Union, List
 
 from pydantic import constr, Field, validator
@@ -302,14 +301,8 @@ class DAGFolderInputAlias(DAGGenericInputAlias):
     )
 
     @validator('required', always=True)
-    def check_required(cls, v, values):
+    def check_required(cls, v):
         """Overwrite check_required fro artifacts to allow optional artifacts."""
-        default = values.get('default', None)
-        name = values.get('name', None)
-        if default is None and v is False:
-            warnings.warn(
-                f'{cls.__name__}.{name} -> set to optional input artifact.'
-            )
         return v
 
     def validate_spec(self, value):
