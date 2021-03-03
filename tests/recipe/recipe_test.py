@@ -1,6 +1,7 @@
 from tests.base.io_test import BaseIOTest
 from tests.base.value_error import BaseValueErrorTest
 from tests.base.folder_test import BaseFolderTest
+from tests.base.hash_test import BaseHashTest
 
 from queenbee.recipe import Recipe
 
@@ -22,6 +23,13 @@ class TestValueError(BaseValueErrorTest):
 
 
 class TestFolder(BaseFolderTest):
+
+    klass = Recipe
+
+    asset_folder = ASSET_FOLDER
+
+
+class TestHash(BaseHashTest):
 
     klass = Recipe
 
