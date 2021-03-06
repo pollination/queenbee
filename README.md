@@ -32,7 +32,7 @@ or if you want to use the CLI
 
 You can access the full docs for this package and its CLI [here](https://ladybug.tools/queenbee).
 
-You can also access the [Schema Documentation](https://ladybug.tools/queenbee/redoc.html) and [raw OpenAPI definitions](https://ladybug.tools/queenbee/openapi.json).
+You can also access the [Schema Documentation](https://pollination.github.io/queenbee/schemas/index.html) and [raw OpenAPI definitions](https://pollination.github.io/queenbee/_static/schemas/plugin-schema.json).
 
 ## Local Development
 
