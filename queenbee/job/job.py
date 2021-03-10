@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Dict, List, Generator
 from datetime import datetime
 
@@ -5,7 +6,6 @@ from pydantic import Field, constr
 
 from ..base.basemodel import BaseModel
 from ..io.inputs.job import JobArguments
-from .status import BaseStatus
 
 class Job(BaseModel):
     """Queenbee Job.
@@ -44,6 +44,23 @@ class Job(BaseModel):
     )
 
 
+class JobStatusEnum(str, Enum):
+    """Enumaration of allowable status strings"""
+
+    # The job has been created
+    created = 'Created'
+    # The job folder is being prepared for execution and runs are being scheduled
+    pre_processing = 'Pre-Processing'
+    # Runs have been scheduled
+    running = 'Running'
+    # The job has failed to schedule runs
+    failed = 'Failed'
+    # All runs have either succeeded or failed
+    completed = 'Completed'
+    # Could not determine the status of the job
+    unknown = 'Unknown'
+
+
 class JobStatus(BaseModel):
     """Parametric Job Status."""
 
@@ -56,20 +73,19 @@ class JobStatus(BaseModel):
         description='The ID of the individual job.'
     )
 
-    status: str = Field(
-        ...,
-        description='The status of this task. Can be "Running", "Succeeded", "Failed" '
-        'or "Error"'
+    status: JobStatusEnum = Field(
+        JobStatusEnum.unknown,
+        description='The status of this job.'
     )
 
     message: str = Field(
         None,
-        description='Any message produced by the task. Usually error/debugging hints.'
+        description='Any message produced by the job. Usually error/debugging hints.'
     )
 
     started_at: datetime = Field(
         ...,
-        description='The time at which the task was started'
+        description='The time at which the job was started'
     )
 
     finished_at: datetime = Field(

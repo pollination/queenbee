@@ -11,12 +11,6 @@ class BaseStatus(IOBase):
     """Base Status model"""
     type: constr(regex='^BaseStatus$') = 'BaseStatus'
 
-    status: str = Field(
-        ...,
-        description='The status of this task. Can be "Running", "Succeeded", "Failed" '
-        'or "Error"'
-    )
-
     message: str = Field(
         None,
         description='Any message produced by the task. Usually error/debugging hints.'
