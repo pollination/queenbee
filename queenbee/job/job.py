@@ -55,6 +55,8 @@ class JobStatusEnum(str, Enum):
     running = 'Running'
     # The job has failed to schedule runs
     failed = 'Failed'
+    # The job has been cancelled by a user
+    cancelled = 'Cancelled'
     # All runs have either succeeded or failed
     completed = 'Completed'
     # Could not determine the status of the job

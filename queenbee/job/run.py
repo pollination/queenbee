@@ -122,6 +122,8 @@ class RunStatusEnum(str, Enum):
     post_processing = 'Post-Processing'
     # The run has failed
     failed = 'Failed'
+    # The run has been cancelled by a user
+    cancelled = 'Cancelled'
     # The run has completed succesfully
     succeeded = 'Succeeded'
     # Could not determine the status of the run
