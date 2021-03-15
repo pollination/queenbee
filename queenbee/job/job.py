@@ -120,3 +120,8 @@ class JobStatus(BaseModel):
         description='The count of runs that have failed'
     )
 
+    runs_cancelled: int =Field(
+        0,
+        description='The count of runs that have been cancelled'
+    )
+
