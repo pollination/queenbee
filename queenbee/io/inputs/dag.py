@@ -116,8 +116,18 @@ class DAGGenericInput(GenericInput):
         return v
 
     @validator('alias', always=True)
-    def create_empty_handler_list(cls, v):
-        return [] if v is None else v
+    def check_alias_required(cls, v):
+        v = [] if v is None else v
+        for alias in v:
+            default = alias.default
+            name = alias.name
+            required = alias.required
+            if default is None and required is False:
+                raise ValueError(
+                    f'{cls.__name__}Alias.{name} -> required should be true if no '
+                    f'default value is provided (default: {default}).'
+                )
+        return v
 
 
 class DAGStringInput(DAGGenericInput):
@@ -268,8 +278,16 @@ class DAGFolderInput(DAGGenericInput):
 
     @validator('required', always=True)
     def check_required(cls, v):
-        """Overwrite check_required fro artifacts to allow optional artifacts."""
-        return v
+        """Overwrite check_required for artifacts to allow optional artifacts."""
+        return [] if v is None else v
+
+    @validator('alias', always=True)
+    def check_alias_required(cls, v):
+        """Overwrite check_alias_required for artifacts.
+
+        This will allow None input for aliases for optional artifacts.
+        """
+        return [] if v is None else v
 
     def validate_spec(self, value):
         """Validate an input value against specification.
