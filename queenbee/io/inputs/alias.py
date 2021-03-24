@@ -88,17 +88,6 @@ class DAGGenericInputAlias(GenericInput):
 
         return v
 
-    @validator('required', always=True)
-    def check_required(cls, v, values):
-        """Ensure required is set to True when default value is not provided."""
-        default = values.get('default', None)
-        name = values.get('name', None)
-        if default is None and v is False:
-            raise ValueError(
-                f'{cls.__name__}.{name} -> required should be true if no default'
-                f' is provided (default: {default}).'
-            )
-        return v
 
     @validator('spec')
     def validate_default_value(cls, v, values):
