@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>queenbee.io.artifact_source module &#8212; queenbee  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/jsv.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/app.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/mode-json.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/theme-chrome.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.15.0/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tv4/1.2.7/tv4.min.js"></script>
+    <script src="../_static/js/ref-parser.min.js"></script>
+    <script src="../_static/js/jsv.js"></script>
+    <script src="../_static/js/app.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="queenbee.io.common module" href="queenbee.io.common.html" />
+    <link rel="prev" title="queenbee.io.outputs.task module" href="queenbee.io.outputs.task.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          queenbee</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#local-development">Local Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">How To</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/index.html#pre-flight-check">Pre-Flight Check</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/index.html#tools">Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/index.html#knowledge">Knowledge</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/index.html#guides">Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/plugin.html">Create A New Plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#configuration">Configuration</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../guides/plugin.html#docker-config">Docker Config</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#package-yaml">Package.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#your-first-function">Your First Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#packaging-and-sharing">Packaging and Sharing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#using-plugins">Using Plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/recipe.html">Create A New Recipe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#metadata-configuration">Metadata Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#flow">Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#dag-tasks">DAG Tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#referencing-outputs-to-inputs">Referencing Outputs to Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#artifact-path-context-resolution">Artifact Path Context Resolution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#working-with-loops">Working With Loops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/repository-create.html">Create A New Repository</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#adding-packages">Adding Packages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#repository-indexing">Repository Indexing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#overwriting-deleting-existing-package-versions">Overwriting/Deleting Existing Package Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/repository-manage.html">Manage Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-manage.html#local-index-management">Local Index Management</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/plugins.html">Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#fully-configured">Fully Configured</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#energy-plus">Energy Plus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#honeybee-radiance">Honeybee Radiance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/recipes.html">Recipes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/recipes.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/recipes.html#daylight-factor-recipe">Daylight-Factor Recipe</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/jobs.html">Jobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/repository.html">Repositories</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#json-schema-definition">JSON Schema Definition</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli/index.html#commands">Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli/main.html">Main</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/main.html#queenbee">queenbee</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/main.html#queenbee-viz">viz</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/plugin.html">Plugins</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin">queenbee plugin</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/recipe.html">Recipes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe">queenbee recipe</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-install">install</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-link">link</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/repository.html">Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/repository.html#queenbee-repository">queenbee repository</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-add">add</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-get">get</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-index">index</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-init">init</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-list">list</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-remove">remove</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-search">search</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-serve">serve</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../modules.html">API Docs</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="queenbee.html">queenbee package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="queenbee.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="queenbee.base.html">queenbee.base package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.base.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.basemodel.html">queenbee.base.basemodel module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.metadata.html">queenbee.base.metadata module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.parser.html">queenbee.base.parser module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.request.html">queenbee.base.request module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.variable.html">queenbee.base.variable module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.base.html#module-queenbee.base">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.cli.html">queenbee.cli package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.cli.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.config.html">queenbee.cli.config package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.config.auth.html">queenbee.cli.config.auth module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.config.view.html">queenbee.cli.config.view module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.config.html#module-queenbee.cli.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.plugin.html">queenbee.cli.plugin package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.plugin.lint.html">queenbee.cli.plugin.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.plugin.new.html">queenbee.cli.plugin.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.plugin.package.html">queenbee.cli.plugin.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.plugin.html#module-queenbee.cli.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.recipe.html">queenbee.cli.recipe package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.install.html">queenbee.cli.recipe.install module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.link.html">queenbee.cli.recipe.link module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.lint.html">queenbee.cli.recipe.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.new.html">queenbee.cli.recipe.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.package.html">queenbee.cli.recipe.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.recipe.html#module-queenbee.cli.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.repository.html">queenbee.cli.repository package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.index.html">queenbee.cli.repository.index module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.init.html">queenbee.cli.repository.init module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.manage.html">queenbee.cli.repository.manage module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.search.html">queenbee.cli.repository.search module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.serve.html">queenbee.cli.repository.serve module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.repository.html#module-queenbee.cli.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.cli.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.context.html">queenbee.cli.context module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.cli.html#module-queenbee.cli">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.config.html">queenbee.config package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.config.auth.html">queenbee.config.auth module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.config.repositories.html">queenbee.config.repositories module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.config.html#module-queenbee.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4 current"><a class="reference internal" href="queenbee.io.html">queenbee.io package</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="queenbee.io.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.io.inputs.html">queenbee.io.inputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.io.inputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.alias.html">queenbee.io.inputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.dag.html">queenbee.io.inputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.function.html">queenbee.io.inputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.job.html">queenbee.io.inputs.job module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.step.html">queenbee.io.inputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.task.html">queenbee.io.inputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.io.inputs.html#module-queenbee.io.inputs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.io.outputs.html">queenbee.io.outputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.io.outputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.outputs.alias.html">queenbee.io.outputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.outputs.dag.html">queenbee.io.outputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.outputs.function.html">queenbee.io.outputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.outputs.step.html">queenbee.io.outputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.outputs.task.html">queenbee.io.outputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.io.outputs.html#module-queenbee.io.outputs">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5 current"><a class="reference internal" href="queenbee.io.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l6 current"><a class="current reference internal" href="#">queenbee.io.artifact_source module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.io.common.html">queenbee.io.common module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.io.reference.html">queenbee.io.reference module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.io.html#module-queenbee.io">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.job.html">queenbee.job package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.job.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.job.job.html">queenbee.job.job module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.job.result.html">queenbee.job.result module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.job.run.html">queenbee.job.run module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.job.status.html">queenbee.job.status module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.job.html#module-queenbee.job">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.plugin.html">queenbee.plugin package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.plugin.function.html">queenbee.plugin.function module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.plugin.plugin.html">queenbee.plugin.plugin module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.plugin.html#module-queenbee.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.recipe.html">queenbee.recipe package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.recipe.dag.html">queenbee.recipe.dag module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.recipe.dependency.html">queenbee.recipe.dependency module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.recipe.recipe.html">queenbee.recipe.recipe module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.recipe.task.html">queenbee.recipe.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.recipe.html#module-queenbee.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.repository.html">queenbee.repository package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.repository.index.html">queenbee.repository.index module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.repository.package.html">queenbee.repository.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.repository.html#module-queenbee.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="queenbee.html#module-queenbee">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../modules.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">How To</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">API Docs</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="queenbee.io.outputs.task.html" title="Previous Chapter: queenbee.io.outputs.task module"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; queenbee.io.o...</span>
+    </a>
+  </li>
+  <li>
+    <a href="queenbee.io.common.html" title="Next Chapter: queenbee.io.common module"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">queenbee.io.c... &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/modules/queenbee.io.artifact_source.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">How To</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">API Docs</a></li>
+</ul>
+
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="module-queenbee.io.artifact_source">
+<span id="queenbee-io-artifact-source-module"></span><h1>queenbee.io.artifact_source module<a class="headerlink" href="#module-queenbee.io.artifact_source" title="Permalink to this headline">¶</a></h1>
+<p>Queenbee ArtifactSource class.</p>
+<p>ArtifactSource is a configuration to a source system to acquire artifacts from.</p>
+<dl class="py class">
+<dt id="queenbee.io.artifact_source.HTTP">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.io.artifact_source.</span></code><code class="sig-name descname"><span class="pre">HTTP</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.io.artifact_source.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'HTTP'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/io/artifact_source.html#HTTP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.io.artifact_source.HTTP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.io.artifact_source._ArtifactSource</span></code></p>
+<p>HTTP Source</p>
+<p>A web HTTP to an FTP server or an API for example.</p>
+<dl class="py method">
+<dt id="queenbee.io.artifact_source.HTTP.referenced_values">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">referenced_values</span></code><a class="headerlink" href="#queenbee.io.artifact_source.HTTP.referenced_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.artifact_source.HTTP.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.io.artifact_source.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.io.artifact_source.HTTP.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.artifact_source.HTTP.url">
+<code class="sig-name descname"><span class="pre">url</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#queenbee.io.artifact_source.HTTP.url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="queenbee.io.artifact_source.ProjectFolder">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.io.artifact_source.</span></code><code class="sig-name descname"><span class="pre">ProjectFolder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.io.artifact_source.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'ProjectFolder'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/io/artifact_source.html#ProjectFolder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.io.artifact_source.ProjectFolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.io.artifact_source._ArtifactSource</span></code></p>
+<p>Project Folder Source</p>
+<p>This is the path to a folder where files and folders can be sourced. In the context
+of a desktop run Workflow this folder will correspond to a local folder. In the
+context of a workflow run on Pollination this folder will correspond to a Project
+scoped folder.</p>
+<dl class="py attribute">
+<dt id="queenbee.io.artifact_source.ProjectFolder.path">
+<code class="sig-name descname"><span class="pre">path</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#queenbee.io.artifact_source.ProjectFolder.path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.io.artifact_source.ProjectFolder.referenced_values">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">referenced_values</span></code><a class="headerlink" href="#queenbee.io.artifact_source.ProjectFolder.referenced_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get referenced variables if any.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>Dict[str, List[str]] – A dictionary where keys are attributes and values</dt><dd><p>are lists contain referenced value string.</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.artifact_source.ProjectFolder.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.io.artifact_source.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.io.artifact_source.ProjectFolder.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="queenbee.io.artifact_source.S3">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.io.artifact_source.</span></code><code class="sig-name descname"><span class="pre">S3</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.io.artifact_source.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'S3'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">credentials_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/io/artifact_source.html#S3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.io.artifact_source.S3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.io.artifact_source._ArtifactSource</span></code></p>
+<p>S3 Source</p>
+<p>An S3 bucket artifact Source.</p>
+<dl class="py attribute">
+<dt id="queenbee.io.artifact_source.S3.bucket">
+<code class="sig-name descname"><span class="pre">bucket</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#queenbee.io.artifact_source.S3.bucket" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.artifact_source.S3.credentials_path">
+<code class="sig-name descname"><span class="pre">credentials_path</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#queenbee.io.artifact_source.S3.credentials_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.artifact_source.S3.endpoint">
+<code class="sig-name descname"><span class="pre">endpoint</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#queenbee.io.artifact_source.S3.endpoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.artifact_source.S3.key">
+<code class="sig-name descname"><span class="pre">key</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#queenbee.io.artifact_source.S3.key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.io.artifact_source.S3.referenced_values">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">referenced_values</span></code><a class="headerlink" href="#queenbee.io.artifact_source.S3.referenced_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.artifact_source.S3.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.io.artifact_source.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.io.artifact_source.S3.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Ladybug Tools.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

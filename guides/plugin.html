@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create A New Plugin &#8212; queenbee  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/jsv.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/app.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/mode-json.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/theme-chrome.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.15.0/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tv4/1.2.7/tv4.min.js"></script>
+    <script src="../_static/js/ref-parser.min.js"></script>
+    <script src="../_static/js/jsv.js"></script>
+    <script src="../_static/js/app.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Create A New Recipe" href="recipe.html" />
+    <link rel="prev" title="How To" href="index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          queenbee</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#local-development">Local Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">How To</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#pre-flight-check">Pre-Flight Check</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#tools">Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#knowledge">Knowledge</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#guides">Guides</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Create A New Plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#docker-config">Docker Config</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#package-yaml">Package.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#your-first-function">Your First Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#packaging-and-sharing">Packaging and Sharing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-plugins">Using Plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="recipe.html">Create A New Recipe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="recipe.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="recipe.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="recipe.html#metadata-configuration">Metadata Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="recipe.html#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="recipe.html#flow">Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="recipe.html#dag-tasks">DAG Tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="recipe.html#referencing-outputs-to-inputs">Referencing Outputs to Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="recipe.html#artifact-path-context-resolution">Artifact Path Context Resolution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="recipe.html#working-with-loops">Working With Loops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="recipe.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="repository-create.html">Create A New Repository</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="repository-create.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="repository-create.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="repository-create.html#adding-packages">Adding Packages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="repository-create.html#repository-indexing">Repository Indexing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="repository-create.html#overwriting-deleting-existing-package-versions">Overwriting/Deleting Existing Package Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="repository-manage.html">Manage Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="repository-manage.html#local-index-management">Local Index Management</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/plugins.html">Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#fully-configured">Fully Configured</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#energy-plus">Energy Plus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#honeybee-radiance">Honeybee Radiance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/recipes.html">Recipes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/recipes.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/recipes.html#daylight-factor-recipe">Daylight-Factor Recipe</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/jobs.html">Jobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/repository.html">Repositories</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#json-schema-definition">JSON Schema Definition</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli/index.html#commands">Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli/main.html">Main</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/main.html#queenbee">queenbee</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/main.html#queenbee-viz">viz</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/plugin.html">Plugins</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin">queenbee plugin</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/recipe.html">Recipes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe">queenbee recipe</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-install">install</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-link">link</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/repository.html">Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/repository.html#queenbee-repository">queenbee repository</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-add">add</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-get">get</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-index">index</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-init">init</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-list">list</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-remove">remove</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-search">search</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-serve">serve</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">API Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/queenbee.html">queenbee package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../modules/queenbee.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.base.html">queenbee.base package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.base.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.base.basemodel.html">queenbee.base.basemodel module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.base.metadata.html">queenbee.base.metadata module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.base.parser.html">queenbee.base.parser module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.base.request.html">queenbee.base.request module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.base.variable.html">queenbee.base.variable module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.base.html#module-queenbee.base">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.cli.html">queenbee.cli package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.cli.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.cli.config.html">queenbee.cli.config package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.config.auth.html">queenbee.cli.config.auth module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.config.view.html">queenbee.cli.config.view module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.config.html#module-queenbee.cli.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.cli.plugin.html">queenbee.cli.plugin package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.plugin.lint.html">queenbee.cli.plugin.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.plugin.new.html">queenbee.cli.plugin.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.plugin.package.html">queenbee.cli.plugin.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.plugin.html#module-queenbee.cli.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.cli.recipe.html">queenbee.cli.recipe package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.recipe.install.html">queenbee.cli.recipe.install module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.recipe.link.html">queenbee.cli.recipe.link module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.recipe.lint.html">queenbee.cli.recipe.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.recipe.new.html">queenbee.cli.recipe.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.recipe.package.html">queenbee.cli.recipe.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.recipe.html#module-queenbee.cli.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.cli.repository.html">queenbee.cli.repository package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.repository.index.html">queenbee.cli.repository.index module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.repository.init.html">queenbee.cli.repository.init module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.repository.manage.html">queenbee.cli.repository.manage module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.repository.search.html">queenbee.cli.repository.search module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.repository.serve.html">queenbee.cli.repository.serve module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.repository.html#module-queenbee.cli.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.cli.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.cli.context.html">queenbee.cli.context module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.cli.html#module-queenbee.cli">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.config.html">queenbee.config package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.config.auth.html">queenbee.config.auth module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.config.repositories.html">queenbee.config.repositories module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.config.html#module-queenbee.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.io.html">queenbee.io package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.io.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.io.inputs.html">queenbee.io.inputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.io.inputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.inputs.alias.html">queenbee.io.inputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.inputs.dag.html">queenbee.io.inputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.inputs.function.html">queenbee.io.inputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.inputs.job.html">queenbee.io.inputs.job module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.inputs.step.html">queenbee.io.inputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.inputs.task.html">queenbee.io.inputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.io.inputs.html#module-queenbee.io.inputs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.io.outputs.html">queenbee.io.outputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.io.outputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.outputs.alias.html">queenbee.io.outputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.outputs.dag.html">queenbee.io.outputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.outputs.function.html">queenbee.io.outputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.outputs.step.html">queenbee.io.outputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.outputs.task.html">queenbee.io.outputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.io.outputs.html#module-queenbee.io.outputs">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.io.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.io.artifact_source.html">queenbee.io.artifact_source module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.io.common.html">queenbee.io.common module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.io.reference.html">queenbee.io.reference module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.io.html#module-queenbee.io">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.job.html">queenbee.job package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.job.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.job.job.html">queenbee.job.job module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.job.result.html">queenbee.job.result module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.job.run.html">queenbee.job.run module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.job.status.html">queenbee.job.status module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.job.html#module-queenbee.job">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.plugin.html">queenbee.plugin package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.plugin.function.html">queenbee.plugin.function module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.plugin.plugin.html">queenbee.plugin.plugin module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.plugin.html#module-queenbee.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.recipe.html">queenbee.recipe package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.recipe.dag.html">queenbee.recipe.dag module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.recipe.dependency.html">queenbee.recipe.dependency module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.recipe.recipe.html">queenbee.recipe.recipe module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.recipe.task.html">queenbee.recipe.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.recipe.html#module-queenbee.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.repository.html">queenbee.repository package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.repository.index.html">queenbee.repository.index module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.repository.package.html">queenbee.repository.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.repository.html#module-queenbee.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/queenbee.html#module-queenbee">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../modules.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">How To</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#pre-flight-check">Pre-Flight Check</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#guides">Guides</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Create A New Plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#docker-config">Docker Config</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#package-yaml">Package.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#your-first-function">Your First Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#packaging-and-sharing">Packaging and Sharing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-plugins">Using Plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="recipe.html">Create A New Recipe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="repository-create.html">Create A New Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="repository-manage.html">Manage Repositories</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">API Docs</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="index.html" title="Previous Chapter: How To"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; How To</span>
+    </a>
+  </li>
+  <li>
+    <a href="recipe.html" title="Next Chapter: Create A New Recipe"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Create A New Recipe &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/guides/plugin.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">How To</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#pre-flight-check">Pre-Flight Check</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#guides">Guides</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Create A New Plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#docker-config">Docker Config</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#package-yaml">Package.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#your-first-function">Your First Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#packaging-and-sharing">Packaging and Sharing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-plugins">Using Plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="recipe.html">Create A New Recipe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="repository-create.html">Create A New Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="repository-manage.html">Manage Repositories</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">API Docs</a></li>
+</ul>
+
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="create-a-new-plugin">
+<h1>Create A New Plugin<a class="headerlink" href="#create-a-new-plugin" title="Permalink to this headline">¶</a></h1>
+<p>In this section we will walk you through how to create a new plugin from an existing Command Line Interface (CLI) tool. We will create a folder to save our
+plugin definition, write the plugin package metadata and define a few functions exposed by the plugin.</p>
+<p>We will be creating a plugin that uses EnergyPlus. This Plugin will transform commands provided in the <a class="reference external" href="https://github.com/NREL/EnergyPlus/blob/370d5b8f4d8a27a80d9b6ed21b1fa7a989f75dc1/doc/running-energyplus-from-command-line.md#examples">examples</a>
+section of the CLI documentation into Queenbee Plugin Functions.</p>
+<div class="section" id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p>First we need to create a new Plugin folder. We will do so using the Queenbee CLI tool:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">queenbee</span> <span class="n">plugin</span> <span class="n">new</span> <span class="n">energy</span><span class="o">-</span><span class="n">plus</span>
+</pre></div>
+</div>
+<p>This will create a folder called <code class="docutils literal notranslate"><span class="pre">energy-plus</span></code> with a pre-populated template. Have a look at the
+default template by opening the <code class="docutils literal notranslate"><span class="pre">energy-plus</span></code> folder with your code editor.</p>
+</div>
+<div class="section" id="folder-structure">
+<h2>Folder Structure<a class="headerlink" href="#folder-structure" title="Permalink to this headline">¶</a></h2>
+<p>When you open the folder in your code editor you will notice their is a folder called <code class="docutils literal notranslate"><span class="pre">functions</span></code>,
+a file called <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> and another file called <code class="docutils literal notranslate"><span class="pre">package.yaml</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>energy-plus
+├── functions           # Contains all the functions the plugin can run
+│   └── say-hi.yaml     # A function that executes a `say-hi` command
+├── config.yaml         # Configuration information to execute this function locally or using Docker
+└── package.yaml       # The Plugin metadata information (name, version etc...)
+</pre></div>
+</div>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file contains information to indicate what underlying software should execute
+the plugin’s functions. We will be focusing on the <code class="docutils literal notranslate"><span class="pre">docker</span></code> configuration.</p>
+<p>If you are unfamiliar with <code class="docutils literal notranslate"><span class="pre">docker</span></code>, you can refer to the introduction
+<a class="reference external" href="https://www.docker.com/resources/what-container">here</a>.</p>
+<p>You can check the full schema definition for a plugin Config <a class="reference external" href="../_static/redoc-plugin.html#tag/config_model">here</a></p>
+<div class="section" id="docker-config">
+<h3>Docker Config<a class="headerlink" href="#docker-config" title="Permalink to this headline">¶</a></h3>
+<p>The Docker configuration tells the recipe execution engine which container to use when executing a Function
+from this Plugin. It will also indicate what path within the folder each artifact (file or folder) should be
+loaded to.</p>
+<p>Our energy-plus plugin will use <a class="reference external" href="https://hub.docker.com/r/nrel/energyplus">a container image produced by NREL</a>.
+We want to use a specific version of energyplus (<code class="docutils literal notranslate"><span class="pre">v9.0.1</span></code>), therefore the name of the container image we want to use
+is <code class="docutils literal notranslate"><span class="pre">nrel/energyplus:9.0.1</span></code>.</p>
+<p>The container image documentation explains that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>To run EnergyPlus you should either mount your directory into the container or create a dependent container where you call ADD . /var/simdata.
+
+To mount the local folder and run EnergyPlus (on Linux only) make sure that your simulation directory is the current directory and run:
+
+&gt; docker run -it --rm -v $(pwd):/var/simdata nrel/energyplus EnergyPlus
+</pre></div>
+</div>
+<p>This means that when the Docker container is run, the daemon will mount the
+current directory into the container’s <code class="docutils literal notranslate"><span class="pre">/var/simdata</span></code> directory. This
+is also the container’s Working Directory or <code class="docutils literal notranslate"><span class="pre">workdir</span></code> for short.</p>
+<p>Overwrite the contents of the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file with the YAML code block below:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">docker</span><span class="p">:</span>
+  <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nrel/energyplus:9.0.1</span>
+  <span class="nt">workdir</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/var/simdata</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="package-yaml">
+<h2>Package.yaml<a class="headerlink" href="#package-yaml" title="Permalink to this headline">¶</a></h2>
+<p>This file contains the metadata information that defines your Plugin. You can compare this to the
+<code class="docutils literal notranslate"><span class="pre">package.json</span></code> for Node, <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> for Python or <code class="docutils literal notranslate"><span class="pre">&lt;package-name&gt;.sln</span></code> for C#.</p>
+<p>The file currently contains name and version information:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">energy-plus</span>
+<span class="nt">version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1.0</span>
+</pre></div>
+</div>
+<p>These are the two mandatory fields for this file. You can view a full list of other available
+fields <a class="reference external" href="../_static/redoc-plugin.html#tag/metadata_model">here</a>.</p>
+<p>We will be adding a few more fields for demonstration purposes. Overwrite the contents of
+<code class="docutils literal notranslate"><span class="pre">package.yaml</span></code> with the YAML code block below.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">energy-plus</span>
+<span class="nt">tag</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1.0</span>
+<span class="nt">app_version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9.0.1</span>   <span class="c1"># The version of EnergyPlus the plugin uses</span>
+<span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">A plugin to run EnergyPlus functions</span>
+<span class="nt">keywords</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">energyplus</span>
+<span class="nt">home</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://energyplus.net</span>
+<span class="nt">sources</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">https://github.com/nrel/energyplus</span>
+<span class="nt">icon</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://energyplus.net/sites/default/files/eplus_logo.png</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="your-first-function">
+<h2>Your First Function<a class="headerlink" href="#your-first-function" title="Permalink to this headline">¶</a></h2>
+<p>We are now finally ready to write a Function. Functions are the key ingredients of a plugin. A Function
+defines a parameterized command run in a terminal. You can refer to the
+<a class="reference external" href="../_static/redoc-plugin.html#tag/function_model">function schema definition</a> to understand the components of a function.</p>
+<p>We listed some function we wanted to create based on examples provided by the EneryPlus documentation.</p>
+<p>We will start by creating a function that takes a weather file and an <code class="docutils literal notranslate"><span class="pre">idf</span></code> file as inputs, runs an energyplus simulation
+and outputs a folder with all the EnergyPlus output files. Delete the <code class="docutils literal notranslate"><span class="pre">say-hi.yaml</span></code> file in your <code class="docutils literal notranslate"><span class="pre">functions</span></code> folder.
+Now create a new file called <code class="docutils literal notranslate"><span class="pre">run-simulation.yaml</span></code> in the <code class="docutils literal notranslate"><span class="pre">functions</span></code> folder and copy the following YAML code block:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">path</span></code> of the input and output artifacts correspond to file or folder paths indicated by the
+<code class="docutils literal notranslate"><span class="pre">command</span></code>. The <code class="docutils literal notranslate"><span class="pre">weather.epw</span></code> and <code class="docutils literal notranslate"><span class="pre">input.idf</span></code> are explicitly called and the <code class="docutils literal notranslate"><span class="pre">outputs</span></code> directory is
+created by specifying <code class="docutils literal notranslate"><span class="pre">-d</span> <span class="pre">outputs</span></code> in the command.</p>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">run-simulation</span>
+<span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Run an EnergyPlus simulation using a weather file and an idf</span>
+<span class="nt">inputs</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">weather</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FunctionFileInput</span>
+    <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">weather.epw</span>
+    <span class="nt">required</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">idf</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FunctionFileInput</span>
+    <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">input.idf</span>
+    <span class="nt">required</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">command</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">energyplus -w weather.epw -x -d simulation-outputs input.idf</span>
+<span class="nt">outputs</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">outputs</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FunctionFolderOutput</span>
+    <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">simulation-outputs</span>
+</pre></div>
+</div>
+<p>The paths of the files that are referenced in the <code class="docutils literal notranslate"><span class="pre">inputs</span></code> block will be
+interpreted relative to the <code class="docutils literal notranslate"><span class="pre">workdir</span></code> of the container used to execute the
+function.</p>
+<p>Your folder should now look something like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>energy-plus
+├── functions
+│   └── run-simulation.yaml
+├── config.yaml
+└── package.yaml
+</pre></div>
+</div>
+</div>
+<div class="section" id="packaging-and-sharing">
+<h2>Packaging and Sharing<a class="headerlink" href="#packaging-and-sharing" title="Permalink to this headline">¶</a></h2>
+<p>You can package a plugin by running the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">queenbee</span> <span class="n">plugin</span> <span class="n">package</span> <span class="n">energy</span><span class="o">-</span><span class="n">plus</span>
+</pre></div>
+</div>
+<p>You should see a file called <code class="docutils literal notranslate"><span class="pre">energy-plus-0.1.0.tgz</span></code> appear in your local
+directory. This is a packaged Plugin file which can be saved in a Queenbee
+Repository to share with others or be used in a Recipe.</p>
+<p>You should go to the <a class="reference external" href="repository.html">Repository Guide</a> section to understand
+how Plugins are packaged and shared.</p>
+</div>
+<div class="section" id="using-plugins">
+<h2>Using Plugins<a class="headerlink" href="#using-plugins" title="Permalink to this headline">¶</a></h2>
+<p>You should move to the <a class="reference external" href="recipe.html">Recipe Guide</a> section to understand how
+Plugins are used by recipes.</p>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Ladybug Tools.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

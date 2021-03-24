@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>queenbee.recipe.recipe &#8212; queenbee  documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/jsv.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/app.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/mode-json.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/theme-chrome.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.15.0/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tv4/1.2.7/tv4.min.js"></script>
+    <script src="../../../_static/js/ref-parser.min.js"></script>
+    <script src="../../../_static/js/jsv.js"></script>
+    <script src="../../../_static/js/app.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          queenbee</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">Queenbee :crown:</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html#local-development">Local Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/index.html">How To</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../guides/index.html#pre-flight-check">Pre-Flight Check</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../guides/index.html#tools">Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../guides/index.html#knowledge">Knowledge</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guides/index.html#guides">Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../guides/plugin.html">Create A New Plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/plugin.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/plugin.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/plugin.html#configuration">Configuration</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../guides/plugin.html#docker-config">Docker Config</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/plugin.html#package-yaml">Package.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/plugin.html#your-first-function">Your First Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/plugin.html#packaging-and-sharing">Packaging and Sharing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/plugin.html#using-plugins">Using Plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../guides/recipe.html">Create A New Recipe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#metadata-configuration">Metadata Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#flow">Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#dag-tasks">DAG Tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#referencing-outputs-to-inputs">Referencing Outputs to Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#artifact-path-context-resolution">Artifact Path Context Resolution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#working-with-loops">Working With Loops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../guides/repository-create.html">Create A New Repository</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/repository-create.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/repository-create.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/repository-create.html#adding-packages">Adding Packages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/repository-create.html#repository-indexing">Repository Indexing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/repository-create.html#overwriting-deleting-existing-package-versions">Overwriting/Deleting Existing Package Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../guides/repository-manage.html">Manage Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/repository-manage.html#local-index-management">Local Index Management</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../schemas/index.html">Queenbee Schemas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../schemas/plugins.html">Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/plugins.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/plugins.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/plugins.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/plugins.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/plugins.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../schemas/plugins.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../schemas/plugins.html#fully-configured">Fully Configured</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../schemas/plugins.html#energy-plus">Energy Plus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../schemas/plugins.html#honeybee-radiance">Honeybee Radiance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../schemas/recipes.html">Recipes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/recipes.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/recipes.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/recipes.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/recipes.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/recipes.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../schemas/recipes.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../schemas/recipes.html#daylight-factor-recipe">Daylight-Factor Recipe</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../schemas/jobs.html">Jobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/jobs.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/jobs.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/jobs.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/jobs.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/jobs.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../schemas/repository.html">Repositories</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/repository.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/repository.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/repository.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/repository.html#json-schema-definition">JSON Schema Definition</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli/index.html">CLI Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli/index.html#commands">Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/main.html">Main</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/main.html#queenbee">queenbee</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/main.html#queenbee-viz">viz</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/plugin.html">Plugins</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/plugin.html#queenbee-plugin">queenbee plugin</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/plugin.html#queenbee-plugin-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/plugin.html#queenbee-plugin-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/plugin.html#queenbee-plugin-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/recipe.html">Recipes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/recipe.html#queenbee-recipe">queenbee recipe</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/recipe.html#queenbee-recipe-install">install</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/recipe.html#queenbee-recipe-link">link</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/recipe.html#queenbee-recipe-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/recipe.html#queenbee-recipe-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/recipe.html#queenbee-recipe-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/repository.html">Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository">queenbee repository</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-add">add</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-get">get</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-index">index</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-init">init</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-list">list</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-remove">remove</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-search">search</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-serve">serve</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/queenbee.html">queenbee package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../modules/queenbee.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.base.html">queenbee.base package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.base.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.base.basemodel.html">queenbee.base.basemodel module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.base.metadata.html">queenbee.base.metadata module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.base.parser.html">queenbee.base.parser module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.base.request.html">queenbee.base.request module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.base.variable.html">queenbee.base.variable module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.base.html#module-queenbee.base">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.cli.html">queenbee.cli package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.cli.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.cli.config.html">queenbee.cli.config package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.config.auth.html">queenbee.cli.config.auth module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.config.view.html">queenbee.cli.config.view module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.config.html#module-queenbee.cli.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.cli.plugin.html">queenbee.cli.plugin package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.plugin.lint.html">queenbee.cli.plugin.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.plugin.new.html">queenbee.cli.plugin.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.plugin.package.html">queenbee.cli.plugin.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.plugin.html#module-queenbee.cli.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.html">queenbee.cli.recipe package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.install.html">queenbee.cli.recipe.install module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.link.html">queenbee.cli.recipe.link module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.lint.html">queenbee.cli.recipe.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.new.html">queenbee.cli.recipe.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.package.html">queenbee.cli.recipe.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.html#module-queenbee.cli.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.cli.repository.html">queenbee.cli.repository package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.repository.index.html">queenbee.cli.repository.index module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.repository.init.html">queenbee.cli.repository.init module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.repository.manage.html">queenbee.cli.repository.manage module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.repository.search.html">queenbee.cli.repository.search module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.repository.serve.html">queenbee.cli.repository.serve module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.repository.html#module-queenbee.cli.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.cli.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.cli.context.html">queenbee.cli.context module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.cli.html#module-queenbee.cli">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.config.html">queenbee.config package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.config.auth.html">queenbee.config.auth module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.config.repositories.html">queenbee.config.repositories module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.config.html#module-queenbee.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.io.html">queenbee.io package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.io.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.io.inputs.html">queenbee.io.inputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.io.inputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.inputs.alias.html">queenbee.io.inputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.inputs.dag.html">queenbee.io.inputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.inputs.function.html">queenbee.io.inputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.inputs.job.html">queenbee.io.inputs.job module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.inputs.step.html">queenbee.io.inputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.inputs.task.html">queenbee.io.inputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.io.inputs.html#module-queenbee.io.inputs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.io.outputs.html">queenbee.io.outputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.io.outputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.outputs.alias.html">queenbee.io.outputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.outputs.dag.html">queenbee.io.outputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.outputs.function.html">queenbee.io.outputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.outputs.step.html">queenbee.io.outputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.outputs.task.html">queenbee.io.outputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.io.outputs.html#module-queenbee.io.outputs">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.io.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.io.artifact_source.html">queenbee.io.artifact_source module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.io.common.html">queenbee.io.common module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.io.reference.html">queenbee.io.reference module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.io.html#module-queenbee.io">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.job.html">queenbee.job package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.job.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.job.job.html">queenbee.job.job module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.job.result.html">queenbee.job.result module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.job.run.html">queenbee.job.run module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.job.status.html">queenbee.job.status module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.job.html#module-queenbee.job">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.plugin.html">queenbee.plugin package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.plugin.function.html">queenbee.plugin.function module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.plugin.plugin.html">queenbee.plugin.plugin module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.plugin.html#module-queenbee.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.recipe.html">queenbee.recipe package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.recipe.dag.html">queenbee.recipe.dag module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.recipe.dependency.html">queenbee.recipe.dependency module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.recipe.recipe.html">queenbee.recipe.recipe module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.recipe.task.html">queenbee.recipe.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.recipe.html#module-queenbee.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.repository.html">queenbee.repository package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.repository.index.html">queenbee.repository.index module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.repository.package.html">queenbee.repository.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.repository.html#module-queenbee.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../modules/queenbee.html#module-queenbee">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/index.html">How To</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API Docs</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/index.html">How To</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API Docs</a></li>
+</ul>
+
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <h1>Source code for queenbee.recipe.recipe</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Queenbee recipe class.</span>
+
+<span class="sd">Recipe is a collection of plugins and inter-related tasks that describes an end to</span>
+<span class="sd">end steps for the recipe.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span><span class="p">,</span> <span class="n">root_validator</span><span class="p">,</span> <span class="n">constr</span>
+
+<span class="kn">from</span> <span class="nn">..base.basemodel</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">..base.metadata</span> <span class="kn">import</span> <span class="n">MetaData</span>
+
+<span class="kn">from</span> <span class="nn">..config</span> <span class="kn">import</span> <span class="n">Config</span>
+<span class="kn">from</span> <span class="nn">..plugin</span> <span class="kn">import</span> <span class="n">Plugin</span>
+<span class="kn">from</span> <span class="nn">..plugin.function</span> <span class="kn">import</span> <span class="n">Function</span>
+<span class="kn">from</span> <span class="nn">..plugin.plugin</span> <span class="kn">import</span> <span class="n">PluginConfig</span>
+
+<span class="kn">from</span> <span class="nn">.dag</span> <span class="kn">import</span> <span class="n">DAG</span><span class="p">,</span> <span class="n">DAGInputs</span><span class="p">,</span> <span class="n">DAGOutputs</span>
+<span class="kn">from</span> <span class="nn">.dependency</span> <span class="kn">import</span> <span class="n">Dependency</span><span class="p">,</span> <span class="n">DependencyKind</span>
+
+
+<div class="viewcode-block" id="TemplateFunction"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.TemplateFunction">[docs]</a><span class="k">class</span> <span class="nc">TemplateFunction</span><span class="p">(</span><span class="n">Function</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function template.&quot;&quot;&quot;</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^TemplateFunction$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;TemplateFunction&#39;</span>
+
+    <span class="n">config</span><span class="p">:</span> <span class="n">PluginConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The plugin config to use for this function&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="TemplateFunction.from_plugin"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.TemplateFunction.from_plugin">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_plugin</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">plugin</span><span class="p">:</span> <span class="n">Plugin</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Generate a list of template functions from a plugin</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            plugin {Plugin} -- A plugin</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list -- A list of template functions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">functions</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">function</span> <span class="ow">in</span> <span class="n">plugin</span><span class="o">.</span><span class="n">functions</span><span class="p">:</span>
+            <span class="n">input_dict</span> <span class="o">=</span> <span class="n">function</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;TemplateFunction&#39;</span>
+            <span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">plugin</span><span class="o">.</span><span class="fm">__hash__</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">function</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;config&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="n">functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">input_dict</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">functions</span></div></div>
+
+
+<div class="viewcode-block" id="Recipe"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.Recipe">[docs]</a><span class="k">class</span> <span class="nc">Recipe</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A Queenbee Recipe&quot;&quot;&quot;</span>
+    <span class="n">api_version</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^v1beta1$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;v1beta1&#39;</span><span class="p">,</span> <span class="n">readOnly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^Recipe$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;Recipe&#39;</span>
+
+    <span class="n">metadata</span><span class="p">:</span> <span class="n">MetaData</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Recipe metadata information.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">dependencies</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dependency</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A list of plugins and other recipes this recipe depends on.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">flow</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DAG</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A list of tasks to create a DAG recipe.&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="Recipe.from_folder"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.Recipe.from_folder">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_folder</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">folder_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate a recipe from a folder</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Here is an example of a Recipe folder:</span>
+<span class="sd">            ::</span>
+
+<span class="sd">                .</span>
+<span class="sd">                ├── .dependencies</span>
+<span class="sd">                │   ├── plugins</span>
+<span class="sd">                │   │   └── &lt;sha-256&gt;.yaml</span>
+<span class="sd">                │   └── recipes</span>
+<span class="sd">                │       └── &lt;sha-256&gt;.yaml</span>
+<span class="sd">                ├── flow</span>
+<span class="sd">                |   ├── sub-dag.yaml</span>
+<span class="sd">                │   └── main.yaml</span>
+<span class="sd">                ├── dependencies.yaml</span>
+<span class="sd">                └── package.yaml</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            folder_path {str} -- Path to the folder</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Recipe -- A Recipe</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">folder_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">folder_path</span><span class="p">)</span>
+        <span class="n">meta_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="s1">&#39;package.yaml&#39;</span><span class="p">)</span>
+        <span class="n">dependencies_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="s1">&#39;dependencies.yaml&#39;</span><span class="p">)</span>
+        <span class="n">flow_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="s1">&#39;flow&#39;</span><span class="p">)</span>
+
+        <span class="n">recipe</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">meta_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">recipe</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dependencies_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">dependencies</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
+
+        <span class="n">recipe</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dependencies</span><span class="p">)</span>
+
+        <span class="n">flow</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">dag_path</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">flow_path</span><span class="p">):</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">flow_path</span><span class="p">,</span> <span class="n">dag_path</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">flow</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">))</span>
+
+        <span class="n">recipe</span><span class="p">[</span><span class="s1">&#39;flow&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flow</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">recipe</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Recipe.check_entrypoint"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.Recipe.check_entrypoint">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;flow&#39;</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_entrypoint</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check the `main` DAG exists in the flow&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">dag</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dag</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">v</span>
+            <span class="k">elif</span> <span class="n">dag</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;main&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">v</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No DAG with name &quot;main&quot; found in flow&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Recipe.sort_list"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.Recipe.sort_list">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;flow&#39;</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sort_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sort the list of DAGs by name&quot;&quot;&quot;</span>
+        <span class="n">v</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="Recipe.check_dag_names"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.Recipe.check_dag_names">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;flow&#39;</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_dag_names</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check DAG names do not overlap with dependency names&quot;&quot;&quot;</span>
+        <span class="n">op_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">dep</span><span class="o">.</span><span class="n">ref_name</span> <span class="k">for</span> <span class="n">dep</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dependencies&#39;</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">dag</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">dag</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">op_names</span><span class="p">,</span> \
+                <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;DAG name </span><span class="si">{</span><span class="n">dag</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> cannot be used because a recipe dependency&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39; already uses it&#39;</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="Recipe.check_template_dependency_names"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.Recipe.check_template_dependency_names">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;flow&#39;</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_template_dependency_names</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check all DAG template names exist in dependencies or other DAGs&quot;&quot;&quot;</span>
+        <span class="n">op_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">dep</span><span class="o">.</span><span class="n">ref_name</span> <span class="k">for</span> <span class="n">dep</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dependencies&#39;</span><span class="p">)]</span>
+        <span class="n">op_names</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">dag</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">dag</span> <span class="ow">in</span> <span class="n">v</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">dag</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">template</span> <span class="ow">in</span> <span class="n">dag</span><span class="o">.</span><span class="n">templates</span><span class="p">:</span>
+                <span class="n">plugin</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">assert</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">op_names</span><span class="p">,</span> \
+                    <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;Cannot use template </span><span class="si">{</span><span class="n">template</span><span class="si">}</span><span class="s1"> from DAG </span><span class="si">{</span><span class="n">dag</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> because no&#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39; dependency or other DAG matching that name was found.&#39;</span>
+                    <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">v</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">root_dag</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DAG</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dag_by_name</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">flow</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;main&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DAGInputs</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get the Recipe&#39;s inputs</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[DAGInputs] -- The inputs of the entrypoint DAG</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_dag</span><span class="o">.</span><span class="n">inputs</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DAGOutputs</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get the Recipe&#39;s outputs</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[DAGOutputs] -- The outputs of the entrypoint DAG</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_dag</span><span class="o">.</span><span class="n">outputs</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_locked</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Indicates whether the Recipe dependencies are all locked</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool -- True if all dependencies are locked</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">is_locked</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependencies</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Recipe.dependency_by_name"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.Recipe.dependency_by_name">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">dependency_by_name</span><span class="p">(</span><span class="n">dependencies</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dependency</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dependency</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve a dependency by its reference name (name or alias)</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            dependencies {List[Dependency]} -- A list of dependencies</span>
+<span class="sd">            name {str} -- The name or alias to search dependencies by</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: No dependency found with the input name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dependency -- A dependency</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">ref_name</span> <span class="o">==</span> <span class="n">name</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No dependency with reference name </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> found&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="Recipe.dag_by_name"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.Recipe.dag_by_name">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">dag_by_name</span><span class="p">(</span><span class="n">flow</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DAG</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DAG</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve a DAG from a list by its name</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            flow {List[DAG]} -- A list of DAGs</span>
+<span class="sd">            name {str} -- The name to search by</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: No DAG found with the input name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DAG -- A DAG</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">,</span> <span class="n">flow</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;No DAG with reference name </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> found in flow&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="Recipe.lock_dependencies"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.Recipe.lock_dependencies">[docs]</a>    <span class="k">def</span> <span class="nf">lock_dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;Lock the dependencies by fetching them and storing their digest&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">dependency</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependencies</span><span class="p">:</span>
+            <span class="n">auth_header</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get_auth_header</span><span class="p">(</span>
+                <span class="n">repository_url</span><span class="o">=</span><span class="n">dependency</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+            <span class="n">dependency</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">auth_header</span><span class="o">=</span><span class="n">auth_header</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Recipe.write_dependency_file"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.Recipe.write_dependency_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_dependency_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write the locked dependencies to a Recipe folder</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            folder_path {str} -- The path to the recipe folder</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">self_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="s1">&#39;dependencies.yaml&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s1">&#39;dependencies&#39;</span><span class="p">:</span> <span class="n">self_dict</span><span class="p">[</span><span class="s1">&#39;dependencies&#39;</span><span class="p">]},</span>
+                    <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Recipe.to_folder"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.Recipe.to_folder">[docs]</a>    <span class="k">def</span> <span class="nf">to_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">readme_string</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write a Recipe to a folder</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Here is an example of a Recipe folder:</span>
+<span class="sd">            ::</span>
+
+<span class="sd">                .</span>
+<span class="sd">                ├── .dependencies</span>
+<span class="sd">                │   ├── plugin</span>
+<span class="sd">                │   │   └── plugin-dep-name</span>
+<span class="sd">                │   │       ├── functions</span>
+<span class="sd">                │   │       │   ├── func-1.yaml</span>
+<span class="sd">                │   │       │   ├── ...</span>
+<span class="sd">                │   │       │   └── func-n.yaml</span>
+<span class="sd">                │   │       ├── config.yaml</span>
+<span class="sd">                │   │       └── package.yaml</span>
+<span class="sd">                │   └── recipe</span>
+<span class="sd">                │       └── recipe-dep-name</span>
+<span class="sd">                │           ├── .dependencies</span>
+<span class="sd">                │           │   ├── plugin</span>
+<span class="sd">                │           │   └── recipe</span>
+<span class="sd">                │           ├── flow</span>
+<span class="sd">                │           │   └── main.yaml</span>
+<span class="sd">                │           ├── dependencies.yaml</span>
+<span class="sd">                │           └── package.yaml</span>
+<span class="sd">                ├── flow</span>
+<span class="sd">                │   └── main.yaml</span>
+<span class="sd">                ├── dependencies.yaml</span>
+<span class="sd">                └── package.yaml</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            folder_path {str} -- The path to the Recipe folder</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            readme_string {str} -- The README file string (default: {None})</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="s1">&#39;flow&#39;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="s1">&#39;package.yaml&#39;</span><span class="p">),</span> <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_dependency_file</span><span class="p">(</span><span class="n">folder_path</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">dag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flow</span><span class="p">:</span>
+            <span class="n">dag</span><span class="o">.</span><span class="n">to_yaml</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="s1">&#39;flow&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dag</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.yaml&#39;</span><span class="p">),</span>
+                <span class="n">exclude_unset</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">readme_string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="s1">&#39;README.md&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">readme_string</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="s1">&#39;LICENSE&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;To see the license for this package refer to package.yaml&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Recipe.write_dependencies"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.Recipe.write_dependencies">[docs]</a>    <span class="k">def</span> <span class="nf">write_dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">folder_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch dependencies manifests and write them to the `.dependencies` folder</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            folder_path {str} -- Path to the recipe folder</span>
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            config {Config} -- A queenbee config object (default: {Config()})</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dependencies_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="s1">&#39;.dependencies&#39;</span><span class="p">)</span>
+        <span class="n">plugin_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dependencies_folder</span><span class="p">,</span> <span class="s1">&#39;plugin&#39;</span><span class="p">)</span>
+        <span class="n">recipes_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dependencies_folder</span><span class="p">,</span> <span class="s1">&#39;recipe&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dependencies_folder</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dependencies_folder</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">plugin_folder</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">plugin_folder</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">recipes_folder</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">recipes_folder</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">dependency</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependencies</span><span class="p">:</span>
+            <span class="n">auth_header</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get_auth_header</span><span class="p">(</span>
+                <span class="n">repository_url</span><span class="o">=</span><span class="n">dependency</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+            <span class="n">package_version</span> <span class="o">=</span> <span class="n">dependency</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">auth_header</span><span class="o">=</span><span class="n">auth_header</span><span class="p">)</span>
+            <span class="n">dep</span> <span class="o">=</span> <span class="n">package_version</span><span class="o">.</span><span class="n">manifest</span>
+
+            <span class="k">if</span> <span class="n">dependency</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">DependencyKind</span><span class="o">.</span><span class="n">recipe</span><span class="p">:</span>
+                <span class="n">dep</span><span class="o">.</span><span class="n">write_dependencies</span><span class="p">(</span>
+                    <span class="n">folder_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="n">recipes_folder</span><span class="p">,</span> <span class="n">dependency</span><span class="o">.</span><span class="n">ref_name</span><span class="p">),</span>
+                    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="n">dep</span><span class="o">.</span><span class="n">to_folder</span><span class="p">(</span>
+                <span class="n">folder_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="n">folder_path</span><span class="p">,</span> <span class="s1">&#39;.dependencies&#39;</span><span class="p">,</span>
+                    <span class="n">dependency</span><span class="o">.</span><span class="n">dependency_kind</span><span class="p">,</span> <span class="n">dependency</span><span class="o">.</span><span class="n">ref_name</span><span class="p">),</span>
+                <span class="n">readme_string</span><span class="o">=</span><span class="n">package_version</span><span class="o">.</span><span class="n">readme</span>
+            <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="BakedRecipe"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.BakedRecipe">[docs]</a><span class="k">class</span> <span class="nc">BakedRecipe</span><span class="p">(</span><span class="n">Recipe</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Baked Recipe.</span>
+
+<span class="sd">    A Baked Recipe contains all the templates referred to in the DAG within a templates</span>
+<span class="sd">    list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^BakedRecipe$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;BakedRecipe&#39;</span>
+
+    <span class="n">digest</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="c1"># templates only exist in the compiled version of a recipe</span>
+    <span class="n">templates</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">TemplateFunction</span><span class="p">,</span> <span class="n">DAG</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A list of templates. Templates can be Function or a DAG.&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="BakedRecipe.from_recipe"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.BakedRecipe.from_recipe">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_recipe</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">recipe</span><span class="p">:</span> <span class="n">Recipe</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;Bake a recipe</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            recipe {Recipe} -- A Queenbee recipe</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            config {Config} -- A queenbee config object (default: {Config()})</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: The dependencies or templates do not match the flow</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            BakedRecipe -- A baked recipe</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">recipe</span> <span class="o">=</span> <span class="n">recipe</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">digest</span> <span class="o">=</span> <span class="n">recipe</span><span class="o">.</span><span class="fm">__hash__</span>
+
+        <span class="n">digest_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;__self__&#39;</span><span class="p">:</span> <span class="n">digest</span>
+        <span class="p">}</span>
+
+        <span class="n">templates</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">dependency</span> <span class="ow">in</span> <span class="n">recipe</span><span class="o">.</span><span class="n">dependencies</span><span class="p">:</span>
+            <span class="n">auth_header</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get_auth_header</span><span class="p">(</span>
+                <span class="n">repository_url</span><span class="o">=</span><span class="n">dependency</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+            <span class="n">package_version</span> <span class="o">=</span> <span class="n">dependency</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">auth_header</span><span class="o">=</span><span class="n">auth_header</span><span class="p">)</span>
+            <span class="n">dep</span> <span class="o">=</span> <span class="n">package_version</span><span class="o">.</span><span class="n">manifest</span>
+
+            <span class="k">if</span> <span class="n">dependency</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">DependencyKind</span><span class="o">.</span><span class="n">recipe</span><span class="p">:</span>
+                <span class="n">sub_recipe</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_recipe</span><span class="p">(</span><span class="n">recipe</span><span class="o">=</span><span class="n">dep</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+
+                <span class="n">templates</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sub_recipe</span><span class="o">.</span><span class="n">templates</span><span class="p">)</span>
+                <span class="n">templates</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sub_recipe</span><span class="o">.</span><span class="n">flow</span><span class="p">)</span>
+                <span class="n">digest_dict</span><span class="p">[</span><span class="n">dependency</span><span class="o">.</span><span class="n">ref_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub_recipe</span><span class="o">.</span><span class="n">digest</span>
+
+            <span class="k">elif</span> <span class="n">dependency</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">DependencyKind</span><span class="o">.</span><span class="n">plugin</span><span class="p">:</span>
+                <span class="n">templates</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">TemplateFunction</span><span class="o">.</span><span class="n">from_plugin</span><span class="p">(</span><span class="n">dep</span><span class="p">))</span>
+                <span class="n">digest_dict</span><span class="p">[</span><span class="n">dependency</span><span class="o">.</span><span class="n">ref_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dep</span><span class="o">.</span><span class="fm">__hash__</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Dependency of type </span><span class="si">{</span><span class="n">dependency</span><span class="o">.</span><span class="n">kind</span><span class="si">}</span><span class="s1"> not recognized&#39;</span><span class="p">)</span>
+
+        <span class="n">flow</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">replace_template_refs</span><span class="p">(</span>
+            <span class="n">dependencies</span><span class="o">=</span><span class="n">recipe</span><span class="o">.</span><span class="n">dependencies</span><span class="p">,</span>
+            <span class="n">dags</span><span class="o">=</span><span class="n">recipe</span><span class="o">.</span><span class="n">flow</span><span class="p">,</span>
+            <span class="n">digest_dict</span><span class="o">=</span><span class="n">digest_dict</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">input_dict</span> <span class="o">=</span> <span class="n">recipe</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;BakedRecipe&#39;</span>
+        <span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;digest&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">digest</span>
+        <span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;flow&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">dag</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">dag</span> <span class="ow">in</span> <span class="n">flow</span><span class="p">]</span>
+        <span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;templates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">template</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+                                   <span class="k">for</span> <span class="n">template</span> <span class="ow">in</span> <span class="n">templates</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">input_dict</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BakedRecipe.from_folder"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.BakedRecipe.from_folder">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_folder</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">folder_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refresh_deps</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;Generate a baked recipe from a recipe folder</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Here is an example of a Recipe folder:</span>
+<span class="sd">            ::</span>
+
+<span class="sd">                .</span>
+<span class="sd">                ├── .dependencies</span>
+<span class="sd">                │   ├── plugins</span>
+<span class="sd">                │   │   └── &lt;sha-256&gt;.yaml</span>
+<span class="sd">                │   └── recipes</span>
+<span class="sd">                │       └── &lt;sha-256&gt;.yaml</span>
+<span class="sd">                ├── flow</span>
+<span class="sd">                |   ├── sub-dag.yaml</span>
+<span class="sd">                │   └── main.yaml</span>
+<span class="sd">                ├── dependencies.yaml</span>
+<span class="sd">                └── package.yaml</span>
+
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            folder_path {str} -- The path to the folder to read</span>
+
+<span class="sd">        Keyword Arguments:</span>
+<span class="sd">            refresh_deps {bool} -- Fetch the dependencies from their source instead of</span>
+<span class="sd">                the ``.dependencies`` folder (default: {True})</span>
+<span class="sd">            config {Config} -- A queenbee config object (default: {Config()})</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            BakedRecipe -- A baked recipe</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dependencies_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="s1">&#39;.dependencies&#39;</span><span class="p">)</span>
+
+        <span class="n">recipe</span> <span class="o">=</span> <span class="n">Recipe</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">folder_path</span><span class="p">)</span>
+
+        <span class="n">digest</span> <span class="o">=</span> <span class="n">recipe</span><span class="o">.</span><span class="fm">__hash__</span>
+
+        <span class="n">digest_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;__self__&#39;</span><span class="p">:</span> <span class="n">digest</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">refresh_deps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dependencies_folder</span><span class="p">)</span> <span class="ow">and</span> \
+                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dependencies_folder</span><span class="p">):</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">dependencies_folder</span><span class="p">)</span>
+            <span class="n">recipe</span><span class="o">.</span><span class="n">write_dependencies</span><span class="p">(</span>
+                <span class="n">folder_path</span><span class="o">=</span><span class="n">folder_path</span><span class="p">,</span>
+                <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">templates</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">plugins_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dependencies_folder</span><span class="p">,</span> <span class="s1">&#39;plugin&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">plugins_folder</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">plugin_dep_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">plugins_folder</span><span class="p">):</span>
+                <span class="n">plugin</span> <span class="o">=</span> <span class="n">Plugin</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span>
+                    <span class="n">folder_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="n">dependencies_folder</span><span class="p">,</span> <span class="s1">&#39;plugin&#39;</span><span class="p">,</span> <span class="n">plugin_dep_name</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">templates</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">TemplateFunction</span><span class="o">.</span><span class="n">from_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">))</span>
+                <span class="n">digest_dict</span><span class="p">[</span><span class="n">plugin_dep_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">.</span><span class="fm">__hash__</span>
+
+        <span class="n">recipes_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dependencies_folder</span><span class="p">,</span> <span class="s1">&#39;recipe&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">recipes_folder</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">recipe_dep_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">recipes_folder</span><span class="p">):</span>
+                <span class="n">sub_baked_recipe</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span>
+                    <span class="n">folder_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="n">dependencies_folder</span><span class="p">,</span> <span class="s1">&#39;recipe&#39;</span><span class="p">,</span> <span class="n">recipe_dep_name</span>
+                    <span class="p">),</span>
+                    <span class="n">refresh_deps</span><span class="o">=</span><span class="n">refresh_deps</span><span class="p">,</span>
+                    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="n">templates</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sub_baked_recipe</span><span class="o">.</span><span class="n">templates</span><span class="p">)</span>
+                <span class="n">templates</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sub_baked_recipe</span><span class="o">.</span><span class="n">flow</span><span class="p">)</span>
+                <span class="n">digest_dict</span><span class="p">[</span><span class="n">recipe_dep_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">sub_baked_recipe</span><span class="o">.</span><span class="n">digest</span>
+
+        <span class="n">flow</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">replace_template_refs</span><span class="p">(</span>
+            <span class="n">dependencies</span><span class="o">=</span><span class="n">recipe</span><span class="o">.</span><span class="n">dependencies</span><span class="p">,</span>
+            <span class="n">dags</span><span class="o">=</span><span class="n">recipe</span><span class="o">.</span><span class="n">flow</span><span class="p">,</span>
+            <span class="n">digest_dict</span><span class="o">=</span><span class="n">digest_dict</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">input_dict</span> <span class="o">=</span> <span class="n">recipe</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;BakedRecipe&#39;</span>
+        <span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;digest&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">digest</span>
+        <span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;flow&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">dag</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">dag</span> <span class="ow">in</span> <span class="n">flow</span><span class="p">]</span>
+        <span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;templates&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">template</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+                                   <span class="k">for</span> <span class="n">template</span> <span class="ow">in</span> <span class="n">templates</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">input_dict</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BakedRecipe.replace_template_refs"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.BakedRecipe.replace_template_refs">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">replace_template_refs</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">dependencies</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dependency</span><span class="p">],</span>
+        <span class="n">dags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DAG</span><span class="p">],</span>
+        <span class="n">digest_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DAG</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Replace DAG Task template names with unique dependency digest based names</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            dependencies {List[Dependency]} -- A list of locked dependencies</span>
+<span class="sd">            dags {List[DAG]} -- A list of DAGs</span>
+<span class="sd">            digest {str} -- The digest of the Recipe used to create the Baked Recipe</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Unresolvable dependency in a task</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[DAG] -- A list of DAGs with updated template names</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dag_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">dag</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">dag</span> <span class="ow">in</span> <span class="n">dags</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">dependencies</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Cannot resolve template refs without dependencies&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">dag</span> <span class="ow">in</span> <span class="n">dags</span><span class="p">:</span>
+            <span class="c1"># Replace name of DAG to &quot;{digest}/{dag.name}&quot;</span>
+            <span class="n">dep_hash</span> <span class="o">=</span> <span class="n">digest_dict</span><span class="p">[</span><span class="s1">&#39;__self__&#39;</span><span class="p">]</span>
+            <span class="n">dag</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dep_hash</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">dag</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="k">for</span> <span class="n">dag</span> <span class="ow">in</span> <span class="n">dags</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">dag</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span>
+                <span class="n">template_dep_list</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Template name is another DAG in the Recipe Flow</span>
+                <span class="k">if</span> <span class="n">template_dep_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">dag_names</span><span class="p">:</span>
+                    <span class="n">dep_hash</span> <span class="o">=</span> <span class="n">digest_dict</span><span class="p">[</span><span class="s1">&#39;__self__&#39;</span><span class="p">]</span>
+                    <span class="n">task</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dep_hash</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">template_dep_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="k">continue</span>
+
+                <span class="n">dep</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">dependency_by_name</span><span class="p">(</span>
+                    <span class="n">dependencies</span><span class="p">,</span> <span class="n">template_dep_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">dep_hash</span> <span class="o">=</span> <span class="n">digest_dict</span><span class="p">[</span><span class="n">dep</span><span class="o">.</span><span class="n">ref_name</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;Unresolvable dependency name </span><span class="si">{</span><span class="n">dep</span><span class="o">.</span><span class="n">ref_name</span><span class="si">}</span><span class="s1">. Did you forget &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;to package or link </span><span class="si">{</span><span class="n">dep</span><span class="o">.</span><span class="n">ref_name</span><span class="si">}</span><span class="s1">? &#39;</span>
+                        <span class="s1">&#39;See `queenbee recipe link --help` for more information.&#39;</span>
+                    <span class="p">)</span>
+
+                <span class="c1"># Template name is another Recipe</span>
+                <span class="k">if</span> <span class="n">dep</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">DependencyKind</span><span class="o">.</span><span class="n">recipe</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">template_dep_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> \
+                        <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s1">&#39;Unresolvable Recipe template dependency </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">template</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="p">)</span>
+                    <span class="n">template_dep</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dep_hash</span><span class="si">}</span><span class="s1">/main&#39;</span>
+
+                <span class="c1"># Template name is a plugin Function</span>
+                <span class="k">elif</span> <span class="n">dep</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">DependencyKind</span><span class="o">.</span><span class="n">plugin</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">template_dep_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> \
+                        <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s1">&#39;Unresolvable Plugin function template dependency&#39;</span>
+                            <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">template</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="p">)</span>
+                    <span class="n">template_dep</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dep_hash</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">template_dep_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid dependency type: </span><span class="si">{</span><span class="n">dep</span><span class="o">.</span><span class="n">kind</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">task</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">template_dep</span>
+
+        <span class="k">return</span> <span class="n">dags</span></div>
+
+<div class="viewcode-block" id="BakedRecipe.check_template_dependency_names"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.BakedRecipe.check_template_dependency_names">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;flow&#39;</span><span class="p">,</span> <span class="n">allow_reuse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_template_dependency_names</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overwrite test function from inherited class&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="BakedRecipe.remove_duplicates"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.BakedRecipe.remove_duplicates">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;templates&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">remove_duplicates</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove duplicated templates by name&quot;&quot;&quot;</span>
+        <span class="n">temp_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">templates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">template</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">template</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">temp_names</span><span class="p">:</span>
+                <span class="n">temp_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">templates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">templates</span></div>
+
+<div class="viewcode-block" id="BakedRecipe.check_inputs"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.BakedRecipe.check_inputs">[docs]</a>    <span class="nd">@root_validator</span>
+    <span class="k">def</span> <span class="nf">check_inputs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check DAG Task inputs match template inputs&quot;&quot;&quot;</span>
+        <span class="n">flow</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flow&#39;</span><span class="p">)</span>
+        <span class="n">templates</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;templates&#39;</span><span class="p">)</span>
+
+        <span class="n">all_templates</span> <span class="o">=</span> <span class="n">templates</span> <span class="o">+</span> <span class="n">flow</span>
+
+        <span class="k">for</span> <span class="n">dag</span> <span class="ow">in</span> <span class="n">flow</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">dag</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span>
+                <span class="n">template</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">template_by_name</span><span class="p">(</span><span class="n">all_templates</span><span class="p">,</span> <span class="n">task</span><span class="o">.</span><span class="n">template</span><span class="p">)</span>
+                <span class="n">task</span><span class="o">.</span><span class="n">check_template</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">values</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">root_dag</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DAG</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dag_by_name</span><span class="p">(</span><span class="n">flow</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">flow</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">digest</span><span class="si">}</span><span class="s1">/main&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BakedRecipe.template_by_name"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.BakedRecipe.template_by_name">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">template_by_name</span><span class="p">(</span><span class="n">templates</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">DAG</span><span class="p">,</span> <span class="n">TemplateFunction</span><span class="p">]],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">DAG</span><span class="p">,</span> <span class="n">TemplateFunction</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve a template from a list by name</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            templates {List[Union[DAG, TemplateFunction]]} -- A list of templates</span>
+<span class="sd">            name {str} -- The name to retrieve a template byt</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: Template not found</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Union[DAG, TemplateFunction] -- A template</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">,</span> <span class="n">templates</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No dependency with reference name </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> found&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">res</span></div></div>
+
+
+<div class="viewcode-block" id="RecipeInterface"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.RecipeInterface">[docs]</a><span class="k">class</span> <span class="nc">RecipeInterface</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An interface object for creating a Recipe.</span>
+
+<span class="sd">    Recipe information only includes metadata, source, inputs and outputs of a Recipe.</span>
+<span class="sd">    This object is useful for creating user interface for Recipes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">api_version</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^v1beta1$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;v1beta1&#39;</span><span class="p">,</span> <span class="n">readOnly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^RecipeInterface$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;RecipeInterface&#39;</span>
+
+    <span class="n">metadata</span><span class="p">:</span> <span class="n">MetaData</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Recipe metadata information.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A URL to the source this recipe from a registry.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DAGInputs</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A list of recipe inputs.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">outputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DAGOutputs</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A list of recipe outputs.&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="RecipeInterface.create_empty_list"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.RecipeInterface.create_empty_list">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;inputs&#39;</span><span class="p">,</span> <span class="s1">&#39;outputs&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">create_empty_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span> <span class="k">else</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="RecipeInterface.from_recipe"><a class="viewcode-back" href="../../../modules/queenbee.recipe.recipe.html#queenbee.recipe.recipe.RecipeInterface.from_recipe">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_recipe</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">recipe</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Recipe</span><span class="p">,</span> <span class="n">BakedRecipe</span><span class="p">],</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a Recipe info from a recipe.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">recipe</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+            <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">,</span>
+            <span class="n">inputs</span><span class="o">=</span><span class="n">recipe</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span>
+            <span class="n">outputs</span><span class="o">=</span><span class="n">recipe</span><span class="o">.</span><span class="n">outputs</span>
+        <span class="p">)</span></div></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Ladybug Tools.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

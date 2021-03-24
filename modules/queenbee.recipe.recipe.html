@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>queenbee.recipe.recipe module &#8212; queenbee  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/jsv.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/app.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/mode-json.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/theme-chrome.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.15.0/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tv4/1.2.7/tv4.min.js"></script>
+    <script src="../_static/js/ref-parser.min.js"></script>
+    <script src="../_static/js/jsv.js"></script>
+    <script src="../_static/js/app.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="queenbee.recipe.task module" href="queenbee.recipe.task.html" />
+    <link rel="prev" title="queenbee.recipe.dependency module" href="queenbee.recipe.dependency.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          queenbee</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#local-development">Local Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">How To</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/index.html#pre-flight-check">Pre-Flight Check</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/index.html#tools">Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/index.html#knowledge">Knowledge</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/index.html#guides">Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/plugin.html">Create A New Plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#configuration">Configuration</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../guides/plugin.html#docker-config">Docker Config</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#package-yaml">Package.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#your-first-function">Your First Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#packaging-and-sharing">Packaging and Sharing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#using-plugins">Using Plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/recipe.html">Create A New Recipe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#metadata-configuration">Metadata Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#flow">Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#dag-tasks">DAG Tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#referencing-outputs-to-inputs">Referencing Outputs to Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#artifact-path-context-resolution">Artifact Path Context Resolution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#working-with-loops">Working With Loops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/repository-create.html">Create A New Repository</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#adding-packages">Adding Packages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#repository-indexing">Repository Indexing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#overwriting-deleting-existing-package-versions">Overwriting/Deleting Existing Package Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/repository-manage.html">Manage Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-manage.html#local-index-management">Local Index Management</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/plugins.html">Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#fully-configured">Fully Configured</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#energy-plus">Energy Plus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#honeybee-radiance">Honeybee Radiance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/recipes.html">Recipes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/recipes.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/recipes.html#daylight-factor-recipe">Daylight-Factor Recipe</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/jobs.html">Jobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/repository.html">Repositories</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#json-schema-definition">JSON Schema Definition</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli/index.html#commands">Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli/main.html">Main</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/main.html#queenbee">queenbee</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/main.html#queenbee-viz">viz</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/plugin.html">Plugins</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin">queenbee plugin</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/recipe.html">Recipes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe">queenbee recipe</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-install">install</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-link">link</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/repository.html">Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/repository.html#queenbee-repository">queenbee repository</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-add">add</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-get">get</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-index">index</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-init">init</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-list">list</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-remove">remove</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-search">search</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-serve">serve</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../modules.html">API Docs</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="queenbee.html">queenbee package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="queenbee.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="queenbee.base.html">queenbee.base package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.base.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.basemodel.html">queenbee.base.basemodel module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.metadata.html">queenbee.base.metadata module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.parser.html">queenbee.base.parser module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.request.html">queenbee.base.request module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.variable.html">queenbee.base.variable module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.base.html#module-queenbee.base">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.cli.html">queenbee.cli package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.cli.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.config.html">queenbee.cli.config package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.config.auth.html">queenbee.cli.config.auth module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.config.view.html">queenbee.cli.config.view module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.config.html#module-queenbee.cli.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.plugin.html">queenbee.cli.plugin package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.plugin.lint.html">queenbee.cli.plugin.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.plugin.new.html">queenbee.cli.plugin.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.plugin.package.html">queenbee.cli.plugin.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.plugin.html#module-queenbee.cli.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.recipe.html">queenbee.cli.recipe package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.install.html">queenbee.cli.recipe.install module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.link.html">queenbee.cli.recipe.link module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.lint.html">queenbee.cli.recipe.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.new.html">queenbee.cli.recipe.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.package.html">queenbee.cli.recipe.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.recipe.html#module-queenbee.cli.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.repository.html">queenbee.cli.repository package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.index.html">queenbee.cli.repository.index module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.init.html">queenbee.cli.repository.init module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.manage.html">queenbee.cli.repository.manage module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.search.html">queenbee.cli.repository.search module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.serve.html">queenbee.cli.repository.serve module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.repository.html#module-queenbee.cli.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.cli.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.context.html">queenbee.cli.context module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.cli.html#module-queenbee.cli">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.config.html">queenbee.config package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.config.auth.html">queenbee.config.auth module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.config.repositories.html">queenbee.config.repositories module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.config.html#module-queenbee.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.io.html">queenbee.io package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.io.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.io.inputs.html">queenbee.io.inputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.io.inputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.alias.html">queenbee.io.inputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.dag.html">queenbee.io.inputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.function.html">queenbee.io.inputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.job.html">queenbee.io.inputs.job module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.step.html">queenbee.io.inputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.task.html">queenbee.io.inputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.io.inputs.html#module-queenbee.io.inputs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.io.outputs.html">queenbee.io.outputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.io.outputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.outputs.alias.html">queenbee.io.outputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.outputs.dag.html">queenbee.io.outputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.outputs.function.html">queenbee.io.outputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.outputs.step.html">queenbee.io.outputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.outputs.task.html">queenbee.io.outputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.io.outputs.html#module-queenbee.io.outputs">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.io.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.io.artifact_source.html">queenbee.io.artifact_source module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.io.common.html">queenbee.io.common module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.io.reference.html">queenbee.io.reference module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.io.html#module-queenbee.io">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.job.html">queenbee.job package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.job.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.job.job.html">queenbee.job.job module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.job.result.html">queenbee.job.result module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.job.run.html">queenbee.job.run module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.job.status.html">queenbee.job.status module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.job.html#module-queenbee.job">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.plugin.html">queenbee.plugin package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.plugin.function.html">queenbee.plugin.function module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.plugin.plugin.html">queenbee.plugin.plugin module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.plugin.html#module-queenbee.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4 current"><a class="reference internal" href="queenbee.recipe.html">queenbee.recipe package</a><ul class="current">
+<li class="toctree-l5 current"><a class="reference internal" href="queenbee.recipe.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l6"><a class="reference internal" href="queenbee.recipe.dag.html">queenbee.recipe.dag module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.recipe.dependency.html">queenbee.recipe.dependency module</a></li>
+<li class="toctree-l6 current"><a class="current reference internal" href="#">queenbee.recipe.recipe module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.recipe.task.html">queenbee.recipe.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.recipe.html#module-queenbee.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.repository.html">queenbee.repository package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.repository.index.html">queenbee.repository.index module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.repository.package.html">queenbee.repository.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.repository.html#module-queenbee.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="queenbee.html#module-queenbee">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../modules.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">How To</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">API Docs</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="queenbee.recipe.dependency.html" title="Previous Chapter: queenbee.recipe.dependency module"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; queenbee.reci...</span>
+    </a>
+  </li>
+  <li>
+    <a href="queenbee.recipe.task.html" title="Next Chapter: queenbee.recipe.task module"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">queenbee.reci... &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/modules/queenbee.recipe.recipe.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">How To</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">API Docs</a></li>
+</ul>
+
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="module-queenbee.recipe.recipe">
+<span id="queenbee-recipe-recipe-module"></span><h1>queenbee.recipe.recipe module<a class="headerlink" href="#module-queenbee.recipe.recipe" title="Permalink to this headline">¶</a></h1>
+<p>Queenbee recipe class.</p>
+<p>Recipe is a collection of plugins and inter-related tasks that describes an end to
+end steps for the recipe.</p>
+<dl class="py class">
+<dt id="queenbee.recipe.recipe.BakedRecipe">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.recipe.recipe.</span></code><code class="sig-name descname"><span class="pre">BakedRecipe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.recipe.recipe.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'BakedRecipe'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_version</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.recipe.recipe.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'v1beta1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="queenbee.base.metadata.html#queenbee.base.metadata.MetaData" title="queenbee.base.metadata.MetaData"><span class="pre">queenbee.base.metadata.MetaData</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependencies</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.recipe.dependency.html#queenbee.recipe.dependency.Dependency" title="queenbee.recipe.dependency.Dependency"><span class="pre">queenbee.recipe.dependency.Dependency</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.recipe.dag.html#queenbee.recipe.dag.DAG" title="queenbee.recipe.dag.DAG"><span class="pre">queenbee.recipe.dag.DAG</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">digest</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">templates</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#queenbee.recipe.recipe.TemplateFunction" title="queenbee.recipe.recipe.TemplateFunction"><span class="pre">queenbee.recipe.recipe.TemplateFunction</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.recipe.dag.html#queenbee.recipe.dag.DAG" title="queenbee.recipe.dag.DAG"><span class="pre">queenbee.recipe.dag.DAG</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#BakedRecipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.BakedRecipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#queenbee.recipe.recipe.Recipe" title="queenbee.recipe.recipe.Recipe"><code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.recipe.recipe.Recipe</span></code></a></p>
+<p>Baked Recipe.</p>
+<p>A Baked Recipe contains all the templates referred to in the DAG within a templates
+list.</p>
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.BakedRecipe.check_inputs">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">check_inputs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#BakedRecipe.check_inputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.BakedRecipe.check_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check DAG Task inputs match template inputs</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.BakedRecipe.check_template_dependency_names">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">check_template_dependency_names</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#BakedRecipe.check_template_dependency_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.BakedRecipe.check_template_dependency_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overwrite test function from inherited class</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.BakedRecipe.digest">
+<code class="sig-name descname"><span class="pre">digest</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#queenbee.recipe.recipe.BakedRecipe.digest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.BakedRecipe.from_folder">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_folder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">folder_path:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">refresh_deps:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></em>, <em class="sig-param"><span class="pre">config:</span> <span class="pre">queenbee.config.Config</span> <span class="pre">=</span> <span class="pre">type:</span> <span class="pre">Config</span> <span class="pre">annotations:</span> <span class="pre">{}</span> <span class="pre">auth:</span> <span class="pre">[]</span> <span class="pre">repositories:</span> <span class="pre">[]</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#BakedRecipe.from_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.BakedRecipe.from_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a baked recipe from a recipe folder</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Here is an example of a Recipe folder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>.
+├── .dependencies
+│   ├── plugins
+│   │   └── &lt;sha-256&gt;.yaml
+│   └── recipes
+│       └── &lt;sha-256&gt;.yaml
+├── flow
+|   ├── sub-dag.yaml
+│   └── main.yaml
+├── dependencies.yaml
+└── package.yaml
+</pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>{str} -- The path to the folder to read</strong> (<em>folder_path</em>) – </p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>{bool} -- Fetch the dependencies from their source instead of</strong> (<em>refresh_deps</em>) – the <code class="docutils literal notranslate"><span class="pre">.dependencies</span></code> folder (default: {True})</p></li>
+<li><p><strong>{Config} -- A queenbee config object</strong><strong> (</strong><strong>default</strong> (<a class="reference internal" href="queenbee.cli.config.html#module-queenbee.cli.config" title="queenbee.cli.config"><em>config</em></a>) – {Config()})</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>BakedRecipe – A baked recipe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.BakedRecipe.from_recipe">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_recipe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">recipe:</span> <span class="pre">queenbee.recipe.recipe.Recipe</span></em>, <em class="sig-param"><span class="pre">config:</span> <span class="pre">queenbee.config.Config</span> <span class="pre">=</span> <span class="pre">type:</span> <span class="pre">Config</span> <span class="pre">annotations:</span> <span class="pre">{}</span> <span class="pre">auth:</span> <span class="pre">[]</span> <span class="pre">repositories:</span> <span class="pre">[]</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#BakedRecipe.from_recipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.BakedRecipe.from_recipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bake a recipe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>{Recipe} -- A Queenbee recipe</strong> (<em>recipe</em>) – </p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>{Config} -- A queenbee config object</strong><strong> (</strong><strong>default</strong> (<a class="reference internal" href="queenbee.cli.config.html#module-queenbee.cli.config" title="queenbee.cli.config"><em>config</em></a>) – {Config()})</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – The dependencies or templates do not match the flow</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>BakedRecipe – A baked recipe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.BakedRecipe.remove_duplicates">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">remove_duplicates</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#BakedRecipe.remove_duplicates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.BakedRecipe.remove_duplicates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove duplicated templates by name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.BakedRecipe.replace_template_refs">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">replace_template_refs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dependencies</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.recipe.dependency.html#queenbee.recipe.dependency.Dependency" title="queenbee.recipe.dependency.Dependency"><span class="pre">queenbee.recipe.dependency.Dependency</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dags</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.recipe.dag.html#queenbee.recipe.dag.DAG" title="queenbee.recipe.dag.DAG"><span class="pre">queenbee.recipe.dag.DAG</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">digest_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.recipe.dag.html#queenbee.recipe.dag.DAG" title="queenbee.recipe.dag.DAG"><span class="pre">queenbee.recipe.dag.DAG</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#BakedRecipe.replace_template_refs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.BakedRecipe.replace_template_refs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace DAG Task template names with unique dependency digest based names</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>{List</strong><strong>[</strong><strong>Dependency</strong><strong>]</strong><strong>} -- A list of locked dependencies</strong> (<em>dependencies</em>) – </p></li>
+<li><p><strong>{List</strong><strong>[</strong><strong>DAG</strong><strong>]</strong><strong>} -- A list of DAGs</strong> (<em>dags</em>) – </p></li>
+<li><p><strong>{str} -- The digest of the Recipe used to create the Baked Recipe</strong> (<em>digest</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Unresolvable dependency in a task</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List[DAG] – A list of DAGs with updated template names</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.BakedRecipe.root_dag">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">root_dag</span></code><a class="headerlink" href="#queenbee.recipe.recipe.BakedRecipe.root_dag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.BakedRecipe.template_by_name">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">template_by_name</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">templates</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#queenbee.recipe.recipe.TemplateFunction" title="queenbee.recipe.recipe.TemplateFunction"><span class="pre">queenbee.recipe.recipe.TemplateFunction</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.recipe.dag.html#queenbee.recipe.dag.DAG" title="queenbee.recipe.dag.DAG"><span class="pre">queenbee.recipe.dag.DAG</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.recipe.dag.html#queenbee.recipe.dag.DAG" title="queenbee.recipe.dag.DAG"><span class="pre">queenbee.recipe.dag.DAG</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#queenbee.recipe.recipe.TemplateFunction" title="queenbee.recipe.recipe.TemplateFunction"><span class="pre">queenbee.recipe.recipe.TemplateFunction</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#BakedRecipe.template_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.BakedRecipe.template_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve a template from a list by name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>{List</strong><strong>[</strong><strong>Union</strong><strong>[</strong><strong>DAG</strong> (<em>templates</em>) – </p></li>
+<li><p><strong>-- A list of templates</strong> (<a class="reference internal" href="#queenbee.recipe.recipe.TemplateFunction" title="queenbee.recipe.recipe.TemplateFunction"><em>TemplateFunction</em></a><em>]</em><em>]</em><em>}</em>) – </p></li>
+<li><p><strong>{str} -- The name to retrieve a template byt</strong> (<em>name</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Template not found</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Union[DAG, TemplateFunction] – A template</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.BakedRecipe.templates">
+<code class="sig-name descname"><span class="pre">templates</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#queenbee.recipe.recipe.TemplateFunction" title="queenbee.recipe.recipe.TemplateFunction"><span class="pre">queenbee.recipe.recipe.TemplateFunction</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.recipe.dag.html#queenbee.recipe.dag.DAG" title="queenbee.recipe.dag.DAG"><span class="pre">queenbee.recipe.dag.DAG</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#queenbee.recipe.recipe.BakedRecipe.templates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.BakedRecipe.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.recipe.recipe.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.recipe.recipe.BakedRecipe.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="queenbee.recipe.recipe.Recipe">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.recipe.recipe.</span></code><code class="sig-name descname"><span class="pre">Recipe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.recipe.recipe.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'Recipe'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_version</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.recipe.recipe.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'v1beta1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="queenbee.base.metadata.html#queenbee.base.metadata.MetaData" title="queenbee.base.metadata.MetaData"><span class="pre">queenbee.base.metadata.MetaData</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependencies</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.recipe.dependency.html#queenbee.recipe.dependency.Dependency" title="queenbee.recipe.dependency.Dependency"><span class="pre">queenbee.recipe.dependency.Dependency</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.recipe.dag.html#queenbee.recipe.dag.DAG" title="queenbee.recipe.dag.DAG"><span class="pre">queenbee.recipe.dag.DAG</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#Recipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.Recipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="queenbee.base.basemodel.html#queenbee.base.basemodel.BaseModel" title="queenbee.base.basemodel.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.base.basemodel.BaseModel</span></code></a></p>
+<p>A Queenbee Recipe</p>
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.Recipe.api_version">
+<code class="sig-name descname"><span class="pre">api_version</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.recipe.recipe.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.api_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.check_dag_names">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">check_dag_names</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#Recipe.check_dag_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.check_dag_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check DAG names do not overlap with dependency names</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.check_entrypoint">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">check_entrypoint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#Recipe.check_entrypoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.check_entrypoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the <cite>main</cite> DAG exists in the flow</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.check_template_dependency_names">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">check_template_dependency_names</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#Recipe.check_template_dependency_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.check_template_dependency_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check all DAG template names exist in dependencies or other DAGs</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.dag_by_name">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">dag_by_name</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flow</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.recipe.dag.html#queenbee.recipe.dag.DAG" title="queenbee.recipe.dag.DAG"><span class="pre">queenbee.recipe.dag.DAG</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="queenbee.recipe.dag.html#queenbee.recipe.dag.DAG" title="queenbee.recipe.dag.DAG"><span class="pre">queenbee.recipe.dag.DAG</span></a><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#Recipe.dag_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.dag_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve a DAG from a list by its name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>{List</strong><strong>[</strong><strong>DAG</strong><strong>]</strong><strong>} -- A list of DAGs</strong> (<em>flow</em>) – </p></li>
+<li><p><strong>{str} -- The name to search by</strong> (<em>name</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – No DAG found with the input name</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>DAG – A DAG</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.Recipe.dependencies">
+<code class="sig-name descname"><span class="pre">dependencies</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.recipe.dependency.html#queenbee.recipe.dependency.Dependency" title="queenbee.recipe.dependency.Dependency"><span class="pre">queenbee.recipe.dependency.Dependency</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.dependency_by_name">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">dependency_by_name</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dependencies</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.recipe.dependency.html#queenbee.recipe.dependency.Dependency" title="queenbee.recipe.dependency.Dependency"><span class="pre">queenbee.recipe.dependency.Dependency</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="queenbee.recipe.dependency.html#queenbee.recipe.dependency.Dependency" title="queenbee.recipe.dependency.Dependency"><span class="pre">queenbee.recipe.dependency.Dependency</span></a><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#Recipe.dependency_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.dependency_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve a dependency by its reference name (name or alias)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>{List</strong><strong>[</strong><strong>Dependency</strong><strong>]</strong><strong>} -- A list of dependencies</strong> (<em>dependencies</em>) – </p></li>
+<li><p><strong>{str} -- The name</strong><strong> or </strong><strong>alias to search dependencies by</strong> (<em>name</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – No dependency found with the input name</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dependency – A dependency</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.Recipe.flow">
+<code class="sig-name descname"><span class="pre">flow</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.recipe.dag.html#queenbee.recipe.dag.DAG" title="queenbee.recipe.dag.DAG"><span class="pre">queenbee.recipe.dag.DAG</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.flow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.from_folder">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_folder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#Recipe.from_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.from_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a recipe from a folder</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Here is an example of a Recipe folder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>.
+├── .dependencies
+│   ├── plugins
+│   │   └── &lt;sha-256&gt;.yaml
+│   └── recipes
+│       └── &lt;sha-256&gt;.yaml
+├── flow
+|   ├── sub-dag.yaml
+│   └── main.yaml
+├── dependencies.yaml
+└── package.yaml
+</pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>{str} -- Path to the folder</strong> (<em>folder_path</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Recipe – A Recipe</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.inputs">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">inputs</span></code><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Recipe’s inputs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List[DAGInputs] – The inputs of the entrypoint DAG</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.is_locked">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_locked</span></code><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.is_locked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicates whether the Recipe dependencies are all locked</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bool – True if all dependencies are locked</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.lock_dependencies">
+<code class="sig-name descname"><span class="pre">lock_dependencies</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">config:</span> <span class="pre">queenbee.config.Config</span> <span class="pre">=</span> <span class="pre">type:</span> <span class="pre">Config</span> <span class="pre">annotations:</span> <span class="pre">{}</span> <span class="pre">auth:</span> <span class="pre">[]</span> <span class="pre">repositories:</span> <span class="pre">[]</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#Recipe.lock_dependencies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.lock_dependencies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lock the dependencies by fetching them and storing their digest</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.Recipe.metadata">
+<code class="sig-name descname"><span class="pre">metadata</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="queenbee.base.metadata.html#queenbee.base.metadata.MetaData" title="queenbee.base.metadata.MetaData"><span class="pre">queenbee.base.metadata.MetaData</span></a></em><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.outputs">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">outputs</span></code><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.outputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Recipe’s outputs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List[DAGOutputs] – The outputs of the entrypoint DAG</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.root_dag">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">root_dag</span></code><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.root_dag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.sort_list">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">sort_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#Recipe.sort_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.sort_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort the list of DAGs by name</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.to_folder">
+<code class="sig-name descname"><span class="pre">to_folder</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readme_string</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#Recipe.to_folder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.to_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a Recipe to a folder</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Here is an example of a Recipe folder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>.
+├── .dependencies
+│   ├── plugin
+│   │   └── plugin-dep-name
+│   │       ├── functions
+│   │       │   ├── func-1.yaml
+│   │       │   ├── ...
+│   │       │   └── func-n.yaml
+│   │       ├── config.yaml
+│   │       └── package.yaml
+│   └── recipe
+│       └── recipe-dep-name
+│           ├── .dependencies
+│           │   ├── plugin
+│           │   └── recipe
+│           ├── flow
+│           │   └── main.yaml
+│           ├── dependencies.yaml
+│           └── package.yaml
+├── flow
+│   └── main.yaml
+├── dependencies.yaml
+└── package.yaml
+</pre></div>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>{str} -- The path to the Recipe folder</strong> (<em>folder_path</em>) – </p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>{str} -- The README file string</strong><strong> (</strong><strong>default</strong> (<em>readme_string</em>) – {None})</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.Recipe.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.recipe.recipe.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.write_dependencies">
+<code class="sig-name descname"><span class="pre">write_dependencies</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">folder_path:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">config:</span> <span class="pre">queenbee.config.Config</span> <span class="pre">=</span> <span class="pre">type:</span> <span class="pre">Config</span> <span class="pre">annotations:</span> <span class="pre">{}</span> <span class="pre">auth:</span> <span class="pre">[]</span> <span class="pre">repositories:</span> <span class="pre">[]</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#Recipe.write_dependencies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.write_dependencies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch dependencies manifests and write them to the <cite>.dependencies</cite> folder</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>{str} -- Path to the recipe folder</strong> (<em>folder_path</em>) – </p>
+</dd>
+<dt class="field-even">Keyword Arguments</dt>
+<dd class="field-even"><p><strong>{Config} -- A queenbee config object</strong><strong> (</strong><strong>default</strong> (<a class="reference internal" href="queenbee.cli.config.html#module-queenbee.cli.config" title="queenbee.cli.config"><em>config</em></a>) – {Config()})</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.Recipe.write_dependency_file">
+<code class="sig-name descname"><span class="pre">write_dependency_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#Recipe.write_dependency_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.Recipe.write_dependency_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the locked dependencies to a Recipe folder</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>{str} -- The path to the recipe folder</strong> (<em>folder_path</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="queenbee.recipe.recipe.RecipeInterface">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.recipe.recipe.</span></code><code class="sig-name descname"><span class="pre">RecipeInterface</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.recipe.recipe.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'RecipeInterface'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_version</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.recipe.recipe.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'v1beta1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="queenbee.base.metadata.html#queenbee.base.metadata.MetaData" title="queenbee.base.metadata.MetaData"><span class="pre">queenbee.base.metadata.MetaData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGGenericInput" title="queenbee.io.inputs.dag.DAGGenericInput"><span class="pre">queenbee.io.inputs.dag.DAGGenericInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGStringInput" title="queenbee.io.inputs.dag.DAGStringInput"><span class="pre">queenbee.io.inputs.dag.DAGStringInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGIntegerInput" title="queenbee.io.inputs.dag.DAGIntegerInput"><span class="pre">queenbee.io.inputs.dag.DAGIntegerInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGNumberInput" title="queenbee.io.inputs.dag.DAGNumberInput"><span class="pre">queenbee.io.inputs.dag.DAGNumberInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGBooleanInput" title="queenbee.io.inputs.dag.DAGBooleanInput"><span class="pre">queenbee.io.inputs.dag.DAGBooleanInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGFolderInput" title="queenbee.io.inputs.dag.DAGFolderInput"><span class="pre">queenbee.io.inputs.dag.DAGFolderInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGFileInput" title="queenbee.io.inputs.dag.DAGFileInput"><span class="pre">queenbee.io.inputs.dag.DAGFileInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGPathInput" title="queenbee.io.inputs.dag.DAGPathInput"><span class="pre">queenbee.io.inputs.dag.DAGPathInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGArrayInput" title="queenbee.io.inputs.dag.DAGArrayInput"><span class="pre">queenbee.io.inputs.dag.DAGArrayInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGJSONObjectInput" title="queenbee.io.inputs.dag.DAGJSONObjectInput"><span class="pre">queenbee.io.inputs.dag.DAGJSONObjectInput</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGGenericOutput" title="queenbee.io.outputs.dag.DAGGenericOutput"><span class="pre">queenbee.io.outputs.dag.DAGGenericOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGStringOutput" title="queenbee.io.outputs.dag.DAGStringOutput"><span class="pre">queenbee.io.outputs.dag.DAGStringOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGIntegerOutput" title="queenbee.io.outputs.dag.DAGIntegerOutput"><span class="pre">queenbee.io.outputs.dag.DAGIntegerOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGNumberOutput" title="queenbee.io.outputs.dag.DAGNumberOutput"><span class="pre">queenbee.io.outputs.dag.DAGNumberOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGBooleanOutput" title="queenbee.io.outputs.dag.DAGBooleanOutput"><span class="pre">queenbee.io.outputs.dag.DAGBooleanOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGFolderOutput" title="queenbee.io.outputs.dag.DAGFolderOutput"><span class="pre">queenbee.io.outputs.dag.DAGFolderOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGFileOutput" title="queenbee.io.outputs.dag.DAGFileOutput"><span class="pre">queenbee.io.outputs.dag.DAGFileOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGPathOutput" title="queenbee.io.outputs.dag.DAGPathOutput"><span class="pre">queenbee.io.outputs.dag.DAGPathOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGArrayOutput" title="queenbee.io.outputs.dag.DAGArrayOutput"><span class="pre">queenbee.io.outputs.dag.DAGArrayOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGJSONObjectOutput" title="queenbee.io.outputs.dag.DAGJSONObjectOutput"><span class="pre">queenbee.io.outputs.dag.DAGJSONObjectOutput</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#RecipeInterface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.RecipeInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="queenbee.base.basemodel.html#queenbee.base.basemodel.BaseModel" title="queenbee.base.basemodel.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.base.basemodel.BaseModel</span></code></a></p>
+<p>An interface object for creating a Recipe.</p>
+<p>Recipe information only includes metadata, source, inputs and outputs of a Recipe.
+This object is useful for creating user interface for Recipes.</p>
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.RecipeInterface.api_version">
+<code class="sig-name descname"><span class="pre">api_version</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.recipe.recipe.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.recipe.recipe.RecipeInterface.api_version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.RecipeInterface.create_empty_list">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">create_empty_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#RecipeInterface.create_empty_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.RecipeInterface.create_empty_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.RecipeInterface.from_recipe">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_recipe</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#queenbee.recipe.recipe.Recipe" title="queenbee.recipe.recipe.Recipe"><span class="pre">queenbee.recipe.recipe.Recipe</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#queenbee.recipe.recipe.BakedRecipe" title="queenbee.recipe.recipe.BakedRecipe"><span class="pre">queenbee.recipe.recipe.BakedRecipe</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#RecipeInterface.from_recipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.RecipeInterface.from_recipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Recipe info from a recipe.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.RecipeInterface.inputs">
+<code class="sig-name descname"><span class="pre">inputs</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGGenericInput" title="queenbee.io.inputs.dag.DAGGenericInput"><span class="pre">queenbee.io.inputs.dag.DAGGenericInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGStringInput" title="queenbee.io.inputs.dag.DAGStringInput"><span class="pre">queenbee.io.inputs.dag.DAGStringInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGIntegerInput" title="queenbee.io.inputs.dag.DAGIntegerInput"><span class="pre">queenbee.io.inputs.dag.DAGIntegerInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGNumberInput" title="queenbee.io.inputs.dag.DAGNumberInput"><span class="pre">queenbee.io.inputs.dag.DAGNumberInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGBooleanInput" title="queenbee.io.inputs.dag.DAGBooleanInput"><span class="pre">queenbee.io.inputs.dag.DAGBooleanInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGFolderInput" title="queenbee.io.inputs.dag.DAGFolderInput"><span class="pre">queenbee.io.inputs.dag.DAGFolderInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGFileInput" title="queenbee.io.inputs.dag.DAGFileInput"><span class="pre">queenbee.io.inputs.dag.DAGFileInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGPathInput" title="queenbee.io.inputs.dag.DAGPathInput"><span class="pre">queenbee.io.inputs.dag.DAGPathInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGArrayInput" title="queenbee.io.inputs.dag.DAGArrayInput"><span class="pre">queenbee.io.inputs.dag.DAGArrayInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGJSONObjectInput" title="queenbee.io.inputs.dag.DAGJSONObjectInput"><span class="pre">queenbee.io.inputs.dag.DAGJSONObjectInput</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#queenbee.recipe.recipe.RecipeInterface.inputs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.RecipeInterface.metadata">
+<code class="sig-name descname"><span class="pre">metadata</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="queenbee.base.metadata.html#queenbee.base.metadata.MetaData" title="queenbee.base.metadata.MetaData"><span class="pre">queenbee.base.metadata.MetaData</span></a></em><a class="headerlink" href="#queenbee.recipe.recipe.RecipeInterface.metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.RecipeInterface.outputs">
+<code class="sig-name descname"><span class="pre">outputs</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGGenericOutput" title="queenbee.io.outputs.dag.DAGGenericOutput"><span class="pre">queenbee.io.outputs.dag.DAGGenericOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGStringOutput" title="queenbee.io.outputs.dag.DAGStringOutput"><span class="pre">queenbee.io.outputs.dag.DAGStringOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGIntegerOutput" title="queenbee.io.outputs.dag.DAGIntegerOutput"><span class="pre">queenbee.io.outputs.dag.DAGIntegerOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGNumberOutput" title="queenbee.io.outputs.dag.DAGNumberOutput"><span class="pre">queenbee.io.outputs.dag.DAGNumberOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGBooleanOutput" title="queenbee.io.outputs.dag.DAGBooleanOutput"><span class="pre">queenbee.io.outputs.dag.DAGBooleanOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGFolderOutput" title="queenbee.io.outputs.dag.DAGFolderOutput"><span class="pre">queenbee.io.outputs.dag.DAGFolderOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGFileOutput" title="queenbee.io.outputs.dag.DAGFileOutput"><span class="pre">queenbee.io.outputs.dag.DAGFileOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGPathOutput" title="queenbee.io.outputs.dag.DAGPathOutput"><span class="pre">queenbee.io.outputs.dag.DAGPathOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGArrayOutput" title="queenbee.io.outputs.dag.DAGArrayOutput"><span class="pre">queenbee.io.outputs.dag.DAGArrayOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGJSONObjectOutput" title="queenbee.io.outputs.dag.DAGJSONObjectOutput"><span class="pre">queenbee.io.outputs.dag.DAGJSONObjectOutput</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#queenbee.recipe.recipe.RecipeInterface.outputs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.RecipeInterface.source">
+<code class="sig-name descname"><span class="pre">source</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#queenbee.recipe.recipe.RecipeInterface.source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.RecipeInterface.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.recipe.recipe.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.recipe.recipe.RecipeInterface.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="queenbee.recipe.recipe.TemplateFunction">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.recipe.recipe.</span></code><code class="sig-name descname"><span class="pre">TemplateFunction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.recipe.recipe.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'TemplateFunction'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.io.inputs.function.html#queenbee.io.inputs.function.FunctionStringInput" title="queenbee.io.inputs.function.FunctionStringInput"><span class="pre">queenbee.io.inputs.function.FunctionStringInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.function.html#queenbee.io.inputs.function.FunctionIntegerInput" title="queenbee.io.inputs.function.FunctionIntegerInput"><span class="pre">queenbee.io.inputs.function.FunctionIntegerInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.function.html#queenbee.io.inputs.function.FunctionNumberInput" title="queenbee.io.inputs.function.FunctionNumberInput"><span class="pre">queenbee.io.inputs.function.FunctionNumberInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.function.html#queenbee.io.inputs.function.FunctionBooleanInput" title="queenbee.io.inputs.function.FunctionBooleanInput"><span class="pre">queenbee.io.inputs.function.FunctionBooleanInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.function.html#queenbee.io.inputs.function.FunctionFolderInput" title="queenbee.io.inputs.function.FunctionFolderInput"><span class="pre">queenbee.io.inputs.function.FunctionFolderInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.function.html#queenbee.io.inputs.function.FunctionFileInput" title="queenbee.io.inputs.function.FunctionFileInput"><span class="pre">queenbee.io.inputs.function.FunctionFileInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.function.html#queenbee.io.inputs.function.FunctionPathInput" title="queenbee.io.inputs.function.FunctionPathInput"><span class="pre">queenbee.io.inputs.function.FunctionPathInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.function.html#queenbee.io.inputs.function.FunctionArrayInput" title="queenbee.io.inputs.function.FunctionArrayInput"><span class="pre">queenbee.io.inputs.function.FunctionArrayInput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.inputs.function.html#queenbee.io.inputs.function.FunctionJSONObjectInput" title="queenbee.io.inputs.function.FunctionJSONObjectInput"><span class="pre">queenbee.io.inputs.function.FunctionJSONObjectInput</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionStringOutput" title="queenbee.io.outputs.function.FunctionStringOutput"><span class="pre">queenbee.io.outputs.function.FunctionStringOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionIntegerOutput" title="queenbee.io.outputs.function.FunctionIntegerOutput"><span class="pre">queenbee.io.outputs.function.FunctionIntegerOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionNumberOutput" title="queenbee.io.outputs.function.FunctionNumberOutput"><span class="pre">queenbee.io.outputs.function.FunctionNumberOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionBooleanOutput" title="queenbee.io.outputs.function.FunctionBooleanOutput"><span class="pre">queenbee.io.outputs.function.FunctionBooleanOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionFolderOutput" title="queenbee.io.outputs.function.FunctionFolderOutput"><span class="pre">queenbee.io.outputs.function.FunctionFolderOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionFileOutput" title="queenbee.io.outputs.function.FunctionFileOutput"><span class="pre">queenbee.io.outputs.function.FunctionFileOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionPathOutput" title="queenbee.io.outputs.function.FunctionPathOutput"><span class="pre">queenbee.io.outputs.function.FunctionPathOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionArrayOutput" title="queenbee.io.outputs.function.FunctionArrayOutput"><span class="pre">queenbee.io.outputs.function.FunctionArrayOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionJSONObjectOutput" title="queenbee.io.outputs.function.FunctionJSONObjectOutput"><span class="pre">queenbee.io.outputs.function.FunctionJSONObjectOutput</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="queenbee.plugin.plugin.html#queenbee.plugin.plugin.PluginConfig" title="queenbee.plugin.plugin.PluginConfig"><span class="pre">queenbee.plugin.plugin.PluginConfig</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#TemplateFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.TemplateFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="queenbee.plugin.function.html#queenbee.plugin.function.Function" title="queenbee.plugin.function.Function"><code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.plugin.function.Function</span></code></a></p>
+<p>Function template.</p>
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.TemplateFunction.config">
+<code class="sig-name descname"><span class="pre">config</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="queenbee.plugin.plugin.html#queenbee.plugin.plugin.PluginConfig" title="queenbee.plugin.plugin.PluginConfig"><span class="pre">queenbee.plugin.plugin.PluginConfig</span></a></em><a class="headerlink" href="#queenbee.recipe.recipe.TemplateFunction.config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="queenbee.recipe.recipe.TemplateFunction.from_plugin">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_plugin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="queenbee.plugin.plugin.html#queenbee.plugin.plugin.Plugin" title="queenbee.plugin.plugin.Plugin"><span class="pre">queenbee.plugin.plugin.Plugin</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">list</span><a class="reference internal" href="../_modules/queenbee/recipe/recipe.html#TemplateFunction.from_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.recipe.recipe.TemplateFunction.from_plugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a list of template functions from a plugin</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>{Plugin} -- A plugin</strong> (<em>plugin</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list – A list of template functions</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.recipe.recipe.TemplateFunction.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.recipe.recipe.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.recipe.recipe.TemplateFunction.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Ladybug Tools.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

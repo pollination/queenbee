@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create A New Recipe &#8212; queenbee  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/jsv.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/app.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/mode-json.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/theme-chrome.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.15.0/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tv4/1.2.7/tv4.min.js"></script>
+    <script src="../_static/js/ref-parser.min.js"></script>
+    <script src="../_static/js/jsv.js"></script>
+    <script src="../_static/js/app.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Create A New Repository" href="repository-create.html" />
+    <link rel="prev" title="Create A New Plugin" href="plugin.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          queenbee</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#local-development">Local Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">How To</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#pre-flight-check">Pre-Flight Check</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="index.html#tools">Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#knowledge">Knowledge</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#guides">Guides</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="plugin.html">Create A New Plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plugin.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugin.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugin.html#configuration">Configuration</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="plugin.html#docker-config">Docker Config</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="plugin.html#package-yaml">Package.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugin.html#your-first-function">Your First Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugin.html#packaging-and-sharing">Packaging and Sharing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="plugin.html#using-plugins">Using Plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Create A New Recipe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#metadata-configuration">Metadata Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#flow">Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dag-tasks">DAG Tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#referencing-outputs-to-inputs">Referencing Outputs to Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#artifact-path-context-resolution">Artifact Path Context Resolution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#working-with-loops">Working With Loops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="repository-create.html">Create A New Repository</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="repository-create.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="repository-create.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="repository-create.html#adding-packages">Adding Packages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="repository-create.html#repository-indexing">Repository Indexing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="repository-create.html#overwriting-deleting-existing-package-versions">Overwriting/Deleting Existing Package Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="repository-manage.html">Manage Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="repository-manage.html#local-index-management">Local Index Management</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/plugins.html">Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#fully-configured">Fully Configured</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#energy-plus">Energy Plus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#honeybee-radiance">Honeybee Radiance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/recipes.html">Recipes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/recipes.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/recipes.html#daylight-factor-recipe">Daylight-Factor Recipe</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/jobs.html">Jobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/repository.html">Repositories</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#json-schema-definition">JSON Schema Definition</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli/index.html#commands">Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli/main.html">Main</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/main.html#queenbee">queenbee</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/main.html#queenbee-viz">viz</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/plugin.html">Plugins</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin">queenbee plugin</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/recipe.html">Recipes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe">queenbee recipe</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-install">install</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-link">link</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/repository.html">Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/repository.html#queenbee-repository">queenbee repository</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-add">add</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-get">get</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-index">index</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-init">init</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-list">list</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-remove">remove</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-search">search</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-serve">serve</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">API Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../modules/queenbee.html">queenbee package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../modules/queenbee.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.base.html">queenbee.base package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.base.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.base.basemodel.html">queenbee.base.basemodel module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.base.metadata.html">queenbee.base.metadata module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.base.parser.html">queenbee.base.parser module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.base.request.html">queenbee.base.request module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.base.variable.html">queenbee.base.variable module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.base.html#module-queenbee.base">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.cli.html">queenbee.cli package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.cli.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.cli.config.html">queenbee.cli.config package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.config.auth.html">queenbee.cli.config.auth module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.config.view.html">queenbee.cli.config.view module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.config.html#module-queenbee.cli.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.cli.plugin.html">queenbee.cli.plugin package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.plugin.lint.html">queenbee.cli.plugin.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.plugin.new.html">queenbee.cli.plugin.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.plugin.package.html">queenbee.cli.plugin.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.plugin.html#module-queenbee.cli.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.cli.recipe.html">queenbee.cli.recipe package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.recipe.install.html">queenbee.cli.recipe.install module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.recipe.link.html">queenbee.cli.recipe.link module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.recipe.lint.html">queenbee.cli.recipe.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.recipe.new.html">queenbee.cli.recipe.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.recipe.package.html">queenbee.cli.recipe.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.recipe.html#module-queenbee.cli.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.cli.repository.html">queenbee.cli.repository package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.repository.index.html">queenbee.cli.repository.index module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.repository.init.html">queenbee.cli.repository.init module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.repository.manage.html">queenbee.cli.repository.manage module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.repository.search.html">queenbee.cli.repository.search module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.cli.repository.serve.html">queenbee.cli.repository.serve module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.cli.repository.html#module-queenbee.cli.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.cli.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.cli.context.html">queenbee.cli.context module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.cli.html#module-queenbee.cli">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.config.html">queenbee.config package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.config.auth.html">queenbee.config.auth module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.config.repositories.html">queenbee.config.repositories module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.config.html#module-queenbee.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.io.html">queenbee.io package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.io.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.io.inputs.html">queenbee.io.inputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.io.inputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.inputs.alias.html">queenbee.io.inputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.inputs.dag.html">queenbee.io.inputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.inputs.function.html">queenbee.io.inputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.inputs.job.html">queenbee.io.inputs.job module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.inputs.step.html">queenbee.io.inputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.inputs.task.html">queenbee.io.inputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.io.inputs.html#module-queenbee.io.inputs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.io.outputs.html">queenbee.io.outputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.io.outputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.outputs.alias.html">queenbee.io.outputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.outputs.dag.html">queenbee.io.outputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.outputs.function.html">queenbee.io.outputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.outputs.step.html">queenbee.io.outputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../modules/queenbee.io.outputs.task.html">queenbee.io.outputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../modules/queenbee.io.outputs.html#module-queenbee.io.outputs">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.io.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.io.artifact_source.html">queenbee.io.artifact_source module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.io.common.html">queenbee.io.common module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.io.reference.html">queenbee.io.reference module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.io.html#module-queenbee.io">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.job.html">queenbee.job package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.job.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.job.job.html">queenbee.job.job module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.job.result.html">queenbee.job.result module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.job.run.html">queenbee.job.run module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.job.status.html">queenbee.job.status module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.job.html#module-queenbee.job">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.plugin.html">queenbee.plugin package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.plugin.function.html">queenbee.plugin.function module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.plugin.plugin.html">queenbee.plugin.plugin module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.plugin.html#module-queenbee.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.recipe.html">queenbee.recipe package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.recipe.dag.html">queenbee.recipe.dag module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.recipe.dependency.html">queenbee.recipe.dependency module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.recipe.recipe.html">queenbee.recipe.recipe module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.recipe.task.html">queenbee.recipe.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.recipe.html#module-queenbee.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../modules/queenbee.repository.html">queenbee.repository package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.repository.index.html">queenbee.repository.index module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../modules/queenbee.repository.package.html">queenbee.repository.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../modules/queenbee.repository.html#module-queenbee.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/queenbee.html#module-queenbee">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../modules.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">How To</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#pre-flight-check">Pre-Flight Check</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#guides">Guides</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="plugin.html">Create A New Plugin</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Create A New Recipe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#metadata-configuration">Metadata Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#flow">Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dag-tasks">DAG Tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#referencing-outputs-to-inputs">Referencing Outputs to Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#artifact-path-context-resolution">Artifact Path Context Resolution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#working-with-loops">Working With Loops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="repository-create.html">Create A New Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="repository-manage.html">Manage Repositories</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">API Docs</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="plugin.html" title="Previous Chapter: Create A New Plugin"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Create A New Plugin</span>
+    </a>
+  </li>
+  <li>
+    <a href="repository-create.html" title="Next Chapter: Create A New Repository"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Create A New ... &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/guides/recipe.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">How To</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#pre-flight-check">Pre-Flight Check</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#guides">Guides</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="plugin.html">Create A New Plugin</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Create A New Recipe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#metadata-configuration">Metadata Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#flow">Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dag-tasks">DAG Tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#referencing-outputs-to-inputs">Referencing Outputs to Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#artifact-path-context-resolution">Artifact Path Context Resolution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#working-with-loops">Working With Loops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="repository-create.html">Create A New Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="repository-manage.html">Manage Repositories</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">API Docs</a></li>
+</ul>
+
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="create-a-new-recipe">
+<h1>Create A New Recipe<a class="headerlink" href="#create-a-new-recipe" title="Permalink to this headline">¶</a></h1>
+<p>In this section we will walk you through how to create a new Recipe.</p>
+<p>It should be noted though, that the recommended way to create a recipe from
+scratch is using
+<a class="reference external" href="https://github.com/pollination/pollination-dsl">pollination-dsl</a>. The
+<code class="docutils literal notranslate"><span class="pre">pollination</span> <span class="pre">dsl</span> <span class="pre">translate</span></code> command can create a <code class="docutils literal notranslate"><span class="pre">queenbee</span></code> recipe like the
+one that we will see here. However, creating the recipes by hand is tedious and
+error-prone. This example should primarily be a reference for learning more
+about how the schema works and seeing a use case than about the most practical
+way to author the YAML files.</p>
+<div class="section" id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p>A Recipe defines a set of Tasks which are combined in a directed acyclic graph
+(DAG). The edges of this graph correspond to the path that an input takes to a
+Task. The outputs of a Task can be passed as inputs to subsequent Tasks. As the
+graph is acyclic, a Task may not pass its output to any Task that is at an
+equal or earlier stage in the Recipe.</p>
+<p>This graph can be thought of as a program’s <a class="reference external" href="https://en.wikipedia.org/wiki/Call_graph">call graph</a>, but one that can call functions
+written in arbitrary languages executed on an arbitrary runtime rather than
+simply being executed by <code class="docutils literal notranslate"><span class="pre">python</span></code> or <code class="docutils literal notranslate"><span class="pre">node</span></code> or compiled into an ELF and run
+on a compatible OS.</p>
+<p>As such, the outputs of one Task that are sent to another Task can be thought
+of as a kind of file-based inter-process communication. Provided that the first
+Task can output a filetype that the second Task can parse, the implementation
+is of no concern. At least, at the level of a Recipe.</p>
+<p>Finally, it is important to note that a Task in a Recipe could be another DAG
+made of many individual Tasks. Thus, graphs can be nested inside one another to
+isolate arbitrary levels of complexity in a manageable way.</p>
+<p>Similar to the plugin creation documentation, the first step is to use
+<code class="docutils literal notranslate"><span class="pre">queenbee</span></code> to create a recipe scaffold:</p>
+<p>This will create a directory <code class="docutils literal notranslate"><span class="pre">my-recipe</span></code> in your current working directory.</p>
+</div>
+<div class="section" id="folder-structure">
+<h2>Folder Structure<a class="headerlink" href="#folder-structure" title="Permalink to this headline">¶</a></h2>
+<p>The structure of the created folder should look something like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>my-recipe
+├── flow
+│   └── main.yaml
+├── dependencies.yaml
+├── LICENSE
+├── package.yaml
+└── README.md
+</pre></div>
+</div>
+</div>
+<div class="section" id="metadata-configuration">
+<h2>Metadata Configuration<a class="headerlink" href="#metadata-configuration" title="Permalink to this headline">¶</a></h2>
+<p>The recipe’s metadata is defined by the <code class="docutils literal notranslate"><span class="pre">package.yaml</span></code> file. It is composed
+of a <code class="docutils literal notranslate"><span class="pre">MetaData</span></code> type with multiple nullable fields. If you are familiar with
+the <code class="docutils literal notranslate"><span class="pre">npm</span></code> ecosystem, you can think of this as an analogue to the
+non-executable fields of <code class="docutils literal notranslate"><span class="pre">package.json</span></code> such as <code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">version</span></code>,
+<code class="docutils literal notranslate"><span class="pre">description</span></code>, etc.</p>
+<ul class="simple">
+<li><p><strong>annotations</strong>: A dictionary of arbitrary (key, value) pairs that can be
+consumed by consumers of the recipe.</p></li>
+<li><p><strong>name</strong>: The name of the recipe.</p></li>
+<li><p><strong>tag</strong>: The tag of the recipe.</p></li>
+<li><p><strong>app_version</strong>: The version of the application.</p></li>
+<li><p><strong>keywords</strong>: A list of strings that are related to the package.</p></li>
+<li><p><strong>maintainers</strong>: A list of <code class="docutils literal notranslate"><span class="pre">Maintainer</span></code> <a class="reference external" href="https://pollination.github.io/queenbee/_static/redoc-recipe.html#tag/maintainer_model">objects</a> that describe the contact
+information of the people responsible for the recipe (you, in this case).</p></li>
+<li><p><strong>home</strong>: The homepage for this Recipe.</p></li>
+<li><p><strong>sources</strong>: A list of necessary container image URIs, relevant issue trackers, source code, etc.</p></li>
+<li><p><strong>icon</strong>: A publicly-accessible image URI to give the recipe a friendly face.</p></li>
+<li><p><strong>deprecated</strong>: Whether or not the recipe is in active development.</p></li>
+<li><p><strong>description</strong>: A textual description, analogous to a README.</p></li>
+<li><p><strong>license</strong>: A valid <code class="docutils literal notranslate"><span class="pre">License</span></code> <a class="reference external" href="https://pollination.github.io/queenbee/_static/redoc-recipe.html#tag/license_model">object</a> which
+corresponds to the text in the <code class="docutils literal notranslate"><span class="pre">LICENSE</span></code> file.</p></li>
+</ul>
+<p>Into the <code class="docutils literal notranslate"><span class="pre">package.yaml</span></code> file you can paste the following snippet:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">MetaData</span>
+<span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">annual-daylight</span>
+<span class="nt">tag</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.4.0</span>
+<span class="nt">app_version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="nt">keywords</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">honeybee</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">radiance</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">daylight</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">annual-daylight</span>
+<span class="nt">maintainers</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Maintainer</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Your Name</span>
+  <span class="nt">email</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">your@email.com</span>
+<span class="nt">sources</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">https://hub.docker.com/r/ladybugtools/honeybee-radiance</span>
+<span class="nt">icon</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="nt">deprecated</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+<span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Annual daylight recipe for Pollination.</span>
+<span class="nt">license</span><span class="p">:</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">License</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">MIT</span>
+  <span class="nt">url</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://spdx.org/licenses/MIT.html</span>
+</pre></div>
+</div>
+<p>Naturally, <code class="docutils literal notranslate"><span class="pre">Your</span> <span class="pre">Name</span></code> and <code class="docutils literal notranslate"><span class="pre">your&#64;email.com</span></code> should be replaced with the
+correct values. And, as with any software, the license should be one that
+comports with the nature of what you are developing.</p>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>The dependencies are specified in the <code class="docutils literal notranslate"><span class="pre">dependencies.yaml</span></code> file.</p>
+<p>We can add a dependency that will be used in the Recipe by pulling from a
+public repo by replacing the content of the auto-generated <code class="docutils literal notranslate"><span class="pre">dependencies.yaml</span></code>
+with the following snippet:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dependencies</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Dependency</span>
+  <span class="nt">kind</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">plugin</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">honeybee-radiance</span>
+  <span class="nt">hash</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="nt">alias</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="nt">tag</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5.0</span>
+  <span class="nt">source</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">https://api.pollination.cloud/registries/ladybug-tools</span>
+</pre></div>
+</div>
+<p>This will add a reference to the <code class="docutils literal notranslate"><span class="pre">honeybee-radiance</span></code> Plugin, version
+<code class="docutils literal notranslate"><span class="pre">0.5.0</span></code> which is hosted on Pollination’s registry server. This will
+allow us to use Functions which are defined in this Plugin as the
+implementation that does the work inside Tasks which are stitched together in
+the Recipe.</p>
+</div>
+<div class="section" id="flow">
+<h2>Flow<a class="headerlink" href="#flow" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">flow</span></code> directory is analogous to the <code class="docutils literal notranslate"><span class="pre">src</span></code> directory of a <code class="docutils literal notranslate"><span class="pre">python</span></code>
+package. It is where the actual code of the Recipe is kept.</p>
+<p>Because the recipe files are verbose, we will simply link to them and examine
+some snippets. These should be saved with the name of the link inside the
+<code class="docutils literal notranslate"><span class="pre">flow</span></code> directory.</p>
+<p><a class="reference external" href="https://storage.googleapis.com/lbt-blobs/documentation-samples/main.yaml">main.yaml</a></p>
+<p><a class="reference external" href="https://storage.googleapis.com/lbt-blobs/documentation-samples/annual-daylight-ray-tracing.yaml">annual-daylight-ray-tracing.yaml</a></p>
+<p>After downloading these, the directory should now look like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>my-recipe
+├── flow
+│   ├── main.yaml
+│   └── annual-daylight-ray-tracing.yaml
+├── dependencies.yaml
+├── LICENSE
+├── package.yaml
+└── README.md
+</pre></div>
+</div>
+</div>
+<div class="section" id="dag-tasks">
+<h2>DAG Tasks<a class="headerlink" href="#dag-tasks" title="Permalink to this headline">¶</a></h2>
+<p>The first snippet that we will examine is the <code class="docutils literal notranslate"><span class="pre">tasks</span></code> key from <code class="docutils literal notranslate"><span class="pre">main.yaml</span></code>.
+In the linked file that was saved in the previous section, it should begin like
+this:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">tasks</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DAGTask</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">annual-daylight-raytracing</span>
+  <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">annual-daylight-ray-tracing</span>
+  <span class="nt">needs</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">create-sky-dome</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">create-octree-with-suns</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">create-octree</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">generate-sunpath</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">create-total-sky</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">create-direct-sky</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">create-rad-folder</span>
+  <span class="nt">arguments</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sensor-count</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">InputReference</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sensor-count</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">radiance-parameters</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">InputReference</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">radiance-parameters</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskPathArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">octree-file-with-suns</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskFileReference</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">create-octree-with-suns</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">scene-file</span>
+    <span class="nt">sub_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskPathArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">octree-file</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskFileReference</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">create-octree</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">scene-file</span>
+    <span class="nt">sub_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">grid-name</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ValueReference</span>
+      <span class="nt">value</span><span class="p">:</span> <span class="s">&#39;{{item.full_id}}&#39;</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskPathArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sensor-grid</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskFolderReference</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">create-rad-folder</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">model-folder</span>
+    <span class="nt">sub_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">grid/{{item.full_id}}.pts</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskPathArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sky-matrix</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskFileReference</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">create-total-sky</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sky-matrix</span>
+    <span class="nt">sub_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskPathArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sky-dome</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskFileReference</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">create-sky-dome</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sky-dome</span>
+    <span class="nt">sub_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskPathArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sky-matrix-direct</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskFileReference</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">create-direct-sky</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sky-matrix</span>
+    <span class="nt">sub_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskPathArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sunpath</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskFileReference</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">generate-sunpath</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sunpath</span>
+    <span class="nt">sub_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskPathArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sun-modifiers</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskFileReference</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">generate-sunpath</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sun-modifiers</span>
+    <span class="nt">sub_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="nt">loop</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DAGTaskLoop</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskReference</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">create-rad-folder</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sensor-grids</span>
+  <span class="nt">sub_folder</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">initial_results/{{item.name}}</span>
+  <span class="nt">returns</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
+</pre></div>
+</div>
+<p>This key points to an array of Task objects, with the specific type here being
+a <code class="docutils literal notranslate"><span class="pre">DAGTask</span></code>. As mentioned above, the entire Recipe forms a directed acyclic
+graph. This type of task allows the nesting of DAGs inside the Recipe, allowing
+complex workflows to be isolated into units of related functionality like a
+subroutine in a structured programming language. This particular Task
+references the neighboring file <code class="docutils literal notranslate"><span class="pre">annual-daylight-ray-tracing</span></code> which declares
+itself to be of type <code class="docutils literal notranslate"><span class="pre">DAG</span></code>.</p>
+</div>
+<div class="section" id="referencing-outputs-to-inputs">
+<h2>Referencing Outputs to Inputs<a class="headerlink" href="#referencing-outputs-to-inputs" title="Permalink to this headline">¶</a></h2>
+<p>In order to pass outputs of one Task as inputs to another Task, it is necessary
+to create an edge in the DAG that represents this connection. The second
+element from <code class="docutils literal notranslate"><span class="pre">main.yaml</span></code>’s <code class="docutils literal notranslate"><span class="pre">tasks</span></code> array is another <code class="docutils literal notranslate"><span class="pre">DAGTask</span></code> that looks
+like this:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DAGTask</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">create-octree</span>
+  <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">honeybee-radiance/create-octree</span>
+  <span class="nt">needs</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">create-rad-folder</span>
+  <span class="nt">arguments</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskPathArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">model</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskFolderReference</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">create-rad-folder</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">model-folder</span>
+    <span class="nt">sub_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="nt">loop</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="nt">sub_folder</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="nt">returns</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskPathReturn</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">scene-file</span>
+    <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+    <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">resources/scene.oct</span>
+    <span class="nt">required</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p>This snippet specifies the <code class="docutils literal notranslate"><span class="pre">create-octree</span></code> Task and that it must come after
+<code class="docutils literal notranslate"><span class="pre">create-rad-folder</span></code> Task, as it is in the <code class="docutils literal notranslate"><span class="pre">needs</span></code> array. The link between
+the two tasks happens in the first element of the <code class="docutils literal notranslate"><span class="pre">arguments</span></code> array. Here,
+the only argument that the <code class="docutils literal notranslate"><span class="pre">create-octree</span></code> command needs is a path from
+another Task. The <code class="docutils literal notranslate"><span class="pre">TaskPathArgument</span></code> object specifies a <code class="docutils literal notranslate"><span class="pre">from</span></code> field that
+looks for a Task named <code class="docutils literal notranslate"><span class="pre">create-rad-folder</span></code> and acquires the value of its
+output that is named <code class="docutils literal notranslate"><span class="pre">model-folder</span></code>.</p>
+<p>The Task that supplies this source as an output can be defined by the third
+element in the <code class="docutils literal notranslate"><span class="pre">tasks</span></code> array which looks like this:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DAGTask</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">create-rad-folder</span>
+  <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">honeybee-radiance/create-radiance-folder</span>
+  <span class="nt">needs</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
+  <span class="nt">arguments</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskPathArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">input-model</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">InputFileReference</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">model</span>
+    <span class="nt">sub_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="nt">loop</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="nt">sub_folder</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="nt">returns</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskPathReturn</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">model-folder</span>
+    <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+    <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">model</span>
+    <span class="nt">required</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskReturn</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sensor-grids</span>
+    <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Sensor grids information.</span>
+</pre></div>
+</div>
+<p>This defines a Task with an empty <code class="docutils literal notranslate"><span class="pre">needs</span></code> array. Note that, even though this
+Task doesn’t need another _Task_, it does still require an input
+<code class="docutils literal notranslate"><span class="pre">TaskPathArgument</span></code> named <code class="docutils literal notranslate"><span class="pre">input-model</span></code>. Thus, this Task can be thought of
+as root node of the graph, but one that is still able to vary over the range of
+its input type. In this case, that type is a filesystem path.</p>
+<p>Because this Task supplies an output, it can be used as the input to the
+<code class="docutils literal notranslate"><span class="pre">create-octree</span></code> task. In this case, the reference in <code class="docutils literal notranslate"><span class="pre">create-octree</span></code> points
+to the first element of <code class="docutils literal notranslate"><span class="pre">create-rad-folder</span></code>’s <code class="docutils literal notranslate"><span class="pre">returns</span></code> array.</p>
+</div>
+<div class="section" id="artifact-path-context-resolution">
+<h2>Artifact Path Context Resolution<a class="headerlink" href="#artifact-path-context-resolution" title="Permalink to this headline">¶</a></h2>
+<p>It should be noted that the <code class="docutils literal notranslate"><span class="pre">model-folder</span></code> return object is not linked to a
+specific path on your local system, a path in a remote resource, nor even a
+path in a known interface like the Linux filesystem hierarchy. Rather, it names
+a path relative to the Task itself. When this task is run on an execution
+engine, locally with Luigi, or in the cloud with Pollination, the execution
+engine is free to locate the outputs from this task as it sees fit. The
+referenced paths are simply relative to the execution context where the task is
+actually executed which allows the same Recipe to be used locally for
+convenience or in the cloud for enabling massive scale without changes.</p>
+<p>Luigi, for instance, will create a temporary folder on your local drive unique
+to each task which will become the context for resolving the path while
+Pollination will run the task inside a container and that container’s
+filesystem will become the context for path resolution.</p>
+</div>
+<div class="section" id="working-with-loops">
+<h2>Working With Loops<a class="headerlink" href="#working-with-loops" title="Permalink to this headline">¶</a></h2>
+<p>While the <code class="docutils literal notranslate"><span class="pre">queenbee</span></code> Recipe schema is meant to be declarative, it does
+include a primitive for an iterative loop in any Task. This is the key
+<code class="docutils literal notranslate"><span class="pre">loop</span></code>. An example usage can be seen in the
+<code class="docutils literal notranslate"><span class="pre">annual-daylight-ray-tracing.yaml</span></code> file. The first element in the <code class="docutils literal notranslate"><span class="pre">tasks</span></code>
+array has a non-null <code class="docutils literal notranslate"><span class="pre">loop</span></code> key that looks like this:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">loop</span><span class="p">:</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DAGTaskLoop</span>
+  <span class="nt">from</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskReference</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">split-grid</span>
+    <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">grids-list</span>
+</pre></div>
+</div>
+<p>This instructs the execution engine to execute this task once for each item
+that results from the <code class="docutils literal notranslate"><span class="pre">grids-list</span></code> output of the <code class="docutils literal notranslate"><span class="pre">split-grid</span></code> Task.</p>
+<p>This task the fifth element in the array and looks like this:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">DAGTask</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">split-grid</span>
+  <span class="nt">template</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">honeybee-radiance/split-grid</span>
+  <span class="nt">needs</span><span class="p">:</span> <span class="p p-Indicator">[]</span>
+  <span class="nt">arguments</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sensor-count</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">InputReference</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sensor-count</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskPathArgument</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">input-grid</span>
+    <span class="nt">from</span><span class="p">:</span>
+      <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">InputFileReference</span>
+      <span class="nt">variable</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sensor-grid</span>
+    <span class="nt">sub_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="nt">loop</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="nt">sub_folder</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="nt">returns</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskReturn</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">grids-list</span>
+    <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+  <span class="p p-Indicator">-</span> <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TaskPathReturn</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">output-folder</span>
+    <span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">null</span>
+    <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sub_grids</span>
+    <span class="nt">required</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p>This particular function, <code class="docutils literal notranslate"><span class="pre">honeybee-radiance/split-grid</span></code> results in a list of
+files, the length of which can vary based on the physical dimensions of the
+modeled geometry that is split and the parameters used in the splitting
+function. Thus, it cannot be known until this task completes how many items
+there are for the referencing <code class="docutils literal notranslate"><span class="pre">loop</span></code> key to touch. The <code class="docutils literal notranslate"><span class="pre">loop</span></code> construct
+allows the Recipe to vary across parameters like this that cannot be known
+until runtime and allows it to discover inputs as it executes without require
+imperative instructions from the author (you).</p>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>Hopefully this gives a deeper understanding of the Recipe schema and how it
+allows workflows to be flexible and reused across execution environments. If
+you have questions, always feel free to open an issue or reach out on the
+<a class="reference external" href="https://discourse.ladybug.tools">forum</a>. Thank you!</p>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Ladybug Tools.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

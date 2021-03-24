@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>queenbee.recipe.task &#8212; queenbee  documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/jsv.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/app.css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/mode-json.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/theme-chrome.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.15.0/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tv4/1.2.7/tv4.min.js"></script>
+    <script src="../../../_static/js/ref-parser.min.js"></script>
+    <script src="../../../_static/js/jsv.js"></script>
+    <script src="../../../_static/js/app.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          queenbee</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">Queenbee :crown:</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html#local-development">Local Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/index.html">How To</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../guides/index.html#pre-flight-check">Pre-Flight Check</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../guides/index.html#tools">Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../guides/index.html#knowledge">Knowledge</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guides/index.html#guides">Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../guides/plugin.html">Create A New Plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/plugin.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/plugin.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/plugin.html#configuration">Configuration</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../guides/plugin.html#docker-config">Docker Config</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/plugin.html#package-yaml">Package.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/plugin.html#your-first-function">Your First Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/plugin.html#packaging-and-sharing">Packaging and Sharing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/plugin.html#using-plugins">Using Plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../guides/recipe.html">Create A New Recipe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#metadata-configuration">Metadata Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#flow">Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#dag-tasks">DAG Tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#referencing-outputs-to-inputs">Referencing Outputs to Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#artifact-path-context-resolution">Artifact Path Context Resolution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#working-with-loops">Working With Loops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/recipe.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../guides/repository-create.html">Create A New Repository</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/repository-create.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/repository-create.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/repository-create.html#adding-packages">Adding Packages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/repository-create.html#repository-indexing">Repository Indexing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/repository-create.html#overwriting-deleting-existing-package-versions">Overwriting/Deleting Existing Package Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../guides/repository-manage.html">Manage Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../guides/repository-manage.html#local-index-management">Local Index Management</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../schemas/index.html">Queenbee Schemas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../schemas/plugins.html">Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/plugins.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/plugins.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/plugins.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/plugins.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/plugins.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../schemas/plugins.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../schemas/plugins.html#fully-configured">Fully Configured</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../schemas/plugins.html#energy-plus">Energy Plus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../schemas/plugins.html#honeybee-radiance">Honeybee Radiance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../schemas/recipes.html">Recipes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/recipes.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/recipes.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/recipes.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/recipes.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/recipes.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../schemas/recipes.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../schemas/recipes.html#daylight-factor-recipe">Daylight-Factor Recipe</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../schemas/jobs.html">Jobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/jobs.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/jobs.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/jobs.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/jobs.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/jobs.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../schemas/repository.html">Repositories</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/repository.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/repository.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/repository.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../schemas/repository.html#json-schema-definition">JSON Schema Definition</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli/index.html">CLI Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cli/index.html#commands">Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/main.html">Main</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/main.html#queenbee">queenbee</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/main.html#queenbee-viz">viz</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/plugin.html">Plugins</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/plugin.html#queenbee-plugin">queenbee plugin</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/plugin.html#queenbee-plugin-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/plugin.html#queenbee-plugin-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/plugin.html#queenbee-plugin-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/recipe.html">Recipes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/recipe.html#queenbee-recipe">queenbee recipe</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/recipe.html#queenbee-recipe-install">install</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/recipe.html#queenbee-recipe-link">link</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/recipe.html#queenbee-recipe-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/recipe.html#queenbee-recipe-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/recipe.html#queenbee-recipe-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../cli/repository.html">Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository">queenbee repository</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-add">add</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-get">get</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-index">index</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-init">init</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-list">list</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-remove">remove</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-search">search</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../cli/repository.html#queenbee-repository-serve">serve</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules/queenbee.html">queenbee package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../modules/queenbee.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.base.html">queenbee.base package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.base.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.base.basemodel.html">queenbee.base.basemodel module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.base.metadata.html">queenbee.base.metadata module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.base.parser.html">queenbee.base.parser module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.base.request.html">queenbee.base.request module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.base.variable.html">queenbee.base.variable module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.base.html#module-queenbee.base">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.cli.html">queenbee.cli package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.cli.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.cli.config.html">queenbee.cli.config package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.config.auth.html">queenbee.cli.config.auth module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.config.view.html">queenbee.cli.config.view module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.config.html#module-queenbee.cli.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.cli.plugin.html">queenbee.cli.plugin package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.plugin.lint.html">queenbee.cli.plugin.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.plugin.new.html">queenbee.cli.plugin.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.plugin.package.html">queenbee.cli.plugin.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.plugin.html#module-queenbee.cli.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.html">queenbee.cli.recipe package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.install.html">queenbee.cli.recipe.install module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.link.html">queenbee.cli.recipe.link module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.lint.html">queenbee.cli.recipe.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.new.html">queenbee.cli.recipe.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.package.html">queenbee.cli.recipe.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.recipe.html#module-queenbee.cli.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.cli.repository.html">queenbee.cli.repository package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.repository.index.html">queenbee.cli.repository.index module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.repository.init.html">queenbee.cli.repository.init module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.repository.manage.html">queenbee.cli.repository.manage module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.repository.search.html">queenbee.cli.repository.search module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.cli.repository.serve.html">queenbee.cli.repository.serve module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.cli.repository.html#module-queenbee.cli.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.cli.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.cli.context.html">queenbee.cli.context module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.cli.html#module-queenbee.cli">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.config.html">queenbee.config package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.config.auth.html">queenbee.config.auth module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.config.repositories.html">queenbee.config.repositories module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.config.html#module-queenbee.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.io.html">queenbee.io package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.io.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.io.inputs.html">queenbee.io.inputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.io.inputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.inputs.alias.html">queenbee.io.inputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.inputs.dag.html">queenbee.io.inputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.inputs.function.html">queenbee.io.inputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.inputs.job.html">queenbee.io.inputs.job module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.inputs.step.html">queenbee.io.inputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.inputs.task.html">queenbee.io.inputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.io.inputs.html#module-queenbee.io.inputs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.io.outputs.html">queenbee.io.outputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.io.outputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.outputs.alias.html">queenbee.io.outputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.outputs.dag.html">queenbee.io.outputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.outputs.function.html">queenbee.io.outputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.outputs.step.html">queenbee.io.outputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../modules/queenbee.io.outputs.task.html">queenbee.io.outputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../modules/queenbee.io.outputs.html#module-queenbee.io.outputs">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.io.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.io.artifact_source.html">queenbee.io.artifact_source module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.io.common.html">queenbee.io.common module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.io.reference.html">queenbee.io.reference module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.io.html#module-queenbee.io">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.job.html">queenbee.job package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.job.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.job.job.html">queenbee.job.job module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.job.result.html">queenbee.job.result module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.job.run.html">queenbee.job.run module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.job.status.html">queenbee.job.status module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.job.html#module-queenbee.job">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.plugin.html">queenbee.plugin package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.plugin.function.html">queenbee.plugin.function module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.plugin.plugin.html">queenbee.plugin.plugin module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.plugin.html#module-queenbee.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.recipe.html">queenbee.recipe package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.recipe.dag.html">queenbee.recipe.dag module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.recipe.dependency.html">queenbee.recipe.dependency module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.recipe.recipe.html">queenbee.recipe.recipe module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.recipe.task.html">queenbee.recipe.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.recipe.html#module-queenbee.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../modules/queenbee.repository.html">queenbee.repository package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.repository.index.html">queenbee.repository.index module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../modules/queenbee.repository.package.html">queenbee.repository.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../modules/queenbee.repository.html#module-queenbee.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../modules/queenbee.html#module-queenbee">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../modules.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/index.html">How To</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API Docs</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guides/index.html">How To</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API Docs</a></li>
+</ul>
+
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <h1>Source code for queenbee.recipe.task</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;DAGTask module.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span><span class="p">,</span> <span class="n">constr</span>
+
+<span class="kn">from</span> <span class="nn">..base.basemodel</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">..io.common</span> <span class="kn">import</span> <span class="n">find_io_by_name</span><span class="p">,</span> <span class="n">find_dup_items</span>
+<span class="kn">from</span> <span class="nn">..io.reference</span> <span class="kn">import</span> <span class="n">InputReference</span><span class="p">,</span> <span class="n">TaskReference</span><span class="p">,</span> <span class="n">ValueListReference</span><span class="p">,</span> \
+    <span class="n">InputFileReference</span><span class="p">,</span> <span class="n">InputFolderReference</span><span class="p">,</span> <span class="n">InputPathReference</span><span class="p">,</span> \
+    <span class="n">TaskFileReference</span><span class="p">,</span> <span class="n">TaskFolderReference</span><span class="p">,</span> <span class="n">TaskPathReference</span><span class="p">,</span> \
+    <span class="n">ValueFileReference</span><span class="p">,</span> <span class="n">ValueFolderReference</span><span class="p">,</span> <span class="n">ItemReference</span><span class="p">,</span> <span class="n">ValueReference</span>
+<span class="kn">from</span> <span class="nn">..io.inputs.task</span> <span class="kn">import</span> <span class="n">TaskArguments</span>
+<span class="kn">from</span> <span class="nn">..io.outputs.task</span> <span class="kn">import</span> <span class="n">TaskReturns</span>
+<span class="kn">from</span> <span class="nn">..base.parser</span> <span class="kn">import</span> <span class="n">parse_double_quotes_vars</span>
+
+
+<div class="viewcode-block" id="DAGTaskLoop"><a class="viewcode-back" href="../../../modules/queenbee.recipe.task.html#queenbee.recipe.task.DAGTaskLoop">[docs]</a><span class="k">class</span> <span class="nc">DAGTaskLoop</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Loop configuration for the task.</span>
+
+<span class="sd">    This will run the template provided multiple times and in parallel relative to an</span>
+<span class="sd">    input or task parameter which should be a list.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^DAGTaskLoop$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;DAGTaskLoop&#39;</span>
+
+    <span class="n">from_</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">InputReference</span><span class="p">,</span> <span class="n">TaskReference</span><span class="p">,</span> <span class="n">ValueListReference</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s1">&#39;from&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The task or DAG parameter to loop over (must be iterable).&#39;</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DAGTask"><a class="viewcode-back" href="../../../modules/queenbee.recipe.task.html#queenbee.recipe.task.DAGTask">[docs]</a><span class="k">class</span> <span class="nc">DAGTask</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A single task in a DAG flow.&quot;&quot;&quot;</span>
+
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^DAGTask$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;DAGTask&#39;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Name for this task. It must be unique in a DAG.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">template</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Template name. A template is a Function or a DAG. This template &#39;</span>
+        <span class="s1">&#39;must be available in the dependencies.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">needs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;List of DAG tasks that this task depends on and needs to be&#39;</span>
+        <span class="s1">&#39; executed before this task.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">arguments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TaskArguments</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The input arguments for this task.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">loop</span><span class="p">:</span> <span class="n">DAGTaskLoop</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Loop configuration for this task.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">sub_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A path relative to the current folder context where artifacts &#39;</span>
+        <span class="s1">&#39;should be saved. This is useful when performing a loop or invoking another &#39;</span>
+        <span class="s1">&#39;workflow and wanting to save results in a specific sub_folder.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">returns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TaskReturns</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;List of task returns.&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="DAGTask.check_item_references"><a class="viewcode-back" href="../../../modules/queenbee.recipe.task.html#queenbee.recipe.task.DAGTask.check_item_references">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;loop&#39;</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_item_references</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">arguments</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;arguments&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">arguments</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">v</span>
+            <span class="n">artifacts</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">arguments</span> <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">is_artifact</span><span class="p">]</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">parameters_by_ref_source</span><span class="p">(</span><span class="n">artifacts</span><span class="p">,</span> <span class="s1">&#39;item&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> \
+                <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Cannot use &quot;item&quot; references in argument parameters if no&#39;</span>
+                    <span class="s1">&#39; &quot;loop&quot; is specified&#39;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="DAGTask.check_references"><a class="viewcode-back" href="../../../modules/queenbee.recipe.task.html#queenbee.recipe.task.DAGTask.check_references">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;sub_folder&#39;</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_references</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;loop&#39;</span><span class="p">)</span>
+        <span class="n">arguments</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;arguments&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">v</span>
+
+        <span class="n">refs</span> <span class="o">=</span> <span class="n">parse_double_quotes_vars</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">refs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ref</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span> <span class="ow">or</span> <span class="n">ref</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;item.&#39;</span><span class="p">):</span>
+                <span class="k">assert</span> <span class="n">loop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Cannot use `item` if no loop is specified&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ref_list</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="n">ref</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;arguments.&#39;</span><span class="p">),</span> \
+                    <span class="sa">f</span><span class="s1">&#39;Sub_folder ref must be from `item` or `arguments`. Not: </span><span class="si">{</span><span class="n">ref</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ref_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> \
+                    <span class="s1">&#39;Sub_folder ref must follow format `arguments.&lt;var-name&gt;`. &#39;</span> \
+                    <span class="sa">f</span><span class="s1">&#39;Not </span><span class="si">{</span><span class="n">ref</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="c1"># Check parameter is set</span>
+                <span class="n">find_io_by_name</span><span class="p">(</span><span class="n">arguments</span><span class="p">,</span> <span class="n">ref_list</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="DAGTask.check_duplicate_argument_name"><a class="viewcode-back" href="../../../modules/queenbee.recipe.task.html#queenbee.recipe.task.DAGTask.check_duplicate_argument_name">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;arguments&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_duplicate_argument_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">v</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
+        <span class="n">dup_arg</span> <span class="o">=</span> <span class="n">find_dup_items</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dup_arg</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Duplicate argument name in task &quot;</span><span class="si">{</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot;: </span><span class="si">{</span><span class="n">dup_arg</span><span class="si">}</span><span class="s1">. &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Each task argument name should be unique.&#39;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="DAGTask.check_duplicate_return_name"><a class="viewcode-back" href="../../../modules/queenbee.recipe.task.html#queenbee.recipe.task.DAGTask.check_duplicate_return_name">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;returns&#39;</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_duplicate_return_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">v</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
+        <span class="n">dup_arg</span> <span class="o">=</span> <span class="n">find_dup_items</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dup_arg</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Duplicate return name in task &quot;</span><span class="si">{</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot;: </span><span class="si">{</span><span class="n">dup_arg</span><span class="si">}</span><span class="s1">. &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Each task return name should be unique.&#39;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="DAGTask.check_referenced_values"><a class="viewcode-back" href="../../../modules/queenbee.recipe.task.html#queenbee.recipe.task.DAGTask.check_referenced_values">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;arguments&#39;</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_referenced_values</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">deps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">dep</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">from_</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="c1"># non-referenced arguments</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">deps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dep</span><span class="p">)</span>
+
+        <span class="n">needs</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;needs&#39;</span><span class="p">,</span> <span class="p">[])</span>
+
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">deps</span> <span class="k">if</span> <span class="n">d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">needs</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Missing task name(s) from `needs` field for task </span><span class="si">{</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">:&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">-&gt; </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="DAGTask.check_loop_referenced_task"><a class="viewcode-back" href="../../../modules/queenbee.recipe.task.html#queenbee.recipe.task.DAGTask.check_loop_referenced_task">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;loop&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_loop_referenced_task</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dep</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">from_</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="c1"># non-referenced arguments</span>
+            <span class="k">return</span> <span class="n">v</span>
+        <span class="n">needs</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;needs&#39;</span><span class="p">,</span> <span class="p">[])</span>
+
+        <span class="k">if</span> <span class="n">dep</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">needs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Missing loop reference from `needs` field for task </span><span class="si">{</span><span class="n">values</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">:&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">-&gt; </span><span class="si">{</span><span class="n">dep</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">v</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_root</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;A root task does not have any dependencies</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool -- True if the task has no dependencies</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dependencies</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dependencies</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="DAGTask.check_template"><a class="viewcode-back" href="../../../modules/queenbee.recipe.task.html#queenbee.recipe.task.DAGTask.check_template">[docs]</a>    <span class="k">def</span> <span class="nf">check_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A function to check the inputs and outputs of a DAG task.</span>
+
+<span class="sd">        The DAG tasks should match a certain template.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            template {Union[DAG, Function]} -- A DAG or Function template</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: The task input and output values do not match the task</span>
+<span class="sd">                template.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># check all required inputs for template are provided</span>
+        <span class="n">arg_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">argument</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">argument</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">]</span>
+
+        <span class="c1"># TODO: add additional check for argument type to match</span>
+        <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="n">template</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">inp</span><span class="o">.</span><span class="n">required</span><span class="p">:</span>
+                <span class="c1"># not a required input</span>
+                <span class="k">continue</span>
+            <span class="k">assert</span> <span class="n">inp</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">arg_names</span><span class="p">,</span> \
+                <span class="sa">f</span><span class="s1">&#39;Validation Error for Task </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> and Template </span><span class="si">{</span><span class="n">template</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">:&#39;</span> \
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">Missing required task input from arguments: </span><span class="si">{</span><span class="n">inp</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="c1"># check template has the outputs that are requested by this task</span>
+        <span class="n">output_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">template</span><span class="o">.</span><span class="n">outputs</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">returns</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">ret</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">output_names</span><span class="p">,</span> \
+                <span class="sa">f</span><span class="s1">&#39;Validation Error for Task &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; and Template &#39;</span> \
+                <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">template</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot;:&#39;</span> \
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">Invalid task return: &quot;</span><span class="si">{</span><span class="n">ret</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot;. &quot;</span><span class="si">{</span><span class="n">template</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot;&quot; does not &#39;</span> \
+                <span class="s1">&#39;have an output with this name.&#39;</span></div>
+
+<div class="viewcode-block" id="DAGTask.artifacts_by_ref_source"><a class="viewcode-back" href="../../../modules/queenbee.recipe.task.html#queenbee.recipe.task.DAGTask.artifacts_by_ref_source">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">artifacts_by_ref_source</span><span class="p">(</span><span class="n">artifacts</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">TaskArguments</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve a list of argument artifacts by their source type.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            source {str} -- The source type, one of: &#39;dag&#39;, &#39;task&#39;, &#39;value&#39;. dag refers</span>
+<span class="sd">                to InputFileReference, InputFolderReference and InputPathReference.</span>
+<span class="sd">                &#39;task&#39; refers to TaskFileReference, TaskFolderReference and</span>
+<span class="sd">                TaskPathReference. Finally &#39;value&#39; refers to ValueFileReference and</span>
+<span class="sd">                ValueFolder Reference.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: The source type is not recognized</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[TaskPathArguments] -- A list of Argument Artifacts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">artifacts</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s1">&#39;dag&#39;</span><span class="p">:</span>
+            <span class="n">source_class</span> <span class="o">=</span> <span class="p">(</span><span class="n">InputFileReference</span><span class="p">,</span> <span class="n">InputFolderReference</span><span class="p">,</span> <span class="n">InputPathReference</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s1">&#39;task&#39;</span><span class="p">:</span>
+            <span class="n">source_class</span> <span class="o">=</span> <span class="p">(</span><span class="n">TaskFileReference</span><span class="p">,</span> <span class="n">TaskFolderReference</span><span class="p">,</span> <span class="n">TaskPathReference</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span>
+            <span class="n">source_class</span> <span class="o">=</span> <span class="p">(</span><span class="n">ValueFileReference</span><span class="p">,</span> <span class="n">ValueFolderReference</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;reference source string should be one of [&quot;dag&quot;, &quot;task&quot; or &quot;value&quot;], &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;not </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">artifacts</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">from_</span><span class="p">,</span> <span class="n">source_class</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="DAGTask.parameters_by_ref_source"><a class="viewcode-back" href="../../../modules/queenbee.recipe.task.html#queenbee.recipe.task.DAGTask.parameters_by_ref_source">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">parameters_by_ref_source</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">TaskArguments</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve an list of argument parameters by their source type.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            source {str} -- The source type, one of: &#39;dag&#39;, &#39;task&#39;, &#39;item&#39;, &#39;value&#39;</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: The source type is not recognized</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[TaskArguments] -- A list of Argument Parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">parameters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">source_class</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s1">&#39;dag&#39;</span><span class="p">:</span>
+            <span class="n">source_class</span> <span class="o">=</span> <span class="n">InputReference</span>
+        <span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s1">&#39;task&#39;</span><span class="p">:</span>
+            <span class="n">source_class</span> <span class="o">=</span> <span class="n">TaskReference</span>
+        <span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+            <span class="n">source_class</span> <span class="o">=</span> <span class="n">ItemReference</span>
+        <span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span>
+            <span class="n">source_class</span> <span class="o">=</span> <span class="n">ValueReference</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;reference source string should be one of [&quot;dag&quot;, &quot;task&quot;, &quot;item&quot;, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;&quot;value&quot;] not </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">parameters</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">from_</span><span class="p">,</span> <span class="n">source_class</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="DAGTask.argument_by_ref_source"><a class="viewcode-back" href="../../../modules/queenbee.recipe.task.html#queenbee.recipe.task.DAGTask.argument_by_ref_source">[docs]</a>    <span class="k">def</span> <span class="nf">argument_by_ref_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">TaskArguments</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Retrieve a list of argument artifacts by their source type.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            source {str} -- The source type, one of: &#39;dag&#39;, &#39;task&#39;, &#39;value&#39;. dag refers</span>
+<span class="sd">                to InputReference, InputFileReference, InputFolderReference and</span>
+<span class="sd">                InputPathReference. &#39;task&#39; refers to TaskReference, TaskFileReference,</span>
+<span class="sd">                TaskFolderReference and TaskPathReference. &#39;item&#39; refers to</span>
+<span class="sd">                ItemReference. Finally &#39;value&#39; refers to ValueReference,</span>
+<span class="sd">                ValueFileReference and ValueFolder Reference.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: The source type is not recognized</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[TaskArguments] -- A list of Argument Artifacts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">arguments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span>
+
+        <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s1">&#39;dag&#39;</span><span class="p">:</span>
+            <span class="n">source_class</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">InputReference</span><span class="p">,</span> <span class="n">InputFileReference</span><span class="p">,</span> <span class="n">InputFolderReference</span><span class="p">,</span>
+                <span class="n">InputPathReference</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s1">&#39;task&#39;</span><span class="p">:</span>
+            <span class="n">source_class</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">TaskReference</span><span class="p">,</span> <span class="n">TaskFileReference</span><span class="p">,</span> <span class="n">TaskFolderReference</span><span class="p">,</span> <span class="n">TaskPathReference</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+            <span class="n">source_class</span> <span class="o">=</span> <span class="n">ItemReference</span>
+        <span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span>
+            <span class="n">source_class</span> <span class="o">=</span> <span class="p">(</span><span class="n">ValueReference</span><span class="p">,</span> <span class="n">ValueFileReference</span><span class="p">,</span> <span class="n">ValueFolderReference</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;reference source string should be one of [&quot;dag&quot;, &quot;task&quot; or &quot;value&quot;], &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;not </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">arguments</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">from_</span><span class="p">,</span> <span class="n">source_class</span><span class="p">)]</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">artifact_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get artifact arguments. Artifacts are file, folder and path inputs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list -- A list of artifact arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">artifact_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">is_artifact</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">artifact_args</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parameter_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get parameter arguments. Parameters are file, folder and path inputs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list -- A list of parameter arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parameter_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">is_parameter</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">parameter_args</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">artifact_returns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get artifact returns. Artifacts are file, folder and path inputs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list -- A list of artifact returns.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">artifacts_out</span> <span class="o">=</span> <span class="p">[</span><span class="n">out</span> <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">returns</span> <span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">is_artifact</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">artifacts_out</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parameter_returns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get parameter returns. Artifacts are file, folder and path inputs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list -- A list of artifact returns.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parameter_out</span> <span class="o">=</span> <span class="p">[</span><span class="n">out</span> <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">returns</span> <span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">is_parameter</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">parameter_out</span>
+
+<div class="viewcode-block" id="DAGTask.argument_by_name"><a class="viewcode-back" href="../../../modules/queenbee.recipe.task.html#queenbee.recipe.task.DAGTask.argument_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">argument_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskArguments</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Find a task argument by name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">find_io_by_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DAGTask.return_by_name"><a class="viewcode-back" href="../../../modules/queenbee.recipe.task.html#queenbee.recipe.task.DAGTask.return_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">return_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TaskReturns</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Find a task return by name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">find_io_by_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">returns</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Ladybug Tools.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

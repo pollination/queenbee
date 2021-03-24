@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>queenbee.io.outputs.step module &#8212; queenbee  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/jsv.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/app.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/mode-json.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/theme-chrome.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.15.0/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tv4/1.2.7/tv4.min.js"></script>
+    <script src="../_static/js/ref-parser.min.js"></script>
+    <script src="../_static/js/jsv.js"></script>
+    <script src="../_static/js/app.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="queenbee.io.outputs.task module" href="queenbee.io.outputs.task.html" />
+    <link rel="prev" title="queenbee.io.outputs.function module" href="queenbee.io.outputs.function.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          queenbee</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../README.html#local-development">Local Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">How To</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/index.html#pre-flight-check">Pre-Flight Check</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/index.html#tools">Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/index.html#knowledge">Knowledge</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/index.html#guides">Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/plugin.html">Create A New Plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#configuration">Configuration</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../guides/plugin.html#docker-config">Docker Config</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#package-yaml">Package.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#your-first-function">Your First Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#packaging-and-sharing">Packaging and Sharing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/plugin.html#using-plugins">Using Plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/recipe.html">Create A New Recipe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#metadata-configuration">Metadata Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#flow">Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#dag-tasks">DAG Tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#referencing-outputs-to-inputs">Referencing Outputs to Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#artifact-path-context-resolution">Artifact Path Context Resolution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#working-with-loops">Working With Loops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/recipe.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/repository-create.html">Create A New Repository</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#adding-packages">Adding Packages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#repository-indexing">Repository Indexing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-create.html#overwriting-deleting-existing-package-versions">Overwriting/Deleting Existing Package Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/repository-manage.html">Manage Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../guides/repository-manage.html#local-index-management">Local Index Management</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/plugins.html">Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/plugins.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#fully-configured">Fully Configured</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#energy-plus">Energy Plus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/plugins.html#honeybee-radiance">Honeybee Radiance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/recipes.html">Recipes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/recipes.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/recipes.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../schemas/recipes.html#daylight-factor-recipe">Daylight-Factor Recipe</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/jobs.html">Jobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/jobs.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../schemas/repository.html">Repositories</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../schemas/repository.html#json-schema-definition">JSON Schema Definition</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cli/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli/index.html#commands">Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../cli/main.html">Main</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/main.html#queenbee">queenbee</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/main.html#queenbee-viz">viz</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/plugin.html">Plugins</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin">queenbee plugin</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/plugin.html#queenbee-plugin-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/recipe.html">Recipes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe">queenbee recipe</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-install">install</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-link">link</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/recipe.html#queenbee-recipe-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../cli/repository.html">Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../cli/repository.html#queenbee-repository">queenbee repository</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-add">add</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-get">get</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-index">index</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-init">init</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-list">list</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-remove">remove</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-search">search</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../cli/repository.html#queenbee-repository-serve">serve</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../modules.html">API Docs</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="queenbee.html">queenbee package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="queenbee.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="queenbee.base.html">queenbee.base package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.base.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.basemodel.html">queenbee.base.basemodel module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.metadata.html">queenbee.base.metadata module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.parser.html">queenbee.base.parser module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.request.html">queenbee.base.request module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.base.variable.html">queenbee.base.variable module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.base.html#module-queenbee.base">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.cli.html">queenbee.cli package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.cli.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.config.html">queenbee.cli.config package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.config.auth.html">queenbee.cli.config.auth module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.config.view.html">queenbee.cli.config.view module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.config.html#module-queenbee.cli.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.plugin.html">queenbee.cli.plugin package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.plugin.lint.html">queenbee.cli.plugin.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.plugin.new.html">queenbee.cli.plugin.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.plugin.package.html">queenbee.cli.plugin.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.plugin.html#module-queenbee.cli.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.recipe.html">queenbee.cli.recipe package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.install.html">queenbee.cli.recipe.install module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.link.html">queenbee.cli.recipe.link module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.lint.html">queenbee.cli.recipe.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.new.html">queenbee.cli.recipe.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.recipe.package.html">queenbee.cli.recipe.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.recipe.html#module-queenbee.cli.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.repository.html">queenbee.cli.repository package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.index.html">queenbee.cli.repository.index module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.init.html">queenbee.cli.repository.init module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.manage.html">queenbee.cli.repository.manage module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.search.html">queenbee.cli.repository.search module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.cli.repository.serve.html">queenbee.cli.repository.serve module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.cli.repository.html#module-queenbee.cli.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.cli.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.cli.context.html">queenbee.cli.context module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.cli.html#module-queenbee.cli">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.config.html">queenbee.config package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.config.auth.html">queenbee.config.auth module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.config.repositories.html">queenbee.config.repositories module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.config.html#module-queenbee.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4 current"><a class="reference internal" href="queenbee.io.html">queenbee.io package</a><ul class="current">
+<li class="toctree-l5 current"><a class="reference internal" href="queenbee.io.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l6"><a class="reference internal" href="queenbee.io.inputs.html">queenbee.io.inputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.io.inputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.alias.html">queenbee.io.inputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.dag.html">queenbee.io.inputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.function.html">queenbee.io.inputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.job.html">queenbee.io.inputs.job module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.step.html">queenbee.io.inputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.inputs.task.html">queenbee.io.inputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.io.inputs.html#module-queenbee.io.inputs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6 current"><a class="reference internal" href="queenbee.io.outputs.html">queenbee.io.outputs package</a><ul class="current">
+<li class="toctree-l7 current"><a class="reference internal" href="queenbee.io.outputs.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.outputs.alias.html">queenbee.io.outputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.outputs.dag.html">queenbee.io.outputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.outputs.function.html">queenbee.io.outputs.function module</a></li>
+<li class="toctree-l8 current"><a class="current reference internal" href="#">queenbee.io.outputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="queenbee.io.outputs.task.html">queenbee.io.outputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="queenbee.io.outputs.html#module-queenbee.io.outputs">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.io.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.io.artifact_source.html">queenbee.io.artifact_source module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.io.common.html">queenbee.io.common module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.io.reference.html">queenbee.io.reference module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.io.html#module-queenbee.io">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.job.html">queenbee.job package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.job.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.job.job.html">queenbee.job.job module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.job.result.html">queenbee.job.result module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.job.run.html">queenbee.job.run module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.job.status.html">queenbee.job.status module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.job.html#module-queenbee.job">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.plugin.html">queenbee.plugin package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.plugin.function.html">queenbee.plugin.function module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.plugin.plugin.html">queenbee.plugin.plugin module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.plugin.html#module-queenbee.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.recipe.html">queenbee.recipe package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.recipe.dag.html">queenbee.recipe.dag module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.recipe.dependency.html">queenbee.recipe.dependency module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.recipe.recipe.html">queenbee.recipe.recipe module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.recipe.task.html">queenbee.recipe.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.recipe.html#module-queenbee.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="queenbee.repository.html">queenbee.repository package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.repository.index.html">queenbee.repository.index module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="queenbee.repository.package.html">queenbee.repository.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="queenbee.repository.html#module-queenbee.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="queenbee.html#module-queenbee">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../modules.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">How To</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">API Docs</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="queenbee.io.outputs.function.html" title="Previous Chapter: queenbee.io.outputs.function module"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; queenbee.io.o...</span>
+    </a>
+  </li>
+  <li>
+    <a href="queenbee.io.outputs.task.html" title="Next Chapter: queenbee.io.outputs.task module"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">queenbee.io.o... &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/modules/queenbee.io.outputs.step.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">How To</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">API Docs</a></li>
+</ul>
+
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <div class="section" id="module-queenbee.io.outputs.step">
+<span id="queenbee-io-outputs-step-module"></span><h1>queenbee.io.outputs.step module<a class="headerlink" href="#module-queenbee.io.outputs.step" title="Permalink to this headline">¶</a></h1>
+<p>Output types for a Queenbee Job steps.</p>
+<p>For more information on plugins see plugin module.</p>
+<dl class="py class">
+<dt id="queenbee.io.outputs.step.StepArrayOutput">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.io.outputs.step.</span></code><code class="sig-name descname"><span class="pre">StepArrayOutput</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*</span></em>, <em class="sig-param"><span class="pre">type:</span> <span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span> <span class="pre">=</span> <span class="pre">'StepArrayOutput'</span></em>, <em class="sig-param"><span class="pre">annotations:</span> <span class="pre">Dict[str</span></em>, <em class="sig-param"><span class="pre">str]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">name:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">description:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">path:</span> <span class="pre">str</span></em>, <em class="sig-param"><span class="pre">required:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></em>, <em class="sig-param"><span class="pre">items_type:</span> <span class="pre">queenbee.io.common.ItemType</span> <span class="pre">=</span> <span class="pre">&lt;ItemType.String:</span> <span class="pre">'String'&gt;</span></em>, <em class="sig-param"><span class="pre">value:</span> <span class="pre">List</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/io/outputs/step.html#StepArrayOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.io.outputs.step.StepArrayOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionArrayOutput" title="queenbee.io.outputs.function.FunctionArrayOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.io.outputs.function.FunctionArrayOutput</span></code></a></p>
+<p>A JSON array output.</p>
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepArrayOutput.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepArrayOutput.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepArrayOutput.value">
+<code class="sig-name descname"><span class="pre">value</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepArrayOutput.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="queenbee.io.outputs.step.StepBooleanOutput">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.io.outputs.step.</span></code><code class="sig-name descname"><span class="pre">StepBooleanOutput</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'StepBooleanOutput'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/io/outputs/step.html#StepBooleanOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.io.outputs.step.StepBooleanOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionBooleanOutput" title="queenbee.io.outputs.function.FunctionBooleanOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.io.outputs.function.FunctionBooleanOutput</span></code></a></p>
+<p>The boolean type matches only two special values: True and False.</p>
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepBooleanOutput.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepBooleanOutput.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepBooleanOutput.value">
+<code class="sig-name descname"><span class="pre">value</span></code><em class="property"><span class="pre">:</span> <span class="pre">bool</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepBooleanOutput.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="queenbee.io.outputs.step.StepFileOutput">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.io.outputs.step.</span></code><code class="sig-name descname"><span class="pre">StepFileOutput</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'StepFileOutput'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.HTTP" title="queenbee.io.artifact_source.HTTP"><span class="pre">queenbee.io.artifact_source.HTTP</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.S3" title="queenbee.io.artifact_source.S3"><span class="pre">queenbee.io.artifact_source.S3</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.ProjectFolder" title="queenbee.io.artifact_source.ProjectFolder"><span class="pre">queenbee.io.artifact_source.ProjectFolder</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/io/outputs/step.html#StepFileOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.io.outputs.step.StepFileOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionFileOutput" title="queenbee.io.outputs.function.FunctionFileOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.io.outputs.function.FunctionFileOutput</span></code></a></p>
+<p>A file output.</p>
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepFileOutput.source">
+<code class="sig-name descname"><span class="pre">source</span></code><em class="property"><span class="pre">:</span> <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.HTTP" title="queenbee.io.artifact_source.HTTP"><span class="pre">queenbee.io.artifact_source.HTTP</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.S3" title="queenbee.io.artifact_source.S3"><span class="pre">queenbee.io.artifact_source.S3</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.ProjectFolder" title="queenbee.io.artifact_source.ProjectFolder"><span class="pre">queenbee.io.artifact_source.ProjectFolder</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepFileOutput.source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepFileOutput.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepFileOutput.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="queenbee.io.outputs.step.StepFolderOutput">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.io.outputs.step.</span></code><code class="sig-name descname"><span class="pre">StepFolderOutput</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'StepFolderOutput'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.HTTP" title="queenbee.io.artifact_source.HTTP"><span class="pre">queenbee.io.artifact_source.HTTP</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.S3" title="queenbee.io.artifact_source.S3"><span class="pre">queenbee.io.artifact_source.S3</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.ProjectFolder" title="queenbee.io.artifact_source.ProjectFolder"><span class="pre">queenbee.io.artifact_source.ProjectFolder</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/io/outputs/step.html#StepFolderOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.io.outputs.step.StepFolderOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionFolderOutput" title="queenbee.io.outputs.function.FunctionFolderOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.io.outputs.function.FunctionFolderOutput</span></code></a></p>
+<p>A folder output.</p>
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepFolderOutput.source">
+<code class="sig-name descname"><span class="pre">source</span></code><em class="property"><span class="pre">:</span> <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.HTTP" title="queenbee.io.artifact_source.HTTP"><span class="pre">queenbee.io.artifact_source.HTTP</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.S3" title="queenbee.io.artifact_source.S3"><span class="pre">queenbee.io.artifact_source.S3</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.ProjectFolder" title="queenbee.io.artifact_source.ProjectFolder"><span class="pre">queenbee.io.artifact_source.ProjectFolder</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepFolderOutput.source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepFolderOutput.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepFolderOutput.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="queenbee.io.outputs.step.StepIntegerOutput">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.io.outputs.step.</span></code><code class="sig-name descname"><span class="pre">StepIntegerOutput</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'StepIntegerOutput'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/io/outputs/step.html#StepIntegerOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.io.outputs.step.StepIntegerOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionIntegerOutput" title="queenbee.io.outputs.function.FunctionIntegerOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.io.outputs.function.FunctionIntegerOutput</span></code></a></p>
+<p>An integer output.</p>
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepIntegerOutput.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepIntegerOutput.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepIntegerOutput.value">
+<code class="sig-name descname"><span class="pre">value</span></code><em class="property"><span class="pre">:</span> <span class="pre">int</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepIntegerOutput.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="queenbee.io.outputs.step.StepJSONObjectOutput">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.io.outputs.step.</span></code><code class="sig-name descname"><span class="pre">StepJSONObjectOutput</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'StepJSONObjectOutput'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/io/outputs/step.html#StepJSONObjectOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.io.outputs.step.StepJSONObjectOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionJSONObjectOutput" title="queenbee.io.outputs.function.FunctionJSONObjectOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.io.outputs.function.FunctionJSONObjectOutput</span></code></a></p>
+<p>A JSON object output.</p>
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepJSONObjectOutput.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepJSONObjectOutput.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepJSONObjectOutput.value">
+<code class="sig-name descname"><span class="pre">value</span></code><em class="property"><span class="pre">:</span> <span class="pre">Dict</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepJSONObjectOutput.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="queenbee.io.outputs.step.StepNumberOutput">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.io.outputs.step.</span></code><code class="sig-name descname"><span class="pre">StepNumberOutput</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'StepNumberOutput'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/io/outputs/step.html#StepNumberOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.io.outputs.step.StepNumberOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionNumberOutput" title="queenbee.io.outputs.function.FunctionNumberOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.io.outputs.function.FunctionNumberOutput</span></code></a></p>
+<p>A number output.</p>
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepNumberOutput.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepNumberOutput.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepNumberOutput.value">
+<code class="sig-name descname"><span class="pre">value</span></code><em class="property"><span class="pre">:</span> <span class="pre">float</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepNumberOutput.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="queenbee.io.outputs.step.StepPathOutput">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.io.outputs.step.</span></code><code class="sig-name descname"><span class="pre">StepPathOutput</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'StepPathOutput'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.HTTP" title="queenbee.io.artifact_source.HTTP"><span class="pre">queenbee.io.artifact_source.HTTP</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.S3" title="queenbee.io.artifact_source.S3"><span class="pre">queenbee.io.artifact_source.S3</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.ProjectFolder" title="queenbee.io.artifact_source.ProjectFolder"><span class="pre">queenbee.io.artifact_source.ProjectFolder</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/io/outputs/step.html#StepPathOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.io.outputs.step.StepPathOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionPathOutput" title="queenbee.io.outputs.function.FunctionPathOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.io.outputs.function.FunctionPathOutput</span></code></a></p>
+<p>A file or a folder output.</p>
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepPathOutput.source">
+<code class="sig-name descname"><span class="pre">source</span></code><em class="property"><span class="pre">:</span> <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.HTTP" title="queenbee.io.artifact_source.HTTP"><span class="pre">queenbee.io.artifact_source.HTTP</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.S3" title="queenbee.io.artifact_source.S3"><span class="pre">queenbee.io.artifact_source.S3</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.artifact_source.html#queenbee.io.artifact_source.ProjectFolder" title="queenbee.io.artifact_source.ProjectFolder"><span class="pre">queenbee.io.artifact_source.ProjectFolder</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepPathOutput.source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepPathOutput.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepPathOutput.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="queenbee.io.outputs.step.StepStringOutput">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">queenbee.io.outputs.step.</span></code><code class="sig-name descname"><span class="pre">StepStringOutput</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'StepStringOutput'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">required</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/queenbee/io/outputs/step.html#StepStringOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.io.outputs.step.StepStringOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionStringOutput" title="queenbee.io.outputs.function.FunctionStringOutput"><code class="xref py py-class docutils literal notranslate"><span class="pre">queenbee.io.outputs.function.FunctionStringOutput</span></code></a></p>
+<p>A String output.</p>
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepStringOutput.type">
+<code class="sig-name descname"><span class="pre">type</span></code><em class="property"><span class="pre">:</span> <span class="pre">queenbee.io.outputs.step.ConstrainedStrValue</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepStringOutput.type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="queenbee.io.outputs.step.StepStringOutput.value">
+<code class="sig-name descname"><span class="pre">value</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#queenbee.io.outputs.step.StepStringOutput.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="queenbee.io.outputs.step.from_template">
+<code class="sig-prename descclassname"><span class="pre">queenbee.io.outputs.step.</span></code><code class="sig-name descname"><span class="pre">from_template</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGGenericOutput" title="queenbee.io.outputs.dag.DAGGenericOutput"><span class="pre">queenbee.io.outputs.dag.DAGGenericOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGStringOutput" title="queenbee.io.outputs.dag.DAGStringOutput"><span class="pre">queenbee.io.outputs.dag.DAGStringOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGIntegerOutput" title="queenbee.io.outputs.dag.DAGIntegerOutput"><span class="pre">queenbee.io.outputs.dag.DAGIntegerOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGNumberOutput" title="queenbee.io.outputs.dag.DAGNumberOutput"><span class="pre">queenbee.io.outputs.dag.DAGNumberOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGBooleanOutput" title="queenbee.io.outputs.dag.DAGBooleanOutput"><span class="pre">queenbee.io.outputs.dag.DAGBooleanOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGFolderOutput" title="queenbee.io.outputs.dag.DAGFolderOutput"><span class="pre">queenbee.io.outputs.dag.DAGFolderOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGFileOutput" title="queenbee.io.outputs.dag.DAGFileOutput"><span class="pre">queenbee.io.outputs.dag.DAGFileOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGPathOutput" title="queenbee.io.outputs.dag.DAGPathOutput"><span class="pre">queenbee.io.outputs.dag.DAGPathOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGArrayOutput" title="queenbee.io.outputs.dag.DAGArrayOutput"><span class="pre">queenbee.io.outputs.dag.DAGArrayOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.dag.html#queenbee.io.outputs.dag.DAGJSONObjectOutput" title="queenbee.io.outputs.dag.DAGJSONObjectOutput"><span class="pre">queenbee.io.outputs.dag.DAGJSONObjectOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionStringOutput" title="queenbee.io.outputs.function.FunctionStringOutput"><span class="pre">queenbee.io.outputs.function.FunctionStringOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionIntegerOutput" title="queenbee.io.outputs.function.FunctionIntegerOutput"><span class="pre">queenbee.io.outputs.function.FunctionIntegerOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionNumberOutput" title="queenbee.io.outputs.function.FunctionNumberOutput"><span class="pre">queenbee.io.outputs.function.FunctionNumberOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionBooleanOutput" title="queenbee.io.outputs.function.FunctionBooleanOutput"><span class="pre">queenbee.io.outputs.function.FunctionBooleanOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionFolderOutput" title="queenbee.io.outputs.function.FunctionFolderOutput"><span class="pre">queenbee.io.outputs.function.FunctionFolderOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionFileOutput" title="queenbee.io.outputs.function.FunctionFileOutput"><span class="pre">queenbee.io.outputs.function.FunctionFileOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionPathOutput" title="queenbee.io.outputs.function.FunctionPathOutput"><span class="pre">queenbee.io.outputs.function.FunctionPathOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionArrayOutput" title="queenbee.io.outputs.function.FunctionArrayOutput"><span class="pre">queenbee.io.outputs.function.FunctionArrayOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="queenbee.io.outputs.function.html#queenbee.io.outputs.function.FunctionJSONObjectOutput" title="queenbee.io.outputs.function.FunctionJSONObjectOutput"><span class="pre">queenbee.io.outputs.function.FunctionJSONObjectOutput</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#queenbee.io.outputs.step.StepStringOutput" title="queenbee.io.outputs.step.StepStringOutput"><span class="pre">queenbee.io.outputs.step.StepStringOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#queenbee.io.outputs.step.StepIntegerOutput" title="queenbee.io.outputs.step.StepIntegerOutput"><span class="pre">queenbee.io.outputs.step.StepIntegerOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#queenbee.io.outputs.step.StepNumberOutput" title="queenbee.io.outputs.step.StepNumberOutput"><span class="pre">queenbee.io.outputs.step.StepNumberOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#queenbee.io.outputs.step.StepBooleanOutput" title="queenbee.io.outputs.step.StepBooleanOutput"><span class="pre">queenbee.io.outputs.step.StepBooleanOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#queenbee.io.outputs.step.StepFolderOutput" title="queenbee.io.outputs.step.StepFolderOutput"><span class="pre">queenbee.io.outputs.step.StepFolderOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#queenbee.io.outputs.step.StepFileOutput" title="queenbee.io.outputs.step.StepFileOutput"><span class="pre">queenbee.io.outputs.step.StepFileOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#queenbee.io.outputs.step.StepPathOutput" title="queenbee.io.outputs.step.StepPathOutput"><span class="pre">queenbee.io.outputs.step.StepPathOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#queenbee.io.outputs.step.StepArrayOutput" title="queenbee.io.outputs.step.StepArrayOutput"><span class="pre">queenbee.io.outputs.step.StepArrayOutput</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#queenbee.io.outputs.step.StepJSONObjectOutput" title="queenbee.io.outputs.step.StepJSONObjectOutput"><span class="pre">queenbee.io.outputs.step.StepJSONObjectOutput</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="../_modules/queenbee/io/outputs/step.html#from_template"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queenbee.io.outputs.step.from_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a step output from a template output type and a value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>{Union</strong><strong>[</strong><strong>DAGOutputs</strong> (<em>template</em>) – template (DAG or Function)</p></li>
+<li><p><strong>-- An output from a</strong> (<em>FunctionOutputs</em><em>]</em><em>}</em>) – template (DAG or Function)</p></li>
+<li><p><strong>{Any} -- The output value calculated for this template in</strong> (<em>value</em>) – the workflow step</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>StepOutputs – A Step Output object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Ladybug Tools.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

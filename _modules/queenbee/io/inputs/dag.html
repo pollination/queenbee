@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>queenbee.io.inputs.dag &#8212; queenbee  documentation</title>
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/jsv.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/app.css" />
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/mode-json.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.5/theme-chrome.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.15.0/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tv4/1.2.7/tv4.min.js"></script>
+    <script src="../../../../_static/js/ref-parser.min.js"></script>
+    <script src="../../../../_static/js/jsv.js"></script>
+    <script src="../../../../_static/js/app.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../../../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../../index.html">
+          queenbee</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">Queenbee :crown:</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../README.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../README.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../README.html#local-development">Local Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/index.html">How To</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../guides/index.html#pre-flight-check">Pre-Flight Check</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../guides/index.html#tools">Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../guides/index.html#knowledge">Knowledge</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../guides/index.html#guides">Guides</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../guides/plugin.html">Create A New Plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/plugin.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/plugin.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/plugin.html#configuration">Configuration</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../../guides/plugin.html#docker-config">Docker Config</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/plugin.html#package-yaml">Package.yaml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/plugin.html#your-first-function">Your First Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/plugin.html#packaging-and-sharing">Packaging and Sharing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/plugin.html#using-plugins">Using Plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../guides/recipe.html">Create A New Recipe</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/recipe.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/recipe.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/recipe.html#metadata-configuration">Metadata Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/recipe.html#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/recipe.html#flow">Flow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/recipe.html#dag-tasks">DAG Tasks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/recipe.html#referencing-outputs-to-inputs">Referencing Outputs to Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/recipe.html#artifact-path-context-resolution">Artifact Path Context Resolution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/recipe.html#working-with-loops">Working With Loops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/recipe.html#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../guides/repository-create.html">Create A New Repository</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/repository-create.html#getting-started">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/repository-create.html#folder-structure">Folder Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/repository-create.html#adding-packages">Adding Packages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/repository-create.html#repository-indexing">Repository Indexing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/repository-create.html#overwriting-deleting-existing-package-versions">Overwriting/Deleting Existing Package Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../guides/repository-manage.html">Manage Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../guides/repository-manage.html#local-index-management">Local Index Management</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../schemas/index.html">Queenbee Schemas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../schemas/plugins.html">Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/plugins.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/plugins.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/plugins.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/plugins.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/plugins.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../schemas/plugins.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../schemas/plugins.html#fully-configured">Fully Configured</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../schemas/plugins.html#energy-plus">Energy Plus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../schemas/plugins.html#honeybee-radiance">Honeybee Radiance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../schemas/recipes.html">Recipes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/recipes.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/recipes.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/recipes.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/recipes.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/recipes.html#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../schemas/recipes.html#minimal">Minimal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../schemas/recipes.html#daylight-factor-recipe">Daylight-Factor Recipe</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../schemas/jobs.html">Jobs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/jobs.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/jobs.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/jobs.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/jobs.html#json-schema-definition">JSON Schema Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/jobs.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../schemas/repository.html">Repositories</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/repository.html#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/repository.html#openapi-docs">OpenAPI Docs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/repository.html#openapi-definition">OpenAPI Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../schemas/repository.html#json-schema-definition">JSON Schema Definition</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cli/index.html">CLI Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../cli/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../cli/index.html#commands">Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cli/main.html">Main</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../cli/main.html#queenbee">queenbee</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/main.html#queenbee-viz">viz</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cli/plugin.html">Plugins</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../cli/plugin.html#queenbee-plugin">queenbee plugin</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/plugin.html#queenbee-plugin-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/plugin.html#queenbee-plugin-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/plugin.html#queenbee-plugin-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cli/recipe.html">Recipes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../cli/recipe.html#queenbee-recipe">queenbee recipe</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/recipe.html#queenbee-recipe-install">install</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/recipe.html#queenbee-recipe-link">link</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/recipe.html#queenbee-recipe-lint">lint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/recipe.html#queenbee-recipe-new">new</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/recipe.html#queenbee-recipe-package">package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../cli/repository.html">Repositories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../cli/repository.html#queenbee-repository">queenbee repository</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/repository.html#queenbee-repository-add">add</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/repository.html#queenbee-repository-get">get</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/repository.html#queenbee-repository-index">index</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/repository.html#queenbee-repository-init">init</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/repository.html#queenbee-repository-list">list</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/repository.html#queenbee-repository-remove">remove</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/repository.html#queenbee-repository-search">search</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../cli/repository.html#queenbee-repository-serve">serve</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">API Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules/queenbee.html">queenbee package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../modules/queenbee.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../modules/queenbee.base.html">queenbee.base package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.base.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.base.basemodel.html">queenbee.base.basemodel module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.base.metadata.html">queenbee.base.metadata module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.base.parser.html">queenbee.base.parser module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.base.request.html">queenbee.base.request module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.base.variable.html">queenbee.base.variable module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.base.html#module-queenbee.base">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../modules/queenbee.cli.html">queenbee.cli package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.cli.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.cli.config.html">queenbee.cli.config package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../../modules/queenbee.cli.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.config.auth.html">queenbee.cli.config.auth module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.config.view.html">queenbee.cli.config.view module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../../modules/queenbee.cli.config.html#module-queenbee.cli.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.cli.plugin.html">queenbee.cli.plugin package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../../modules/queenbee.cli.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.plugin.lint.html">queenbee.cli.plugin.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.plugin.new.html">queenbee.cli.plugin.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.plugin.package.html">queenbee.cli.plugin.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../../modules/queenbee.cli.plugin.html#module-queenbee.cli.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.cli.recipe.html">queenbee.cli.recipe package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../../modules/queenbee.cli.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.recipe.install.html">queenbee.cli.recipe.install module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.recipe.link.html">queenbee.cli.recipe.link module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.recipe.lint.html">queenbee.cli.recipe.lint module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.recipe.new.html">queenbee.cli.recipe.new module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.recipe.package.html">queenbee.cli.recipe.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../../modules/queenbee.cli.recipe.html#module-queenbee.cli.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.cli.repository.html">queenbee.cli.repository package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../../modules/queenbee.cli.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.repository.index.html">queenbee.cli.repository.index module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.repository.init.html">queenbee.cli.repository.init module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.repository.manage.html">queenbee.cli.repository.manage module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.repository.search.html">queenbee.cli.repository.search module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.cli.repository.serve.html">queenbee.cli.repository.serve module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../../modules/queenbee.cli.repository.html#module-queenbee.cli.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.cli.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.cli.context.html">queenbee.cli.context module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.cli.html#module-queenbee.cli">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../modules/queenbee.config.html">queenbee.config package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.config.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.config.auth.html">queenbee.config.auth module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.config.repositories.html">queenbee.config.repositories module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.config.html#module-queenbee.config">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../modules/queenbee.io.html">queenbee.io package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.io.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.io.inputs.html">queenbee.io.inputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../../modules/queenbee.io.inputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.io.inputs.alias.html">queenbee.io.inputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.io.inputs.dag.html">queenbee.io.inputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.io.inputs.function.html">queenbee.io.inputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.io.inputs.job.html">queenbee.io.inputs.job module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.io.inputs.step.html">queenbee.io.inputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.io.inputs.task.html">queenbee.io.inputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../../modules/queenbee.io.inputs.html#module-queenbee.io.inputs">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.io.outputs.html">queenbee.io.outputs package</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="../../../../modules/queenbee.io.outputs.html#submodules">Submodules</a><ul>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.io.outputs.alias.html">queenbee.io.outputs.alias module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.io.outputs.dag.html">queenbee.io.outputs.dag module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.io.outputs.function.html">queenbee.io.outputs.function module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.io.outputs.step.html">queenbee.io.outputs.step module</a></li>
+<li class="toctree-l8"><a class="reference internal" href="../../../../modules/queenbee.io.outputs.task.html">queenbee.io.outputs.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l7"><a class="reference internal" href="../../../../modules/queenbee.io.outputs.html#module-queenbee.io.outputs">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.io.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.io.artifact_source.html">queenbee.io.artifact_source module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.io.common.html">queenbee.io.common module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.io.reference.html">queenbee.io.reference module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.io.html#module-queenbee.io">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../modules/queenbee.job.html">queenbee.job package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.job.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.job.job.html">queenbee.job.job module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.job.result.html">queenbee.job.result module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.job.run.html">queenbee.job.run module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.job.status.html">queenbee.job.status module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.job.html#module-queenbee.job">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../modules/queenbee.plugin.html">queenbee.plugin package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.plugin.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.plugin.function.html">queenbee.plugin.function module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.plugin.plugin.html">queenbee.plugin.plugin module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.plugin.html#module-queenbee.plugin">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../modules/queenbee.recipe.html">queenbee.recipe package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.recipe.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.recipe.dag.html">queenbee.recipe.dag module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.recipe.dependency.html">queenbee.recipe.dependency module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.recipe.recipe.html">queenbee.recipe.recipe module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.recipe.task.html">queenbee.recipe.task module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.recipe.html#module-queenbee.recipe">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../modules/queenbee.repository.html">queenbee.repository package</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.repository.html#submodules">Submodules</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.repository.index.html">queenbee.repository.index module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../../../modules/queenbee.repository.package.html">queenbee.repository.package module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../../../../modules/queenbee.repository.html#module-queenbee.repository">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../modules/queenbee.html#module-queenbee">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../modules.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/index.html">How To</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">API Docs</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../README.html">Queenbee :crown:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guides/index.html">How To</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../schemas/index.html">Queenbee Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cli/index.html">CLI Docs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">API Docs</a></li>
+</ul>
+
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <h1>Source code for queenbee.io.inputs.dag</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Queenbee input types for a DAG.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">constr</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">validator</span>
+<span class="kn">from</span> <span class="nn">jsonschema</span> <span class="kn">import</span> <span class="n">validate</span> <span class="k">as</span> <span class="n">json_schema_validator</span>
+
+<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">ItemType</span><span class="p">,</span> <span class="n">GenericInput</span>
+<span class="kn">from</span> <span class="nn">..artifact_source</span> <span class="kn">import</span> <span class="n">HTTP</span><span class="p">,</span> <span class="n">S3</span><span class="p">,</span> <span class="n">ProjectFolder</span>
+<span class="kn">from</span> <span class="nn">.alias</span> <span class="kn">import</span> <span class="n">DAGAliasInputs</span>
+<span class="kn">from</span> <span class="nn">...base.variable</span> <span class="kn">import</span> <span class="n">validate_inputs_outputs_var_format</span><span class="p">,</span> <span class="n">get_ref_variable</span>
+
+
+<div class="viewcode-block" id="DAGGenericInput"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGGenericInput">[docs]</a><span class="k">class</span> <span class="nc">DAGGenericInput</span><span class="p">(</span><span class="n">GenericInput</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for DAG inputs.</span>
+
+<span class="sd">    This class adds a handler to input to handle the process of loading the input</span>
+<span class="sd">    from different graphical interfaces.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^DAGGenericInput$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;DAGGenericInput&#39;</span>
+
+    <span class="n">default</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Default value for generic input.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">alias</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DAGAliasInputs</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A list of aliases for this input in different platforms.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># see: https://github.com/ladybug-tools/queenbee/issues/172</span>
+    <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">False</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A field to indicate if this input is required. This input needs to &#39;</span>
+        <span class="s1">&#39;be set explicitly even when a default value is provided.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">spec</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;An optional JSON Schema specification to validate the input value. &#39;</span>
+        <span class="s1">&#39;You can use validate_spec method to validate a value against the spec.&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="DAGGenericInput.validate_spec"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGGenericInput.validate_spec">[docs]</a>    <span class="k">def</span> <span class="nf">validate_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate an input value against specification.</span>
+
+<span class="sd">        Use this for validating workflow inputs against a recipe.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">:</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">)</span>
+            <span class="n">json_schema_validator</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="DAGGenericInput.check_required"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGGenericInput.check_required">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_required</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ensure required is set to True when default value is not provided.&quot;&quot;&quot;</span>
+        <span class="n">default</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> -&gt; required should be true if no default&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39; is provided (default: </span><span class="si">{</span><span class="n">default</span><span class="si">}</span><span class="s1">).&#39;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="DAGGenericInput.validate_default_value"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGGenericInput.validate_default_value">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;spec&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_default_value</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate default value against spec if provided.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">type_</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Input with missing type: </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">type_</span> <span class="o">!=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+            <span class="c1"># this is a check to ensure the default value only gets validated againt the</span>
+            <span class="c1"># correct class type. The reason we need to do this is that Pydantic doesn&#39;t</span>
+            <span class="c1"># support discriminators (https://github.com/samuelcolvin/pydantic/issues/619).</span>
+            <span class="c1"># As a result in case of checking for Union it checks every possible item</span>
+            <span class="c1"># from the start until it finds one. For inputs it causes this check to fail</span>
+            <span class="c1"># on a string before it gets to the integer class for an integer input.</span>
+            <span class="k">return</span> <span class="n">v</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">default</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c1"># spec is not set</span>
+            <span class="k">return</span> <span class="n">v</span>
+
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">json_schema_validator</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="DAGGenericInput.validate_default_refs"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGGenericInput.validate_default_refs">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">validate_default_refs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate referenced variables in the command&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">type_</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Input with missing type: </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">type_</span> <span class="o">!=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)):</span>
+            <span class="c1"># this is a check to ensure the default value only gets validated againt the</span>
+            <span class="c1"># correct class type. See spec validation for more information</span>
+            <span class="k">return</span> <span class="n">v</span>
+
+        <span class="n">ref_var</span> <span class="o">=</span> <span class="n">get_ref_variable</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">add_info</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">ref_var</span><span class="p">:</span>
+            <span class="n">add_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">validate_inputs_outputs_var_format</span><span class="p">(</span><span class="n">ref</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">add_info</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">add_info</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="DAGGenericInput.check_alias_required"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGGenericInput.check_alias_required">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;alias&#39;</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_alias_required</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">v</span>
+        <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+            <span class="n">default</span> <span class="o">=</span> <span class="n">alias</span><span class="o">.</span><span class="n">default</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">alias</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">required</span> <span class="o">=</span> <span class="n">alias</span><span class="o">.</span><span class="n">required</span>
+            <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">required</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">Alias.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> -&gt; required should be true if no &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;default value is provided (default: </span><span class="si">{</span><span class="n">default</span><span class="si">}</span><span class="s1">).&#39;</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div></div>
+
+
+<div class="viewcode-block" id="DAGStringInput"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGStringInput">[docs]</a><span class="k">class</span> <span class="nc">DAGStringInput</span><span class="p">(</span><span class="n">DAGGenericInput</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A String input.</span>
+
+<span class="sd">    You can add additional validation by defining a JSONSchema specification.</span>
+
+<span class="sd">    See http://json-schema.org/understanding-json-schema/reference/string.html#string for</span>
+<span class="sd">    more information.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        &quot;schema&quot;: {</span>
+<span class="sd">            &quot;type&quot;: &quot;string&quot;,</span>
+<span class="sd">            &quot;maxLength&quot;: 50,</span>
+<span class="sd">            &quot;pattern&quot;: &quot;(?i)(^.*\\.epw$)&quot;</span>
+<span class="sd">        }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^DAGStringInput$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;DAGStringInput&#39;</span>
+
+    <span class="n">default</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Default value to use for an input if a value was not supplied.&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="DAGStringInput.validate_spec"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGStringInput.validate_spec">[docs]</a>    <span class="k">def</span> <span class="nf">validate_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate an input value against specification.</span>
+
+<span class="sd">        Use this for validating workflow inputs against a recipe.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">:</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">)</span>
+            <span class="n">spec</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;string&#39;</span>
+            <span class="n">json_schema_validator</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span></div></div>
+
+
+<div class="viewcode-block" id="DAGIntegerInput"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGIntegerInput">[docs]</a><span class="k">class</span> <span class="nc">DAGIntegerInput</span><span class="p">(</span><span class="n">DAGGenericInput</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An integer input.</span>
+
+<span class="sd">    You can add additional validation by defining a JSONSchema specification.</span>
+
+<span class="sd">    See http://json-schema.org/understanding-json-schema/reference/numeric.html#numeric</span>
+<span class="sd">    for more information.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^DAGIntegerInput$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;DAGIntegerInput&#39;</span>
+
+    <span class="n">default</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Default value to use for an input if a value was not supplied.&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="DAGIntegerInput.validate_spec"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGIntegerInput.validate_spec">[docs]</a>    <span class="k">def</span> <span class="nf">validate_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate an input value against specification.</span>
+
+<span class="sd">        Use this for validating workflow inputs against a recipe.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">:</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">)</span>
+            <span class="n">spec</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;integer&#39;</span>
+            <span class="n">json_schema_validator</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span></div></div>
+
+
+<div class="viewcode-block" id="DAGNumberInput"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGNumberInput">[docs]</a><span class="k">class</span> <span class="nc">DAGNumberInput</span><span class="p">(</span><span class="n">DAGGenericInput</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A number input.</span>
+
+<span class="sd">    You can add additional validation by defining a JSONSchema specification.</span>
+
+<span class="sd">    See http://json-schema.org/understanding-json-schema/reference/numeric.html#numeric</span>
+<span class="sd">    for more information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^DAGNumberInput$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;DAGNumberInput&#39;</span>
+
+    <span class="n">default</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Default value to use for an input if a value was not supplied.&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="DAGNumberInput.validate_spec"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGNumberInput.validate_spec">[docs]</a>    <span class="k">def</span> <span class="nf">validate_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate an input value against specification.</span>
+
+<span class="sd">        Use this for validating workflow inputs against a recipe.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">:</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">)</span>
+            <span class="n">spec</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;number&#39;</span>
+            <span class="n">json_schema_validator</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span></div></div>
+
+
+<div class="viewcode-block" id="DAGBooleanInput"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGBooleanInput">[docs]</a><span class="k">class</span> <span class="nc">DAGBooleanInput</span><span class="p">(</span><span class="n">DAGGenericInput</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The boolean type matches only two special values: True and False.</span>
+
+<span class="sd">    Note that values that evaluate to true or false, such as 1 and 0, are not accepted.</span>
+
+<span class="sd">    You can add additional validation by defining a JSONSchema specification.</span>
+
+<span class="sd">    See http://json-schema.org/understanding-json-schema/reference/boolean.html for more</span>
+<span class="sd">    information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^DAGBooleanInput$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;DAGBooleanInput&#39;</span>
+
+    <span class="n">default</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Default value to use for an input if a value was not supplied.&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="DAGBooleanInput.validate_spec"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGBooleanInput.validate_spec">[docs]</a>    <span class="k">def</span> <span class="nf">validate_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate an input value against specification.</span>
+
+<span class="sd">        Use this for validating workflow inputs against a recipe.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">:</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">)</span>
+            <span class="n">spec</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;boolean&#39;</span>
+            <span class="n">json_schema_validator</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span></div></div>
+
+
+<div class="viewcode-block" id="DAGFolderInput"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGFolderInput">[docs]</a><span class="k">class</span> <span class="nc">DAGFolderInput</span><span class="p">(</span><span class="n">DAGGenericInput</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A folder input.</span>
+
+<span class="sd">    Folder is a special string input. Unlike other string inputs, a folder will be copied</span>
+<span class="sd">    from its location to execution folder when a workflow is executed.</span>
+
+<span class="sd">    You can add additional validation by defining a JSONSchema specification.</span>
+
+<span class="sd">    See http://json-schema.org/understanding-json-schema/reference/string.html#string for</span>
+<span class="sd">    more information.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        &quot;schema&quot;: {</span>
+<span class="sd">            &quot;type&quot;: &quot;string&quot;,</span>
+<span class="sd">            &quot;maxLength&quot;: 50,</span>
+<span class="sd">        }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^DAGFolderInput$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;DAGFolderInput&#39;</span>
+
+    <span class="n">default</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">HTTP</span><span class="p">,</span> <span class="n">S3</span><span class="p">,</span> <span class="n">ProjectFolder</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The default source for file if the value is not provided.&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="DAGFolderInput.check_required"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGFolderInput.check_required">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;required&#39;</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_required</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overwrite check_required for artifacts to allow optional artifacts.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="DAGFolderInput.check_alias_required"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGFolderInput.check_alias_required">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;alias&#39;</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_alias_required</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overwrite check_alias_required for artifacts.</span>
+
+<span class="sd">        This will allow None input for aliases for optional artifacts.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="DAGFolderInput.validate_spec"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGFolderInput.validate_spec">[docs]</a>    <span class="k">def</span> <span class="nf">validate_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate an input value against specification.</span>
+
+<span class="sd">        Use this for validating workflow inputs against a recipe.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;There is no folder at </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">:</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">)</span>
+            <span class="n">spec</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;string&#39;</span>
+            <span class="n">json_schema_validator</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">value</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_artifact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_optional</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A boolean that indicates if an artifact is optional.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span> <span class="ow">is</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="DAGFileInput"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGFileInput">[docs]</a><span class="k">class</span> <span class="nc">DAGFileInput</span><span class="p">(</span><span class="n">DAGFolderInput</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A file input.</span>
+
+<span class="sd">    File is a special string input. Unlike other string inputs, a file will be copied</span>
+<span class="sd">    from its location to execution folder when a workflow is executed.</span>
+
+<span class="sd">    You can add additional validation by defining a JSONSchema specification.</span>
+
+<span class="sd">    See http://json-schema.org/understanding-json-schema/reference/string.html#string for</span>
+<span class="sd">    more information.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        # a file with maximum 50 characters with an ``epw`` extension.</span>
+
+<span class="sd">        &quot;schema&quot;: {</span>
+<span class="sd">            &quot;type&quot;: &quot;string&quot;,</span>
+<span class="sd">            &quot;maxLength&quot;: 50,</span>
+<span class="sd">            &quot;pattern&quot;: &quot;(?i)(^.*\\.epw$)&quot;</span>
+<span class="sd">        }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^DAGFileInput$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;DAGFileInput&#39;</span>
+
+    <span class="n">extensions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Optional list of extensions for file. The check for extension is &#39;</span>
+        <span class="s1">&#39;case-insensitive.&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="DAGFileInput.validate_spec"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGFileInput.validate_spec">[docs]</a>    <span class="k">def</span> <span class="nf">validate_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate an input value against specification.</span>
+
+<span class="sd">        Use this for validating workflow inputs against a recipe.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;There is no file at </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extensions</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="o">.</span><span class="n">lower</span><span class="p">()),</span> \
+                <span class="sa">f</span><span class="s1">&#39;Input file extension for </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> must be </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">extensions</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">:</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">)</span>
+            <span class="n">spec</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;string&#39;</span>
+            <span class="n">json_schema_validator</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">value</span></div></div>
+
+
+<div class="viewcode-block" id="DAGPathInput"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGPathInput">[docs]</a><span class="k">class</span> <span class="nc">DAGPathInput</span><span class="p">(</span><span class="n">DAGFolderInput</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A file or a folder input.</span>
+
+<span class="sd">    Use this input only in cases that the input can be either a file or folder. For file</span>
+<span class="sd">    or folder-only inputs see File and Folder.</span>
+
+<span class="sd">    Path is a special string input. Unlike other string inputs, a path will be copied</span>
+<span class="sd">    from its location to execution folder when a workflow is executed.</span>
+
+<span class="sd">    You can add additional validation by defining a JSONSchema specification.</span>
+
+<span class="sd">    See http://json-schema.org/understanding-json-schema/reference/string.html#string for</span>
+<span class="sd">    more information.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        # a file with maximum 50 characters with an ``epw`` extension.</span>
+
+<span class="sd">        &quot;schema&quot;: {</span>
+<span class="sd">            &quot;type&quot;: &quot;string&quot;,</span>
+<span class="sd">            &quot;maxLength&quot;: 50,</span>
+<span class="sd">            &quot;pattern&quot;: &quot;(?i)(^.*\\.epw$)&quot;</span>
+<span class="sd">        }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^DAGPathInput$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;DAGPathInput&#39;</span>
+
+    <span class="n">extensions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Optional list of extensions for path. The check for extension is &#39;</span>
+        <span class="s1">&#39;case-insensitive. The extension will only be validated for file inputs.&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="DAGPathInput.validate_spec"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGPathInput.validate_spec">[docs]</a>    <span class="k">def</span> <span class="nf">validate_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate an input value against specification.</span>
+
+<span class="sd">        Use this for validating workflow inputs against a recipe.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extensions</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="o">.</span><span class="n">lower</span><span class="p">()),</span> \
+                    <span class="sa">f</span><span class="s1">&#39;Input file extension for </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> must be </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">extensions</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> is not a valid file or folder.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">:</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">)</span>
+            <span class="n">spec</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;string&#39;</span>
+            <span class="n">json_schema_validator</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="DAGArrayInput"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGArrayInput">[docs]</a><span class="k">class</span> <span class="nc">DAGArrayInput</span><span class="p">(</span><span class="n">DAGGenericInput</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A JSON array input.</span>
+
+<span class="sd">    You can add additional validation by defining a JSONSchema specification.</span>
+
+<span class="sd">    See http://json-schema.org/understanding-json-schema/reference/array.html for</span>
+<span class="sd">    more information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^DAGArrayInput$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;DAGArrayInput&#39;</span>
+
+    <span class="n">default</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Default value to use for an input if a value was not supplied.&#39;</span>
+    <span class="p">)</span>
+
+    <span class="n">items_type</span><span class="p">:</span> <span class="n">ItemType</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">ItemType</span><span class="o">.</span><span class="n">String</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Type of items in an array. All the items in an array must be from &#39;</span>
+        <span class="s1">&#39;the same type.&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="DAGArrayInput.replace_none_value"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGArrayInput.replace_none_value">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">replace_none_value</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span> <span class="k">else</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="DAGArrayInput.validate_spec"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGArrayInput.validate_spec">[docs]</a>    <span class="k">def</span> <span class="nf">validate_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate an input value against specification.</span>
+
+<span class="sd">        Use this for validating workflow inputs against a recipe.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">:</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">)</span>
+            <span class="n">spec</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;array&#39;</span>
+            <span class="n">spec</span><span class="p">[</span><span class="s1">&#39;items&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">items_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">json_schema_validator</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="DAGJSONObjectInput"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGJSONObjectInput">[docs]</a><span class="k">class</span> <span class="nc">DAGJSONObjectInput</span><span class="p">(</span><span class="n">DAGGenericInput</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A JSON object input.</span>
+
+<span class="sd">    JSON objects are similar to Python dictionaries.</span>
+
+<span class="sd">    You can add additional validation by defining a JSONSchema specification.</span>
+
+<span class="sd">    See http://json-schema.org/understanding-json-schema/reference/object.html for</span>
+<span class="sd">    more information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">constr</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s1">&#39;^DAGJSONObjectInput$&#39;</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;DAGJSONObjectInput&#39;</span>
+
+    <span class="n">default</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Default value to use for an input if a value was not supplied.&#39;</span>
+    <span class="p">)</span>
+
+<div class="viewcode-block" id="DAGJSONObjectInput.replace_none_value"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGJSONObjectInput.replace_none_value">[docs]</a>    <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">always</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">replace_none_value</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{}</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span> <span class="k">else</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="DAGJSONObjectInput.validate_spec"><a class="viewcode-back" href="../../../../modules/queenbee.io.inputs.dag.html#queenbee.io.inputs.dag.DAGJSONObjectInput.validate_spec">[docs]</a>    <span class="k">def</span> <span class="nf">validate_spec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate an input value against specification.</span>
+
+<span class="sd">        Use this for validating workflow inputs against a recipe.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">:</span>
+            <span class="n">spec</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spec</span><span class="p">)</span>
+            <span class="n">spec</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;object&#39;</span>
+            <span class="n">json_schema_validator</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">spec</span><span class="p">)</span></div></div>
+
+
+<span class="n">DAGInputs</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span>
+    <span class="n">DAGGenericInput</span><span class="p">,</span> <span class="n">DAGStringInput</span><span class="p">,</span> <span class="n">DAGIntegerInput</span><span class="p">,</span> <span class="n">DAGNumberInput</span><span class="p">,</span> <span class="n">DAGBooleanInput</span><span class="p">,</span>
+    <span class="n">DAGFolderInput</span><span class="p">,</span> <span class="n">DAGFileInput</span><span class="p">,</span> <span class="n">DAGPathInput</span><span class="p">,</span> <span class="n">DAGArrayInput</span><span class="p">,</span> <span class="n">DAGJSONObjectInput</span>
+<span class="p">]</span>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Ladybug Tools.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
