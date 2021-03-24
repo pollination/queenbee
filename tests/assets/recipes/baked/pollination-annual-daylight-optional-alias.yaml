@@ -1,0 +1,2735 @@
+type: BakedRecipe
+annotations: {}
+api_version: v1beta1
+metadata:
+  type: MetaData
+  annotations: {}
+  name: annual-daylight
+  tag: 0.5.3
+  app_version: null
+  keywords:
+  - honeybee
+  - radiance
+  - ladybug-tools
+  - daylight
+  - annual-daylight
+  maintainers:
+  - type: Maintainer
+    annotations: {}
+    name: mostapha
+    email: mostapha@ladybug.tools
+  - type: Maintainer
+    annotations: {}
+    name: ladybug-tools
+    email: info@ladybug.tools
+  home: https://github.com/pollination/annual-daylight
+  sources:
+  - https://hub.docker.com/r/ladybugtools/honeybee-radiance
+  icon: https://raw.githubusercontent.com/ladybug-tools/artwork/master/icons_components/honeybee/png/annualrecipe.png
+  deprecated: null
+  description: Annual daylight recipe for Pollination.
+  license:
+    type: License
+    annotations: {}
+    name: PolyForm Shield License 1.0.0
+    url: https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt
+dependencies:
+- type: Dependency
+  annotations: {}
+  kind: plugin
+  name: honeybee-radiance
+  hash: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729
+  alias: null
+  tag: 0.7.0
+  source: file:///C:/Users/Mostapha/.queenbee/pollination-dsl
+flow:
+- type: DAG
+  annotations: {}
+  inputs:
+  - type: DAGStringInput
+    annotations: {}
+    name: grid-name
+    description: Sensor grid file name. This is useful to rename the final result
+      file to {grid_name}.res
+    default: null
+    alias: []
+    required: true
+    spec: null
+  - type: DAGFileInput
+    annotations: {}
+    name: octree-file
+    description: A Radiance octree file.
+    default: null
+    alias: []
+    required: true
+    spec: null
+    extensions:
+    - oct
+  - type: DAGFileInput
+    annotations: {}
+    name: octree-file-with-suns
+    description: A Radiance octree file with suns.
+    default: null
+    alias: []
+    required: true
+    spec: null
+    extensions:
+    - oct
+  - type: DAGStringInput
+    annotations: {}
+    name: radiance-parameters
+    description: The radiance parameters for ray tracing
+    default: -ab 2 -ad 5000 -lw 2e-05
+    alias: []
+    required: false
+    spec: null
+  - type: DAGIntegerInput
+    annotations: {}
+    name: sensor-count
+    description: The maximum number of grid points per parallel execution
+    default: 200
+    alias: []
+    required: false
+    spec:
+      type: integer
+      minimum: 1
+  - type: DAGFileInput
+    annotations: {}
+    name: sensor-grid
+    description: Sensor grid file.
+    default: null
+    alias: []
+    required: true
+    spec: null
+    extensions:
+    - pts
+  - type: DAGFileInput
+    annotations: {}
+    name: sky-dome
+    description: Path to sky dome file.
+    default: null
+    alias: []
+    required: true
+    spec: null
+    extensions: null
+  - type: DAGFileInput
+    annotations: {}
+    name: sky-matrix
+    description: Path to total sky matrix file.
+    default: null
+    alias: []
+    required: true
+    spec: null
+    extensions: null
+  - type: DAGFileInput
+    annotations: {}
+    name: sky-matrix-direct
+    description: Path to direct skymtx file (i.e. gendaymtx -d).
+    default: null
+    alias: []
+    required: true
+    spec: null
+    extensions: null
+  - type: DAGFileInput
+    annotations: {}
+    name: sun-modifiers
+    description: A file with sun modifiers.
+    default: null
+    alias: []
+    required: true
+    spec: null
+    extensions: null
+  outputs: []
+  name: d102cab2c5ff3721965d3e50763c4781d15943d9dca9bcf040fc094262253c69/annual-daylight-ray-tracing
+  fail_fast: true
+  tasks:
+  - type: DAGTask
+    annotations: {}
+    name: direct-sky
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/daylight-coefficient
+    needs:
+    - split-grid
+    arguments:
+    - type: TaskArgument
+      annotations: {}
+      name: radiance-parameters
+      from:
+        type: InputReference
+        annotations: {}
+        variable: radiance-parameters
+    - type: TaskArgument
+      annotations: {}
+      name: fixed-radiance-parameters
+      from:
+        type: ValueReference
+        annotations: {}
+        value: -aa 0.0 -I -ab 1 -c 1 -faf
+    - type: TaskArgument
+      annotations: {}
+      name: sensor-count
+      from:
+        type: ValueReference
+        annotations: {}
+        value: '{{item.count}}'
+    - type: TaskPathArgument
+      annotations: {}
+      name: sky-matrix
+      from:
+        type: InputFileReference
+        annotations: {}
+        variable: sky-matrix-direct
+      sub_path: null
+    - type: TaskPathArgument
+      annotations: {}
+      name: sky-dome
+      from:
+        type: InputFileReference
+        annotations: {}
+        variable: sky-dome
+      sub_path: null
+    - type: TaskPathArgument
+      annotations: {}
+      name: sensor-grid
+      from:
+        type: TaskFolderReference
+        annotations: {}
+        name: split-grid
+        variable: output-folder
+      sub_path: '{{item.path}}'
+    - type: TaskPathArgument
+      annotations: {}
+      name: scene-file
+      from:
+        type: InputFileReference
+        annotations: {}
+        variable: octree-file
+      sub_path: null
+    loop:
+      type: DAGTaskLoop
+      annotations: {}
+      from:
+        type: TaskReference
+        annotations: {}
+        name: split-grid
+        variable: grids-list
+    sub_folder: direct_sky
+    returns:
+    - type: TaskPathReturn
+      annotations: {}
+      name: result-file
+      description: null
+      path: '{{item.name}}.ill'
+      required: true
+  - type: DAGTask
+    annotations: {}
+    name: direct-sunlight
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/daylight-contribution
+    needs:
+    - split-grid
+    arguments:
+    - type: TaskArgument
+      annotations: {}
+      name: radiance-parameters
+      from:
+        type: InputReference
+        annotations: {}
+        variable: radiance-parameters
+    - type: TaskArgument
+      annotations: {}
+      name: fixed-radiance-parameters
+      from:
+        type: ValueReference
+        annotations: {}
+        value: -aa 0.0 -I -faf -ab 0 -dc 1.0 -dt 0.0 -dj 0.0 -dr 0
+    - type: TaskArgument
+      annotations: {}
+      name: sensor-count
+      from:
+        type: ValueReference
+        annotations: {}
+        value: '{{item.count}}'
+    - type: TaskPathArgument
+      annotations: {}
+      name: modifiers
+      from:
+        type: InputFileReference
+        annotations: {}
+        variable: sun-modifiers
+      sub_path: null
+    - type: TaskPathArgument
+      annotations: {}
+      name: sensor-grid
+      from:
+        type: TaskFolderReference
+        annotations: {}
+        name: split-grid
+        variable: output-folder
+      sub_path: '{{item.path}}'
+    - type: TaskPathArgument
+      annotations: {}
+      name: scene-file
+      from:
+        type: InputFileReference
+        annotations: {}
+        variable: octree-file-with-suns
+      sub_path: null
+    loop:
+      type: DAGTaskLoop
+      annotations: {}
+      from:
+        type: TaskReference
+        annotations: {}
+        name: split-grid
+        variable: grids-list
+    sub_folder: direct_sunlight
+    returns:
+    - type: TaskPathReturn
+      annotations: {}
+      name: result-file
+      description: null
+      path: '{{item.name}}.ill'
+      required: true
+  - type: DAGTask
+    annotations: {}
+    name: merge-raw-results
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/merge-files
+    needs:
+    - output-matrix-math
+    arguments:
+    - type: TaskArgument
+      annotations: {}
+      name: name
+      from:
+        type: InputReference
+        annotations: {}
+        variable: grid-name
+    - type: TaskArgument
+      annotations: {}
+      name: extension
+      from:
+        type: ValueReference
+        annotations: {}
+        value: .ill
+    - type: TaskPathArgument
+      annotations: {}
+      name: folder
+      from:
+        type: ValueFolderReference
+        annotations: {}
+        path: final
+      sub_path: null
+    loop: null
+    sub_folder: null
+    returns:
+    - type: TaskPathReturn
+      annotations: {}
+      name: result-file
+      description: null
+      path: ../../results/{{inputs.name}}.ill
+      required: true
+  - type: DAGTask
+    annotations: {}
+    name: output-matrix-math
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/add-remove-sky-matrix
+    needs:
+    - split-grid
+    - direct-sunlight
+    - total-sky
+    - direct-sky
+    arguments:
+    - type: TaskPathArgument
+      annotations: {}
+      name: direct-sky-matrix
+      from:
+        type: ValueFileReference
+        annotations: {}
+        path: direct_sky/{{item.name}}.ill
+      sub_path: null
+    - type: TaskPathArgument
+      annotations: {}
+      name: total-sky-matrix
+      from:
+        type: ValueFileReference
+        annotations: {}
+        path: total_sky/{{item.name}}.ill
+      sub_path: null
+    - type: TaskPathArgument
+      annotations: {}
+      name: sunlight-matrix
+      from:
+        type: ValueFileReference
+        annotations: {}
+        path: direct_sunlight/{{item.name}}.ill
+      sub_path: null
+    - type: TaskArgument
+      annotations: {}
+      name: conversion
+      from:
+        type: ValueReference
+        annotations: {}
+        value: 47.4 119.9 11.6
+    loop:
+      type: DAGTaskLoop
+      annotations: {}
+      from:
+        type: TaskReference
+        annotations: {}
+        name: split-grid
+        variable: grids-list
+    sub_folder: final
+    returns:
+    - type: TaskPathReturn
+      annotations: {}
+      name: results-file
+      description: null
+      path: '{{item.name}}.ill'
+      required: true
+  - type: DAGTask
+    annotations: {}
+    name: split-grid
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/split-grid
+    needs: []
+    arguments:
+    - type: TaskArgument
+      annotations: {}
+      name: sensor-count
+      from:
+        type: InputReference
+        annotations: {}
+        variable: sensor-count
+    - type: TaskPathArgument
+      annotations: {}
+      name: input-grid
+      from:
+        type: InputFileReference
+        annotations: {}
+        variable: sensor-grid
+      sub_path: null
+    loop: null
+    sub_folder: null
+    returns:
+    - type: TaskReturn
+      annotations: {}
+      name: grids-list
+      description: null
+    - type: TaskPathReturn
+      annotations: {}
+      name: output-folder
+      description: null
+      path: sub_grids
+      required: true
+  - type: DAGTask
+    annotations: {}
+    name: total-sky
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/daylight-coefficient
+    needs:
+    - split-grid
+    arguments:
+    - type: TaskArgument
+      annotations: {}
+      name: radiance-parameters
+      from:
+        type: InputReference
+        annotations: {}
+        variable: radiance-parameters
+    - type: TaskArgument
+      annotations: {}
+      name: fixed-radiance-parameters
+      from:
+        type: ValueReference
+        annotations: {}
+        value: -aa 0.0 -I -c 1 -faf
+    - type: TaskArgument
+      annotations: {}
+      name: sensor-count
+      from:
+        type: ValueReference
+        annotations: {}
+        value: '{{item.count}}'
+    - type: TaskPathArgument
+      annotations: {}
+      name: sky-matrix
+      from:
+        type: InputFileReference
+        annotations: {}
+        variable: sky-matrix
+      sub_path: null
+    - type: TaskPathArgument
+      annotations: {}
+      name: sky-dome
+      from:
+        type: InputFileReference
+        annotations: {}
+        variable: sky-dome
+      sub_path: null
+    - type: TaskPathArgument
+      annotations: {}
+      name: sensor-grid
+      from:
+        type: TaskFolderReference
+        annotations: {}
+        name: split-grid
+        variable: output-folder
+      sub_path: '{{item.path}}'
+    - type: TaskPathArgument
+      annotations: {}
+      name: scene-file
+      from:
+        type: InputFileReference
+        annotations: {}
+        variable: octree-file
+      sub_path: null
+    loop:
+      type: DAGTaskLoop
+      annotations: {}
+      from:
+        type: TaskReference
+        annotations: {}
+        name: split-grid
+        variable: grids-list
+    sub_folder: total_sky
+    returns:
+    - type: TaskPathReturn
+      annotations: {}
+      name: result-file
+      description: null
+      path: '{{item.name}}.ill'
+      required: true
+- type: DAG
+  annotations: {}
+  inputs:
+  - type: DAGStringInput
+    annotations: {}
+    name: grid-filter
+    description: Text for a grid identifer or a pattern to filter the sensor grids
+      of the model that are simulated. For instance, first_floor_* will simulate only
+      the sensor grids that have an identifier that starts with first_floor_. By default,
+      all grids in the model will be simulated.
+    default: '*'
+    alias:
+    - type: DAGStringInputAlias
+      annotations: {}
+      name: grid_filter
+      description: Text for a grid identifer or a pattern to filter the sensor grids
+        of the model that are simulated. For instance, first_floor_* will simulate
+        only the sensor grids that have an identifier that starts with first_floor_.
+        By default, all grids in the model will be simulated.
+      platform:
+      - grasshopper
+      handler: []
+      default: '*'
+      required: false
+      spec: null
+    required: false
+    spec: null
+  - type: DAGFileInput
+    annotations: {}
+    name: model
+    description: A Honeybee model in HBJSON file format.
+    default: null
+    alias:
+    - type: DAGGenericInputAlias
+      annotations: {}
+      name: model
+      description: A Honeybee Model to simulate or the path to a HBJSON file of a
+        Model. This can also be the path to a HBpkl file, though this is only recommended
+        for cases where the model is extremely large.
+      platform:
+      - grasshopper
+      handler:
+      - type: IOAliasHandler
+        annotations: {}
+        language: python
+        module: pollination_handlers.inputs.model
+        function: model_to_json
+      - type: IOAliasHandler
+        annotations: {}
+        language: csharp
+        module: Pollination.Handlers
+        function: HBModelToJSON
+      default: null
+      required: true
+      spec: null
+    - type: DAGLinkedInputAlias
+      annotations: {}
+      name: model
+      description: This input links the model to Rhino model.
+      platform:
+      - rhino
+      handler:
+      - type: IOAliasHandler
+        annotations: {}
+        language: csharp
+        module: Pollination.Handlers
+        function: RhinoHBModelToJSON
+      default: null
+      required: true
+      spec: null
+    required: true
+    spec: null
+    extensions:
+    - json
+    - hbjson
+  - type: DAGNumberInput
+    annotations: {}
+    name: north
+    description: A number for rotation from north.
+    default: 0.0
+    alias:
+    - type: DAGGenericInputAlias
+      annotations: {}
+      name: north
+      description: 'A number between -360 and 360 for the counterclockwise difference
+        between the North and the positive Y-axis in degrees. This can also be Vector
+        for the direction to North. (Default: 0).'
+      platform:
+      - grasshopper
+      handler:
+      - type: IOAliasHandler
+        annotations: {}
+        language: python
+        module: pollination_handlers.inputs.north
+        function: north_vector_to_angle
+      default: '0'
+      required: false
+      spec: null
+    required: false
+    spec:
+      type: number
+      minimum: 0
+      maximum: 360
+  - type: DAGStringInput
+    annotations: {}
+    name: radiance-parameters
+    description: The radiance parameters for ray tracing.
+    default: -ab 2 -ad 5000 -lw 2e-05
+    alias:
+    - type: DAGStringInputAlias
+      annotations: {}
+      name: radiance_par
+      description: 'Text for the radiance parameters to be used for ray tracing. (Default:
+        -ab 2 -ad 5000 -lw 2e-05).'
+      platform:
+      - grasshopper
+      handler: []
+      default: -ab 2 -ad 5000 -lw 2e-05
+      required: false
+      spec: null
+    required: false
+    spec: null
+  - type: DAGFileInput
+    annotations: {}
+    name: schedule
+    description: Path to an annual schedule file. Values should be 0-1 separated by
+      new line. If not provided an 8-5 annual schedule will be created.
+    default: null
+    alias:
+    - type: DAGGenericInputAlias
+      annotations: {}
+      name: schedule
+      description: An annual occupancy schedule, either as a path to a csv file (with
+        8760 rows), a Ladybug Hourly Continuous Data Collection or a HB-Energy schedule
+        object. This can also be the identifier of a schedule in your HB-Energy schedule
+        library. Any value in this schedule that is 0.1 or above will be considered
+        occupied.
+      platform:
+      - grasshopper
+      handler:
+      - type: IOAliasHandler
+        annotations: {}
+        language: python
+        module: pollination_handlers.inputs.schedule
+        function: schedule_to_csv
+      default: null
+      required: false
+      spec: null
+    required: false
+    spec: null
+    extensions:
+    - txt
+    - csv
+  - type: DAGIntegerInput
+    annotations: {}
+    name: sensor-count
+    description: The maximum number of grid points per parallel execution.
+    default: 200
+    alias:
+    - type: DAGIntegerInputAlias
+      annotations: {}
+      name: sensor_count
+      description: 'Positive integer for the number of sensor grid points per parallel
+        execution. Lower numbers will result in sensor grids being split into more
+        pieces and, since each grid piece is run by a separate worker, this can mean
+        a faster simulation on machines with several CPUs. However ,If the number
+        is too low, the overhad of splitting the grid will not be worth the time gained
+        through parallelization. (Default: 200).'
+      platform:
+      - grasshopper
+      handler: []
+      default: 200
+      required: false
+      spec: null
+    required: false
+    spec:
+      type: integer
+      minimum: 1
+  - type: DAGStringInput
+    annotations: {}
+    name: thresholds
+    description: A string to change the threshold for daylight autonomy and useful
+      daylight illuminance. Valid keys are -t for daylight autonomy threshold, -lt
+      for the lower threshold for useful daylight illuminance and -ut for the upper
+      threshold. The default is -t 300 -lt 100 -ut 3000. The order of the keys is
+      not important and you can include one or all of them. For instance if you only
+      want to change the upper threshold to 2000 lux you should use -ut 2000 as the
+      input.
+    default: -t 300 -lt 100 -ut 3000
+    alias:
+    - type: DAGStringInputAlias
+      annotations: {}
+      name: thresholds
+      description: 'A string to change the threshold for daylight autonomy (DA) and
+        useful daylight illuminance (UDI). Valid keys are -t for daylight autonomy
+        threshold, -lt for the lower threshold for useful daylight illuminance and
+        -ut for the upper threshold. The order of the keys is not important and you
+        can include one or all of them. For instance if you only want to change the
+        upper threshold to 2000 lux you should use -ut 2000 as the input. (Default:
+        -t 300 -lt 100 -ut 3000).'
+      platform:
+      - grasshopper
+      handler: []
+      default: -t 300 -lt 100 -ut 3000
+      required: false
+      spec: null
+    required: false
+    spec: null
+  - type: DAGFileInput
+    annotations: {}
+    name: wea
+    description: Wea file.
+    default: null
+    alias:
+    - type: DAGGenericInputAlias
+      annotations: {}
+      name: wea
+      description: A Wea object produced from the Wea components that are under the
+        Light Sources tab. This can also be the path to a .wea or a .epw file.
+      platform:
+      - grasshopper
+      handler:
+      - type: IOAliasHandler
+        annotations: {}
+        language: python
+        module: pollination_handlers.inputs.wea
+        function: wea_handler
+      default: null
+      required: true
+      spec: null
+    required: true
+    spec: null
+    extensions:
+    - wea
+  outputs:
+  - type: DAGFolderOutput
+    annotations: {}
+    name: cda
+    description: Continuous daylight autonomy results.
+    from:
+      type: FolderReference
+      annotations: {}
+      path: metrics/cda
+    alias:
+    - type: DAGGenericOutputAlias
+      annotations: {}
+      name: cDA
+      description: Continuous daylight autonomy values for each sensor. These can
+        be plugged into the "LB Spatial Heatmap" component along with meshes of the
+        sensor grids to visualize results.
+      platform:
+      - grasshopper
+      handler:
+      - type: IOAliasHandler
+        annotations: {}
+        language: python
+        module: pollination_handlers.outputs.daylight
+        function: read_cda_from_folder
+    required: true
+  - type: DAGFolderOutput
+    annotations: {}
+    name: da
+    description: Daylight autonomy results.
+    from:
+      type: FolderReference
+      annotations: {}
+      path: metrics/da
+    alias:
+    - type: DAGGenericOutputAlias
+      annotations: {}
+      name: DA
+      description: Daylight autonomy values for each sensor. These can be plugged
+        into the "LB Spatial Heatmap" component along with meshes of the sensor grids
+        to visualize results.
+      platform:
+      - grasshopper
+      handler:
+      - type: IOAliasHandler
+        annotations: {}
+        language: python
+        module: pollination_handlers.outputs.daylight
+        function: read_da_from_folder
+    required: true
+  - type: DAGFolderOutput
+    annotations: {}
+    name: metrics
+    description: Annual metrics folder.
+    from:
+      type: FolderReference
+      annotations: {}
+      path: metrics
+    alias: []
+    required: true
+  - type: DAGFolderOutput
+    annotations: {}
+    name: results
+    description: Folder with raw result files (.ill) that contain illuminance matrices.
+    from:
+      type: FolderReference
+      annotations: {}
+      path: results
+    alias:
+    - type: DAGGenericOutputAlias
+      annotations: {}
+      name: results
+      description: Raw result files (.ill) that contain illuminance matrices.
+      platform:
+      - grasshopper
+      handler:
+      - type: IOAliasHandler
+        annotations: {}
+        language: python
+        module: pollination_handlers.outputs.daylight
+        function: sort_ill_from_folder
+    required: true
+  - type: DAGFolderOutput
+    annotations: {}
+    name: udi
+    description: Useful daylight illuminance results.
+    from:
+      type: FolderReference
+      annotations: {}
+      path: metrics/udi
+    alias:
+    - type: DAGGenericOutputAlias
+      annotations: {}
+      name: UDI
+      description: Useful daylight autonomy values for each sensor. These can be plugged
+        into the "LB Spatial Heatmap" component along with meshes of the sensor grids
+        to visualize results.
+      platform:
+      - grasshopper
+      handler:
+      - type: IOAliasHandler
+        annotations: {}
+        language: python
+        module: pollination_handlers.outputs.daylight
+        function: read_udi_from_folder
+    required: true
+  - type: DAGFolderOutput
+    annotations: {}
+    name: udi-lower
+    description: Results for the percent of time that is below the lower threshold
+      of useful daylight illuminance.
+    from:
+      type: FolderReference
+      annotations: {}
+      path: metrics/udi_lower
+    alias:
+    - type: DAGGenericOutputAlias
+      annotations: {}
+      name: UDI_low
+      description: Values for the percent of time that is below the lower threshold
+        of useful daylight illuminance. These can be plugged into the "LB Spatial
+        Heatmap" component along with meshes of the sensor grids to visualize results.
+      platform:
+      - grasshopper
+      handler:
+      - type: IOAliasHandler
+        annotations: {}
+        language: python
+        module: pollination_handlers.outputs.daylight
+        function: read_udi_from_folder
+    required: true
+  - type: DAGFolderOutput
+    annotations: {}
+    name: udi-upper
+    description: Results for the percent of time that is above the upper threshold
+      of useful daylight illuminance.
+    from:
+      type: FolderReference
+      annotations: {}
+      path: metrics/udi_upper
+    alias:
+    - type: DAGGenericOutputAlias
+      annotations: {}
+      name: UDI_up
+      description: Values for the percent of time that is above the upper threshold
+        of useful daylight illuminance. These can be plugged into the "LB Spatial
+        Heatmap" component along with meshes of the sensor grids to visualize results.
+      platform:
+      - grasshopper
+      handler:
+      - type: IOAliasHandler
+        annotations: {}
+        language: python
+        module: pollination_handlers.outputs.daylight
+        function: read_udi_from_folder
+    required: true
+  name: d102cab2c5ff3721965d3e50763c4781d15943d9dca9bcf040fc094262253c69/main
+  fail_fast: true
+  tasks:
+  - type: DAGTask
+    annotations: {}
+    name: annual-daylight-raytracing
+    template: d102cab2c5ff3721965d3e50763c4781d15943d9dca9bcf040fc094262253c69/annual-daylight-ray-tracing
+    needs:
+    - create-sky-dome
+    - create-octree-with-suns
+    - create-octree
+    - generate-sunpath
+    - create-total-sky
+    - create-direct-sky
+    - create-rad-folder
+    arguments:
+    - type: TaskArgument
+      annotations: {}
+      name: sensor-count
+      from:
+        type: InputReference
+        annotations: {}
+        variable: sensor-count
+    - type: TaskArgument
+      annotations: {}
+      name: radiance-parameters
+      from:
+        type: InputReference
+        annotations: {}
+        variable: radiance-parameters
+    - type: TaskPathArgument
+      annotations: {}
+      name: octree-file-with-suns
+      from:
+        type: TaskFileReference
+        annotations: {}
+        name: create-octree-with-suns
+        variable: scene-file
+      sub_path: null
+    - type: TaskPathArgument
+      annotations: {}
+      name: octree-file
+      from:
+        type: TaskFileReference
+        annotations: {}
+        name: create-octree
+        variable: scene-file
+      sub_path: null
+    - type: TaskArgument
+      annotations: {}
+      name: grid-name
+      from:
+        type: ValueReference
+        annotations: {}
+        value: '{{item.full_id}}'
+    - type: TaskPathArgument
+      annotations: {}
+      name: sensor-grid
+      from:
+        type: TaskFolderReference
+        annotations: {}
+        name: create-rad-folder
+        variable: model-folder
+      sub_path: grid/{{item.full_id}}.pts
+    - type: TaskPathArgument
+      annotations: {}
+      name: sky-matrix
+      from:
+        type: TaskFileReference
+        annotations: {}
+        name: create-total-sky
+        variable: sky-matrix
+      sub_path: null
+    - type: TaskPathArgument
+      annotations: {}
+      name: sky-dome
+      from:
+        type: TaskFileReference
+        annotations: {}
+        name: create-sky-dome
+        variable: sky-dome
+      sub_path: null
+    - type: TaskPathArgument
+      annotations: {}
+      name: sky-matrix-direct
+      from:
+        type: TaskFileReference
+        annotations: {}
+        name: create-direct-sky
+        variable: sky-matrix
+      sub_path: null
+    - type: TaskPathArgument
+      annotations: {}
+      name: sunpath
+      from:
+        type: TaskFileReference
+        annotations: {}
+        name: generate-sunpath
+        variable: sunpath
+      sub_path: null
+    - type: TaskPathArgument
+      annotations: {}
+      name: sun-modifiers
+      from:
+        type: TaskFileReference
+        annotations: {}
+        name: generate-sunpath
+        variable: sun-modifiers
+      sub_path: null
+    loop:
+      type: DAGTaskLoop
+      annotations: {}
+      from:
+        type: TaskReference
+        annotations: {}
+        name: create-rad-folder
+        variable: sensor-grids
+    sub_folder: initial_results/{{item.name}}
+    returns: []
+  - type: DAGTask
+    annotations: {}
+    name: calculate-annual-metrics
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/annual-daylight-metrics
+    needs:
+    - parse-sun-up-hours
+    - annual-daylight-raytracing
+    arguments:
+    - type: TaskPathArgument
+      annotations: {}
+      name: folder
+      from:
+        type: ValueFolderReference
+        annotations: {}
+        path: results
+      sub_path: null
+    - type: TaskPathArgument
+      annotations: {}
+      name: schedule
+      from:
+        type: InputFileReference
+        annotations: {}
+        variable: schedule
+      sub_path: null
+    - type: TaskArgument
+      annotations: {}
+      name: thresholds
+      from:
+        type: InputReference
+        annotations: {}
+        variable: thresholds
+    loop: null
+    sub_folder: null
+    returns:
+    - type: TaskPathReturn
+      annotations: {}
+      name: annual-metrics
+      description: null
+      path: metrics
+      required: true
+  - type: DAGTask
+    annotations: {}
+    name: create-direct-sky
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/create-sky-matrix
+    needs: []
+    arguments:
+    - type: TaskArgument
+      annotations: {}
+      name: north
+      from:
+        type: InputReference
+        annotations: {}
+        variable: north
+    - type: TaskPathArgument
+      annotations: {}
+      name: wea
+      from:
+        type: InputFileReference
+        annotations: {}
+        variable: wea
+      sub_path: null
+    - type: TaskArgument
+      annotations: {}
+      name: sky-type
+      from:
+        type: ValueReference
+        annotations: {}
+        value: sun-only
+    - type: TaskArgument
+      annotations: {}
+      name: sun-up-hours
+      from:
+        type: ValueReference
+        annotations: {}
+        value: sun-up-hours
+    loop: null
+    sub_folder: null
+    returns:
+    - type: TaskPathReturn
+      annotations: {}
+      name: sky-matrix
+      description: null
+      path: resources/sky_direct.mtx
+      required: true
+  - type: DAGTask
+    annotations: {}
+    name: create-octree
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/create-octree
+    needs:
+    - create-rad-folder
+    arguments:
+    - type: TaskPathArgument
+      annotations: {}
+      name: model
+      from:
+        type: TaskFolderReference
+        annotations: {}
+        name: create-rad-folder
+        variable: model-folder
+      sub_path: null
+    loop: null
+    sub_folder: null
+    returns:
+    - type: TaskPathReturn
+      annotations: {}
+      name: scene-file
+      description: null
+      path: resources/scene.oct
+      required: true
+  - type: DAGTask
+    annotations: {}
+    name: create-octree-with-suns
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/create-octree-with-sky
+    needs:
+    - generate-sunpath
+    - create-rad-folder
+    arguments:
+    - type: TaskPathArgument
+      annotations: {}
+      name: model
+      from:
+        type: TaskFolderReference
+        annotations: {}
+        name: create-rad-folder
+        variable: model-folder
+      sub_path: null
+    - type: TaskPathArgument
+      annotations: {}
+      name: sky
+      from:
+        type: TaskFileReference
+        annotations: {}
+        name: generate-sunpath
+        variable: sunpath
+      sub_path: null
+    loop: null
+    sub_folder: null
+    returns:
+    - type: TaskPathReturn
+      annotations: {}
+      name: scene-file
+      description: null
+      path: resources/scene_with_suns.oct
+      required: true
+  - type: DAGTask
+    annotations: {}
+    name: create-rad-folder
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/create-radiance-folder
+    needs: []
+    arguments:
+    - type: TaskPathArgument
+      annotations: {}
+      name: input-model
+      from:
+        type: InputFileReference
+        annotations: {}
+        variable: model
+      sub_path: null
+    - type: TaskArgument
+      annotations: {}
+      name: sensor-grid
+      from:
+        type: InputReference
+        annotations: {}
+        variable: grid-filter
+    loop: null
+    sub_folder: null
+    returns:
+    - type: TaskPathReturn
+      annotations: {}
+      name: model-folder
+      description: null
+      path: model
+      required: true
+    - type: TaskPathReturn
+      annotations: {}
+      name: sensor-grids-file
+      description: null
+      path: results/grids_info.json
+      required: true
+    - type: TaskReturn
+      annotations: {}
+      name: sensor-grids
+      description: Sensor grids information.
+  - type: DAGTask
+    annotations: {}
+    name: create-sky-dome
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/create-sky-dome
+    needs: []
+    arguments: []
+    loop: null
+    sub_folder: null
+    returns:
+    - type: TaskPathReturn
+      annotations: {}
+      name: sky-dome
+      description: null
+      path: resources/sky.dome
+      required: true
+  - type: DAGTask
+    annotations: {}
+    name: create-total-sky
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/create-sky-matrix
+    needs: []
+    arguments:
+    - type: TaskArgument
+      annotations: {}
+      name: north
+      from:
+        type: InputReference
+        annotations: {}
+        variable: north
+    - type: TaskPathArgument
+      annotations: {}
+      name: wea
+      from:
+        type: InputFileReference
+        annotations: {}
+        variable: wea
+      sub_path: null
+    - type: TaskArgument
+      annotations: {}
+      name: sun-up-hours
+      from:
+        type: ValueReference
+        annotations: {}
+        value: sun-up-hours
+    loop: null
+    sub_folder: null
+    returns:
+    - type: TaskPathReturn
+      annotations: {}
+      name: sky-matrix
+      description: null
+      path: resources/sky.mtx
+      required: true
+  - type: DAGTask
+    annotations: {}
+    name: generate-sunpath
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/create-sun-matrix
+    needs: []
+    arguments:
+    - type: TaskArgument
+      annotations: {}
+      name: north
+      from:
+        type: InputReference
+        annotations: {}
+        variable: north
+    - type: TaskPathArgument
+      annotations: {}
+      name: wea
+      from:
+        type: InputFileReference
+        annotations: {}
+        variable: wea
+      sub_path: null
+    loop: null
+    sub_folder: null
+    returns:
+    - type: TaskPathReturn
+      annotations: {}
+      name: sunpath
+      description: null
+      path: resources/sunpath.mtx
+      required: true
+    - type: TaskPathReturn
+      annotations: {}
+      name: sun-modifiers
+      description: null
+      path: resources/suns.mod
+      required: true
+  - type: DAGTask
+    annotations: {}
+    name: parse-sun-up-hours
+    template: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/parse-sun-up-hours
+    needs:
+    - generate-sunpath
+    arguments:
+    - type: TaskPathArgument
+      annotations: {}
+      name: sun-modifiers
+      from:
+        type: TaskFileReference
+        annotations: {}
+        name: generate-sunpath
+        variable: sun-modifiers
+      sub_path: null
+    loop: null
+    sub_folder: null
+    returns:
+    - type: TaskPathReturn
+      annotations: {}
+      name: sun-up-hours
+      description: null
+      path: results/sun-up-hours.txt
+      required: true
+digest: d102cab2c5ff3721965d3e50763c4781d15943d9dca9bcf040fc094262253c69
+templates:
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionStringInput
+    annotations: {}
+    name: conversion
+    description: Conversion as a string which will be passed to rmtxop -c option.
+    default: ' '
+    alias: []
+    required: false
+    spec: null
+  - type: FunctionFileInput
+    annotations: {}
+    name: direct-sky-matrix
+    description: Path to matrix for direct sky contribution.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: sky_dir.ill
+    extensions:
+    - ill
+    - dc
+  - type: FunctionStringInput
+    annotations: {}
+    name: header
+    description: An input to indicate if header should be kept or removed from theoutput
+      matrix.
+    default: remove
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - keep
+      - remove
+  - type: FunctionStringInput
+    annotations: {}
+    name: output-format
+    description: Output file format. a for ASCII, d for double, f for float and c
+      for RGBE color.
+    default: a
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - a
+      - d
+      - f
+      - c
+  - type: FunctionFileInput
+    annotations: {}
+    name: sunlight-matrix
+    description: Path to matrix for direct sunlight contribution.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: sun.ill
+    extensions:
+    - ill
+    - dc
+  - type: FunctionFileInput
+    annotations: {}
+    name: total-sky-matrix
+    description: Path to matrix for total sky contribution.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: sky.ill
+    extensions:
+    - ill
+    - dc
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: results-file
+    description: Radiance matrix file.
+    path: final.ill
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/add-remove-sky-matrix
+  description: Remove direct sky from total sky and add direct sun.
+  command: honeybee-radiance mtxop operate-three sky.ill sky_dir.ill sun.ill --operator-one
+    "-" --operator-two "+" --{{inputs.header}}-header --conversion "{{inputs.conversion}}"
+    --output-mtx final.ill --output-format {{inputs.output-format}}
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionStringInput
+    annotations: {}
+    name: conversion
+    description: Conversion as a string which will be passed to rmtxop -c option.
+    default: ' '
+    alias: []
+    required: false
+    spec: null
+  - type: FunctionStringInput
+    annotations: {}
+    name: header
+    description: An input to indicate if header should be kept or removed from theoutput
+      matrix.
+    default: remove
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - keep
+      - remove
+  - type: FunctionFileInput
+    annotations: {}
+    name: indirect-sky-matrix
+    description: Path to matrix for indirect sky contribution.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: sky.ill
+    extensions:
+    - ill
+    - dc
+  - type: FunctionStringInput
+    annotations: {}
+    name: output-format
+    description: Output file format. a for ASCII, d for double, f for float and c
+      for RGBE color.
+    default: a
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - a
+      - d
+      - f
+      - c
+  - type: FunctionFileInput
+    annotations: {}
+    name: sunlight-matrix
+    description: Path to matrix for direct sunlight contribution.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: sun.ill
+    extensions:
+    - ill
+    - dc
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: results-file
+    description: Radiance matrix file.
+    path: final.ill
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/add-sky-matrix
+  description: Add indirect sky to direct sunlight.
+  command: honeybee-radiance mtxop operate-two sky.ill sun.ill --operator + --{{inputs.header}}-header
+    --conversion "{{inputs.conversion}}" --output-mtx final.ill --output-format {{inputs.output-format}}
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionFolderInput
+    annotations: {}
+    name: folder
+    description: This folder is an output folder of annual daylight recipe. Folder
+      should include grids_info.json and sun-up-hours.txt. The command uses the list
+      in grids_info.json to find the result files for each sensor grid.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: raw_results
+  - type: FunctionFileInput
+    annotations: {}
+    name: schedule
+    description: Path to an annual schedule file. Values should be 0-1 separated by
+      new line. If not provided an 8-5 annual schedule will be created.
+    default: null
+    alias: null
+    required: false
+    spec: null
+    path: schedule.txt
+    extensions: null
+  - type: FunctionStringInput
+    annotations: {}
+    name: thresholds
+    description: A string to change the threshold for daylight autonomy and useful
+      daylight illuminance. Valid keys are -t for daylight autonomy threshold, -lt
+      for the lower threshold for useful daylight illuminance and -ut for the upper
+      threshold. The defult is -t 300 -lt 100 -ut 3000. The order of the keys is not
+      important and you can include one or all of them. For instance if you only want
+      to change the upper threshold to 2000 lux you should use -ut 2000 as the input.
+    default: -t 300 -lt 100 -ut 3000
+    alias: []
+    required: false
+    spec: null
+  outputs:
+  - type: FunctionFolderOutput
+    annotations: {}
+    name: annual-metrics
+    description: Annual metrics folder. This folder includes all the other subfolders
+      which are also exposed as separate outputs.
+    path: metrics
+    required: true
+  - type: FunctionFolderOutput
+    annotations: {}
+    name: continuous-daylight-autonomy
+    description: Continuous daylight autonomy results.
+    path: metrics/cda
+    required: true
+  - type: FunctionFolderOutput
+    annotations: {}
+    name: daylight-autonomy
+    description: Daylight autonomy results.
+    path: metrics/da
+    required: true
+  - type: FunctionFolderOutput
+    annotations: {}
+    name: useful-daylight-illuminance
+    description: Useful daylight illuminance results.
+    path: metrics/udi
+    required: true
+  - type: FunctionFolderOutput
+    annotations: {}
+    name: useful-daylight-illuminance-lower
+    description: Lower useful daylight illuminance results.
+    path: metrics/udi_lower
+    required: true
+  - type: FunctionFolderOutput
+    annotations: {}
+    name: useful-daylight-illuminance-upper
+    description: Upper useful daylight illuminance results.
+    path: metrics/udi_upper
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/annual-daylight-metrics
+  description: Calculate annual daylight metrics for annual daylight simulation.
+  command: honeybee-radiance post-process annual-daylight raw_results --schedule schedule.txt
+    {{inputs.thresholds}} --sub_folder ../metrics
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionFileInput
+    annotations: {}
+    name: input-mtx
+    description: Input Radiance matrix in ASCII format
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: input.mtx
+    extensions: null
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: output-mtx
+    description: Newly created binary matrix.
+    path: binary.mtx
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/convert-to-binary
+  description: Convert a Radiance matrix to a new matrix with 0-1 values.
+  command: honeybee-radiance post-process convert-to-binary input.mtx --output binary.mtx
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionStringInput
+    annotations: {}
+    name: black-out
+    description: A value to indicate if the black material should be used. Valid values
+      are default and black. Default value is default.
+    default: default
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - black
+      - default
+  - type: FunctionStringInput
+    annotations: {}
+    name: include-aperture
+    description: A value to indicate if the static aperture should be included in
+      octree. Valid values are include and exclude. Default is include.
+    default: include
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - include
+      - exclude
+  - type: FunctionFolderInput
+    annotations: {}
+    name: model
+    description: Path to Radiance model folder.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: model
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: scene-file
+    description: Output octree file.
+    path: scene.oct
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/create-octree
+  description: Generate an octree from a Radiance folder.
+  command: honeybee-radiance octree from-folder model --output scene.oct --{{inputs.include-aperture}}-aperture
+    --{{inputs.black-out}}
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionStringInput
+    annotations: {}
+    name: black-out
+    description: A value to indicate if the black material should be used. Valid values
+      are default and black. Default value is default.
+    default: default
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - black
+      - default
+  - type: FunctionStringInput
+    annotations: {}
+    name: include-aperture
+    description: A value to indicate if the static aperture should be included in
+      octree. Valid values are include and exclude. Default is include.
+    default: include
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - include
+      - exclude
+  - type: FunctionFolderInput
+    annotations: {}
+    name: model
+    description: Path to Radiance model folder.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: model
+  - type: FunctionFileInput
+    annotations: {}
+    name: sky
+    description: Path to sky file.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: sky.sky
+    extensions: null
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: scene-file
+    description: Output octree file.
+    path: scene.oct
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/create-octree-with-sky
+  description: Generate an octree from a Radiance folder and a sky!
+  command: honeybee-radiance octree from-folder model --output scene.oct --{{inputs.include-aperture}}-aperture
+    --{{inputs.black-out}} --add-before sky.sky
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionFileInput
+    annotations: {}
+    name: input-model
+    description: Path to input HBJSON file.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: model.hbjson
+    extensions: null
+  - type: FunctionStringInput
+    annotations: {}
+    name: sensor-grid
+    description: A pattern to filter grids to be exported to radiance folder. By default
+      all the grids will be exported.
+    default: '*'
+    alias: []
+    required: false
+    spec: null
+  outputs:
+  - type: FunctionFolderOutput
+    annotations: {}
+    name: model-folder
+    description: Radiance folder.
+    path: model
+    required: true
+  - type: FunctionArrayOutput
+    annotations: {}
+    name: sensor-grids
+    description: Sensor grids information.
+    path: model/grid/_info.json
+    required: true
+    items_type: String
+  - type: FunctionFileOutput
+    annotations: {}
+    name: sensor-grids-file
+    description: Sensor grids information JSON file.
+    path: model/grid/_info.json
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/create-radiance-folder
+  description: Create a Radiance folder from a HBJSON input file.
+  command: honeybee-radiance translate model-to-rad-folder model.hbjson --grid "{{inputs.sensor-grid}}"
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionFileInput
+    annotations: {}
+    name: model
+    description: Path to input HBJSON file.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: model.hbjson
+    extensions: null
+  outputs:
+  - type: FunctionJSONObjectOutput
+    annotations: {}
+    name: enclosure-list
+    description: A list of dictionaries that include information about generated radiant
+      enclosure files.
+    path: enclosure_list.json
+    required: true
+  - type: FunctionFileOutput
+    annotations: {}
+    name: enclosure-list-file
+    description: A JSON file that includes information about generated radiant enclosure
+      files.
+    path: enclosure_list.json
+    required: true
+  - type: FunctionFolderOutput
+    annotations: {}
+    name: output-folder
+    description: Output folder with the enclosure info JSONs for each grid.
+    path: output
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/create-radiant-enclosure-info
+  description: "Create JSONs with radiant enclosure information from a HBJSON input\
+    \ file.\n\n    This enclosure info is intended to be consumed by thermal mapping\
+    \ functions.\n    "
+  command: honeybee-radiance translate model-radiant-enclosure-info model.hbjson --folder
+    output --log-file enclosure_list.json
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionIntegerInput
+    annotations: {}
+    name: sky-density
+    description: The density of generated sky. This input corresponds to gendaymtx
+      -m option. -m 1 generates 146 patch starting with 0 for the ground and continuing
+      to 145 for the zenith. Increasing the -m parameter yields a higher resolution
+      sky using the Reinhart patch subdivision. For example, setting -m 4 yields a
+      sky with 2305 patches plus one patch for the ground.
+    default: 1
+    alias: []
+    required: false
+    spec:
+      type: integer
+      minimum: 1
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: sky-dome
+    description: A sky hemisphere with ground.
+    path: rflux_sky.sky
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/create-sky-dome
+  description: Create a skydome for daylight coefficient studies.
+  command: honeybee-radiance sky skydome --name rflux_sky.sky --sky-density {{inputs.sky-density}}
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionStringInput
+    annotations: {}
+    name: cumulative
+    description: An option to generate a cumulative sky instead of an hourly sky
+    default: hourly
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - hourly
+      - cumulative
+  - type: FunctionIntegerInput
+    annotations: {}
+    name: north
+    description: An angle for north direction. Default is 0.
+    default: 0
+    alias: []
+    required: false
+    spec:
+      type: integer
+      maximum: 360
+      minimum: 0
+  - type: FunctionStringInput
+    annotations: {}
+    name: output-format
+    description: Output file format. Options are float, double and ASCII.
+    default: ASCII
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - float
+      - double
+      - ASCII
+  - type: FunctionStringInput
+    annotations: {}
+    name: output-type
+    description: Output type which can be visible and or solar.
+    default: visible
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - visible
+      - solar
+  - type: FunctionIntegerInput
+    annotations: {}
+    name: sky-density
+    description: The density of generated sky. This input corresponds to gendaymtx
+      -m option. -m 1 generates 146 patch starting with 0 for the ground and continuing
+      to 145 for the zenith. Increasing the -m parameter yields a higher resolution
+      sky using the Reinhart patch subdivision. For example, setting -m 4 yields a
+      sky with 2305 patches plus one patch for the ground.
+    default: 1
+    alias: []
+    required: false
+    spec:
+      type: integer
+      minimum: 1
+  - type: FunctionStringInput
+    annotations: {}
+    name: sky-type
+    description: A switch for generating sun-only sky or exclude sun contribution.
+      The default is total sky which includes both.
+    default: total
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - total
+      - sun-only
+      - no-sun
+  - type: FunctionStringInput
+    annotations: {}
+    name: sun-up-hours
+    description: An option to generate the sky for sun-up hours only. Default is for
+      all the hours of the year.
+    default: all-hours
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - all-hours
+      - sun-up-hours
+  - type: FunctionFileInput
+    annotations: {}
+    name: wea
+    description: Path to a wea file.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: sky.wea
+    extensions:
+    - wea
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: sky-matrix
+    description: Output Sky matrix
+    path: sky.mtx
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/create-sky-matrix
+  description: Generate a sun-up sky matrix.
+  command: honeybee-radiance sky mtx sky.wea --name sky --north {{inputs.north}} --sky-type
+    {{inputs.sky-type}} --{{inputs.cumulative}} --{{inputs.sun-up-hours}} --{{inputs.output-type}}
+    --output-format {{inputs.output-format}} --sky-density {{inputs.sky-density}}
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionIntegerInput
+    annotations: {}
+    name: north
+    description: An angle for north direction. Default is 0.
+    default: 0
+    alias: []
+    required: false
+    spec:
+      type: integer
+      maximum: 360
+      minimum: 0
+  - type: FunctionIntegerInput
+    annotations: {}
+    name: output-type
+    description: Output type. 0 is for visible and 1 is for solar.
+    default: 0
+    alias: []
+    required: false
+    spec:
+      type: integer
+      maximum: 1
+      minimum: 0
+  - type: FunctionFileInput
+    annotations: {}
+    name: wea
+    description: Path to a wea file.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: sky.wea
+    extensions:
+    - wea
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: sun-modifiers
+    description: List of sun modifiers in sunpath.
+    path: suns.mod
+    required: true
+  - type: FunctionFileOutput
+    annotations: {}
+    name: sunpath
+    description: Output sunpath matrix.
+    path: sunpath.mtx
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/create-sun-matrix
+  description: Generate a Radiance sun matrix (AKA sun-path).
+  command: gendaymtx -n -D sunpath.mtx -M suns.mod -O{{inputs.output-type}} -r {{inputs.north}}
+    -v sky.wea
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionStringInput
+    annotations: {}
+    name: conversion
+    description: Conversion values as a string which will be passed to rmtxop -c.This
+      option is useful to post-process the results from 3 RGB components into one
+      as part of this command.
+    default: ''
+    alias: []
+    required: false
+    spec: null
+  - type: FunctionStringInput
+    annotations: {}
+    name: fixed-radiance-parameters
+    description: Radiance parameters. -I, -c 1 and -aa 0 are already included in the
+      command.
+    default: -aa 0
+    alias: []
+    required: false
+    spec: null
+  - type: FunctionStringInput
+    annotations: {}
+    name: output-format
+    description: Output format for converted results. Valid inputs are a, f and d
+      for ASCII, float or double.
+    default: f
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - a
+      - d
+      - f
+  - type: FunctionStringInput
+    annotations: {}
+    name: radiance-parameters
+    description: Radiance parameters. -I, -c 1 and -aa 0 are already included in the
+      command.
+    default: ''
+    alias: []
+    required: false
+    spec: null
+  - type: FunctionFileInput
+    annotations: {}
+    name: scene-file
+    description: Path to an octree file to describe the scene.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: scene.oct
+    extensions:
+    - oct
+  - type: FunctionIntegerInput
+    annotations: {}
+    name: sensor-count
+    description: Number of maximum sensors in each generated grid.
+    default: null
+    alias: []
+    required: true
+    spec:
+      type: integer
+      minimum: 1
+  - type: FunctionFileInput
+    annotations: {}
+    name: sensor-grid
+    description: Path to sensor grid files.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: grid.pts
+    extensions:
+    - pts
+  - type: FunctionFileInput
+    annotations: {}
+    name: sky-dome
+    description: Path to a sky dome.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: sky.dome
+    extensions: null
+  - type: FunctionFileInput
+    annotations: {}
+    name: sky-matrix
+    description: Path to a sky matrix.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: sky.mtx
+    extensions:
+    - mtx
+    - smx
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: result-file
+    description: Output result file.
+    path: results.ill
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/daylight-coefficient
+  description: Calculate daylight coefficient for a grid of sensors from a sky matrix.
+  command: honeybee-radiance dc scoeff scene.oct grid.pts sky.dome sky.mtx --sensor-count
+    {{inputs.sensor-count}} --output results.ill --rad-params "{{inputs.radiance-parameters}}"
+    --rad-params-locked "{{inputs.fixed-radiance-parameters}}" --conversion "{{inputs.conversion}}"
+    --output-format {{inputs.output-format}}
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionStringInput
+    annotations: {}
+    name: calculate-values
+    description: A switch to indicate if the values should be multiplied. Otherwise
+      the contribution is calculated as a coefficient. Default is set to value. Use
+      coeff for contribution
+    default: value
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - value
+      - coeff
+  - type: FunctionStringInput
+    annotations: {}
+    name: conversion
+    description: Conversion values as a string which will be passed to rmtxop -c.
+    default: ''
+    alias: []
+    required: false
+    spec: null
+  - type: FunctionStringInput
+    annotations: {}
+    name: fixed-radiance-parameters
+    description: Radiance parameters. -I and -aa 0 are already included in the command.
+    default: -aa 0
+    alias: []
+    required: false
+    spec: null
+  - type: FunctionFileInput
+    annotations: {}
+    name: modifiers
+    description: Path to modifiers file. In most cases modifiers are sun modifiers.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: suns.mod
+    extensions: null
+  - type: FunctionStringInput
+    annotations: {}
+    name: output-format
+    description: Output format for converted results. Valid inputs are a, f and d
+      for ASCII, float or double. If conversion is not provided you can change the
+      output format using rad-params options.
+    default: a
+    alias: []
+    required: false
+    spec:
+      type: string
+      enum:
+      - a
+      - d
+      - f
+  - type: FunctionStringInput
+    annotations: {}
+    name: radiance-parameters
+    description: Radiance parameters. -I and -aa 0 are already included in the command.
+    default: ''
+    alias: []
+    required: false
+    spec: null
+  - type: FunctionFileInput
+    annotations: {}
+    name: scene-file
+    description: Path to an octree file to describe the scene.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: scene.oct
+    extensions:
+    - oct
+  - type: FunctionIntegerInput
+    annotations: {}
+    name: sensor-count
+    description: Number of maximum sensors in each generated grid.
+    default: null
+    alias: []
+    required: true
+    spec:
+      type: integer
+      minimum: 1
+  - type: FunctionFileInput
+    annotations: {}
+    name: sensor-grid
+    description: Path to sensor grid files.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: grid.pts
+    extensions:
+    - pts
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: result-file
+    description: Output result file.
+    path: results.ill
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/daylight-contribution
+  description: "\n    Calculate daylight contribution for a grid of sensors from a\
+    \ series of modifiers\n    using rcontrib command.\n    "
+  command: honeybee-radiance dc scontrib scene.oct grid.pts suns.mod --{{inputs.calculate-values}}
+    --sensor-count {{inputs.sensor-count}} --rad-params "{{inputs.radiance-parameters}}"
+    --rad-params-locked "{{inputs.fixed-radiance-parameters}}" --conversion "{{inputs.conversion}}"
+    --output-format {{inputs.output-format}} --output results.ill
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionNumberInput
+    annotations: {}
+    name: illuminance
+    description: Sky illuminance level.
+    default: 100000.0
+    alias: []
+    required: false
+    spec: null
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: sky
+    description: Generated sky file.
+    path: overcast.sky
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/gen-sky-with-certain-illum
+  description: Generates a sky with certain illuminance level.
+  command: honeybee-radiance sky illuminance {{inputs.illuminance}} --name overcast.sky
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionStringInput
+    annotations: {}
+    name: conversion
+    description: conversion as a string which will be passed to -c
+    default: 47.4 119.9 11.6
+    alias: []
+    required: false
+    spec: null
+  - type: FunctionFileInput
+    annotations: {}
+    name: input-matrix
+    description: Path to input matrix.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: input.ill
+    extensions: null
+  - type: FunctionStringInput
+    annotations: {}
+    name: output-format
+    description: null
+    default: -fa
+    alias: []
+    required: false
+    spec: null
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: output-matrix
+    description: New matrix file.
+    path: output.ill
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/matrix-multiplication
+  description: Multiply a matrix with conversation numbers.
+  command: rmtxop {{inputs.output-format}} input.ill -c {{inputs.conversion}} | getinfo
+    - > output.ill
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionStringInput
+    annotations: {}
+    name: extension
+    description: File extension including the . before the extension (e.g. .res, .ill)
+    default: null
+    alias: []
+    required: true
+    spec: null
+  - type: FunctionFolderInput
+    annotations: {}
+    name: folder
+    description: Target folder with the input files.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: input_folder
+  - type: FunctionStringInput
+    annotations: {}
+    name: name
+    description: Base name for files to be merged.
+    default: grid
+    alias: []
+    required: false
+    spec: null
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: result-file
+    description: Output result file.
+    path: '{{inputs.name}}{{inputs.extension}}'
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/merge-files
+  description: Merge several files with similar starting name into one.
+  command: honeybee-radiance grid merge input_folder grid {{inputs.extension}} --name
+    {{inputs.name}}
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionFileInput
+    annotations: {}
+    name: model
+    description: Honeybee model in JSON format.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: model.hbjson
+    extensions:
+    - hbjson
+    - json
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: new-model
+    description: Model JSON with its sensor grids mirrored.
+    path: new_model.hbjson
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/mirror-model-sensor-grids
+  description: "Mirror a honeybee Model's SensorGrids and format them for thermal\
+    \ mapping.\n\n    This involves setting the direction of every sensor to point\
+    \ up (0, 0, 1) and\n    then adding a mirrored sensor grid with the same sensor\
+    \ positions that all\n    point downward. In thermal mapping workflows, the upward-pointing\
+    \ grids are\n    used to account for direct and diffuse shortwave irradiance while\
+    \ the\n    downard pointing grids account for ground-reflected shortwave irradiance.\n\
+    \    "
+  command: honeybee-radiance edit mirror-model-sensors model.hbjson --output-file
+    new_model.hbjson
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionFileInput
+    annotations: {}
+    name: sun-modifiers
+    description: Path to sun-modifiers file.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: suns.mod
+    extensions: null
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: sun-up-hours
+    description: A text file that includes all the sun up hours. Each hour is separated
+      by a new line.
+    path: sun-up-hours.txt
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/parse-sun-up-hours
+  description: Parse sun up hours from sun modifiers file.
+  command: honeybee-radiance sunpath parse-hours suns.mod --name sun-up-hours.txt
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionStringInput
+    annotations: {}
+    name: fixed-radiance-parameters
+    description: Parameters that should not be overwritten by radiance_parameters
+      input.
+    default: -I -h
+    alias: []
+    required: false
+    spec: null
+  - type: FunctionFileInput
+    annotations: {}
+    name: grid
+    description: Input sensor grid.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: grid.pts
+    extensions: null
+  - type: FunctionStringInput
+    annotations: {}
+    name: radiance-parameters
+    description: Radiance parameters. -I and -h are already included in the command.
+    default: -ab 2
+    alias: []
+    required: false
+    spec: null
+  - type: FunctionFileInput
+    annotations: {}
+    name: scene-file
+    description: Path to an octree file to describe the scene.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: scene.oct
+    extensions: null
+  - type: FunctionIntegerInput
+    annotations: {}
+    name: sky-illum
+    description: Sky illuminance level for the sky included in octree.
+    default: 100000
+    alias: []
+    required: false
+    spec: null
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: result
+    description: Daylight factor results file. The results for each sensor is in a
+      new line.
+    path: grid.res
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/ray-tracing-daylight-factor
+  description: Run ray-tracing and post-process the results for a daylight factor
+    simulation.
+  command: honeybee-radiance raytrace daylight-factor scene.oct grid.pts --rad-params
+    "{{inputs.radiance-parameters}}" --rad-params-locked "{{inputs.fixed-radiance-parameters}}"
+    --sky-illum {{inputs.sky-illum}} --output grid.res
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionFileInput
+    annotations: {}
+    name: input-grid
+    description: Input grid file.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: grid.pts
+    extensions: null
+  - type: FunctionIntegerInput
+    annotations: {}
+    name: sensor-count
+    description: Number of maximum sensors in each generated grid.
+    default: null
+    alias: []
+    required: true
+    spec:
+      type: integer
+      minimum: 1
+  outputs:
+  - type: FunctionArrayOutput
+    annotations: {}
+    name: grids-list
+    description: A JSON array that includes information about generated sensor grids.
+    path: output/grids_info.json
+    required: true
+    items_type: String
+  - type: FunctionFolderOutput
+    annotations: {}
+    name: output-folder
+    description: Output folder with new sensor grids.
+    path: output
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/split-grid
+  description: Split a single sensor grid file into multiple smaller grids.
+  command: honeybee-radiance grid split grid.pts {{inputs.sensor-count}} --folder
+    output --log-file output/grids_info.json
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionFolderInput
+    annotations: {}
+    name: input-grid
+    description: Path to sensor grids folder.
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: .
+  - type: FunctionStringInput
+    annotations: {}
+    name: name
+    description: Grid name.
+    default: null
+    alias: []
+    required: true
+    spec: null
+  - type: FunctionIntegerInput
+    annotations: {}
+    name: sensor-count
+    description: Number of maximum sensors in each generated grid.
+    default: null
+    alias: []
+    required: true
+    spec:
+      type: integer
+      minimum: 1
+  outputs:
+  - type: FunctionArrayOutput
+    annotations: {}
+    name: grids-list
+    description: A JSON array that includes information about generated sensor grids.
+    path: output/grids_info.json
+    required: true
+    items_type: String
+  - type: FunctionFolderOutput
+    annotations: {}
+    name: output-folder
+    description: Output folder with new sensor grids.
+    path: output
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/split-grid-from-folder
+  description: "Split a single sensor grid file into multiple grids based on maximum\
+    \ number\n    of sensors.\n\n    This function takes a folder of sensor grids\
+    \ and find the target grid based on\n    grid-name.\n    "
+  command: honeybee-radiance grid split {{inputs.name}}.pts {{inputs.sensor-count}}
+    --folder output --log-file output/grids_info.json
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
+- type: TemplateFunction
+  annotations: {}
+  inputs:
+  - type: FunctionFileInput
+    annotations: {}
+    name: input-mtx
+    description: Input Radiance matrix in ASCII format
+    default: null
+    alias: null
+    required: true
+    spec: null
+    path: input.mtx
+    extensions: null
+  outputs:
+  - type: FunctionFileOutput
+    annotations: {}
+    name: output-mtx
+    description: Newly created sum matrix.
+    path: sum.mtx
+    required: true
+  name: f749745f1059323f2c75f37e43151faa9e114df1de8bccbd007fb5ccc7d77729/sum-row
+  description: "Postprocess a Radiance matrix and add all the numbers in each row.\n\
+    \n    This function is useful for translating Radiance results to outputs like\
+    \ radiation\n    to total radiation. Input matrix must be in ASCII format. The\
+    \ header in the input\n    file will be ignored.\n    "
+  command: honeybee-radiance post-process sum-row input.mtx --output sum.mtx
+  config:
+    type: PluginConfig
+    annotations: {}
+    docker:
+      type: DockerConfig
+      annotations: {}
+      image: ladybugtools/honeybee-radiance:1.36.9
+      registry: null
+      workdir: /home/ladybugbot/run
+    local: null
