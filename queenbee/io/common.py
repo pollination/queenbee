@@ -224,6 +224,39 @@ class IOBase(BaseModel):
         duplicates = find_dup_items(names)
         if len(duplicates) != 0:
             raise ValueError(f'Duplicate names: {duplicates}')
+
+        # check possible duplicate names in aliases
+        platforms = []
+        # find all the platforms first
+        for io in v:
+            if not hasattr(io, 'alias'):
+                # function inputs/outputs
+                return v
+            for alias in io.alias:
+                for platform in alias.platform:
+                    platforms.append(platform)
+
+        # create the list of inputs/outputs for each platform
+        for platform in set(platforms):
+            names = []
+            for io in v:
+                if not io.alias:
+                    # no alias use the original name
+                    names.append(io.name)
+                    continue
+                for alias in io.alias:
+                    if platform in alias.platform:
+                        names.append(alias.name)
+                        break
+                else:
+                    names.append(io.name)
+            # check duplicate name for this platform
+            duplicates = find_dup_items(names)
+            if len(duplicates) != 0:
+                raise ValueError(
+                    f'Duplicate names for for "{platform}" platform: {duplicates}'
+                )
+
         return v
 
     @validator('inputs', 'outputs')
