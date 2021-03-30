@@ -1,8 +1,7 @@
 """Queenbee dependency class."""
 from typing import Dict
 from enum import Enum
-from pydantic import Field, constr
-
+from pydantic import Field, constr, AnyUrl
 
 from ..base.basemodel import BaseModel
 from ..base.request import make_request, urljoin, resolve_local_source
@@ -49,7 +48,7 @@ class Dependency(BaseModel):
         description='Tag of the resource.'
     )
 
-    source: str = Field(
+    source: AnyUrl = Field(
         ...,
         description='URL to a repository where this resource can be found.',
         examples=[
