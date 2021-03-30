@@ -71,17 +71,17 @@ class MetaData(BaseModel):
         description='A list of maintainers for the package'
     )
 
-    home: str = Field(
+    home: AnyUrl = Field(
         None,
         description='The URL of this package\'s home page'
     )
 
-    sources: List[str] = Field(
+    sources: List[AnyUrl] = Field(
         None,
         description='A list of URLs to source code for this project'
     )
 
-    icon: str = Field(
+    icon: AnyUrl = Field(
         None,
         description='A URL to an SVG or PNG image to be used as an icon'
     )

@@ -3,7 +3,7 @@ import json
 import os
 import yaml
 from typing import List
-from pydantic import Field, validator, constr
+from pydantic import Field, validator, constr, AnyUrl
 
 from ..base.basemodel import BaseModel
 from ..base.metadata import MetaData
@@ -20,7 +20,7 @@ class DockerConfig(BaseModel):
         description='Docker image name. Must include tag.'
     )
 
-    registry: str = Field(
+    registry: AnyUrl = Field(
         None,
         description='The container registry URLs that this container should be pulled'
         ' from. Will default to Dockerhub if none is specified.'

@@ -9,7 +9,7 @@ import json
 from typing import List, Union, Dict
 
 import yaml
-from pydantic import Field, validator, root_validator, constr
+from pydantic import Field, validator, root_validator, constr, AnyUrl
 
 from ..base.basemodel import BaseModel
 from ..base.metadata import MetaData
@@ -696,7 +696,7 @@ class RecipeInterface(BaseModel):
         description='Recipe metadata information.'
     )
 
-    source: str = Field(
+    source: AnyUrl = Field(
         None,
         description='A URL to the source this recipe from a registry.'
     )
