@@ -1,0 +1,19 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: coveralls
+    versions:
+    - 3.0.0
+    - 3.0.1
+  - dependency-name: pydantic-openapi-helper
+    versions:
+    - 0.2.5
+  commit-message:
+    prefix: fix
+    prefix-development: chore
+    include: scope
