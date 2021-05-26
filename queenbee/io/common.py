@@ -410,3 +410,12 @@ class IOAliasHandler(BaseModel):
         description='Name of the function. The input value will be passed to this '
         'function as the first argument.'
     )
+
+    index: int = Field(
+        0,
+        description='An integer to set the index for the order of execution. This input '
+        'is only useful when there are more than one handler for the same platform and '
+        'the output of one handler should be passed to another handler. This is also '
+        'called chained handlers. By default all the handlers are indexed as 0 assuming '
+        'they are not chained.'
+    )
