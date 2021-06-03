@@ -34,6 +34,14 @@ def optional_artifact_input():
 
 
 @pytest.fixture
+def optional_artifact_input_with_no_default():
+    return DAGPathInput(
+        name='optional-artifact-input-no-default',
+        required=False,
+    )
+
+
+@pytest.fixture
 def required_artifact_input():
     return DAGPathInput(
         name='required-artifact-input',
@@ -47,8 +55,13 @@ def required_inputs(required_parameter_input, required_artifact_input):
 
 
 @pytest.fixture
-def optional_inputs(optional_parameter_input, optional_artifact_input):
-    return [optional_parameter_input, optional_artifact_input]
+def optional_inputs(optional_parameter_input, optional_artifact_input,
+                    optional_artifact_input_with_no_default):
+    return [
+        optional_parameter_input,
+        optional_artifact_input,
+        optional_artifact_input_with_no_default
+    ]
 
 
 @pytest.fixture

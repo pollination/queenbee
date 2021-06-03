@@ -66,17 +66,20 @@ class Job(BaseModel):
                         found_argument = True
 
                 if not found_argument and not recipe_input.required:
-                    if recipe_input.is_artifact:
+                    argument = None
+                    if recipe_input.is_artifact and \
+                            recipe_input.default is not None:
                         argument = JobPathArgument(
                             name=recipe_input.name,
                             source=recipe_input.default,
                         )
-                    else:
+                    elif recipe_input.is_parameter:
                         argument = JobArgument(
                             name=recipe_input.name,
                             value=recipe_input.default,
                         )
-                    combination.append(argument)
+                    if argument is not None:
+                        combination.append(argument)
 
     def validate_arguments(self, inputs: List[DAGInputs]):
         errors = []
