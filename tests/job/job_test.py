@@ -234,3 +234,62 @@ def test_invalid_job_arguments_type(all_inputs: List[DAGInputs]):
             'type': 'value_error'
         },
     ]
+
+
+def test_populate_optional_arguments(optional_inputs: List[DAGInputs]):
+    job: Job = Job.parse_obj({
+        'source': 'https://example.com/registries/recipe/daylight-factor/latest',
+        'arguments': [[
+            {
+                'type': 'JobArgument',
+                'name': 'optional-parameter-input',
+                'value': 'some-string'
+            }
+        ], [
+            {
+                'type': 'JobPathArgument',
+                'name': 'optional-artifact-input',
+                'source': {
+                    'type': 'ProjectFolder',
+                    'path': 'some/path'
+                }
+            }
+        ]]
+    })
+
+    job.populate_default_arguments(optional_inputs)
+
+    expected_job = Job.parse_obj({
+        'source': 'https://example.com/registries/recipe/daylight-factor/latest',
+        'arguments': [[
+            {
+                'type': 'JobArgument',
+                'name': 'optional-parameter-input',
+                'value': 'some-string'
+            },
+            {
+                'type': 'JobPathArgument',
+                'name': 'optional-artifact-input',
+                'source': {
+                    'type': 'HTTP',
+                    'url': 'https://some.url.com/path/to/artifact'
+                }
+            }
+        ], [
+            {
+                'type': 'JobPathArgument',
+                'name': 'optional-artifact-input',
+                'source': {
+                    'type': 'ProjectFolder',
+                    'path': 'some/path'
+                }
+            },
+            {
+                'type': 'JobArgument',
+                'name': 'optional-parameter-input',
+                'value': 'some-default-value'
+            },
+        ]]
+    })
+
+    assert job == expected_job

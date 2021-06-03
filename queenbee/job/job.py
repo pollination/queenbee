@@ -57,6 +57,27 @@ class Job(BaseModel):
 
         return v
 
+    def populate_default_arguments(self, inputs: List[DAGInputs]):
+        for recipe_input in inputs:
+            for combination in self.arguments:
+                found_argument = False
+                for argument in combination:
+                    if argument.name == recipe_input.name:
+                        found_argument = True
+
+                if not found_argument and not recipe_input.required:
+                    if recipe_input.is_artifact:
+                        argument = JobPathArgument(
+                            name=recipe_input.name,
+                            source=recipe_input.default,
+                        )
+                    else:
+                        argument = JobArgument(
+                            name=recipe_input.name,
+                            value=recipe_input.default,
+                        )
+                    combination.append(argument)
+
     def validate_arguments(self, inputs: List[DAGInputs]):
         errors = []
         for i, arg in enumerate(self.arguments):
@@ -180,8 +201,7 @@ class JobStatus(BaseModel):
         description='The count of runs that have failed'
     )
 
-    runs_cancelled: int =Field(
+    runs_cancelled: int = Field(
         0,
         description='The count of runs that have been cancelled'
     )
-
