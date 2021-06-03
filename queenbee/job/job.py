@@ -43,6 +43,16 @@ class Job(BaseModel):
         ' only and will not be used in the execution of the job.'
     )
 
+    @validator('arguments', each_item=True)
+    def check_duplicate_names(cls, v):
+        argument_names = []
+        for arg in v:
+            if arg.name in argument_names:
+                raise ValueError(f'duplicate argument name {arg.name}')
+            argument_names.append(arg.name)
+
+        return v
+
 
 class JobStatusEnum(str, Enum):
     """Enumaration of allowable status strings"""
