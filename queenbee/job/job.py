@@ -1,11 +1,15 @@
-from enum import Enum
-from typing import Dict, List, Generator
 from datetime import datetime
+from enum import Enum
+from typing import Dict, Generator, List, Tuple, Union
 
-from pydantic import Field, constr
+from pydantic import Field, constr, validator
+from pydantic.error_wrappers import ErrorWrapper, ValidationError
 
 from ..base.basemodel import BaseModel
-from ..io.inputs.job import JobArguments
+from ..io.inputs.dag import DAGInputs
+from ..io.inputs.job import JobArgument, JobArguments, JobPathArgument
+from ..recipe import Recipe
+
 
 class Job(BaseModel):
     """Queenbee Job.
@@ -52,6 +56,52 @@ class Job(BaseModel):
             argument_names.append(arg.name)
 
         return v
+
+    def validate_arguments(self, inputs: List[DAGInputs]):
+        errors = []
+        for i, arg in enumerate(self.arguments):
+            error_list = self._validate_argument_combination(arg, inputs)
+            errors.extend([
+                ErrorWrapper(error, ('arguments', i)) for error in error_list
+            ])
+        if len(errors) != 0:
+            raise ValidationError(errors, self.__class__)
+
+    def _validate_argument_combination(
+            self,
+            arguments: List[JobArguments],
+            inputs: List[DAGInputs],
+    ) -> List[ErrorWrapper]:
+        errors = []
+
+        for recipe_input in inputs:
+            found_argument = False
+            for argument in arguments:
+                if argument.name == recipe_input.name:
+                    found_argument = True
+                    try:
+                        self._check_argument_type(argument, recipe_input)
+                    except Exception as err:
+                        errors.append(err)
+
+            if recipe_input.required and not found_argument:
+                errors.append(ValueError(
+                    f'missing required argument {recipe_input.name}'))
+
+        return errors
+
+    @staticmethod
+    def _check_argument_type(argument: JobArguments, input: DAGInputs):
+        if input.is_artifact and not isinstance(argument, JobPathArgument):
+            raise ValueError(
+                f'invalid argument type for {input.name}, '
+                'should be "JobPathArgument"'
+            )
+        elif input.is_parameter and not isinstance(argument, JobArgument):
+            raise ValueError(
+                f'invalid argument type for {input.name}, '
+                'should be "JobArgument"'
+            )
 
 
 class JobStatusEnum(str, Enum):
