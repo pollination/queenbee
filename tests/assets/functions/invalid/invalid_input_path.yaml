@@ -1,0 +1,20 @@
+---
+type: Function
+name: split-grid-from-folder
+inputs:
+- type: FunctionFolderInput
+  annotations: {}
+  name: input-grid
+  description: Path to sensor grids folder.
+  default:
+  alias: []
+  required: true
+  spec:
+  path: "."
+outputs:
+- type: FunctionFolderOutput
+  name: output-folder
+  description: Output folder with new sensor grids.
+  path: "."
+  required: true
+command: honeybee-radiance grid split --folder . --log-file output/grids_info.json
