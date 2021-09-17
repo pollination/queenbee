@@ -101,7 +101,7 @@ class FunctionFolderInput(DAGFolderInput):
     @validator('path')
     def not_workspace_path(cls, v):
         if v == '.':
-            raise ValueError('Input path for a function file cannot be "."')
+            raise ValueError('Input path for a function file or folder cannot be "."')
         return v
 
     @property
