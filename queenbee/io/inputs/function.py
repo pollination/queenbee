@@ -5,7 +5,7 @@ For more information on plugins see plugin module.
 
 import os
 from typing import Union, List, Dict
-from pydantic import constr, Field
+from pydantic import constr, Field, validator
 from jsonschema import validate as json_schema_validator
 
 from .dag import DAGStringInput, DAGIntegerInput, DAGNumberInput, DAGBooleanInput, \
@@ -97,6 +97,12 @@ class FunctionFolderInput(DAGFolderInput):
         description='Path to the target location that the input will be copied to. '
         ' This path is relative to the working directory where the command is executed.'
     )
+
+    @validator('path')
+    def not_workspace_path(cls, v):
+        if v == '.':
+            raise ValueError('Input path for a function file or folder cannot be "."')
+        return v
 
     @property
     def referenced_values(self) -> Dict[str, List[str]]:
