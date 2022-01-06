@@ -3,7 +3,7 @@ coverage==5.5
 coveralls==2.2.0
 pytest==6.2.4
 pytest-cov==2.12.1
-attrs~=21.2.0
+attrs~=21.4.0
 Sphinx==4.1.2
 sphinx-bootstrap-theme==0.7.1
 sphinxcontrib-fulltoc==1.2.0
