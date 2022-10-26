@@ -39,6 +39,8 @@ class StatusType(str, Enum):
 
     Loop = 'Loop'
 
+    Container = 'Container'
+
     Unknown = 'Unknown'
 
 
