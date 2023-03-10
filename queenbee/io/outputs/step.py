@@ -124,6 +124,9 @@ def from_template(template: Union[DAGOutputs, FunctionOutputs], value: Any) -> S
 
     if template.is_artifact:
         template_dict['source'] = value
+        if 'path' not in template_dict:
+            # path is required for a step but is missing from a DAG output
+            template_dict['path'] = ''
     elif template.is_parameter:
         template_dict['value'] = value
 
