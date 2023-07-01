@@ -1,15 +1,21 @@
 """Queenbee Function class."""
+from enum import Enum
 from typing import List
-from pydantic import Field, validator, constr
+from pydantic import Field, validator, constr, root_validator, NoneStr
 
 from ..io.common import IOBase
 from ..io.inputs.function import FunctionInputs
 from ..io.outputs.function import FunctionOutputs
-from ..base.variable import validate_inputs_outputs_var_format, get_ref_variable
+from ..base.variable import get_ref_variable, validate_inputs_outputs_var_format
+
+
+class ScriptingLanguages(str, Enum):
+    """Supported Scripting Languages"""
+    Python = 'python'
 
 
 class Function(IOBase):
-    """A Function with a single command"""
+    """A Function with a single or a script."""
 
     type: constr(regex='^Function$') = 'Function'
 
@@ -34,13 +40,31 @@ class Function(IOBase):
         description='List of output arguments.'
     )
 
-    command: str = Field(
-        ...,
+    command: NoneStr = Field(
+        None,
         description=u'Full shell command for this function. Each function accepts only '
         'one command. The command will be executed as a shell command in plugin. '
         'For running several commands after each other use && between the commands '
         'or pipe data from one to another using |'
     )
+
+    language: ScriptingLanguages = Field(
+        ScriptingLanguages.Python,
+        description='Programming language of the script. Currently only Python is '
+        'supported.'
+    )
+
+    source: NoneStr = Field(
+        None,
+        description='Source contains the source code of the script to execute.'
+    )
+
+    @property
+    def is_script(self):
+        """Returns True if this Function is a script function."""
+        if self.source:
+            return True
+        return False
 
     @staticmethod
     def validate_referenced_values(input_names: List[str], variables: List):
@@ -75,9 +99,11 @@ class Function(IOBase):
             msg = f'Invalid referenced value(s) in function:\n{info}'
             raise ValueError(msg)
 
-    @validator('command')
+    @validator('command', 'source')
     def validate_command_refs(cls, v, values):
         """Validate referenced variables in the command"""
+        if not v:
+            return
 
         ref_var = get_ref_variable(v)
 
@@ -96,3 +122,17 @@ class Function(IOBase):
         )
 
         return v
+
+    @root_validator(skip_on_failure=True)
+    def check_either_source_or_command(cls, values):
+        """Validate either source or command is provided"""
+        command = values.get('command')
+        source = values.get('source')
+        if command or source:
+            return values
+
+        # validation failed
+        name = values.get('name')
+        raise ValueError(
+            f'Invalid Function: {name}. Either command or source must be provided.'
+        )
