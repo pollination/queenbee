@@ -4,13 +4,14 @@ The results are a combination of step inputs and outputs for a list of
 runs.
 """
 
-from typing import List, Dict, Union
+from typing import List, Union
 from ..io.inputs.step import StepStringInput, StepInputs
 from ..io.outputs.step import StepOutputs
 from .run import RunStatus
 
+
 class Results(List[Union[StepInputs, StepOutputs]]):
-    
+
     @classmethod
     def from_runs(cls, runs: List[RunStatus]) -> 'Results':
         res = []
@@ -38,5 +39,5 @@ class Results(List[Union[StepInputs, StepOutputs]]):
             row.extend(run.outputs)
 
             res.append(row)
-        
+
         return res

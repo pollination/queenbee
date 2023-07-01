@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import Dict, Generator, List, Tuple, Union
+from typing import Dict, List
 
 from pydantic import Field, constr, validator
 from pydantic.error_wrappers import ErrorWrapper, ValidationError
@@ -8,7 +8,6 @@ from pydantic.error_wrappers import ErrorWrapper, ValidationError
 from ..base.basemodel import BaseModel
 from ..io.inputs.dag import DAGInputs
 from ..io.inputs.job import JobArgument, JobArguments, JobPathArgument
-from ..recipe import Recipe
 
 
 class Job(BaseModel):
