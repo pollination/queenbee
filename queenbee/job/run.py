@@ -3,13 +3,10 @@
 A Run contains the status of an individual recipe being executed
 """
 from enum import Enum
-from datetime import datetime
 from pydantic import Field, constr
-from typing import List, Dict, Union
+from typing import List, Dict
 
-from ..base.basemodel import BaseModel
-from ..io.common import IOBase
-from ..io.inputs.step import StepStringInput, StepInputs
+from ..io.inputs.step import StepInputs
 from ..io.outputs.step import StepOutputs
 from .status import BaseStatus
 
@@ -59,7 +56,7 @@ class StepStatus(BaseStatus):
         'DAG task name but can be extended if the step is part of a loop for example. '
         'This name is unique within the boundary of the DAG/Job that generated it.'
     )
-    
+
     status: StepStatusEnum = Field(
         StepStatusEnum.unknown,
         description='The status of this step.'
