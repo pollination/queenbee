@@ -18,9 +18,8 @@ jobs:
           python-version: 3.7
       - name: install python dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r dev-requirements.txt
+          bash scripts/install-poetry.sh
+          poetry install
       - name: run tests
         run: python -m pytest --cov=queenbee tests/
       - name: run test coverage
@@ -46,13 +45,12 @@ jobs:
           node-version: 14.2.0
       - name: install python dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -U .
-          pip install -r dev-requirements.txt
+          bash scripts/install-poetry.sh
+          poetry install --extras cli
       - name: install semantic-release
         run: npm install @semantic-release/exec
       - name: generate queenbee schemas
-        run: python ./gen_schemas.py
+        run: python scripts/gen_schemas.py
       - name: run semantic release
         id: new_release
         run: |
@@ -79,8 +77,10 @@ jobs:
           python-version: 3.7
       - name: install dependencies
         run: |
-          pip install -U .
-          pip install -r dev-requirements.txt
+          bash scripts/install-poetry.sh
+          poetry install --extras cli
+      - name: build docs
+        run: |
           python gen_schemas.py --version ${{needs.deploy.outputs.tag}}
           sphinx-apidoc -f -e -d 4 -o ./docs/modules ./queenbee
           sphinx-build -b html ./docs ./docs/_build
