@@ -63,12 +63,12 @@ OpenAPI documentation for:
    git clone https://github.com/ladybug-tools/queenbee
    ```
 
-2. Install dependencies:
+2. Install dependencies using [poetry](https://python-poetry.org/):
 
    ```console
    cd queenbee
-   pip install -r dev-requirements.txt
-   pip install -r requirements.txt
+   poetry shell
+   poetry install --extras cli
    ```
 
 3. Run Tests:

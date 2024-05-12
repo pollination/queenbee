@@ -1,0 +1,55 @@
+[tool.poetry]
+name = "queenbee"
+version = "0.1.0"
+description = "Queenbee is a workflow language and a package manager for creating DAG workflows which empowers all workflow libraries in Ladybug Tools!"
+authors = ["Ladybug Tools <info@ladybug.tools>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/pollination/queenbee"
+repository = "https://github.com/pollination/queenbee"
+documentation = "https://pollination.github.io/queenbee/"
+classifiers = [
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+packages = [
+    { include = "queenbee" }
+]
+
+[tool.poetry.scripts]
+queenbee = 'queenbee.cli:main'
+
+
+[tool.poetry.dependencies]
+python = "^3.7"
+pydantic = "<2.0"
+pyyaml = ">=6.0"
+jsonschema = ">=4.17.3"
+
+[tool.poetry.extras]
+cli = ["click", "click_plugins"]
+
+[tool.poetry.group.dev.dependencies]
+pydantic-openapi-helper = "^0.2.11"
+coverage = ">=6"
+coveralls = ">=3"
+pytest = ">=6.2.4"
+pytest-cov = ">=2.12.1"
+setuptools = ">=65.5.1"
+
+[tool.poetry.group.docs.dependencies]
+sphinx = ">=5.3.0"
+sphinx-bootstrap-theme = "^0.8.1"
+sphinxcontrib-fulltoc = "^1.2.0"
+sphinxcontrib-websupport = ">=1.2.4"
+sphinx-click = ">=4.4.0"
+recommonmark = "^0.7.1"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"

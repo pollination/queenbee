@@ -24,3 +24,4 @@ docs/_static/schemas
 .dependencies
 build/
 hack.py
+dist/
