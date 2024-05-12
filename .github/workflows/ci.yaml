@@ -22,7 +22,7 @@ jobs:
           bash scripts/install-poetry.sh
           poetry install
       - name: run tests
-        run: python -m pytest --cov=queenbee tests/
+        run: poetry run pytest --cov=queenbee tests/
       - name: run test coverage
         run: |
           echo "Coveralls is no longer supported"
@@ -51,7 +51,7 @@ jobs:
       - name: install semantic-release
         run: npm install @semantic-release/exec
       - name: generate queenbee schemas
-        run: python scripts/gen_schemas.py
+        run: poetry run python3 scripts/gen_schemas.py
       - name: run semantic release
         id: new_release
         run: |
@@ -82,9 +82,9 @@ jobs:
           poetry install --extras cli
       - name: build docs
         run: |
-          python gen_schemas.py --version ${{needs.deploy.outputs.tag}}
-          sphinx-apidoc -f -e -d 4 -o ./docs/modules ./queenbee
-          sphinx-build -b html ./docs ./docs/_build
+          poetry run python3 scripts/gen_schemas.py --version ${{needs.deploy.outputs.tag}}
+          poetry run sphinx-apidoc -f -e -d 4 -o ./docs/modules ./queenbee
+          poetry run sphinx-build -b html ./docs ./docs/_build
       - name: deploy to github pages
         uses: peaceiris/actions-gh-pages@v3
         with:
