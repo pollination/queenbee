@@ -1,27 +1,27 @@
 """A module to generate OpenAPI and JSONSchemas."""
 
+import argparse
 import json
 import os
-import argparse
 
 from pkg_resources import get_distribution
-
 from pydantic_openapi_helper.core import get_openapi
 from pydantic_openapi_helper.inheritance import class_mapper
 
-from queenbee.repository import RepositoryIndex
 from queenbee.job import Job, JobStatus, RunStatus
-from queenbee.recipe import Recipe, RecipeInterface
 from queenbee.plugin import Plugin
+from queenbee.recipe import Recipe, RecipeInterface
+from queenbee.repository import RepositoryIndex
 
-folder = os.path.join(os.path.dirname(__file__), 'docs/_static/schemas')
+folder = os.path.join(os.path.dirname(__file__), '../docs/_static/schemas')
 if not os.path.isdir(folder):
     os.mkdir(folder)
 
 
 parser = argparse.ArgumentParser(description='Generate OpenAPI JSON schemas')
 
-parser.add_argument('--version', help='Set the version of the new OpenAPI Schema')
+parser.add_argument(
+    '--version', help='Set the version of the new OpenAPI Schema')
 
 args = parser.parse_args()
 
@@ -52,7 +52,8 @@ info = {
 with open(os.path.join(folder, 'job-openapi.json'), 'w') as out_file:
     json.dump(
         get_openapi(
-            base_object=[Job, JobStatus, RunStatus], title='Queenbee Job Schema',
+            base_object=[Job, JobStatus,
+                         RunStatus], title='Queenbee Job Schema',
             description='Schema documentation for Queenbee Jobs',
             version=VERSION
         ),
@@ -95,10 +96,13 @@ with open(os.path.join(folder, 'repository-openapi.json'), 'w') as out_file:
 
 
 with open(os.path.join(folder, 'job-schemas-combined.json'), 'w') as out_file:
+    from typing import List, Union
+
     from pydantic import BaseModel
+
     from queenbee.io.inputs.step import StepInputs
     from queenbee.io.outputs.step import StepOutputs
-    from typing import List, Union
+
     class JobSchemas(BaseModel):
         job: Job
         job_status: JobStatus
@@ -132,7 +136,8 @@ external_docs = {
     "url": "./queenbee_inheritance.json"
 }
 
-models = [Recipe, Plugin, Job, RepositoryIndex, RecipeInterface, JobStatus, RunStatus]
+models = [Recipe, Plugin, Job, RepositoryIndex,
+          RecipeInterface, JobStatus, RunStatus]
 openapi = get_openapi(
     models,
     title='Queenbee Schema',

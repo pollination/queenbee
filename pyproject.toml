@@ -21,12 +21,13 @@ packages = [
 [tool.poetry.scripts]
 queenbee = 'queenbee.cli:main'
 
-
 [tool.poetry.dependencies]
 python = "^3.7"
 pydantic = "<2.0"
 pyyaml = ">=6.0"
 jsonschema = ">=4.17.3"
+click = "^8.1.7"
+click-plugins = "^1.1.1"
 
 [tool.poetry.extras]
 cli = ["click", "click_plugins"]
