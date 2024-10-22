@@ -16,7 +16,7 @@ This sections walks through the basic management commands.
 
 1. Add a remote repository::
 
-    > queenbee repo add ladybug https://api.pollination.cloud/registries/ladybug-tools
+    > queenbee repo add ladybug https://api.pollination.solutions/registries/ladybug-tools
 
 2. Add a local repository. We will use the `local-queenbee-repo` from the previous section::
 
@@ -37,7 +37,7 @@ This sections walks through the basic management commands.
       {
         "name": "ladybug",
         "description": "The official Ladybug-Tools Queenbee repository",
-        "source": "https://api.pollination.cloud/registries/ladybug-tools",
+        "source": "https://api.pollination.solutions/registries/ladybug-tools",
         "plugin_count": 3,
         "recipe_count": 8
       }
@@ -60,7 +60,7 @@ This sections walks through the basic management commands.
               "energy"
             ],
             "maintainers": null,
-            "home": "https://app.pollination.cloud/plugins/ladybug-tools/honeybee-energy",
+            "home": "https://app.pollination.solutions/plugins/ladybug-tools/honeybee-energy",
             "sources": [
               "https://github.com/ladybug-tools/honeybee-energy"
             ],

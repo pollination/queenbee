@@ -17,7 +17,7 @@ class BaseAuth(BaseModel):
     domain: str = Field(
         ...,
         description='The host domain to authenticate to',
-        example='api.pollination.cloud'
+        example='api.pollination.solutions'
     )
 
     access_token: SecretStr = Field(

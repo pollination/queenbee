@@ -131,7 +131,7 @@ with the following snippet:
     hash: null
     alias: null
     tag: 0.5.0
-    source: https://api.pollination.cloud/registries/ladybug-tools
+    source: https://api.pollination.solutions/registries/ladybug-tools
 
 
 This will add a reference to the ``honeybee-radiance`` Plugin, version
