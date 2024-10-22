@@ -53,7 +53,7 @@ class Dependency(BaseModel):
         ...,
         description='URL to a repository where this resource can be found.',
         examples=[
-            'https://registry.pollination.cloud/ladybugbot',
+            'https://registry.pollination.solutions/ladybugbot',
             'https://some-random-user.github.io/registry'
         ]
     )

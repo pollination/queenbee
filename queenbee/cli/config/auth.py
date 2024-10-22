@@ -34,7 +34,7 @@ def add():
     '--domain',
     help='The domain to use this credential with',
     show_default=True,
-    default='api.pollination.cloud'
+    default='api.pollination.solutions'
 )
 def add_api_token(api_token, header_name, domain):
     """add an API token auth config"""
