@@ -1,7 +1,7 @@
 """Queenbee utility functions."""
 import hashlib
 import json
-from typing import List, Dict
+from typing import List, Dict, Any
 
 import yaml
 from pydantic import BaseModel as PydanticBaseModel
@@ -145,7 +145,7 @@ class BaseModel(BaseModelNoType):
 
     type: constr(regex='^BaseModel$') = 'BaseModel'
 
-    annotations: Dict[str, str] = Field(
+    annotations: Dict[str, Any] = Field(
         None,
         description='An optional dictionary to add annotations to inputs. These '
         'annotations will be used by the client side libraries.'
