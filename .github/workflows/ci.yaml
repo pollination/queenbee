@@ -35,15 +35,14 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/master' && github.repository_owner == 'pollination'
     steps:
-      - uses: actions/checkout@v2
-      - name: set up Python
-        uses: actions/setup-python@v2
+      - name: Checkout Current Branch
+        uses: actions/checkout@v3
         with:
-          python-version: 3.12
-      - name: set up node # we need node for for semantic release
-        uses: actions/setup-node@v2.1.2
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 14.2.0
+          node-version: 20.8.1
       - name: install python dependencies
         run: |
           bash scripts/install-poetry.sh
@@ -53,17 +52,20 @@ jobs:
       - name: generate queenbee schemas
         run: poetry run python3 scripts/gen_schemas.py
       - name: run semantic release
-        id: new_release
-        run: |
-          nextRelease="`npx semantic-release@^17.0.0 --dryRun | grep -oP 'Published release \K.*? ' || true`"
-          npx semantic-release@^17.0.0
-          echo "::set-output name=tag::$nextRelease"
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          semantic_version: 23.1.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_AUTHOR_NAME: ladybugbot
+          GIT_AUTHOR_EMAIL: ${{ secrets.POLLINATION_LADYBUGBOT_EMAIL }}
+          GIT_COMMITTER_NAME: ladybugbot
+          GIT_COMMITTER_EMAIL: ${{ secrets.POLLINATION_LADYBUGBOT_EMAIL }}
           PYPI_PASSWORD: ${{ secrets.POLLINATION_PYPI_PASSWORD }}
           PYPI_USERNAME: ${{ secrets.POLLINATION_PYPI_USERNAME }}
     outputs:
-      tag: ${{ steps.new_release.outputs.tag }}
+      tag: ${{ steps.semantic.outputs.new_release_version }}
 
   docs:
     name: Generate docs
