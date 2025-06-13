@@ -8,8 +8,7 @@ except ImportError:
     )
 
 import os
-from pkg_resources import iter_entry_points
-
+from importlib.metadata import entry_points
 from .context import Context
 from .plugin import main as plugin
 from .recipe import main as recipe
@@ -20,7 +19,7 @@ from .config import main as config
 MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 
 
-@with_plugins(iter_entry_points('queenbee.plugins'))
+@with_plugins(entry_points(group='queenbee.plugins'))
 @click.group(invoke_without_command=True)
 @click.version_option()
 @click.pass_context
