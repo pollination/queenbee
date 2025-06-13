@@ -9,7 +9,7 @@ homepage = "https://github.com/pollination/queenbee"
 repository = "https://github.com/pollination/queenbee"
 documentation = "https://pollination.github.io/queenbee/"
 classifiers = [
-    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: Implementation :: CPython",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent"
@@ -22,7 +22,7 @@ packages = [
 queenbee = 'queenbee.cli:main'
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10"
 pydantic = "<2.0"
 pyyaml = ">=6.0"
 jsonschema = ">=4.17.3"
