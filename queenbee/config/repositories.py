@@ -1,13 +1,13 @@
 import os
-from typing import Dict
-from pydantic import Field, validator, constr
+from typing import Dict, Literal
+from pydantic import Field, field_validator
 from ..base.basemodel import BaseModel
 from ..base.request import make_request, urljoin, get_uri
 
 
 class RepositoryReference(BaseModel):
 
-    type: constr(regex='^RepositoryReference$') = 'RepositoryReference'
+    type: Literal['RepositoryReference'] = 'RepositoryReference'
 
     name: str = Field(
         ...,
@@ -19,8 +19,9 @@ class RepositoryReference(BaseModel):
         description='The path to the repository'
     )
 
-    @validator('path')
-    def remote_or_local(cls, v):
+    @field_validator('path')
+    @classmethod
+    def remote_or_local(cls, v: str) -> str:
         """Format local uri as needed (ie: file:///)"""
         return get_uri(v)
 
@@ -41,7 +42,7 @@ class RepositoryReference(BaseModel):
 
         raw_bytes = res.read()
 
-        repo = RepositoryIndex.parse_raw(raw_bytes)
+        repo = RepositoryIndex.model_validate_json(raw_bytes)
 
         repo.metadata.name = self.name
         repo.metadata.source = self.path

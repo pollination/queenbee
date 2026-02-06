@@ -1,7 +1,8 @@
 """Input objects for Queenbee jobs."""
 from typing import Dict, List, Union, Any
+from typing import Literal
 
-from pydantic import Field, constr
+from pydantic import Field
 
 from ..artifact_source import HTTP, S3, ProjectFolder
 from ...base.basemodel import BaseModel
@@ -11,7 +12,7 @@ from ...base.parser import parse_file
 class JobArgument(BaseModel):
     """Job argument is an argument input for arguments which are not files or folders."""
 
-    type: constr(regex='^JobArgument$') = 'JobArgument'
+    type: Literal['JobArgument'] = 'JobArgument'
 
     name: str = Field(
         ...,
@@ -34,7 +35,7 @@ class JobArgument(BaseModel):
 
 
 class JobPathArgument(BaseModel):
-    type: constr(regex='^JobPathArgument$') = 'JobPathArgument'
+    type: Literal['JobPathArgument'] = 'JobPathArgument'
 
     name: str = Field(
         ...,
@@ -91,9 +92,9 @@ def load_job_arguments_from_dict(data: List[Dict]) -> List[JobArguments]:
                 f'JobArgument and JobPathArgument:\n{d}'
             )
         if arg_type == 'JobArgument':
-            arg = JobArgument.parse_obj(d)
+            arg = JobArgument.model_validate(d)
         elif arg_type == 'JobPathArgument':
-            arg = JobPathArgument.parse_obj(d)
+            arg = JobPathArgument.model_validate(d)
         else:
             raise ValueError(
                 f'Invalid type for Job argument: {arg_type}.'

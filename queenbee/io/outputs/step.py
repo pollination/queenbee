@@ -4,8 +4,8 @@ For more information on plugins see plugin module.
 """
 
 import json
-from typing import Union, List, Dict, Any
-from pydantic import constr, Field
+from typing import Union, List, Dict, Any, Literal
+from pydantic import Field
 
 from .function import FunctionStringOutput, FunctionIntegerOutput, \
     FunctionNumberOutput, FunctionBooleanOutput, FunctionFolderOutput, \
@@ -22,7 +22,7 @@ from ..artifact_source import HTTP, S3, ProjectFolder
 class StepStringOutput(FunctionStringOutput):
     """A String output."""
 
-    type: constr(regex='^StepStringOutput$') = 'StepStringOutput'
+    type: Literal['StepStringOutput'] = 'StepStringOutput'
 
     value: str
 
@@ -30,7 +30,7 @@ class StepStringOutput(FunctionStringOutput):
 class StepIntegerOutput(FunctionIntegerOutput):
     """An integer output."""
 
-    type: constr(regex='^StepIntegerOutput$') = 'StepIntegerOutput'
+    type: Literal['StepIntegerOutput'] = 'StepIntegerOutput'
 
     value: int
 
@@ -38,7 +38,7 @@ class StepIntegerOutput(FunctionIntegerOutput):
 class StepNumberOutput(FunctionNumberOutput):
     """A number output."""
 
-    type: constr(regex='^StepNumberOutput$') = 'StepNumberOutput'
+    type: Literal['StepNumberOutput'] = 'StepNumberOutput'
 
     value: float
 
@@ -46,14 +46,14 @@ class StepNumberOutput(FunctionNumberOutput):
 class StepBooleanOutput(FunctionBooleanOutput):
     """The boolean type matches only two special values: True and False."""
 
-    type: constr(regex='^StepBooleanOutput$') = 'StepBooleanOutput'
+    type: Literal['StepBooleanOutput'] = 'StepBooleanOutput'
 
     value: bool
 
 
 class StepFolderOutput(FunctionFolderOutput):
     """A folder output."""
-    type: constr(regex='^StepFolderOutput$') = 'StepFolderOutput'
+    type: Literal['StepFolderOutput'] = 'StepFolderOutput'
 
     source: Union[HTTP, S3, ProjectFolder] = Field(
         ...,
@@ -64,7 +64,7 @@ class StepFolderOutput(FunctionFolderOutput):
 class StepFileOutput(FunctionFileOutput):
     """A file output."""
 
-    type: constr(regex='^StepFileOutput$') = 'StepFileOutput'
+    type: Literal['StepFileOutput'] = 'StepFileOutput'
 
     source: Union[HTTP, S3, ProjectFolder] = Field(
         ...,
@@ -75,7 +75,7 @@ class StepFileOutput(FunctionFileOutput):
 class StepPathOutput(FunctionPathOutput):
     """A file or a folder output."""
 
-    type: constr(regex='^StepPathOutput$') = 'StepPathOutput'
+    type: Literal['StepPathOutput'] = 'StepPathOutput'
 
     source: Union[HTTP, S3, ProjectFolder] = Field(
         ...,
@@ -86,7 +86,7 @@ class StepPathOutput(FunctionPathOutput):
 class StepArrayOutput(FunctionArrayOutput):
     """A JSON array output."""
 
-    type: constr(regex='^StepArrayOutput$') = 'StepArrayOutput'
+    type: Literal['StepArrayOutput'] = 'StepArrayOutput'
 
     value: List
 
@@ -94,7 +94,7 @@ class StepArrayOutput(FunctionArrayOutput):
 class StepJSONObjectOutput(FunctionJSONObjectOutput):
     """A JSON object output."""
 
-    type: constr(regex='^StepJSONObjectOutput$') = 'StepJSONObjectOutput'
+    type: Literal['StepJSONObjectOutput'] = 'StepJSONObjectOutput'
 
     value: Dict
 
@@ -131,38 +131,38 @@ def from_template(template: Union[DAGOutputs, FunctionOutputs], value: Any) -> S
         template_dict['value'] = value
 
     if template.__class__ in [DAGStringOutput, FunctionStringOutput]:
-        return StepStringOutput.parse_obj(template_dict)
+        return StepStringOutput.model_validate(template_dict)
 
     if template.__class__ in [DAGIntegerOutput, FunctionIntegerOutput]:
         template_dict['value'] = int(float(template_dict['value']))
-        return StepIntegerOutput.parse_obj(template_dict)
+        return StepIntegerOutput.model_validate(template_dict)
 
     if template.__class__ in [DAGNumberOutput, FunctionNumberOutput]:
-        return StepNumberOutput.parse_obj(template_dict)
+        return StepNumberOutput.model_validate(template_dict)
 
     if template.__class__ in [DAGBooleanOutput, FunctionBooleanOutput]:
-        return StepBooleanOutput.parse_obj(template_dict)
+        return StepBooleanOutput.model_validate(template_dict)
 
     if template.__class__ in [DAGFolderOutput, FunctionFolderOutput]:
-        return StepFolderOutput.parse_obj(template_dict)
+        return StepFolderOutput.model_validate(template_dict)
 
     if template.__class__ in [DAGFileOutput, FunctionFileOutput]:
-        return StepFileOutput.parse_obj(template_dict)
+        return StepFileOutput.model_validate(template_dict)
 
     if template.__class__ in [DAGPathOutput, FunctionPathOutput]:
-        return StepPathOutput.parse_obj(template_dict)
+        return StepPathOutput.model_validate(template_dict)
 
     if template.__class__ in [DAGArrayOutput, FunctionArrayOutput]:
         if isinstance(template_dict['value'], str):
             template_dict['value'] = json.loads(template_dict['value'])
-        return StepArrayOutput.parse_obj(template_dict)
+        return StepArrayOutput.model_validate(template_dict)
 
     if template.__class__ in [DAGJSONObjectOutput, FunctionJSONObjectOutput]:
         if isinstance(template_dict['value'], str):
             template_dict['value'] = json.loads(template_dict['value'])
         try:
             # Try to parse JSON as a dict
-            return StepJSONObjectOutput.parse_obj(template_dict)
+            return StepJSONObjectOutput.model_validate(template_dict)
         except:
             # Try to parse JSON as an array
-            return StepArrayOutput.parse_obj(template_dict)
+            return StepArrayOutput.model_validate(template_dict)

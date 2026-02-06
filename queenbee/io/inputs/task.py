@@ -11,7 +11,8 @@ Task argument and return objects provide the interface to connect:
 """
 
 from typing import Union
-from pydantic import Field, constr
+from typing import Literal
+from pydantic import Field
 from ...base.basemodel import BaseModel
 from ..reference import InputReference, ItemReference, TaskReference, ValueReference, \
     InputFileReference, InputFolderReference, InputPathReference, \
@@ -22,7 +23,7 @@ from ..reference import InputReference, ItemReference, TaskReference, ValueRefer
 class TaskArgument(BaseModel):
     """Task argument for receiving inputs that are not files or folders."""
 
-    type: constr(regex='^TaskArgument$') = 'TaskArgument'
+    type: Literal['TaskArgument'] = 'TaskArgument'
 
     name: str = Field(
         ...,
@@ -47,7 +48,7 @@ class TaskArgument(BaseModel):
 
 
 class TaskPathArgument(BaseModel):
-    type: constr(regex='^TaskPathArgument$') = 'TaskPathArgument'
+    type: Literal['TaskPathArgument'] = 'TaskPathArgument'
 
     name: str = Field(
         ...,
@@ -66,7 +67,7 @@ class TaskPathArgument(BaseModel):
         alias='from'
     )
 
-    sub_path: str = Field(
+    sub_path: Union[str, None] = Field(
         None,
         description='A sub_path inside the path that is provided in the ``from`` field.'
         ' Use sub_path to only access part of the Path that is needed instead of'

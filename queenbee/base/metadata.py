@@ -6,22 +6,22 @@ The specification is designed based on openapi info object:
 https://swagger.io/specification/#infoObject
 """
 
-from typing import List
-from pydantic import Field, constr, AnyUrl
+from typing import List, Literal, Union
+from pydantic import Field, AnyUrl
 
 from .basemodel import BaseModel
 
 
 class Maintainer(BaseModel):
     """Maintainer information"""
-    type: constr(regex='^Maintainer$') = 'Maintainer'
+    type: Literal['Maintainer'] = 'Maintainer'
 
     name: str = Field(
         ...,
         description='The name of the author/maintainer person or organization.'
     )
 
-    email: str = Field(
+    email: Union[str, None] = Field(
         None,
         description='The email address of the author/maintainer person or organization.'
     )
@@ -29,14 +29,14 @@ class Maintainer(BaseModel):
 
 class License(BaseModel):
     """License information for the Package"""
-    type: constr(regex='^License$') = 'License'
+    type: Literal['License'] = 'License'
 
     name: str = Field(
         ...,
         description='The license name used for the package.'
     )
 
-    url: AnyUrl = Field(
+    url: Union[AnyUrl, None] = Field(
         None,
         description='A URL to the license used for the package.'
     )
@@ -44,7 +44,7 @@ class License(BaseModel):
 
 class MetaData(BaseModel):
     """Package metadata information."""
-    type: constr(regex='^MetaData$') = 'MetaData'
+    type: Literal['MetaData'] = 'MetaData'
 
     name: str = Field(
         ...,
@@ -56,47 +56,47 @@ class MetaData(BaseModel):
         description='The tag of the package'
     )
 
-    app_version: str = Field(
+    app_version: Union[str, None] = Field(
         None,
         description='The version of the application code underlying the manifest'
     )
 
-    keywords: List[str] = Field(
+    keywords: Union[List[str], None] = Field(
         None,
         description='A list of keywords to search the package by'
     )
 
-    maintainers: List[Maintainer] = Field(
+    maintainers: Union[List[Maintainer], None] = Field(
         None,
         description='A list of maintainers for the package'
     )
 
-    home: str = Field(
+    home: Union[str, None] = Field(
         None,
         description='The URL of this package\'s home page'
     )
 
-    sources: List[str] = Field(
+    sources: Union[List[str], None] = Field(
         None,
         description='A list of URLs to source code for this project'
     )
 
-    icon: str = Field(
+    icon: Union[str, None] = Field(
         None,
         description='A URL to an SVG or PNG image to be used as an icon'
     )
 
-    deprecated: bool = Field(
+    deprecated: Union[bool, None] = Field(
         None,
         description='Whether this package is deprecated'
     )
 
-    description: str = Field(
+    description: Union[str, None] = Field(
         None,
         description='A description of what this package does'
     )
 
-    license: License = Field(
+    license: Union[License, None] = Field(
         None,
         description='The license information.'
     )

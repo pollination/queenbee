@@ -74,7 +74,7 @@ def new(name, path):
     input_dict = parse_file(path)
     input_dict['metadata']['name'] = name
 
-    plugin = Plugin.parse_obj(input_dict)
+    plugin = Plugin.model_validate(input_dict)
 
     # Readme
     readme_string = f"""

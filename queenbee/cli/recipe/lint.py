@@ -42,7 +42,7 @@ def lint(path, dependency_update):
             config=ctx.obj.config
         )
         obj = br.to_dict()
-        BakedRecipe.parse_obj(obj)
+        BakedRecipe.model_validate(obj)
     except ValidationError as error:
         raise click.ClickException(error)
     except FileNotFoundError as error:

@@ -2,11 +2,12 @@
 
 from typing import Union, List
 
-from pydantic import constr, Field, validator
+from pydantic import Field, field_validator
 
 from ..common import ItemType, FromOutput
 from .alias import DAGAliasOutputs
 from ..reference import FileReference, FolderReference, TaskReference
+from typing import Literal
 
 
 class DAGGenericOutput(FromOutput):
@@ -16,18 +17,13 @@ class DAGGenericOutput(FromOutput):
     output that changes its type in different platforms because of returning different
     objects in handler.
     """
-    type: constr(regex='^DAGGenericOutput$') = 'DAGGenericOutput'
+    type: Literal['DAGGenericOutput'] = 'DAGGenericOutput'
 
     alias: List[DAGAliasOutputs] = Field(
-        None,
+        default_factory=list,
         description='A list of additional processes for loading this output on '
         'different platforms.'
     )
-
-    @validator('alias', always=True)
-    def create_empty_handler_list(cls, v):
-        return [] if v is None else v
-
 
 class _DAGArtifactOutput(DAGGenericOutput):
     """Base class for DAG artifact outputs.
@@ -47,7 +43,7 @@ class _DAGArtifactOutput(DAGGenericOutput):
 
 class DAGFileOutput(_DAGArtifactOutput):
     """DAG file output."""
-    type: constr(regex='^DAGFileOutput$') = 'DAGFileOutput'
+    type: Literal['DAGFileOutput'] = 'DAGFileOutput'
 
     from_: Union[TaskReference, FileReference] = Field(
         ...,
@@ -62,7 +58,7 @@ class DAGFileOutput(_DAGArtifactOutput):
 
 class DAGFolderOutput(_DAGArtifactOutput):
     """DAG folder output."""
-    type: constr(regex='^DAGFolderOutput$') = 'DAGFolderOutput'
+    type: Literal['DAGFolderOutput'] = 'DAGFolderOutput'
 
     from_: Union[TaskReference, FolderReference] = Field(
         ...,
@@ -77,7 +73,7 @@ class DAGFolderOutput(_DAGArtifactOutput):
 
 class DAGPathOutput(_DAGArtifactOutput):
     """DAG path output."""
-    type: constr(regex='^DAGPathOutput$') = 'DAGPathOutput'
+    type: Literal['DAGPathOutput'] = 'DAGPathOutput'
 
     from_: Union[TaskReference, FileReference, FolderReference] = Field(
         ...,
@@ -96,7 +92,7 @@ class DAGStringOutput(DAGFileOutput):
 
     This output loads the content from a file as a string.
     """
-    type: constr(regex='^DAGStringOutput$') = 'DAGStringOutput'
+    type: Literal['DAGStringOutput'] = 'DAGStringOutput'
 
     @property
     def is_artifact(self):
@@ -108,7 +104,7 @@ class DAGIntegerOutput(DAGStringOutput):
 
     This output loads the content from a file as an integer.
     """
-    type: constr(regex='^DAGIntegerOutput$') = 'DAGIntegerOutput'
+    type: Literal['DAGIntegerOutput'] = 'DAGIntegerOutput'
 
 
 class DAGNumberOutput(DAGStringOutput):
@@ -116,7 +112,7 @@ class DAGNumberOutput(DAGStringOutput):
 
     This output loads the content from a file as a floating number.
     """
-    type: constr(regex='^DAGNumberOutput$') = 'DAGNumberOutput'
+    type: Literal['DAGNumberOutput'] = 'DAGNumberOutput'
 
 
 class DAGBooleanOutput(DAGStringOutput):
@@ -124,7 +120,7 @@ class DAGBooleanOutput(DAGStringOutput):
 
     This output loads the content from a file as a boolean.
     """
-    type: constr(regex='^DAGBooleanOutput$') = 'DAGBooleanOutput'
+    type: Literal['DAGBooleanOutput'] = 'DAGBooleanOutput'
 
 
 class DAGArrayOutput(DAGStringOutput):
@@ -132,7 +128,7 @@ class DAGArrayOutput(DAGStringOutput):
 
     This output loads the content from a JSON file which must be a JSON Array.
     """
-    type: constr(regex='^DAGArrayOutput$') = 'DAGArrayOutput'
+    type: Literal['DAGArrayOutput'] = 'DAGArrayOutput'
 
     items_type: ItemType = Field(
         ItemType.String,
@@ -146,7 +142,7 @@ class DAGJSONObjectOutput(DAGStringOutput):
 
     This output loads the content from a file as a JSON object.
     """
-    type: constr(regex='^DAGJSONObjectOutput$') = 'DAGJSONObjectOutput'
+    type: Literal['DAGJSONObjectOutput'] = 'DAGJSONObjectOutput'
 
 
 DAGOutputs = Union[

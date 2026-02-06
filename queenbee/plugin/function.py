@@ -1,7 +1,7 @@
 """Queenbee Function class."""
 from enum import Enum
-from typing import List
-from pydantic import Field, validator, constr, root_validator, NoneStr
+from typing import List, Union, Literal, Annotated
+from pydantic import Field, field_validator, model_validator, ValidationInfo
 
 from ..io.common import IOBase
 from ..io.inputs.function import FunctionInputs
@@ -17,30 +17,30 @@ class ScriptingLanguages(str, Enum):
 class Function(IOBase):
     """A Function with a single or a script."""
 
-    type: constr(regex='^Function$') = 'Function'
+    type: Literal['Function'] = 'Function'
 
     name: str = Field(
         ...,
         description='Function name. Must be unique within a plugin.'
     )
 
-    description: str = Field(
+    description: Union[str, None] = Field(
         None,
         description='Function description. A short human readable description for'
         ' this function.'
     )
 
-    inputs: List[FunctionInputs] = Field(
-        None,
+    inputs: List[Annotated[FunctionInputs, Field(discriminator='type')]] = Field(
+        default_factory=list,
         description=u'Input arguments for this function.'
     )
 
-    outputs: List[FunctionOutputs] = Field(
-        None,
+    outputs: List[Annotated[FunctionOutputs, Field(discriminator='type')]] = Field(
+        default_factory=list,
         description='List of output arguments.'
     )
 
-    command: NoneStr = Field(
+    command: Union[str, None] = Field(
         None,
         description=u'Full shell command for this function. Each function accepts only '
         'one command. The command will be executed as a shell command in plugin. '
@@ -54,7 +54,7 @@ class Function(IOBase):
         'supported.'
     )
 
-    source: NoneStr = Field(
+    source: Union[str, None] = Field(
         None,
         description='Source contains the source code of the script to execute.'
     )
@@ -99,22 +99,23 @@ class Function(IOBase):
             msg = f'Invalid referenced value(s) in function:\n{info}'
             raise ValueError(msg)
 
-    @validator('command', 'source')
-    def validate_command_refs(cls, v, values):
+    @field_validator('command', 'source')
+    @classmethod
+    def validate_command_refs(cls, v: Union[str, None], info: ValidationInfo) -> Union[str, None]:
         """Validate referenced variables in the command"""
         if not v:
-            return
+            return v
 
         ref_var = get_ref_variable(v)
 
         # If inputs is not in values it has failed validation
         # and we cannot check/validate output refs
-        if 'inputs' not in values:
+        if 'inputs' not in info.data:
             return v
 
-        inputs = values.get('inputs')
+        inputs = info.data.get('inputs')
 
-        input_names = [param.name for param in inputs]
+        input_names = [param.name for param in inputs] if inputs else []
 
         cls.validate_referenced_values(
             input_names=input_names,
@@ -123,16 +124,16 @@ class Function(IOBase):
 
         return v
 
-    @root_validator(skip_on_failure=True)
-    def check_either_source_or_command(cls, values):
+    @model_validator(mode='after')
+    def check_either_source_or_command(self) -> 'Function':
         """Validate either source or command is provided"""
-        command = values.get('command')
-        source = values.get('source')
+        command = self.command
+        source = self.source
         if command or source:
-            return values
+            return self
 
         # validation failed
-        name = values.get('name')
+        name = self.name
         raise ValueError(
             f'Invalid Function: {name}. Either command or source must be provided.'
         )

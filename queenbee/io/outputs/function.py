@@ -3,15 +3,15 @@
 For more information on plugins see plugin module.
 """
 
-from typing import Union
-from pydantic import constr, Field
+from typing import Union, Literal
+from pydantic import Field
 
 from ..common import PathOutput, ItemType
 
 
 class FunctionFileOutput(PathOutput):
     """Function File output."""
-    type: constr(regex='^FunctionFileOutput$') = 'FunctionFileOutput'
+    type: Literal['FunctionFileOutput'] = 'FunctionFileOutput'
 
     path: str = Field(
         ...,
@@ -26,7 +26,7 @@ class FunctionFileOutput(PathOutput):
 
 class FunctionFolderOutput(PathOutput):
     """Function Folder output."""
-    type: constr(regex='^FunctionFolderOutput$') = 'FunctionFolderOutput'
+    type: Literal['FunctionFolderOutput'] = 'FunctionFolderOutput'
 
     path: str = Field(
         ...,
@@ -41,7 +41,7 @@ class FunctionFolderOutput(PathOutput):
 
 class FunctionPathOutput(PathOutput):
     """Function Path output."""
-    type: constr(regex='^FunctionPathOutput$') = 'FunctionPathOutput'
+    type: Literal['FunctionPathOutput'] = 'FunctionPathOutput'
 
     path: str = Field(
         ...,
@@ -59,7 +59,7 @@ class FunctionStringOutput(FunctionFileOutput):
 
     This output loads the content from a file as a string.
     """
-    type: constr(regex='^FunctionStringOutput$') = 'FunctionStringOutput'
+    type: Literal['FunctionStringOutput'] = 'FunctionStringOutput'
 
     @property
     def is_artifact(self):
@@ -71,7 +71,7 @@ class FunctionIntegerOutput(FunctionStringOutput):
 
     This output loads the content from a file as an integer.
     """
-    type: constr(regex='^FunctionIntegerOutput$') = 'FunctionIntegerOutput'
+    type: Literal['FunctionIntegerOutput'] = 'FunctionIntegerOutput'
 
 
 class FunctionNumberOutput(FunctionStringOutput):
@@ -79,7 +79,7 @@ class FunctionNumberOutput(FunctionStringOutput):
 
     This output loads the content from a file as a floating number.
     """
-    type: constr(regex='^FunctionNumberOutput$') = 'FunctionNumberOutput'
+    type: Literal['FunctionNumberOutput'] = 'FunctionNumberOutput'
 
 
 class FunctionBooleanOutput(FunctionStringOutput):
@@ -87,7 +87,7 @@ class FunctionBooleanOutput(FunctionStringOutput):
 
     This output loads the content from a file as a boolean.
     """
-    type: constr(regex='^FunctionBooleanOutput$') = 'FunctionBooleanOutput'
+    type: Literal['FunctionBooleanOutput'] = 'FunctionBooleanOutput'
 
 
 class FunctionArrayOutput(FunctionStringOutput):
@@ -95,7 +95,7 @@ class FunctionArrayOutput(FunctionStringOutput):
 
     This output loads the content from a JSON file which must be a JSON Array.
     """
-    type: constr(regex='^FunctionArrayOutput$') = 'FunctionArrayOutput'
+    type: Literal['FunctionArrayOutput'] = 'FunctionArrayOutput'
 
     items_type: ItemType = Field(
         ItemType.String,
@@ -109,7 +109,7 @@ class FunctionJSONObjectOutput(FunctionStringOutput):
 
     This output loads the content from a file as a JSON object.
     """
-    type: constr(regex='^FunctionJSONObjectOutput$') = 'FunctionJSONObjectOutput'
+    type: Literal['FunctionJSONObjectOutput'] = 'FunctionJSONObjectOutput'
 
 
 FunctionOutputs = Union[

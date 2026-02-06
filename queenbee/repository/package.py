@@ -4,9 +4,9 @@ import hashlib
 from io import BytesIO
 from datetime import datetime
 from tarfile import TarInfo, TarFile
-from typing import Union, Tuple, Dict
+from typing import Union, Tuple, Dict, Literal
 
-from pydantic import Field, constr
+from pydantic import Field
 
 from ..plugin import Plugin
 from ..recipe import Recipe, BakedRecipe
@@ -39,7 +39,7 @@ class PackageVersion(MetaData):
     A MetaData object to distinguish a specific package version within a repository
     index.
     """
-    type: constr(regex='^PackageVersion$') = 'PackageVersion'
+    type: Literal['PackageVersion'] = 'PackageVersion'
 
     url: str
 
@@ -47,7 +47,7 @@ class PackageVersion(MetaData):
 
     digest: str
 
-    slug: str = Field(
+    slug: Union[str, None] = Field(
         None,
         description='A slug of the repository name and the package name.'
     )
@@ -57,12 +57,12 @@ class PackageVersion(MetaData):
         description='The type of Queenbee package (ie: recipe or plugin)'
     )
 
-    readme: str = Field(
+    readme: Union[str, None] = Field(
         None,
         description='The README file string for this package'
     )
 
-    manifest: Union[Recipe, Plugin] = Field(
+    manifest: Union[Recipe, Plugin, None] = Field(
         None,
         description="The package Recipe or Plugin manifest"
     )
@@ -108,7 +108,7 @@ class PackageVersion(MetaData):
         if include_manifest:
             input_dict['manifest'] = resource.to_dict()
 
-        return cls.parse_obj(input_dict)
+        return cls.model_validate(input_dict)
 
     @classmethod
     def pack_tar(cls,
@@ -144,10 +144,10 @@ class PackageVersion(MetaData):
             fileobj=file_object,
         )
 
-        resource_bytes = bytes(resource.json(
-            by_alias=True, exclude_unset=False), 'utf-8')
-        resource_version_bytes = bytes(resource_version.json(
-            by_alias=True, exclude_unset=False), 'utf-8')
+        resource_bytes = bytes(resource.model_dump_json(
+            by_alias=True), 'utf-8')
+        resource_version_bytes = bytes(resource_version.model_dump_json(
+            by_alias=True), 'utf-8')
 
         add_to_tar(
             tar=tar,
@@ -205,7 +205,7 @@ class PackageVersion(MetaData):
                             f' {read_digest}'
                         )
             elif member.name == 'version.json':
-                version = cls.parse_raw(tar.extractfile(member).read())
+                version = cls.model_validate_json(tar.extractfile(member).read())
             elif member.name == 'README.md':
                 readme_string = tar.extractfile(member).read().decode('utf-8')
 
@@ -216,11 +216,11 @@ class PackageVersion(MetaData):
             )
 
         try:
-            manifest = Plugin.parse_raw(manifest_bytes)
+            manifest = Plugin.model_validate_json(manifest_bytes)
             version.kind = 'plugin'
         except Exception as error:
             try:
-                manifest = Recipe.parse_raw(manifest_bytes)
+                manifest = Recipe.model_validate_json(manifest_bytes)
                 version.kind = 'recipe'
             except Exception as error:
                 raise ValueError(

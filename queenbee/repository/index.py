@@ -1,8 +1,8 @@
 import os
-from typing import List, Union, Dict
+from typing import List, Union, Dict, Literal, Optional
 from datetime import datetime
-from pydantic import Field, root_validator, validator, constr
-
+from pydantic import Field, model_validator, field_validator
+ 
 from ..base.basemodel import BaseModel
 
 from ..plugin import Plugin
@@ -13,9 +13,9 @@ from .package import PackageVersion
 
 class RepositoryMetadata(BaseModel):
 
-    type: constr(regex='^RepositoryMetadata$') = 'RepositoryMetadata'
+    type: Literal['RepositoryMetadata'] = 'RepositoryMetadata'
 
-    name: str = Field(
+    name: Union[str, None] = Field(
         None,
         description='The name of the repository'
     )
@@ -25,7 +25,7 @@ class RepositoryMetadata(BaseModel):
         description='A short description of the repository'
     )
 
-    source: str = Field(
+    source: Union[str, None] = Field(
         None,
         description='The source path (url or local) to the repository'
     )
@@ -43,11 +43,11 @@ class RepositoryMetadata(BaseModel):
 
 class RepositoryIndex(BaseModel):
     """A searchable index for a Queenbee Plugin and Recipe repository"""
-    api_version: constr(regex='^v1beta1$') = Field('v1beta1', readOnly=True)
+    api_version: Literal['v1beta1'] = Field('v1beta1', json_schema_extra={'readOnly': True})
 
-    type: constr(regex='^RepositoryIndex$') = 'RepositoryIndex'
-
-    generated: datetime = Field(
+    type: Literal['RepositoryIndex'] = 'RepositoryIndex'
+ 
+    generated: Union[datetime, None] = Field(
         None,
         description='The timestamp at which the index was generated'
     )
@@ -69,47 +69,45 @@ class RepositoryIndex(BaseModel):
         ' list of recipesversions'
     )
 
-    @validator('plugin')
-    def set_plugin_type(cls, v):
+    @field_validator('plugin')
+    @classmethod
+    def set_plugin_type(cls, v: Dict[str, List[PackageVersion]]) -> Dict[str, List[PackageVersion]]:
         for _, package in v.items():
             for pv in package:
                 pv.kind = 'plugin'
 
         return v
 
-    @validator('recipe')
-    def set_recipe_type(cls, v):
+    @field_validator('recipe')
+    @classmethod
+    def set_recipe_type(cls, v: Dict[str, List[PackageVersion]]) -> Dict[str, List[PackageVersion]]:
         for _, package in v.items():
             for pv in package:
                 pv.kind = 'recipe'
 
         return v
 
-    @root_validator
-    def metadata_counts(cls, values):
-        values['metadata'].plugin_count = len(values.get('plugin'))
-        values['metadata'].recipe_count = len(values.get('recipe'))
+    @model_validator(mode='after')
+    def after_validation(self) -> 'RepositoryIndex':
+        self.metadata.plugin_count = len(self.plugin)
+        self.metadata.recipe_count = len(self.recipe)
 
-        return values
-
-    @root_validator
-    def check_slugs(cls, values):
-        name = values.get('metadata').name
+        name = self.metadata.name
 
         if name is None:
-            return values
+            return self
 
-        cls.add_slugs(
+        self.add_slugs(
             root=name,
-            packages=values.get('plugin')
+            packages=self.plugin
         )
 
-        cls.add_slugs(
+        self.add_slugs(
             root=name,
-            packages=values.get('recipe')
+            packages=self.recipe
         )
 
-        return values
+        return self
 
     @classmethod
     def from_folder(cls, folder_path):
@@ -124,7 +122,7 @@ class RepositoryIndex(BaseModel):
         Returns:
             RepositoryIndex -- An index generated from packages in the folder
         """
-        index = cls.parse_obj({})
+        index = cls.model_validate({})
 
         head, tail = os.path.split(folder_path)
 
@@ -134,7 +132,7 @@ class RepositoryIndex(BaseModel):
         recipes_folder = os.path.join(folder_path, 'recipes')
 
         if os.path.exists(plugins_folder):
-            for package in os.listdir(plugins_folder):
+            for package in sorted(os.listdir(plugins_folder)):
                 package_path = os.path.join(folder_path, 'plugins', package)
                 resource_version = PackageVersion.from_package(package_path)
                 resource_version.url = \
@@ -142,7 +140,7 @@ class RepositoryIndex(BaseModel):
                 index.index_plugin_version(resource_version)
 
         if os.path.exists(recipes_folder):
-            for package in os.listdir(recipes_folder):
+            for package in sorted(os.listdir(recipes_folder)):
                 package_path = os.path.join(folder_path, 'recipes', package)
                 resource_version = PackageVersion.from_package(package_path)
                 resource_version.url = \
@@ -355,7 +353,7 @@ class RepositoryIndex(BaseModel):
         Raises:
             ValueError: Resource version already exists or is invalid
         """
-        for package in os.listdir(os.path.join(folder_path, 'plugins')):
+        for package in sorted(os.listdir(os.path.join(folder_path, 'plugins'))):
             package_path = os.path.join(folder_path, 'plugins', package)
             resource_version = PackageVersion.from_package(package_path)
             resource_version.url = \
@@ -368,7 +366,7 @@ class RepositoryIndex(BaseModel):
                         continue
                 raise error
 
-        for package in os.listdir(os.path.join(folder_path, 'recipes')):
+        for package in sorted(os.listdir(os.path.join(folder_path, 'recipes'))):
             package_path = os.path.join(folder_path, 'recipes', package)
             resource_version = PackageVersion.from_package(package_path)
             resource_version.url = \
@@ -500,33 +498,24 @@ class RepositoryIndex(BaseModel):
 
         return packages
 
-    def json(self, *args, **kwargs):
+    def model_dump(self, *args, **kwargs):
         """Overwrite the BaseModel json method to exclude certain keys
 
         The objective is to remove the readme, license and manifest keys which are not
         needed in a serialized index object.
         """
-        exclude_keys = {
-            'plugin': {},
-            'recipe': {},
-        }
+        # remove keys that are not needed for serialization from kwargs if they exist
+        # to avoid unexpected keyword argument error in super().model_dump
+        kwargs.pop('exclude', None)
 
-        for key in self.plugin:
-            exclude_keys['plugin'][key] = {
-                '__all__': {
-                    'readme',
-                    'license',
-                    'manifest'
-                }
-            }
+        dump = super().model_dump(*args, **kwargs)
 
-        for key in self.recipe:
-            exclude_keys['recipe'][key] = {
-                '__all__': {
-                    'readme',
-                    'license',
-                    'manifest'
-                }
-            }
+        for key in ('plugin', 'recipe'):
+            if dump.get(key):
+                for _, package_list in dump[key].items():
+                    for package in package_list:
+                        package.pop('readme', None)
+                        package.pop('license', None)
+                        package.pop('manifest', None)
 
-        return super(RepositoryIndex, self).json(exclude=exclude_keys, *args, **kwargs)
+        return dump

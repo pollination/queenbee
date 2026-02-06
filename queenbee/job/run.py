@@ -3,8 +3,8 @@
 A Run contains the status of an individual recipe being executed
 """
 from enum import Enum
-from pydantic import Field, constr
-from typing import List, Dict
+from pydantic import Field
+from typing import List, Dict, Literal, Union
 
 from ..io.inputs.step import StepInputs
 from ..io.outputs.step import StepOutputs
@@ -43,7 +43,7 @@ class StatusType(str, Enum):
 
 class StepStatus(BaseStatus):
     """The Status of a Job Step"""
-    type: constr(regex='^StepStatus$') = 'StepStatus'
+    type: Literal['StepStatus'] = 'StepStatus'
 
     id: str = Field(
         ...,
@@ -73,7 +73,7 @@ class StepStatus(BaseStatus):
         description='The name of the template that spawned this step'
     )
 
-    command: str = Field(
+    command: Union[str, None] = Field(
         None,
         description='The command used to run this step. Only applies to Function steps.'
     )
@@ -88,7 +88,7 @@ class StepStatus(BaseStatus):
         description='The outputs produced by this step.'
     )
 
-    boundary_id: str = Field(
+    boundary_id: Union[str, None] = Field(
         None,
         description='This indicates the step ID of the associated template root \
             step in which this step belongs to. A DAG step will have the id of the \
@@ -131,9 +131,9 @@ class RunStatusEnum(str, Enum):
 
 class RunStatus(BaseStatus):
     """Job Status."""
-    api_version: constr(regex='^v1beta1$') = Field('v1beta1', readOnly=True)
+    api_version: Literal['v1beta1'] = Field('v1beta1', json_schema_extra={'readOnly': True})
 
-    type: constr(regex='^RunStatus$') = 'RunStatus'
+    type: Literal['RunStatus'] = 'RunStatus'
 
     id: str = Field(
         ...,
@@ -145,7 +145,7 @@ class RunStatus(BaseStatus):
         description='The ID of the job that generated this run.'
     )
 
-    entrypoint: str = Field(
+    entrypoint: Union[str, None] = Field(
         None,
         description='The ID of the first step in the run.'
     )

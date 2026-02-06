@@ -1,8 +1,8 @@
 """Objects to reference parameters, files and folders from inputs, tasks and items."""
 
 import re
-from typing import List, Union, Dict, Any
-from pydantic import Field, constr, validator
+from typing import List, Union, Dict, Any, Literal
+from pydantic import Field, field_validator
 
 from ..base.basemodel import BaseModel
 
@@ -22,7 +22,7 @@ def template_string(keys: List[str]) -> str:
 class _BaseReference(BaseModel):
     """A Base reference model."""
 
-    type: constr(regex='^_BaseReference$') = '_BaseReference'
+    type: Literal['_BaseReference'] = '_BaseReference'
 
     @property
     def source(self):
@@ -34,7 +34,7 @@ class _BaseReference(BaseModel):
 
 class FileReference(_BaseReference):
     """Reference to a file."""
-    type: constr(regex='^FileReference$') = 'FileReference'
+    type: Literal['FileReference'] = 'FileReference'
 
     path: str = Field(
         ...,
@@ -44,7 +44,7 @@ class FileReference(_BaseReference):
 
 class FolderReference(_BaseReference):
     """Reference to a folder."""
-    type: constr(regex='^FolderReference$') = 'FolderReference'
+    type: Literal['FolderReference'] = 'FolderReference'
 
     path: str = Field(
         ...,
@@ -65,7 +65,7 @@ class FolderReference(_BaseReference):
 class _TaskReferenceBase(_BaseReference):
     """A Task Reference"""
 
-    type: constr(regex='^_TaskReferenceBase$') = '_TaskReferenceBase'
+    type: Literal['_TaskReferenceBase'] = '_TaskReferenceBase'
 
     name: str = Field(
         ...,
@@ -92,7 +92,7 @@ class _TaskReferenceBase(_BaseReference):
 class TaskFileReference(_TaskReferenceBase):
     """A reference to a file that is generated in a task."""
 
-    type: constr(regex='^TaskFileReference$') = 'TaskFileReference'
+    type: Literal['TaskFileReference'] = 'TaskFileReference'
 
     @property
     def source(self):
@@ -102,7 +102,7 @@ class TaskFileReference(_TaskReferenceBase):
 class TaskFolderReference(_TaskReferenceBase):
     """A reference to a folder that is generated in a task."""
 
-    type: constr(regex='^TaskFolderReference$') = 'TaskFolderReference'
+    type: Literal['TaskFolderReference'] = 'TaskFolderReference'
 
     @property
     def source(self):
@@ -112,7 +112,7 @@ class TaskFolderReference(_TaskReferenceBase):
 class TaskPathReference(_TaskReferenceBase):
     """A reference to a file or folder that is generated in a task."""
 
-    type: constr(regex='^TaskPathReference$') = 'TaskPathReference'
+    type: Literal['TaskPathReference'] = 'TaskPathReference'
 
     @property
     def source(self):
@@ -122,7 +122,7 @@ class TaskPathReference(_TaskReferenceBase):
 class TaskReference(_TaskReferenceBase):
     """A Task reference for parameters other than files or folders."""
 
-    type: constr(regex='^TaskReference$') = 'TaskReference'
+    type: Literal['TaskReference'] = 'TaskReference'
 
     @property
     def source(self):
@@ -132,7 +132,7 @@ class TaskReference(_TaskReferenceBase):
 class _InputReferenceBase(_BaseReference):
     """An input reference."""
 
-    type: constr(regex='^_InputReferenceBase$') = '_InputReferenceBase'
+    type: Literal['_InputReferenceBase'] = '_InputReferenceBase'
 
     variable: str = Field(
         ...,
@@ -156,7 +156,7 @@ class InputReference(_InputReferenceBase):
     InputPathReference instead.
     """
 
-    type: constr(regex='^InputReference$') = 'InputReference'
+    type: Literal['InputReference'] = 'InputReference'
 
     @property
     def source(self):
@@ -166,7 +166,7 @@ class InputReference(_InputReferenceBase):
 class InputFileReference(_InputReferenceBase):
     """An input file reference"""
 
-    type: constr(regex='^InputFileReference$') = 'InputFileReference'
+    type: Literal['InputFileReference'] = 'InputFileReference'
 
     @property
     def source(self):
@@ -176,7 +176,7 @@ class InputFileReference(_InputReferenceBase):
 class InputFolderReference(_InputReferenceBase):
     """An input folder reference"""
 
-    type: constr(regex='^InputFolderReference$') = 'InputFolderReference'
+    type: Literal['InputFolderReference'] = 'InputFolderReference'
 
     @property
     def source(self):
@@ -186,7 +186,7 @@ class InputFolderReference(_InputReferenceBase):
 class InputPathReference(_InputReferenceBase):
     """An input file or folder reference"""
 
-    type: constr(regex='^InputPathReference$') = 'InputPathReference'
+    type: Literal['InputPathReference'] = 'InputPathReference'
 
     @property
     def source(self):
@@ -196,7 +196,7 @@ class InputPathReference(_InputReferenceBase):
 class ItemReference(_BaseReference):
     """An Item Reference."""
 
-    type: constr(regex='^ItemReference$') = 'ItemReference'
+    type: Literal['ItemReference'] = 'ItemReference'
 
     variable: str = Field(
         None,
@@ -221,7 +221,7 @@ class ItemReference(_BaseReference):
 class ValueReference(_BaseReference):
     """A reference to a fixed value."""
 
-    type: constr(regex='^ValueReference$') = 'ValueReference'
+    type: Literal['ValueReference'] = 'ValueReference'
 
     value: Any = Field(
         ...,
@@ -232,7 +232,7 @@ class ValueReference(_BaseReference):
 class ValueListReference(_BaseReference):
     """A reference to a fixed value."""
 
-    type: constr(regex='^ValueListReference$') = 'ValueListReference'
+    type: Literal['ValueListReference'] = 'ValueListReference'
 
     # TODO: Add validation for fixed value reference types.
     value: List[Any] = Field(
@@ -240,8 +240,9 @@ class ValueListReference(_BaseReference):
         description='A fixed value for this reference.'
     )
 
-    @validator('value')
-    def check_value(cls, v):
+    @field_validator('value')
+    @classmethod
+    def check_value(cls, v: List[Any]) -> List[Any]:
         if v == []:
             raise ValueError(
                 'ValueListReference must be a non-empty list or null')
@@ -251,7 +252,7 @@ class ValueListReference(_BaseReference):
 class ValueFileReference(_BaseReference):
     """A reference to a fixed file."""
 
-    type: constr(regex='^ValueFileReference$') = 'ValueFileReference'
+    type: Literal['ValueFileReference'] = 'ValueFileReference'
 
     path: str = Field(
         ...,
@@ -262,7 +263,7 @@ class ValueFileReference(_BaseReference):
 class ValueFolderReference(ValueFileReference):
     """A reference to a fixed folder."""
 
-    type: constr(regex='^ValueFolderReference$') = 'ValueFolderReference'
+    type: Literal['ValueFolderReference'] = 'ValueFolderReference'
 
 
 def references_from_string(string: str) -> List[

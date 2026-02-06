@@ -23,7 +23,7 @@ queenbee = 'queenbee.cli:main'
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pydantic = "<2.0"
+pydantic = "^2.0"
 pyyaml = ">=6.0"
 jsonschema = ">=4.17.3"
 click = "^8.1.7"
@@ -33,7 +33,7 @@ click-plugins = "^1.1.1"
 cli = ["click", "click_plugins"]
 
 [tool.poetry.group.dev.dependencies]
-pydantic-openapi-helper = "^0.2.11"
+pydantic-openapi-helper = "^1.0.2"
 coverage = ">=6"
 coveralls = ">=3"
 pytest = ">=6.2.4"

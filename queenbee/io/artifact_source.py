@@ -3,8 +3,8 @@
 ArtifactSource is a configuration to a source system to acquire artifacts from.
 
 """
-from typing import Dict, List
-from pydantic import Field, constr
+from typing import Dict, List, Literal, Any
+from pydantic import Field
 
 from ..base.basemodel import BaseModel
 from ..io.reference import references_from_string
@@ -15,14 +15,14 @@ class _ArtifactSource(BaseModel):
 
     An Artifact Source System.
     """
-    type: constr(regex='^_ArtifactSource$') = '_ArtifactSource'
+    type: Literal['_ArtifactSource'] = '_ArtifactSource'
 
     @staticmethod
-    def _referenced_values(values: list = []) -> Dict[str, List[str]]:
+    def _referenced_values(values: List[Any] = None) -> Dict[str, List[str]]:
         """Get referenced variables if any"""
         ref_values = {}
 
-        if values == []:
+        if values is None:
             return ref_values
 
         for value in values:
@@ -47,7 +47,7 @@ class ProjectFolder(_ArtifactSource):
     context of a workflow run on Pollination this folder will correspond to a Project
     scoped folder.
     """
-    type: constr(regex='^ProjectFolder$') = 'ProjectFolder'
+    type: Literal['ProjectFolder'] = 'ProjectFolder'
 
     path: str = Field(
         None,
@@ -72,7 +72,7 @@ class HTTP(_ArtifactSource):
     A web HTTP to an FTP server or an API for example.
     """
 
-    type: constr(regex='^HTTP$') = 'HTTP'
+    type: Literal['HTTP'] = 'HTTP'
 
     url: str = Field(
         ...,
@@ -92,7 +92,7 @@ class S3(_ArtifactSource):
     An S3 bucket artifact Source.
     """
 
-    type: constr(regex='^S3$') = 'S3'
+    type: Literal['S3'] = 'S3'
 
     key: str = Field(
         ...,

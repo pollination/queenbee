@@ -5,7 +5,8 @@ For more information on plugins see plugin module.
 
 import os
 from typing import Union, List, Dict
-from pydantic import constr, Field, validator
+from typing import Literal
+from pydantic import Field, field_validator
 from jsonschema import validate as json_schema_validator
 
 from .dag import DAGStringInput, DAGIntegerInput, DAGNumberInput, DAGBooleanInput, \
@@ -30,7 +31,7 @@ class FunctionStringInput(DAGStringInput):
 
     """
 
-    type: constr(regex='^FunctionStringInput$') = 'FunctionStringInput'
+    type: Literal['FunctionStringInput'] = 'FunctionStringInput'
 
 
 class FunctionIntegerInput(DAGIntegerInput):
@@ -42,7 +43,7 @@ class FunctionIntegerInput(DAGIntegerInput):
     for more information.
 
     """
-    type: constr(regex='^FunctionIntegerInput$') = 'FunctionIntegerInput'
+    type: Literal['FunctionIntegerInput'] = 'FunctionIntegerInput'
 
 
 class FunctionNumberInput(DAGNumberInput):
@@ -53,7 +54,7 @@ class FunctionNumberInput(DAGNumberInput):
     See http://json-schema.org/understanding-json-schema/reference/numeric.html#numeric
     for more information.
     """
-    type: constr(regex='^FunctionNumberInput$') = 'FunctionNumberInput'
+    type: Literal['FunctionNumberInput'] = 'FunctionNumberInput'
 
 
 class FunctionBooleanInput(DAGBooleanInput):
@@ -66,7 +67,7 @@ class FunctionBooleanInput(DAGBooleanInput):
     See http://json-schema.org/understanding-json-schema/reference/boolean.html for more
     information.
     """
-    type: constr(regex='^FunctionBooleanInput$') = 'FunctionBooleanInput'
+    type: Literal['FunctionBooleanInput'] = 'FunctionBooleanInput'
 
 
 class FunctionFolderInput(DAGFolderInput):
@@ -87,7 +88,7 @@ class FunctionFolderInput(DAGFolderInput):
             "maxLength": 50,
         }
     """
-    type: constr(regex='^FunctionFolderInput$') = 'FunctionFolderInput'
+    type: Literal['FunctionFolderInput'] = 'FunctionFolderInput'
 
     # TODO: Change this path to target_path and the one for output to source_path
     # for this iteration I'm keeping the changes as minimum as possible to break as
@@ -98,8 +99,9 @@ class FunctionFolderInput(DAGFolderInput):
         ' This path is relative to the working directory where the command is executed.'
     )
 
-    @validator('path')
-    def not_workspace_path(cls, v):
+    @field_validator('path')
+    @classmethod
+    def not_workspace_path(cls, v: str) -> str:
         if v == '.':
             raise ValueError('Input path for a function file or folder cannot be "."')
         return v
@@ -137,9 +139,9 @@ class FunctionFileInput(FunctionFolderInput):
         }
 
     """
-    type: constr(regex='^FunctionFileInput$') = 'FunctionFileInput'
+    type: Literal['FunctionFileInput'] = 'FunctionFileInput'
 
-    extensions: List[str] = Field(
+    extensions: Union[List[str], None] = Field(
         None,
         description='Optional list of extensions for file. The check for extension is '
         'case-insensitive.'
@@ -185,7 +187,7 @@ class FunctionPathInput(FunctionFileInput):
         }
 
     """
-    type: constr(regex='^FunctionPathInput$') = 'FunctionPathInput'
+    type: Literal['FunctionPathInput'] = 'FunctionPathInput'
 
     def validate_spec(self, value):
         """Validate an input value against specification.
@@ -213,7 +215,7 @@ class FunctionArrayInput(DAGArrayInput):
     See http://json-schema.org/understanding-json-schema/reference/array.html for
     more information.
     """
-    type: constr(regex='^FunctionArrayInput$') = 'FunctionArrayInput'
+    type: Literal['FunctionArrayInput'] = 'FunctionArrayInput'
 
 
 class FunctionJSONObjectInput(DAGJSONObjectInput):
@@ -226,7 +228,7 @@ class FunctionJSONObjectInput(DAGJSONObjectInput):
     See http://json-schema.org/understanding-json-schema/reference/object.html for
     more information.
     """
-    type: constr(regex='^FunctionJSONObjectInput$') = 'FunctionJSONObjectInput'
+    type: Literal['FunctionJSONObjectInput'] = 'FunctionJSONObjectInput'
 
 
 FunctionInputs = Union[

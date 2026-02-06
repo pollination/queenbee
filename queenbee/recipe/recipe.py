@@ -5,11 +5,10 @@ end steps for the recipe.
 """
 import os
 import shutil
-import json
-from typing import List, Union, Dict
+from typing import List, Union, Dict, Literal
 
 import yaml
-from pydantic import Field, validator, root_validator, constr
+from pydantic import Field, field_validator, model_validator, ValidationInfo
 
 from ..base.basemodel import BaseModel
 from ..base.metadata import MetaData
@@ -25,7 +24,7 @@ from .dependency import Dependency, DependencyKind
 
 class TemplateFunction(Function):
     """Function template."""
-    type: constr(regex='^TemplateFunction$') = 'TemplateFunction'
+    type: Literal['TemplateFunction'] = 'TemplateFunction'
 
     config: PluginConfig = Field(
         ...,
@@ -49,23 +48,23 @@ class TemplateFunction(Function):
             input_dict['type'] = 'TemplateFunction'
             input_dict['name'] = f'{plugin.__hash__}/{function.name}'
             input_dict['config'] = plugin.config.to_dict()
-            functions.append(cls.parse_obj(input_dict))
+            functions.append(cls.model_validate(input_dict))
 
         return functions
 
 
 class Recipe(BaseModel):
     """A Queenbee Recipe"""
-    api_version: constr(regex='^v1beta1$') = Field('v1beta1', readOnly=True)
+    api_version: Literal['v1beta1'] = Field('v1beta1', json_schema_extra={'readOnly': True})
 
-    type: constr(regex='^Recipe$') = 'Recipe'
+    type: Literal['Recipe'] = 'Recipe'
 
-    metadata: MetaData = Field(
+    metadata: Union[MetaData, None] = Field(
         None,
         description='Recipe metadata information.'
     )
 
-    dependencies: List[Dependency] = Field(
+    dependencies: Union[List[Dependency], None] = Field(
         None,
         description='A list of plugins and other recipes this recipe depends on.'
     )
@@ -118,18 +117,21 @@ class Recipe(BaseModel):
 
         flow = []
 
-        for dag_path in os.listdir(flow_path):
-
-            with open(os.path.join(flow_path, dag_path), 'r') as f:
+        dag_files = sorted(os.listdir(flow_path))
+        for f_name in dag_files:
+            with open(os.path.join(flow_path, f_name), 'r') as f:
                 flow.append(yaml.load(f, yaml.FullLoader))
 
         recipe['flow'] = flow
 
-        return cls.parse_obj(recipe)
+        return cls.model_validate(recipe)
 
-    @validator('flow', allow_reuse=True)
-    def check_entrypoint(cls, v):
+    @field_validator('flow')
+    @classmethod
+    def check_entrypoint(cls, v: List[DAG]) -> List[DAG]:
         """Check the `main` DAG exists in the flow"""
+        if v is None:
+            return v
         for dag in v:
             if dag.name == 'main':
                 return v
@@ -138,40 +140,41 @@ class Recipe(BaseModel):
 
         raise ValueError('No DAG with name "main" found in flow')
 
-    @validator('flow', allow_reuse=True)
-    def sort_list(cls, v):
+    @field_validator('flow')
+    @classmethod
+    def sort_list(cls, v: List[DAG]) -> List[DAG]:
         """Sort the list of DAGs by name"""
+        if v is None:
+            return v
         v.sort(key=lambda x: x.name)
         return v
 
-    @validator('flow', allow_reuse=True)
-    def check_dag_names(cls, v, values):
+    @field_validator('flow')
+    @classmethod
+    def check_dag_names(cls, v: List[DAG], info: ValidationInfo) -> List[DAG]:
         """Check DAG names do not overlap with dependency names"""
-        op_names = [dep.ref_name for dep in values.get('dependencies')]
+        op_names = [dep.ref_name for dep in info.data.get('dependencies', [])]
 
         for dag in v:
             assert dag.name not in op_names, \
-                ValueError(
-                    f'DAG name {dag.name} cannot be used because a recipe dependency'
-                    f' already uses it'
-                )
+                f'DAG name {dag.name} cannot be used because a recipe dependency' \
+                f' already uses it'
 
         return v
 
-    @validator('flow', allow_reuse=True)
-    def check_template_dependency_names(cls, v, values):
+    @field_validator('flow')
+    @classmethod
+    def check_template_dependency_names(cls, v: List[DAG], info: ValidationInfo) -> List[DAG]:
         """Check all DAG template names exist in dependencies or other DAGs"""
-        op_names = [dep.ref_name for dep in values.get('dependencies')]
-        op_names.extend([dag.name for dag in v])
+        op_names = [dep.ref_name for dep in info.data.get('dependencies', [])]
+        op_names.extend([dag.name for dag in v or []])
 
         for dag in v:
             for template in dag.templates:
                 plugin = template.split('/')[0]
                 assert plugin in op_names, \
-                    ValueError(
-                        f'Cannot use template {template} from DAG {dag.name} because no'
-                        f' dependency or other DAG matching that name was found.'
-                    )
+                    f'Cannot use template {template} from DAG {dag.name} because no' \
+                    f' dependency or other DAG matching that name was found.'
 
         return v
 
@@ -380,7 +383,7 @@ class BakedRecipe(Recipe):
     A Baked Recipe contains all the templates referred to in the DAG within a templates
     list.
     """
-    type: constr(regex='^BakedRecipe$') = 'BakedRecipe'
+    type: Literal['BakedRecipe'] = 'BakedRecipe'
 
     digest: str
 
@@ -407,7 +410,7 @@ class BakedRecipe(Recipe):
             BakedRecipe -- A baked recipe
         """
 
-        recipe = recipe.copy(deep=True)
+        recipe = recipe.model_copy(deep=True)
 
         digest = recipe.__hash__
 
@@ -451,7 +454,7 @@ class BakedRecipe(Recipe):
         input_dict['templates'] = [template.to_dict()
                                    for template in templates]
 
-        return cls.parse_obj(input_dict)
+        return cls.model_validate(input_dict)
 
     @classmethod
     def from_folder(cls, folder_path: str, refresh_deps: bool = True, config: Config = Config()):
@@ -545,7 +548,7 @@ class BakedRecipe(Recipe):
         input_dict['templates'] = [template.to_dict()
                                    for template in templates]
 
-        return cls.parse_obj(input_dict)
+        return cls.model_validate(input_dict)
 
     @classmethod
     def replace_template_refs(
@@ -622,16 +625,20 @@ class BakedRecipe(Recipe):
 
         return dags
 
-    @validator('flow', allow_reuse=True)
-    def check_template_dependency_names(cls, v, values):
+    @field_validator('flow')
+    @classmethod
+    def check_template_dependency_names(cls, v: List[DAG], info: ValidationInfo) -> List[DAG]:
         """Overwrite test function from inherited class"""
         return v
 
-    @validator('templates')
-    def remove_duplicates(cls, v):
+    @field_validator('templates')
+    @classmethod
+    def remove_duplicates(cls, v: List[Union[TemplateFunction, DAG]]) -> List[Union[TemplateFunction, DAG]]:
         """Remove duplicated templates by name"""
         temp_names = []
         templates = []
+        if v is None:
+            return templates
         for template in v:
             if template.name not in temp_names:
                 temp_names.append(template.name)
@@ -639,20 +646,20 @@ class BakedRecipe(Recipe):
 
         return templates
 
-    @root_validator
-    def check_inputs(cls, values):
+    @model_validator(mode='after')
+    def check_inputs(self):
         """Check DAG Task inputs match template inputs"""
-        flow = values.get('flow')
-        templates = values.get('templates')
+        flow = self.flow
+        templates = self.templates
 
         all_templates = templates + flow
 
         for dag in flow:
             for task in dag.tasks:
-                template = cls.template_by_name(all_templates, task.template)
+                template = self.template_by_name(all_templates, task.template)
                 task.check_template(template)
 
-        return values
+        return self
 
     @property
     def root_dag(self) -> DAG:
@@ -687,9 +694,9 @@ class RecipeInterface(BaseModel):
     Recipe information only includes metadata, source, inputs and outputs of a Recipe.
     This object is useful for creating user interface for Recipes.
     """
-    api_version: constr(regex='^v1beta1$') = Field('v1beta1', readOnly=True)
+    api_version: Literal['v1beta1'] = Field('v1beta1', json_schema_extra={'readOnly': True})
 
-    type: constr(regex='^RecipeInterface$') = 'RecipeInterface'
+    type: Literal['RecipeInterface'] = 'RecipeInterface'
 
     metadata: MetaData = Field(
         ...,
@@ -711,9 +718,10 @@ class RecipeInterface(BaseModel):
         description='A list of recipe outputs.'
     )
 
-    @validator('inputs', 'outputs')
-    def create_empty_list(cls, v):
-        return [] if not v else v
+    @field_validator('inputs', 'outputs', mode='before')
+    @classmethod
+    def create_empty_list(cls, v: list) -> list:
+        return [] if v is None else v
 
     @classmethod
     def from_recipe(cls, recipe: Union[Recipe, BakedRecipe], source: str = None):

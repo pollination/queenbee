@@ -1,11 +1,11 @@
 """Queenbee utility functions."""
 import hashlib
 import json
-from typing import List, Dict, Any
+from typing import List, Union, Dict, Any
 
 import yaml
 from pydantic import BaseModel as PydanticBaseModel
-from pydantic import validator, Field, constr
+from pydantic import Field, field_validator, ValidationError
 
 from .parser import parse_file
 from .variable import get_ref_variable
@@ -30,27 +30,30 @@ class BaseModelNoType(PydanticBaseModel):
     extensions.
     """
 
-    def yaml(self, exclude_unset=False, **kwargs):
+    def yaml(self, exclude_defaults: bool = False, exclude_none: bool = False, **kwargs):
         """Get a YAML string from the model
 
         Keyword Arguments:
-            exclude_unset {bool} -- Boolean toggle to add or remove any unset/None values
-            (default: {False})
+            exclude_defaults {bool} -- Whether to exclude fields that are set to their
+            default values. (default: {False})
 
         Returns:
             str -- A yaml string representing the model
         """
+        data = self.model_dump(
+            mode='json', by_alias=True, exclude_defaults=exclude_defaults, exclude_none=exclude_none, **kwargs
+        )
         return yaml.dump(
-            json.loads(self.json(by_alias=True,
-                                 exclude_unset=exclude_unset, **kwargs)),
+            data,
             default_flow_style=False
         )
 
-    def to_dict(self, exclude_unset=False, by_alias=True, **kwargs):
+    def to_dict(self, exclude_defaults: bool = False, by_alias: bool = True, exclude_none: bool = False, **kwargs):
         """Get a dictionary from the model
 
         Keyword Arguments:
-            exclude_unset {bool} -- Boolean toggle to add or remove any unset/None values
+            exclude_defaults {bool} -- Whether to exclude fields that are set to their
+                default values.
                 (default: {False})
             by_alias {bool} -- Boolean toggle to use attribute alias or attribute names
                 as key (default: {True})
@@ -58,9 +61,11 @@ class BaseModelNoType(PydanticBaseModel):
         Returns:
             dict -- A python dictionary representing the model
         """
-        return json.loads(self.json(by_alias=by_alias, exclude_unset=exclude_unset, **kwargs))
+        return self.model_dump(
+            mode='json', by_alias=by_alias, exclude_defaults=exclude_defaults, exclude_none=exclude_none, **kwargs
+        )
 
-    def to_json(self, filepath, indent=None, **kwargs):
+    def to_json(self, filepath: str, indent: int = None, **kwargs):
         """Write a JSON file of the model
 
         Arguments:
@@ -70,20 +75,19 @@ class BaseModelNoType(PydanticBaseModel):
             indent {int} -- indent amount (default: {None})
         """
         with open(filepath, 'w') as file:
-            file.write(self.json(by_alias=True, exclude_unset=False,
-                                 indent=indent, **kwargs))
+            file.write(self.model_dump_json(by_alias=True, indent=indent, exclude_none=True, **kwargs))
 
-    def to_yaml(self, filepath, exclude_unset=False, **kwargs):
+    def to_yaml(self, filepath: str, exclude_defaults: bool = False, exclude_none: bool = True, **kwargs):
         """Write a YAML file of the model
 
         Arguments:
             filepath {str} -- Path to the file to be written
 
         Keyword Arguments:
-            exclude_unset {bool} -- Boolean toggle to add or remove any unset/None values
-            (default: {False})
+            exclude_defaults {bool} -- Whether to exclude fields that are set to their
+            default values. (default: {False})
         """
-        content = self.yaml(exclude_unset=exclude_unset, **kwargs)
+        content = self.yaml(exclude_defaults=exclude_defaults, exclude_none=exclude_none, **kwargs)
 
         with open(filepath, 'w') as out_file:
             out_file.write(content)
@@ -99,7 +103,10 @@ class BaseModelNoType(PydanticBaseModel):
             cls -- An instance of the pydantic class
         """
         data = parse_file(filepath)
-        return cls.parse_obj(data)
+        try:
+            return cls.model_validate(data)
+        except ValidationError as e:
+            raise ValueError(e) from e
 
     def __repr__(self):
         return self.yaml()
@@ -112,7 +119,7 @@ class BaseModelNoType(PydanticBaseModel):
             str -- A hash/digest of the model
         """
         return hashlib.sha256(
-            self.json(by_alias=True, exclude_unset=False).encode('utf-8')
+            self.model_dump_json(by_alias=True, exclude_none=True).encode('utf-8')
         ).hexdigest()
 
     def _referenced_values(self, var_names: List[str]) -> Dict[str, List[str]]:
@@ -143,16 +150,17 @@ class BaseModelNoType(PydanticBaseModel):
 class BaseModel(BaseModelNoType):
     """BaseModel with functionality to return the object as a yaml string."""
 
-    type: constr(regex='^BaseModel$') = 'BaseModel'
+    type: str = Field('BaseModel', pattern='^BaseModel$')
 
     annotations: Dict[str, Any] = Field(
-        None,
+        default_factory=dict,
         description='An optional dictionary to add annotations to inputs. These '
         'annotations will be used by the client side libraries.'
     )
 
-    @validator('type')
-    def ensure_type_match(cls, v):
+    @field_validator('type')
+    @classmethod
+    def ensure_type_match(cls, v: str) -> str:
         name = cls.__name__
         if name != v:
             raise ValueError(
@@ -161,7 +169,3 @@ class BaseModel(BaseModelNoType):
                 f'Pydantic object. In this case: {name}'
             )
         return v
-
-    @validator('annotations', always=True)
-    def replace_none_value(cls, v):
-        return {} if not v else v
