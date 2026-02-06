@@ -10,8 +10,8 @@ Task argument and return objects provide the interface to connect:
 
 """
 
-from typing import Union
-from pydantic import constr
+from typing import Union, Literal
+
 from ..common import GenericOutput, PathOutput
 
 
@@ -19,7 +19,7 @@ from ..common import GenericOutput, PathOutput
 class TaskReturn(GenericOutput):
     """A Task return output that exposes the values from a function or a DAG."""
 
-    type: constr(regex='^TaskReturn$') = 'TaskReturn'
+    type: Literal['TaskReturn'] = 'TaskReturn'
 
     @property
     def is_artifact(self):
@@ -29,7 +29,7 @@ class TaskReturn(GenericOutput):
 class TaskPathReturn(PathOutput):
     """A Task output that returns a file or a folder output from a function or a DAG."""
 
-    type: constr(regex='^TaskPathReturn$') = 'TaskPathReturn'
+    type: Literal['TaskPathReturn'] = 'TaskPathReturn'
 
     @property
     def is_artifact(self):

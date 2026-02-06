@@ -7,9 +7,9 @@ the original input.
 """
 
 import os
-from typing import Dict, Union, List
+from typing import Dict, Union, List, Literal
 
-from pydantic import constr, Field, validator
+from pydantic import Field, field_validator, ValidationInfo
 from jsonschema import validate as json_schema_validator
 
 from ..common import ItemType, GenericInput, find_dup_items, IOAliasHandler
@@ -23,7 +23,7 @@ class DAGGenericInputAlias(GenericInput):
     This class adds a handler to input to handle the process of loading the input
     from different graphical interfaces.
     """
-    type: constr(regex='^DAGGenericInputAlias$') = 'DAGGenericInputAlias'
+    type: Literal['DAGGenericInputAlias'] = 'DAGGenericInputAlias'
 
     platform: List[str] = Field(
         ...,
@@ -37,7 +37,7 @@ class DAGGenericInputAlias(GenericInput):
         description='List of process actions to process the input or output value.'
     )
 
-    default: str = Field(
+    default: Union[str, None] = Field(
         None,
         description='Default value for generic input.'
     )
@@ -49,7 +49,7 @@ class DAGGenericInputAlias(GenericInput):
         'be set explicitly even when a default value is provided.'
     )
 
-    spec: Dict = Field(
+    spec: Union[Dict, None] = Field(
         None,
         description='An optional JSON Schema specification to validate the input value. '
         'You can use validate_spec method to validate a value against the spec.'
@@ -65,13 +65,14 @@ class DAGGenericInputAlias(GenericInput):
             json_schema_validator(value, spec)
         return value
 
-    @validator('default')
-    def validate_default_refs(cls, v, values):
+    @field_validator('default')
+    @classmethod
+    def validate_default_refs(cls, v: str, info: ValidationInfo) -> str:
         """Validate referenced variables in the command"""
-        try:
-            type_ = values['type']
-        except KeyError:
+        if 'type' not in info.data:
             raise ValueError(f'Input with missing type: {cls.__name__}')
+
+        type_ = info.data.get('type')
 
         if type_ != cls.__name__ or not isinstance(v, (str, bytes)):
             # this is a check to ensure the default value only gets validated againt the
@@ -89,13 +90,14 @@ class DAGGenericInputAlias(GenericInput):
         return v
 
 
-    @validator('spec')
-    def validate_default_value(cls, v, values):
+    @field_validator('spec')
+    @classmethod
+    def validate_default_value(cls, v: Dict, info: ValidationInfo) -> Dict:
         """Validate default value against spec if provided."""
-        try:
-            type_ = values['type']
-        except KeyError:
+        if 'type' not in info.data:
             raise ValueError(f'Input with missing type: {cls.__name__}')
+
+        type_ = info.data.get('type')
 
         if type_ != cls.__name__:
             # this is a check to ensure the default value only gets validated againt the
@@ -106,29 +108,31 @@ class DAGGenericInputAlias(GenericInput):
             # on a string before it gets to the integer class for an integer input.
             return v
 
-        try:
-            default = values['default']
-        except KeyError:
+        if 'default' not in info.data:
             # spec is not set
             return v
 
+        default = info.data.get('default')
         if v is not None and default is not None:
             json_schema_validator(default, v)
         return v
 
-    @validator('platform', always=True)
-    def create_empty_platform_list(cls, v):
+    @field_validator('platform', mode='before')
+    @classmethod
+    def create_empty_platform_list(cls, v: List[str]) -> List[str]:
         return [] if v is None else v
 
-    @validator('handler', always=True)
-    def check_duplicate_platform_name(cls, v, values):
+    @field_validator('handler', mode='before')
+    @classmethod
+    def check_duplicate_platform_name(cls, v: List[IOAliasHandler], info: ValidationInfo) -> List[IOAliasHandler]:
         v = [] if v is None else v
-        languages = [h.language for h in v]
+        languages = [h['language'] for h in v]
         dup_lang = find_dup_items(languages)
         if dup_lang:
+            platform = info.data.get('platform', 'unknown')
             raise ValueError(
                 f'Duplicate use of language(s) found in alias handlers for '
-                f'{values["platform"]}: {dup_lang}. Each language can only be used once '
+                f'{platform}: {dup_lang}. Each language can only be used once '
                 'in each platform.'
             )
         return v
@@ -140,7 +144,7 @@ class DAGLinkedInputAlias(DAGGenericInputAlias):
     A linked input alias will be hidden in the UI and will be linked to an object in 
     the UI using the input handler.
     """
-    type: constr(regex='^DAGLinkedInputAlias$') = 'DAGLinkedInputAlias'
+    type: Literal['DAGLinkedInputAlias'] = 'DAGLinkedInputAlias'
 
 
 class DAGStringInputAlias(DAGGenericInputAlias):
@@ -161,9 +165,9 @@ class DAGStringInputAlias(DAGGenericInputAlias):
 
     """
 
-    type: constr(regex='^DAGStringInputAlias$') = 'DAGStringInputAlias'
+    type: Literal['DAGStringInputAlias'] = 'DAGStringInputAlias'
 
-    default: str = Field(
+    default: Union[str, None] = Field(
         None,
         description='Default value to use for an input if a value was not supplied.'
     )
@@ -189,9 +193,9 @@ class DAGIntegerInputAlias(DAGGenericInputAlias):
     for more information.
 
     """
-    type: constr(regex='^DAGIntegerInputAlias$') = 'DAGIntegerInputAlias'
+    type: Literal['DAGIntegerInputAlias'] = 'DAGIntegerInputAlias'
 
-    default: int = Field(
+    default: Union[int, None] = Field(
         None,
         description='Default value to use for an input if a value was not supplied.'
     )
@@ -216,9 +220,9 @@ class DAGNumberInputAlias(DAGGenericInputAlias):
     See http://json-schema.org/understanding-json-schema/reference/numeric.html#numeric
     for more information.
     """
-    type: constr(regex='^DAGNumberInputAlias$') = 'DAGNumberInputAlias'
+    type: Literal['DAGNumberInputAlias'] = 'DAGNumberInputAlias'
 
-    default: float = Field(
+    default: Union[float, None] = Field(
         None,
         description='Default value to use for an input if a value was not supplied.'
     )
@@ -245,9 +249,9 @@ class DAGBooleanInputAlias(DAGGenericInputAlias):
     See http://json-schema.org/understanding-json-schema/reference/boolean.html for more
     information.
     """
-    type: constr(regex='^DAGBooleanInputAlias$') = 'DAGBooleanInputAlias'
+    type: Literal['DAGBooleanInputAlias'] = 'DAGBooleanInputAlias'
 
-    default: bool = Field(
+    default: Union[bool, None] = Field(
         None,
         description='Default value to use for an input if a value was not supplied.'
     )
@@ -282,15 +286,16 @@ class DAGFolderInputAlias(DAGGenericInputAlias):
             "maxLength": 50,
         }
     """
-    type: constr(regex='^DAGFolderInputAlias$') = 'DAGFolderInputAlias'
+    type: Literal['DAGFolderInputAlias'] = 'DAGFolderInputAlias'
 
-    default: Union[HTTP, S3, ProjectFolder] = Field(
+    default: Union[HTTP, S3, ProjectFolder, None] = Field(
         None,
         description='The default source for file if the value is not provided.'
     )
 
-    @validator('required', always=True)
-    def check_required(cls, v):
+    @field_validator('required', mode='before')
+    @classmethod
+    def check_required(cls, v: bool) -> bool:
         """Overwrite check_required fro artifacts to allow optional artifacts."""
         return v
 
@@ -339,9 +344,9 @@ class DAGFileInputAlias(DAGFolderInputAlias):
         }
 
     """
-    type: constr(regex='^DAGFileInputAlias$') = 'DAGFileInputAlias'
+    type: Literal['DAGFileInputAlias'] = 'DAGFileInputAlias'
 
-    extensions: List[str] = Field(
+    extensions: Union[List[str], None] = Field(
         None,
         description='Optional list of extensions for file. The check for extension is '
         'case-insensitive.'
@@ -389,9 +394,9 @@ class DAGPathInputAlias(DAGFolderInputAlias):
         }
 
     """
-    type: constr(regex='^DAGPathInputAlias$') = 'DAGPathInputAlias'
+    type: Literal['DAGPathInputAlias'] = 'DAGPathInputAlias'
 
-    extensions: List[str] = Field(
+    extensions: Union[List[str], None] = Field(
         None,
         description='Optional list of extensions for path. The check for extension is '
         'case-insensitive. The extension will only be validated for file inputs.'
@@ -423,9 +428,9 @@ class DAGArrayInputAlias(DAGGenericInputAlias):
     See http://json-schema.org/understanding-json-schema/reference/array.html for
     more information.
     """
-    type: constr(regex='^DAGArrayInputAlias$') = 'DAGArrayInputAlias'
+    type: Literal['DAGArrayInputAlias'] = 'DAGArrayInputAlias'
 
-    default: List = Field(
+    default: Union[List, None] = Field(
         None,
         description='Default value to use for an input if a value was not supplied.'
     )
@@ -436,8 +441,9 @@ class DAGArrayInputAlias(DAGGenericInputAlias):
         'the same type.'
     )
 
-    @validator('default', always=True)
-    def replace_none_value(cls, v):
+    @field_validator('default', mode='before')
+    @classmethod
+    def replace_none_value(cls, v: List) -> List:
         return [] if not v else v
 
     def validate_spec(self, value):
@@ -462,15 +468,16 @@ class DAGJSONObjectInputAlias(DAGGenericInputAlias):
     See http://json-schema.org/understanding-json-schema/reference/object.html for
     more information.
     """
-    type: constr(regex='^DAGJSONObjectInputAlias$') = 'DAGJSONObjectInputAlias'
+    type: Literal['DAGJSONObjectInputAlias'] = 'DAGJSONObjectInputAlias'
 
-    default: Dict = Field(
+    default: Union[Dict, None] = Field(
         None,
         description='Default value to use for an input if a value was not supplied.'
     )
 
-    @validator('default', always=True)
-    def replace_none_value(cls, v):
+    @field_validator('default', mode='before')
+    @classmethod
+    def replace_none_value(cls, v: Dict) -> Dict:
         return {} if not v else v
 
     def validate_spec(self, value):
@@ -485,7 +492,8 @@ class DAGJSONObjectInputAlias(DAGGenericInputAlias):
 
 
 DAGAliasInputs = Union[
-    DAGGenericInputAlias, DAGStringInputAlias, DAGIntegerInputAlias, DAGNumberInputAlias,
+    DAGStringInputAlias, DAGIntegerInputAlias, DAGNumberInputAlias,
     DAGBooleanInputAlias, DAGFolderInputAlias, DAGFileInputAlias, DAGPathInputAlias,
-    DAGArrayInputAlias, DAGJSONObjectInputAlias, DAGLinkedInputAlias
+    DAGArrayInputAlias, DAGJSONObjectInputAlias, DAGLinkedInputAlias,
+    DAGGenericInputAlias
 ]

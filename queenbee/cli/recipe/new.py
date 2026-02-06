@@ -82,7 +82,7 @@ def new(name, path):
     input_dict = parse_file(path)
     input_dict['metadata']['name'] = name
 
-    recipe = Recipe.parse_obj(input_dict)
+    recipe = Recipe.model_validate(input_dict)
 
     # Readme
     readme_string = f"""

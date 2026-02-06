@@ -2,8 +2,8 @@
 import json
 import os
 import yaml
-from typing import List
-from pydantic import Field, validator, constr
+from typing import List, Literal, Union
+from pydantic import Field, field_validator
 
 from ..base.basemodel import BaseModel
 from ..base.metadata import MetaData
@@ -13,14 +13,14 @@ from .function import Function
 class DockerConfig(BaseModel):
     """Plugin Configuration to run in a Docker container"""
 
-    type: constr(regex='^DockerConfig') = 'DockerConfig'
+    type: Literal['DockerConfig'] = 'DockerConfig'
 
     image: str = Field(
         ...,
         description='Docker image name. Must include tag.'
     )
 
-    registry: str = Field(
+    registry: Union[str, None] = Field(
         None,
         description='The container registry URLs that this container should be pulled'
         ' from. Will default to Dockerhub if none is specified.'
@@ -37,7 +37,7 @@ class DockerConfig(BaseModel):
 class LocalConfig(BaseModel):
     """Plugin Configuration to run on a desktop."""
 
-    type: constr(regex='^LocalConfig') = 'LocalConfig'
+    type: Literal['LocalConfig'] = 'LocalConfig'
 
 
 class PluginConfig(BaseModel):
@@ -46,14 +46,14 @@ class PluginConfig(BaseModel):
     The config is used to schedule functions on a desktop or in other contexts
     (ie: Docker).
     """
-    type: constr(regex='^PluginConfig') = 'PluginConfig'
+    type: Literal['PluginConfig'] = 'PluginConfig'
 
     docker: DockerConfig = Field(
         ...,
         description='The configuration to use this plugin in a docker container'
     )
 
-    local: LocalConfig = Field(
+    local: Union[LocalConfig, None] = Field(
         None,
         description='The configuration to use this plugin locally'
     )
@@ -65,9 +65,9 @@ class Plugin(BaseModel):
     A plugin contains runtime configuration for a Command Line Interface (CLI) and
     a list of functions that can be executed using this CLI tool.
     """
-    api_version: constr(regex='^v1beta1$') = Field('v1beta1', readOnly=True)
+    api_version: Literal['v1beta1'] = Field('v1beta1', json_schema_extra={'readOnly': True})
 
-    type: constr(regex='^Plugin') = 'Plugin'
+    type: Literal['Plugin'] = 'Plugin'
 
     metadata: MetaData = Field(
         ...,
@@ -84,7 +84,8 @@ class Plugin(BaseModel):
         description='List of Plugin functions'
     )
 
-    @validator('functions')
+    @field_validator('functions')
+    @classmethod
     def sort_list(cls, v: list) -> list:
         """Sort functions list by name
 
@@ -134,15 +135,16 @@ class Plugin(BaseModel):
         with open(config_path, 'r') as f:
             config = yaml.load(f, yaml.FullLoader)
 
-        for function in os.listdir(functions_path):
-            with open(os.path.join(functions_path, function), 'r') as f:
+        function_files = sorted(os.listdir(functions_path))
+        for f_name in function_files:
+            with open(os.path.join(functions_path, f_name), 'r') as f:
                 functions.append(yaml.load(f, yaml.FullLoader))
 
         plugin['metadata'] = metadata
         plugin['config'] = config
         plugin['functions'] = functions
 
-        return cls.parse_obj(plugin)
+        return cls.model_validate(plugin)
 
     def to_folder(self, folder_path: str, *, readme_string: str = None):
         """Write a plugin to a folder

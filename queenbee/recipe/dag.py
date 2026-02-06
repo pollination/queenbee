@@ -4,9 +4,9 @@ A DAG defines a single step in a Recipe. Each DAG is a collection of tasks/steps
 step indicates what function template should be used and maps inputs and outputs for the
 specific task.
 """
-from queenbee.io.outputs.task import TaskPathReturn, TaskReturn
-from typing import List, Set, Union
-from pydantic import Field, validator, root_validator, constr
+from typing import List, Set, Union, Literal
+
+from pydantic import Field, field_validator, model_validator
 
 from .task import DAGTask
 from ..io.common import IOBase, find_dup_items
@@ -14,11 +14,12 @@ from ..io.inputs.dag import DAGInputs
 from ..io.outputs.dag import DAGOutputs
 from ..io.reference import FileReference, FolderReference, TaskReference, \
     TaskFileReference, TaskFolderReference, TaskPathReference
+from ..io.outputs.task import TaskPathReturn, TaskReturn
 
 
 class DAG(IOBase):
     """A Directed Acyclic Graph containing a list of tasks."""
-    type: constr(regex='^DAG$') = 'DAG'
+    type: Literal['DAG'] = 'DAG'
 
     name: str = Field(
         ...,
@@ -26,7 +27,7 @@ class DAG(IOBase):
     )
 
     inputs: List[DAGInputs] = Field(
-        None,
+        default_factory=list,
         description='Inputs for the DAG.'
     )
 
@@ -42,7 +43,7 @@ class DAG(IOBase):
     )
 
     outputs: List[DAGOutputs] = Field(
-        None,
+        default_factory=list,
         description='Outputs of the DAG that can be used by other DAGs.'
     )
 
@@ -90,17 +91,19 @@ class DAG(IOBase):
 
         return out[0]
 
-    @validator('tasks')
-    def check_unique_names(cls, v):
+    @field_validator('tasks')
+    @classmethod
+    def check_unique_names(cls, v: List[DAGTask]) -> List[DAGTask]:
         """Check that all tasks have unique names."""
         names = [task.name for task in v]
         duplicates = find_dup_items(names)
-        if len(duplicates) != 0:
+        if duplicates:
             raise ValueError(f'Duplicate names: {duplicates}')
         return v
 
-    @validator('tasks')
-    def check_dependencies(cls, v):
+    @field_validator('tasks')
+    @classmethod
+    def check_dependencies(cls, v: List[DAGTask]) -> List[DAGTask]:
         """Check that all task dependencies exist."""
         task_names = [task.name for task in v]
 
@@ -120,86 +123,70 @@ class DAG(IOBase):
 
         return v
 
-    @validator('tasks')
-    def check_references(cls, v, values):
-        """Check that input and output references exist."""
-        dag_inputs = values.get('inputs', [])
+    @field_validator('tasks', 'inputs', 'outputs')
+    @classmethod
+    def sort_list(cls, v: list) -> list:
+        """Sort the list of tasks, inputs and outputs by name"""
+        v.sort(key=lambda x: x.name)
+        return v
 
+    @model_validator(mode='after')
+    def check_dag_references(self) -> 'DAG':
+        """Check references within the DAG."""
+        if self.tasks is None:
+            # another validation has failed
+            return self
+
+        # check_references
+        dag_inputs = self.inputs or []
         dag_input_names = set(d.name for d in dag_inputs)
-
         exceptions = []
 
-        for task in v:
-            if task.arguments is None:
-                continue
+        for task in self.tasks:
+            if task.arguments is not None:
+                # Check DAG input references
+                for arg in task.argument_by_ref_source('dag'):
+                    if arg.from_.variable not in dag_input_names:
+                        exceptions.append(
+                            f'Invalid input reference variable: "{arg.from_.variable}" '
+                            f'in task "{task.name}"'
+                        )
 
-            # Check DAG input references
-            for arg in task.argument_by_ref_source('dag'):
-                if arg.from_.variable not in dag_input_names:
-                    exceptions.append(
-                        f'Invalid input reference variable: "{arg.from_.variable}" '
-                        f'in task "{task.name}"'
-                    )
+                # Check DAG task inputs
+                for arg in task.argument_by_ref_source('task'):
+                    try:
+                        self.find_task_return(tasks=self.tasks, reference=arg.from_)
+                    except ValueError as error:
+                        exceptions.append(f'tasks.{task.name}.{arg.name}: {error}')
 
-            # Check DAG task inputs
-            for arg in task.argument_by_ref_source('task'):
-                try:
-                    cls.find_task_return(tasks=v, reference=arg.from_)
-                except ValueError as error:
-                    exceptions.append(f'tasks.{task.name}.{arg.name}: %s' % error)
+            # check_template_name
+            plugin = task.template.split('/')[0]
+            if plugin == self.name:
+                raise ValueError('Task cannot refer to its own DAG as a template.')
 
         if exceptions:
             raise ValueError('\n  '.join(exceptions))
 
-        return v
+        # check_dag_outputs
+        if self.outputs is None:
+            return self
 
-    @validator('tasks', each_item=True)
-    def check_template_name(cls, v, values):
-        """Check that a task name does not refer to itself in a template."""
-        name = values.get('name')
-
-        plugin = v.template.split('/')[0]
-
-        assert plugin != name, \
-            ValueError('Task cannot refer to its own DAG as a template.')
-
-        return v
-
-    @validator('tasks')
-    def sort_list(cls, v):
-        """Sort the list of tasks by name"""
-        v.sort(key=lambda x: x.name)
-        return v
-
-    @root_validator
-    def check_dag_outputs(cls, values):
-        """Check DAG outputs refer to existing Task outputs.
-
-        It can't be a normal validator because of the order in which the inputs get
-        assigned in Pydantic when a class is a subclass from another.
-        """
-        if 'tasks' not in values or 'outputs' not in values:
-            # another validation has failed
-            return values
-
-        tasks = values['tasks']
-        outputs = values['outputs']
         exceptions = []
 
-        for out in outputs:
+        for out in self.outputs:
             if isinstance(out.from_, TaskReference):
                 try:
-                    cls.find_task_return(tasks=tasks, reference=out.from_)
+                    self.find_task_return(tasks=self.tasks, reference=out.from_)
                 except ValueError as error:
-                    exceptions.append(f'outputs.{out.name}: %s' % error)
+                    exceptions.append(f'outputs.{out.name}: {error}')
             elif isinstance(out.from_, (FolderReference, FileReference)):
                 # the validation will be checked when the Pydantic model is being loaded
                 pass
 
         if exceptions:
-            raise ValueError('  \n'.join(exceptions))
+            raise ValueError('\n  '.join(exceptions))
 
-        return values
+        return self
 
     def get_task(self, name):
         """Get task by name.

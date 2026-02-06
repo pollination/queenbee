@@ -3,9 +3,9 @@
 Use these alias outputs to create a different IO object for client side UIs.
 """
 
-from typing import Union, List
+from typing import Union, List, Literal
 
-from pydantic import constr, Field, validator
+from pydantic import Field, field_validator, ValidationInfo
 
 from ..common import ItemType, GenericOutput, find_dup_items, IOAliasHandler
 from ..reference import FileReference, FolderReference, TaskReference
@@ -18,7 +18,7 @@ class DAGGenericOutputAlias(GenericOutput):
     output that changes its type in different platforms because of returning different
     objects in handler.
     """
-    type: constr(regex='^DAGGenericOutputAlias$') = 'DAGGenericOutputAlias'
+    type: Literal['DAGGenericOutputAlias'] = 'DAGGenericOutputAlias'
 
     platform: List[str] = Field(
         ...,
@@ -32,19 +32,21 @@ class DAGGenericOutputAlias(GenericOutput):
         description='List of process actions to process the input or output value.'
     )
 
-    @validator('platform', always=True)
-    def create_empty_platform_list(cls, v):
+    @field_validator('platform', mode='before')
+    @classmethod
+    def create_empty_platform_list(cls, v: List[str]) -> List[str]:
         return [] if v is None else v
 
-    @validator('handler', always=True)
-    def check_duplicate_platform_name(cls, v, values):
+    @field_validator('handler', mode='before')
+    @classmethod
+    def check_duplicate_platform_name(cls, v: List[IOAliasHandler], info: ValidationInfo) -> List[IOAliasHandler]:
         v = [] if v is None else v
         languages = [h.language for h in v]
         dup_lang = find_dup_items(languages)
         if dup_lang:
             raise ValueError(
                 f'Duplicate use of language(s) found in alias handlers for '
-                f'{values["platform"]}: {dup_lang}. Each language can only be used once '
+                f'{info.data.get("platform", "unknown")}: {dup_lang}. Each language can only be used once '
                 'in each platform.'
             )
         return v
@@ -56,7 +58,7 @@ class DAGLinkedOutputAlias(DAGGenericOutputAlias):
     A linked output alias will be translated to an object in the UI and stay linked to
     it.
     """
-    type: constr(regex='^DAGLinkedOutputAlias$') = 'DAGLinkedOutputAlias'
+    type: Literal['DAGLinkedOutputAlias'] = 'DAGLinkedOutputAlias'
 
 
 class _DAGArtifactOutputAlias(DAGGenericOutputAlias):
@@ -77,7 +79,7 @@ class _DAGArtifactOutputAlias(DAGGenericOutputAlias):
 
 class DAGFileOutputAlias(_DAGArtifactOutputAlias):
     """DAG alias file output."""
-    type: constr(regex='^DAGFileOutputAlias$') = 'DAGFileOutputAlias'
+    type: Literal['DAGFileOutputAlias'] = 'DAGFileOutputAlias'
 
     from_: Union[TaskReference, FileReference] = Field(
         ...,
@@ -92,7 +94,7 @@ class DAGFileOutputAlias(_DAGArtifactOutputAlias):
 
 class DAGFolderOutputAlias(_DAGArtifactOutputAlias):
     """DAG alias folder output."""
-    type: constr(regex='^DAGFolderOutputAlias$') = 'DAGFolderOutputAlias'
+    type: Literal['DAGFolderOutputAlias'] = 'DAGFolderOutputAlias'
 
     from_: Union[TaskReference, FolderReference] = Field(
         ...,
@@ -107,7 +109,7 @@ class DAGFolderOutputAlias(_DAGArtifactOutputAlias):
 
 class DAGPathOutputAlias(_DAGArtifactOutputAlias):
     """DAG alias path output."""
-    type: constr(regex='^DAGPathOutputAlias$') = 'DAGPathOutputAlias'
+    type: Literal['DAGPathOutputAlias'] = 'DAGPathOutputAlias'
 
     from_: Union[TaskReference, FileReference, FolderReference] = Field(
         ...,
@@ -126,7 +128,7 @@ class DAGStringOutputAlias(DAGFileOutputAlias):
 
     This output loads the content from a file as a string.
     """
-    type: constr(regex='^DAGStringOutputAlias$') = 'DAGStringOutputAlias'
+    type: Literal['DAGStringOutputAlias'] = 'DAGStringOutputAlias'
 
     @property
     def is_artifact(self):
@@ -138,7 +140,7 @@ class DAGIntegerOutputAlias(DAGStringOutputAlias):
 
     This output loads the content from a file as an integer.
     """
-    type: constr(regex='^DAGIntegerOutputAlias$') = 'DAGIntegerOutputAlias'
+    type: Literal['DAGIntegerOutputAlias'] = 'DAGIntegerOutputAlias'
 
 
 class DAGNumberOutputAlias(DAGStringOutputAlias):
@@ -146,7 +148,7 @@ class DAGNumberOutputAlias(DAGStringOutputAlias):
 
     This output loads the content from a file as a floating number.
     """
-    type: constr(regex='^DAGNumberOutputAlias$') = 'DAGNumberOutputAlias'
+    type: Literal['DAGNumberOutputAlias'] = 'DAGNumberOutputAlias'
 
 
 class DAGBooleanOutputAlias(DAGStringOutputAlias):
@@ -154,7 +156,7 @@ class DAGBooleanOutputAlias(DAGStringOutputAlias):
 
     This output loads the content from a file as a boolean.
     """
-    type: constr(regex='^DAGBooleanOutputAlias$') = 'DAGBooleanOutputAlias'
+    type: Literal['DAGBooleanOutputAlias'] = 'DAGBooleanOutputAlias'
 
 
 class DAGArrayOutputAlias(DAGStringOutputAlias):
@@ -162,7 +164,7 @@ class DAGArrayOutputAlias(DAGStringOutputAlias):
 
     This output loads the content from a JSON file which must be a JSON Array.
     """
-    type: constr(regex='^DAGArrayOutputAlias$') = 'DAGArrayOutputAlias'
+    type: Literal['DAGArrayOutputAlias'] = 'DAGArrayOutputAlias'
 
     items_type: ItemType = Field(
         ItemType.String,
@@ -176,7 +178,7 @@ class DAGJSONObjectOutputAlias(DAGStringOutputAlias):
 
     This output loads the content from a file as a JSON object.
     """
-    type: constr(regex='^DAGJSONObjectOutputAlias$') = 'DAGJSONObjectOutputAlias'
+    type: Literal['DAGJSONObjectOutputAlias'] = 'DAGJSONObjectOutputAlias'
 
 
 DAGAliasOutputs = Union[

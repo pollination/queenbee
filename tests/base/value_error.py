@@ -1,7 +1,9 @@
+from pydantic_core import ValidationError
 import pytest
 import os
 import yaml
 import json
+import re
 from ._base import BaseTestClass
 
 
@@ -62,5 +64,36 @@ class BaseValueErrorTest(BaseTestClass):
             self.klass.from_file(invalid_file)
 
     def test_value_error_message(self, invalid_file, error_message):
-        with pytest.raises(ValueError, match=error_message):
+        # 1. Prepare the Regex
+        
+        # Strip the legacy (type=...) suffix
+        pattern = re.sub(r'\\\(type=.*\)$', '', error_message.strip())
+        
+        # FIX: Remove the greedy "match everything" prefix `((.|\n)*)`. 
+        # Since we use re.search(), we don't need to explicitly match the start of the string.
+        # We also strip leading whitespace to ignore the old indentation.
+        pattern = pattern.replace(r"((.|\n)*)", "").strip()
+
+        # 2. Catch ValueError
+        with pytest.raises(ValueError) as excinfo:
             self.klass.from_file(invalid_file)
+            
+        # 3. Unwrap Pydantic error
+        wrapped_error = excinfo.value.args[0]
+        
+        if hasattr(wrapped_error, 'errors'):
+            # Extract plain messages (e.g., "Assertion failed, Cannot use template...")
+            actual_messages = [e['msg'] for e in wrapped_error.errors()]
+            
+            # Check if the cleaned pattern exists inside any of the error messages
+            match_found = any(re.search(pattern, msg) for msg in actual_messages)
+            
+            assert match_found, (
+                f"Regex pattern '{pattern}' did not match any error messages.\n"
+                f"Found messages: {actual_messages}"
+            )
+        else:
+            # Fallback for generic ValueErrors
+            actual_error = str(excinfo.value)
+            assert re.search(pattern, actual_error), \
+                f"Regex '{pattern}' not found in error '{actual_error}'"

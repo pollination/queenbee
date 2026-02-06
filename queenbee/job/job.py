@@ -1,10 +1,11 @@
 from datetime import datetime
 from enum import Enum
-from typing import Dict, List
+from typing import Dict, List, Union
+from typing import Literal
 
-from pydantic import Field, constr, validator
-from pydantic.error_wrappers import ErrorWrapper, ValidationError
-
+from pydantic import Field, field_validator
+from pydantic import ValidationError
+from pydantic_core import InitErrorDetails
 from ..base.basemodel import BaseModel
 from ..io.inputs.dag import DAGInputs
 from ..io.inputs.job import JobArgument, JobArguments, JobPathArgument
@@ -15,45 +16,48 @@ class Job(BaseModel):
 
     A Job is an object to submit a list of arguments to execute a Queenbee recipe.
     """
-    api_version: constr(regex='^v1beta1$') = Field('v1beta1', readOnly=True)
+    api_version: Literal['v1beta1'] = Field('v1beta1', json_schema_extra={'readOnly': True})
 
-    type: constr(regex='^Job$') = 'Job'
+    type: Literal['Job'] = 'Job'
 
     source: str = Field(
         ...,
         description='The source url for downloading the recipe.'
     )
 
-    arguments: List[List[JobArguments]] = Field(
+    arguments: Union[List[List[JobArguments]], None] = Field(
         None,
         description='Input arguments for this job.'
     )
 
-    name: str = Field(
+    name: Union[str, None] = Field(
         None,
         description='An optional name for this job. This name will be used a the '
         'display name for the run.'
     )
 
-    description: str = Field(
+    description: Union[str, None] = Field(
         None,
         description='Run description.'
     )
 
-    labels: Dict[str, str] = Field(
+    labels: Union[Dict[str, str], None] = Field(
         None,
         description='Optional user data as a dictionary. User data is for user reference'
         ' only and will not be used in the execution of the job.'
     )
 
-    @validator('arguments', each_item=True)
-    def check_duplicate_names(cls, v):
-        argument_names = []
-        for arg in v:
-            if arg.name in argument_names:
-                raise ValueError(f'duplicate argument name {arg.name}')
-            argument_names.append(arg.name)
-
+    @field_validator('arguments')
+    @classmethod
+    def check_duplicate_names(cls, v: List[List[JobArguments]]):
+        if v is None:
+            return v
+        for arg_list in v:
+            argument_names = []
+            for arg in arg_list:
+                if arg.name in argument_names:
+                    raise ValueError(f'duplicate argument name {arg.name}')
+                argument_names.append(arg.name)
         return v
 
     def populate_default_arguments(self, inputs: List[DAGInputs]):
@@ -81,20 +85,31 @@ class Job(BaseModel):
                         combination.append(argument)
 
     def validate_arguments(self, inputs: List[DAGInputs]):
-        errors = []
+        errors: List[InitErrorDetails] = []
+        
         for i, arg in enumerate(self.arguments):
+            # Assuming this returns a list of Exceptions or error strings
             error_list = self._validate_argument_combination(arg, inputs)
-            errors.extend([
-                ErrorWrapper(error, ('arguments', i)) for error in error_list
-            ])
-        if len(errors) != 0:
-            raise ValidationError(errors, self.__class__)
+            
+            for error in error_list:
+                # In V2, we define errors as dictionaries (InitErrorDetails)
+                errors.append(
+                    InitErrorDetails(
+                        type='value_error',  # Standard error type
+                        loc=('arguments', i),
+                        msg=str(error),      # Convert the exception/error to a string message
+                        input=arg,            # The value that caused the error
+                        ctx={'error': error}
+                    )
+                )
+
+        if errors:
+            # V2 method to raise validation errors manually
+            raise ValidationError.from_exception_data(self.__class__.__name__, errors)
 
     def _validate_argument_combination(
-            self,
-            arguments: List[JobArguments],
-            inputs: List[DAGInputs],
-    ) -> List[ErrorWrapper]:
+        self, arguments: List[JobArguments], inputs: List[DAGInputs]
+    ) -> List[ValueError]:
         errors = []
 
         for recipe_input in inputs:
@@ -104,7 +119,7 @@ class Job(BaseModel):
                     found_argument = True
                     try:
                         self._check_argument_type(argument, recipe_input)
-                    except Exception as err:
+                    except ValueError as err:
                         errors.append(err)
 
             if recipe_input.required and not found_argument:
@@ -149,9 +164,9 @@ class JobStatusEnum(str, Enum):
 class JobStatus(BaseModel):
     """Parametric Job Status."""
 
-    api_version: constr(regex='^v1beta1$') = Field('v1beta1', readOnly=True)
+    api_version: Literal['v1beta1'] = Field('v1beta1', json_schema_extra={'readOnly': True})
 
-    type: constr(regex='^JobStatus$') = 'JobStatus'
+    type: Literal['JobStatus'] = 'JobStatus'
 
     id: str = Field(
         ...,
@@ -163,7 +178,7 @@ class JobStatus(BaseModel):
         description='The status of this job.'
     )
 
-    message: str = Field(
+    message: Union[str, None] = Field(
         None,
         description='Any message produced by the job. Usually error/debugging hints.'
     )
@@ -173,12 +188,12 @@ class JobStatus(BaseModel):
         description='The time at which the job was started'
     )
 
-    finished_at: datetime = Field(
+    finished_at: Union[datetime, None] = Field(
         None,
         description='The time at which the task was completed'
     )
 
-    source: str = Field(
+    source: Union[str, None] = Field(
         None,
         description='Source url for the status object. It can be a recipe or a function.'
     )

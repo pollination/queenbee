@@ -2,9 +2,9 @@
 import collections
 
 from enum import Enum
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Literal, Union
 
-from pydantic import constr, Field, validator
+from pydantic import Field, field_validator
 
 from .reference import FolderReference, FileReference, references_from_string
 from ..base.basemodel import BaseModel
@@ -28,14 +28,14 @@ class ItemType(str, Enum):
 class GenericInput(BaseModel):
     """Base class for all input types."""
 
-    type: constr(regex='^GenericInput$') = 'GenericInput'
+    type: Literal['GenericInput'] = 'GenericInput'
 
     name: str = Field(
         ...,
         description='Input name.'
     )
 
-    description: str = Field(
+    description: Union[str, None] = Field(
         None,
         description='Optional description for input.'
     )
@@ -65,14 +65,14 @@ class GenericOutput(BaseModel):
     The baseclass uses a name to source the output.
     """
 
-    type: constr(regex='^GenericOutput$') = 'GenericOutput'
+    type: Literal['GenericOutput'] = 'GenericOutput'
 
     name: str = Field(
         ...,
         description='Output name.'
     )
 
-    description: str = Field(
+    description: Union[str, None] = Field(
         None,
         description='Optional description for output.'
     )
@@ -92,7 +92,7 @@ class PathOutput(GenericOutput):
     An example of using PathOutput is TaskFile and TaskFolder outputs.
     """
 
-    type: constr(regex='^PathOutput$') = 'PathOutput'
+    type: Literal['PathOutput'] = 'PathOutput'
 
     path: str = Field(
         ...,
@@ -126,7 +126,7 @@ class FromOutput(GenericOutput):
 
     See DAG output classes for more examples.
     """
-    type: constr(regex='^FromOutput$') = 'FromOutput'
+    type: Literal['FromOutput'] = 'FromOutput'
 
     # This will be overwritten in all the subclasses.
     # We need this here to make sure the validator doesn't fail.
@@ -136,8 +136,9 @@ class FromOutput(GenericOutput):
         alias='from'
     )
 
-    @validator('from_')
-    def check_folder_artifact_has_no_refs(cls, v):
+    @field_validator('from_')
+    @classmethod
+    def check_folder_artifact_has_no_refs(cls, v: Any) -> Any:
         if isinstance(v, (FolderReference, FileReference)):
             refs = references_from_string(v.path)
             if refs != []:
@@ -193,7 +194,7 @@ class IOBase(BaseModel):
     IOBase is the baseclass for Function, DAG and Workflow.
     """
 
-    type: constr(regex='^IOBase$') = 'IOBase'
+    type: Literal['IOBase'] = 'IOBase'
 
     inputs: List[Any] = Field(
         None,
@@ -205,8 +206,9 @@ class IOBase(BaseModel):
         description='Place-holder. Overwrite this!'
     )
 
-    @validator('inputs', 'outputs', always=True)
-    def parameter_unique_names(cls, v):
+    @field_validator('inputs', 'outputs', mode='after')
+    @classmethod
+    def parameter_unique_names(cls, v: List[Any]) -> List[Any]:
         """Pydantic validator to check that IO item names are unique within their list
 
         Arguments:
@@ -229,10 +231,10 @@ class IOBase(BaseModel):
         platforms = []
         # find all the platforms first
         for io in v:
-            if not hasattr(io, 'alias'):
+            if not hasattr(io, 'alias') or not io.alias:
                 # function inputs/outputs
                 return v
-            for alias in io.alias:
+            for alias in io['alias']:
                 for platform in alias.platform:
                     platforms.append(platform)
 
@@ -240,11 +242,11 @@ class IOBase(BaseModel):
         for platform in set(platforms):
             names = []
             for io in v:
-                if not io.alias:
+                if not hasattr(io, 'alias') or not io.alias:
                     # no alias use the original name
                     names.append(io.name)
                     continue
-                for alias in io.alias:
+                for alias in io['alias']:
                     if platform in alias.platform:
                         names.append(alias.name)
                         break
@@ -259,8 +261,9 @@ class IOBase(BaseModel):
 
         return v
 
-    @validator('inputs', 'outputs')
-    def sort_list(cls, v):
+    @field_validator('inputs', 'outputs')
+    @classmethod
+    def sort_list(cls, v: List[Any]) -> List[Any]:
         """Pydantic validator to sort IO items by name
 
         Arguments:
@@ -390,7 +393,7 @@ class IOBase(BaseModel):
 class IOAliasHandler(BaseModel):
     """Input and output alias handler object."""
 
-    type: constr(regex='^IOAliasHandler$') = 'IOAliasHandler'
+    type: Literal['IOAliasHandler'] = 'IOAliasHandler'
 
     language: str = Field(
         ...,
@@ -402,7 +405,7 @@ class IOAliasHandler(BaseModel):
     module: str = Field(
         ...,
         description='Target module or namespace to load the alias function.',
-        example='honeybee_rhino.handlers'
+        examples=['honeybee_rhino.handlers']
     )
 
     function: str = Field(

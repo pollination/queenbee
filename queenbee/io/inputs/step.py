@@ -5,8 +5,8 @@ For more information on plugins see plugin module.
 
 import json
 from typing import Union, List, Dict, Any
-from pydantic import constr, Field, root_validator
-
+from typing import Literal
+from pydantic import Field
 from .function import FunctionStringInput, FunctionIntegerInput, \
     FunctionNumberInput, FunctionBooleanInput, FunctionFolderInput, \
     FunctionFileInput, FunctionPathInput, FunctionArrayInput, \
@@ -22,7 +22,7 @@ from ..artifact_source import HTTP, S3, ProjectFolder
 class StepStringInput(FunctionStringInput):
     """A String input."""
 
-    type: constr(regex='^StepStringInput$') = 'StepStringInput'
+    type: Literal['StepStringInput'] = 'StepStringInput'
 
     value: str
 
@@ -30,7 +30,7 @@ class StepStringInput(FunctionStringInput):
 class StepIntegerInput(FunctionIntegerInput):
     """An integer input."""
 
-    type: constr(regex='^StepIntegerInput$') = 'StepIntegerInput'
+    type: Literal['StepIntegerInput'] = 'StepIntegerInput'
 
     value: int
 
@@ -38,7 +38,7 @@ class StepIntegerInput(FunctionIntegerInput):
 class StepNumberInput(FunctionNumberInput):
     """A number input."""
 
-    type: constr(regex='^StepNumberInput$') = 'StepNumberInput'
+    type: Literal['StepNumberInput'] = 'StepNumberInput'
 
     value: float
 
@@ -46,14 +46,14 @@ class StepNumberInput(FunctionNumberInput):
 class StepBooleanInput(FunctionBooleanInput):
     """The boolean type matches only two special values: True and False."""
 
-    type: constr(regex='^StepBooleanInput$') = 'StepBooleanInput'
+    type: Literal['StepBooleanInput'] = 'StepBooleanInput'
 
     value: bool
 
 
 class StepFolderInput(FunctionFolderInput):
     """A folder input."""
-    type: constr(regex='^StepFolderInput$') = 'StepFolderInput'
+    type: Literal['StepFolderInput'] = 'StepFolderInput'
 
     source: Union[HTTP, S3, ProjectFolder] = Field(
         ...,
@@ -73,7 +73,7 @@ class StepFolderInput(FunctionFolderInput):
 class StepFileInput(FunctionFileInput):
     """A file input."""
 
-    type: constr(regex='^StepFileInput$') = 'StepFileInput'
+    type: Literal['StepFileInput'] = 'StepFileInput'
 
     source: Union[HTTP, S3, ProjectFolder] = Field(
         ...,
@@ -93,7 +93,7 @@ class StepFileInput(FunctionFileInput):
 class StepPathInput(FunctionPathInput):
     """A file or a folder input."""
 
-    type: constr(regex='^StepPathInput$') = 'StepPathInput'
+    type: Literal['StepPathInput'] = 'StepPathInput'
 
     source: Union[HTTP, S3, ProjectFolder] = Field(
         ...,
@@ -113,7 +113,7 @@ class StepPathInput(FunctionPathInput):
 class StepArrayInput(FunctionArrayInput):
     """A JSON array input."""
 
-    type: constr(regex='^StepArrayInput$') = 'StepArrayInput'
+    type: Literal['StepArrayInput'] = 'StepArrayInput'
 
     value: List
 
@@ -121,7 +121,7 @@ class StepArrayInput(FunctionArrayInput):
 class StepJSONObjectInput(FunctionJSONObjectInput):
     """A JSON object input."""
 
-    type: constr(regex='^StepJSONObjectInput$') = 'StepJSONObjectInput'
+    type: Literal['StepJSONObjectInput'] = 'StepJSONObjectInput'
 
     value: Dict
 
@@ -155,38 +155,38 @@ def from_template(template: Union[DAGInputs, FunctionInputs], value: Any) -> Ste
         template_dict['value'] = value
 
     if template.__class__ in [DAGStringInput, FunctionStringInput]:
-        return StepStringInput.parse_obj(template_dict)
+        return StepStringInput.model_validate(template_dict)
 
     if template.__class__ in [DAGIntegerInput, FunctionIntegerInput]:
         template_dict['value'] = int(float(template_dict['value']))
-        return StepIntegerInput.parse_obj(template_dict)
+        return StepIntegerInput.model_validate(template_dict)
 
     if template.__class__ in [DAGNumberInput, FunctionNumberInput]:
-        return StepNumberInput.parse_obj(template_dict)
+        return StepNumberInput.model_validate(template_dict)
 
     if template.__class__ in [DAGBooleanInput, FunctionBooleanInput]:
-        return StepBooleanInput.parse_obj(template_dict)
+        return StepBooleanInput.model_validate(template_dict)
 
     if template.__class__ in [DAGFolderInput, FunctionFolderInput]:
-        return StepFolderInput.parse_obj(template_dict)
+        return StepFolderInput.model_validate(template_dict)
 
     if template.__class__ in [DAGFileInput, FunctionFileInput]:
-        return StepFileInput.parse_obj(template_dict)
+        return StepFileInput.model_validate(template_dict)
 
     if template.__class__ in [DAGPathInput, FunctionPathInput]:
-        return StepPathInput.parse_obj(template_dict)
+        return StepPathInput.model_validate(template_dict)
 
     if template.__class__ in [DAGArrayInput, FunctionArrayInput]:
         if isinstance(template_dict['value'], str):
             template_dict['value'] = json.loads(template_dict['value'])
-        return StepArrayInput.parse_obj(template_dict)
+        return StepArrayInput.model_validate(template_dict)
 
     if template.__class__ in [DAGJSONObjectInput, FunctionJSONObjectInput]:
         if isinstance(template_dict['value'], str):
             template_dict['value'] = json.loads(template_dict['value'])
         try:
             # Try to parse JSON as a dict
-            return StepJSONObjectInput.parse_obj(template_dict)
+            return StepJSONObjectInput.model_validate(template_dict)
         except:
             # Try to parse JSON as an array
-            return StepArrayInput.parse_obj(template_dict)
+            return StepArrayInput.model_validate(template_dict)

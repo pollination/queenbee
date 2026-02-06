@@ -1,8 +1,7 @@
 """Queenbee dependency class."""
-from typing import Dict
+from typing import Dict, Literal, Union
 from enum import Enum
-from pydantic import Field, constr
-
+from pydantic import Field
 
 from ..base.basemodel import BaseModel
 from ..base.request import make_request, urljoin, resolve_local_source
@@ -17,7 +16,7 @@ class DependencyKind(str, Enum):
 
 class Dependency(BaseModel):
     """Configuration to fetch a Recipe or Plugin that another Recipe depends on."""
-    type: constr(regex='^Dependency$') = 'Dependency'
+    type: Literal['Dependency'] = 'Dependency'
 
     kind: DependencyKind = Field(
         ...,
@@ -31,14 +30,14 @@ class Dependency(BaseModel):
         ' in your resource. Use an alias if this is not the case.'
     )
 
-    digest: str = Field(
+    digest: Union[str, None] = Field(
         None,
         alias='hash',
         description='The digest hash of the dependency when retrieved from its source.'
         ' This is locked when the resource dependencies are downloaded.'
     )
 
-    alias: str = Field(
+    alias: Union[str, None] = Field(
         None,
         description='An optional alias to refer to this dependency. Useful if the name'
         ' is already used somewhere else.'
@@ -102,7 +101,7 @@ class Dependency(BaseModel):
         res = make_request(url=url, auth_header=auth_header)
 
         raw_bytes = res.read()
-        return RepositoryIndex.parse_raw(raw_bytes)
+        return RepositoryIndex.model_validate_json(raw_bytes)
 
     def fetch(self, verify_digest: bool = True, auth_header: Dict[str, str] = {}) -> 'PackageVersion':
         """Fetch the dependency from its source

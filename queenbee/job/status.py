@@ -4,14 +4,15 @@ The base status class provides reusable primitives to
 express the status of a job, run or step
 """
 from datetime import datetime
-from pydantic import Field, constr
+from pydantic import Field
 from ..io.common import IOBase
+from typing import Literal, Union
 
 class BaseStatus(IOBase):
     """Base Status model"""
-    type: constr(regex='^BaseStatus$') = 'BaseStatus'
+    type: Literal['BaseStatus'] = 'BaseStatus'
 
-    message: str = Field(
+    message: Union[str, None] = Field(
         None,
         description='Any message produced by the task. Usually error/debugging hints.'
     )
@@ -21,13 +22,12 @@ class BaseStatus(IOBase):
         description='The time at which the task was started'
     )
 
-    finished_at: datetime = Field(
+    finished_at: Union[datetime, None] = Field(
         None,
         description='The time at which the task was completed'
     )
 
-    source: str = Field(
+    source: Union[str, None] = Field(
         None,
         description='Source url for the status object. It can be a recipe or a function.'
     )
-

@@ -1,6 +1,6 @@
 """DAGTask module."""
-from typing import Union, List
-from pydantic import Field, validator, constr
+from typing import Union, List, Literal
+from pydantic import Field, field_validator, ValidationInfo
 
 from ..base.basemodel import BaseModel
 from ..io.common import find_io_by_name, find_dup_items
@@ -19,7 +19,7 @@ class DAGTaskLoop(BaseModel):
     This will run the template provided multiple times and in parallel relative to an
     input or task parameter which should be a list.
     """
-    type: constr(regex='^DAGTaskLoop$') = 'DAGTaskLoop'
+    type: Literal['DAGTaskLoop'] = 'DAGTaskLoop'
 
     from_: Union[InputReference, TaskReference, ValueListReference] = Field(
         None,
@@ -31,7 +31,7 @@ class DAGTaskLoop(BaseModel):
 class DAGTask(BaseModel):
     """A single task in a DAG flow."""
 
-    type: constr(regex='^DAGTask$') = 'DAGTask'
+    type: Literal['DAGTask'] = 'DAGTask'
 
     name: str = Field(
         ...,
@@ -44,39 +44,40 @@ class DAGTask(BaseModel):
         'must be available in the dependencies.'
     )
 
-    needs: List[str] = Field(
+    needs: Union[List[str], None] = Field(
         None,
         description='List of DAG tasks that this task depends on and needs to be'
         ' executed before this task.'
     )
 
     arguments: List[TaskArguments] = Field(
-        None,
+        default_factory=list,
         description='The input arguments for this task.'
     )
 
-    loop: DAGTaskLoop = Field(
+    loop: Union[DAGTaskLoop, None] = Field(
         None,
         description='Loop configuration for this task.'
     )
 
-    sub_folder: str = Field(
+    sub_folder: Union[str, None] = Field(
         None,
         description='A path relative to the current folder context where artifacts '
         'should be saved. This is useful when performing a loop or invoking another '
         'workflow and wanting to save results in a specific sub_folder.'
     )
-
+    
     returns: List[TaskReturns] = Field(
-        None,
+        default_factory=list,
         description='List of task returns.'
     )
 
-    @validator('loop', always=True)
-    def check_item_references(cls, v, values):
+    @field_validator('loop', mode='before')
+    @classmethod
+    def check_item_references(cls, v: 'DAGTaskLoop', info: ValidationInfo) -> 'DAGTaskLoop':
         if v is None:
-            arguments = values.get('arguments')
-            if arguments is None:
+            arguments = info.data.get('arguments')
+            if not arguments:
                 return v
             artifacts = [arg for arg in arguments if arg.is_artifact]
             assert len(cls.parameters_by_ref_source(artifacts, 'item')) == 0, \
@@ -86,11 +87,12 @@ class DAGTask(BaseModel):
             )
         return v
 
-    @validator('sub_folder', always=True)
-    def check_references(cls, v, values):
-        loop = values.get('loop')
-        arguments = values.get('arguments')
-
+    @field_validator('sub_folder', mode='before')
+    @classmethod
+    def check_references(cls, v: str, info: ValidationInfo) -> str:
+        loop = info.data.get('loop')
+        arguments = info.data.get('arguments')
+        
         if v is None:
             return v
 
@@ -110,69 +112,72 @@ class DAGTask(BaseModel):
                 find_io_by_name(arguments, ref_list[1])
         return v
 
-    @validator('arguments')
-    def check_duplicate_argument_name(cls, v, values):
-        v = [] if v is None else v
+    @field_validator('arguments')
+    @classmethod
+    def check_duplicate_argument_name(cls, v: List[TaskArguments], info: ValidationInfo) -> List[TaskArguments]:
         names = [arg.name for arg in v]
         dup_arg = find_dup_items(names)
         if dup_arg:
             raise ValueError(
-                f'Duplicate argument name in task "{values["name"]}": {dup_arg}. '
+                f'Duplicate argument name in task "{info.data.get("name")}": {dup_arg}. '
                 f'Each task argument name should be unique.'
             )
         return v
 
-    @validator('returns', always=True)
-    def check_duplicate_return_name(cls, v, values):
-        v = [] if v is None else v
+    @field_validator('returns')
+    @classmethod
+    def check_duplicate_return_name(cls, v: List[TaskReturns], info: ValidationInfo) -> List[TaskReturns]:
         names = [arg.name for arg in v]
         dup_arg = find_dup_items(names)
         if dup_arg:
             raise ValueError(
-                f'Duplicate return name in task "{values["name"]}": {dup_arg}. '
+                f'Duplicate return name in task "{info.data.get("name")}": {dup_arg}. '
                 f'Each task return name should be unique.'
             )
         return v
 
-    @validator('arguments', always=True)
-    def check_referenced_values(cls, v, values):
-        if v is None:
-            return []
+    @field_validator('arguments')
+    @classmethod
+    def check_referenced_values(cls, v: List[TaskArguments], info: ValidationInfo) -> List[TaskArguments]:
 
         deps = []
         for arg in v:
             try:
-                dep = arg.from_.name
+                # only check for task references
+                if isinstance(arg.from_, TaskReference):
+                    dep = arg.from_.name
+                    deps.append(dep)
             except AttributeError:
                 # non-referenced arguments
                 pass
-            else:
-                deps.append(dep)
 
-        needs = values.get('needs', [])
+        needs = info.data.get('needs', [])
 
         missing = [d for d in deps if d not in needs]
 
         if missing:
             raise ValueError(
-                f'Missing task name(s) from `needs` field for task {values["name"]}:'
+                f'Missing task name(s) from `needs` field for task {info.data.get("name")}:'
                 f'\n\t-> {missing}'
             )
 
         return v
 
-    @validator('loop')
-    def check_loop_referenced_task(cls, v, values):
+    @field_validator('loop')
+    @classmethod
+    def check_loop_referenced_task(cls, v: 'DAGTaskLoop', info: ValidationInfo) -> 'DAGTaskLoop':
+        if v is None:
+            return v
         try:
             dep = v.from_.name
         except AttributeError:
             # non-referenced arguments
             return v
-        needs = values.get('needs', [])
+        needs = info.data.get('needs', [])
 
         if dep not in needs:
             raise ValueError(
-                f'Missing loop reference from `needs` field for task {values["name"]}:'
+                f'Missing loop reference from `needs` field for task {info.data.get("name")}:'
                 f'\n\t-> {dep}'
             )
 

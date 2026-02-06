@@ -1,6 +1,6 @@
-from typing import List, Union, Dict
+from typing import List, Union, Dict, Literal
 from urllib.parse import urlparse
-from pydantic import Field, SecretStr, constr
+from pydantic import Field, SecretStr
 
 from ..base.basemodel import BaseModel
 from .auth import JWTAuth, HeaderAuth
@@ -8,7 +8,7 @@ from .repositories import RepositoryReference
 
 
 class Config(BaseModel):
-    type: constr(regex='^Config$') = 'Config'
+    type: Literal['Config'] = 'Config'
 
     auth: List[Union[JWTAuth, HeaderAuth]] = Field(
         [],
@@ -111,8 +111,3 @@ class Config(BaseModel):
                 existing_index = i
 
         del self.repositories[existing_index]
-
-    class Config:
-        json_encoders = {
-            SecretStr: lambda v: v.get_secret_value() if v else None,
-        }

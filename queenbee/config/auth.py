@@ -1,28 +1,21 @@
-import json
-from enum import Enum
-from urllib import request
-from urllib.error import HTTPError
-from typing import Union, Dict
-from pydantic import Field, SecretStr, constr
-
+from typing import Dict, Literal, Union
+from pydantic import Field, SecretStr
 
 from ..base.basemodel import BaseModel
-from ..base.request import make_request, USER_AGENT_STRING
 
 
 class BaseAuth(BaseModel):
-
-    type: constr(regex='^BaseAuth$') = 'BaseAuth'
+    type: Literal['BaseAuth'] = 'BaseAuth'
 
     domain: str = Field(
         ...,
         description='The host domain to authenticate to',
-        example='api.pollination.solutions'
+        json_schema_extra={'example': 'api.pollination.solutions'}
     )
 
-    access_token: SecretStr = Field(
+    access_token: Union[SecretStr, None] = Field(
         None,
-        description='A JWT token retrieved from a previous login'
+        description='An access token for the domain.'
     )
 
     @property
@@ -41,12 +34,11 @@ class BaseAuth(BaseModel):
 
 
 class HeaderAuth(BaseAuth):
-
-    type: Enum('JWTAuth', {'type': 'jwt'}) = 'jwt'
+    type: Literal['HeaderAuth'] = 'HeaderAuth'
 
     header_name: str = Field(
         ...,
-        description='The HTTP header to user'
+        description='The HTTP header to use'
     )
 
     @property
@@ -56,11 +48,10 @@ class HeaderAuth(BaseAuth):
         Returns:
             Dict[str, str]: a header with an API token
         """
+        if self.access_token is None:
+            return {}
         return {self.header_name: self.access_token.get_secret_value()}
 
 
 class JWTAuth(BaseAuth):
-
-    type: Enum('JWTAuth', {'type': 'jwt'}) = 'jwt'
-
-
+    type: Literal['JWTAuth'] = 'JWTAuth'

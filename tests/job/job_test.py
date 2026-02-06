@@ -1,7 +1,7 @@
 from typing import List
 
 import pytest
-from pydantic.main import ValidationError
+from pydantic import ValidationError
 from queenbee.io.artifact_source import HTTP
 from queenbee.io.inputs.dag import DAGInputs, DAGPathInput, DAGStringInput
 from queenbee.job import Job
@@ -71,7 +71,7 @@ def all_inputs(required_inputs, optional_inputs):
 
 def test_duplicated_job_arguments():
     with pytest.raises(ValidationError) as validation_err:
-        Job.parse_obj({
+        Job.model_validate({
             'source': 'https://example.com/registries/recipe/daylight-factor/latest',
             'arguments': [[
                 {
@@ -98,15 +98,15 @@ def test_duplicated_job_arguments():
             ]]
         })
 
-    assert validation_err.value.errors() == [{
-        'loc': ('arguments', 0),
-        'msg': 'duplicate argument name sensor-grid-count',
-        'type': 'value_error'
-    }]
+    errors = validation_err.value.errors()
+    assert len(errors) == 1
+    error = errors[0]
+    assert error['type'] == 'value_error'
+    assert 'duplicate argument name sensor-grid-count' in error['msg']
 
 
 def test_valid_job_arguments(all_inputs: List[DAGInputs]):
-    job: Job = Job.parse_obj({
+    job: Job = Job.model_validate({
         'source': 'https://example.com/registries/recipe/daylight-factor/latest',
         'arguments': [[
             {
@@ -142,7 +142,7 @@ def test_valid_job_arguments(all_inputs: List[DAGInputs]):
 
 
 def test_required_job_arguments_missing(all_inputs: List[DAGInputs]):
-    job: Job = Job.parse_obj({
+    job: Job = Job.model_validate({
         'source': 'https://example.com/registries/recipe/daylight-factor/latest',
         'arguments': [[
             {
@@ -176,25 +176,23 @@ def test_required_job_arguments_missing(all_inputs: List[DAGInputs]):
     with pytest.raises(ValidationError) as validation_err:
         job.validate_arguments(all_inputs)
 
-    assert validation_err.value.errors() == [
-        {
-            'loc': ('arguments', 0),
-            'msg': 'missing required argument required-parameter-input',
-            'type': 'value_error'
-        }, {
-            'loc': ('arguments', 0),
-            'msg': 'missing required argument required-artifact-input',
-            'type': 'value_error'
-        }, {
-            'loc': ('arguments', 1),
-            'msg': 'missing required argument required-parameter-input',
-            'type': 'value_error'
-        }
-    ]
+    errors = validation_err.value.errors()
+    assert len(errors) == 3
+
+    error_msgs = [err['msg'] for err in errors]
+
+    assert 'missing required argument required-parameter-input' in error_msgs[0]
+    assert errors[0]['loc'] == ('arguments', 0)
+
+    assert 'missing required argument required-artifact-input' in error_msgs[1]
+    assert errors[1]['loc'] == ('arguments', 0)
+
+    assert 'missing required argument required-parameter-input' in error_msgs[2]
+    assert errors[2]['loc'] == ('arguments', 1)
 
 
 def test_invalid_job_arguments_type(all_inputs: List[DAGInputs]):
-    job: Job = Job.parse_obj({
+    job: Job = Job.model_validate({
         'source': 'https://example.com/registries/recipe/daylight-factor/latest',
         'arguments': [[
             {
@@ -235,22 +233,20 @@ def test_invalid_job_arguments_type(all_inputs: List[DAGInputs]):
     with pytest.raises(ValidationError) as validation_err:
         job.validate_arguments(all_inputs)
 
-    assert validation_err.value.errors() == [
-        {
-            'loc': ('arguments', 0),
-            'msg': 'invalid argument type for optional-parameter-input, should be "JobArgument"',
-            'type': 'value_error'
-        },
-        {
-            'loc': ('arguments', 1),
-            'msg': 'invalid argument type for required-artifact-input, should be "JobPathArgument"',
-            'type': 'value_error'
-        },
-    ]
+    errors = validation_err.value.errors()
+    assert len(errors) == 2
+
+    error_msgs = [err['msg'] for err in errors]
+
+    assert 'invalid argument type for optional-parameter-input, should be "JobArgument"' in error_msgs[0]
+    assert errors[0]['loc'] == ('arguments', 0)
+
+    assert 'invalid argument type for required-artifact-input, should be "JobPathArgument"' in error_msgs[1]
+    assert errors[1]['loc'] == ('arguments', 1)
 
 
 def test_populate_optional_arguments(optional_inputs: List[DAGInputs]):
-    job: Job = Job.parse_obj({
+    job: Job = Job.model_validate({
         'source': 'https://example.com/registries/recipe/daylight-factor/latest',
         'arguments': [[
             {
@@ -272,7 +268,7 @@ def test_populate_optional_arguments(optional_inputs: List[DAGInputs]):
 
     job.populate_default_arguments(optional_inputs)
 
-    expected_job = Job.parse_obj({
+    expected_job = Job.model_validate({
         'source': 'https://example.com/registries/recipe/daylight-factor/latest',
         'arguments': [[
             {

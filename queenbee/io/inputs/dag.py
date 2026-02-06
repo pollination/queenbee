@@ -2,8 +2,8 @@
 
 import os
 from typing import Dict, Union, List
-
-from pydantic import constr, Field, validator
+from typing import Literal
+from pydantic import Field, field_validator, ValidationInfo
 from jsonschema import validate as json_schema_validator
 
 from ..common import ItemType, GenericInput
@@ -18,15 +18,15 @@ class DAGGenericInput(GenericInput):
     This class adds a handler to input to handle the process of loading the input
     from different graphical interfaces.
     """
-    type: constr(regex='^DAGGenericInput$') = 'DAGGenericInput'
+    type: Literal['DAGGenericInput'] = 'DAGGenericInput'
 
-    default: str = Field(
+    default: Union[str, None] = Field(
         None,
         description='Default value for generic input.'
     )
 
     alias: List[DAGAliasInputs] = Field(
-        None,
+        default_factory=list,
         description='A list of aliases for this input in different platforms.'
     )
 
@@ -37,7 +37,7 @@ class DAGGenericInput(GenericInput):
         'be set explicitly even when a default value is provided.'
     )
 
-    spec: Dict = Field(
+    spec: Union[Dict, None] = Field(
         None,
         description='An optional JSON Schema specification to validate the input value. '
         'You can use validate_spec method to validate a value against the spec.'
@@ -53,11 +53,12 @@ class DAGGenericInput(GenericInput):
             json_schema_validator(value, spec)
         return value
 
-    @validator('required', always=True)
-    def check_required(cls, v, values):
+    @field_validator('required', mode='before')
+    @classmethod
+    def check_required(cls, v: bool, info: ValidationInfo) -> bool:
         """Ensure required is set to True when default value is not provided."""
-        default = values.get('default', None)
-        name = values.get('name', None)
+        default = info.data.get('default', None)
+        name = info.data.get('name', None)
         if default is None and v is False:
             raise ValueError(
                 f'{cls.__name__}.{name} -> required should be true if no default'
@@ -65,13 +66,14 @@ class DAGGenericInput(GenericInput):
             )
         return v
 
-    @validator('spec')
-    def validate_default_value(cls, v, values):
+    @field_validator('spec')
+    @classmethod
+    def validate_default_value(cls, v: Dict, info: ValidationInfo) -> Dict:
         """Validate default value against spec if provided."""
-        try:
-            type_ = values['type']
-        except KeyError:
+        if 'type' not in info.data:
             raise ValueError(f'Input with missing type: {cls.__name__}')
+
+        type_ = info.data.get('type')
 
         if type_ != cls.__name__:
             # this is a check to ensure the default value only gets validated againt the
@@ -82,25 +84,23 @@ class DAGGenericInput(GenericInput):
             # on a string before it gets to the integer class for an integer input.
             return v
 
-        try:
-            default = values['default']
-        except KeyError:
+        if 'default' not in info.data:
             # spec is not set
             return v
 
+        default = info.data.get('default')
         if v is not None and default is not None:
             json_schema_validator(default, v)
         return v
 
-    @validator('default')
-    def validate_default_refs(cls, v, values):
+    @field_validator('default')
+    @classmethod
+    def validate_default_refs(cls, v: str, info: ValidationInfo) -> str:
         """Validate referenced variables in the command"""
-        try:
-            type_ = values['type']
-        except KeyError:
+        if 'type' not in info.data:
             raise ValueError(f'Input with missing type: {cls.__name__}')
 
-        if type_ != cls.__name__ or not isinstance(v, (str, bytes)):
+        if info.data.get('type') != cls.__name__ or not isinstance(v, (str, bytes)):
             # this is a check to ensure the default value only gets validated againt the
             # correct class type. See spec validation for more information
             return v
@@ -115,9 +115,9 @@ class DAGGenericInput(GenericInput):
 
         return v
 
-    @validator('alias', always=True)
-    def check_alias_required(cls, v):
-        v = [] if v is None else v
+    @field_validator('alias')
+    @classmethod
+    def check_alias_required(cls, v: List[DAGAliasInputs]) -> List[DAGAliasInputs]:
         for alias in v:
             default = alias.default
             name = alias.name
@@ -148,9 +148,9 @@ class DAGStringInput(DAGGenericInput):
 
     """
 
-    type: constr(regex='^DAGStringInput$') = 'DAGStringInput'
+    type: Literal['DAGStringInput'] = 'DAGStringInput'
 
-    default: str = Field(
+    default: Union[str, None] = Field(
         None,
         description='Default value to use for an input if a value was not supplied.'
     )
@@ -176,9 +176,9 @@ class DAGIntegerInput(DAGGenericInput):
     for more information.
 
     """
-    type: constr(regex='^DAGIntegerInput$') = 'DAGIntegerInput'
+    type: Literal['DAGIntegerInput'] = 'DAGIntegerInput'
 
-    default: int = Field(
+    default: Union[int, None] = Field(
         None,
         description='Default value to use for an input if a value was not supplied.'
     )
@@ -203,9 +203,9 @@ class DAGNumberInput(DAGGenericInput):
     See http://json-schema.org/understanding-json-schema/reference/numeric.html#numeric
     for more information.
     """
-    type: constr(regex='^DAGNumberInput$') = 'DAGNumberInput'
+    type: Literal['DAGNumberInput'] = 'DAGNumberInput'
 
-    default: float = Field(
+    default: Union[float, None] = Field(
         None,
         description='Default value to use for an input if a value was not supplied.'
     )
@@ -232,9 +232,9 @@ class DAGBooleanInput(DAGGenericInput):
     See http://json-schema.org/understanding-json-schema/reference/boolean.html for more
     information.
     """
-    type: constr(regex='^DAGBooleanInput$') = 'DAGBooleanInput'
+    type: Literal['DAGBooleanInput'] = 'DAGBooleanInput'
 
-    default: bool = Field(
+    default: Union[bool, None] = Field(
         None,
         description='Default value to use for an input if a value was not supplied.'
     )
@@ -269,20 +269,22 @@ class DAGFolderInput(DAGGenericInput):
             "maxLength": 50,
         }
     """
-    type: constr(regex='^DAGFolderInput$') = 'DAGFolderInput'
+    type: Literal['DAGFolderInput'] = 'DAGFolderInput'
 
-    default: Union[HTTP, S3, ProjectFolder] = Field(
+    default: Union[HTTP, S3, ProjectFolder, None] = Field(
         None,
         description='The default source for file if the value is not provided.'
     )
 
-    @validator('required', always=True)
-    def check_required(cls, v):
+    @field_validator('required', mode='before')
+    @classmethod
+    def check_required(cls, v: bool) -> bool:
         """Overwrite check_required for artifacts to allow optional artifacts."""
-        return [] if v is None else v
+        return v if v is not None else False
 
-    @validator('alias', always=True)
-    def check_alias_required(cls, v):
+    @field_validator('alias', mode='before')
+    @classmethod
+    def check_alias_required(cls, v: List[DAGAliasInputs]) -> List[DAGAliasInputs]:
         """Overwrite check_alias_required for artifacts.
 
         This will allow None input for aliases for optional artifacts.
@@ -334,9 +336,9 @@ class DAGFileInput(DAGFolderInput):
         }
 
     """
-    type: constr(regex='^DAGFileInput$') = 'DAGFileInput'
+    type: Literal['DAGFileInput'] = 'DAGFileInput'
 
-    extensions: List[str] = Field(
+    extensions: Union[List[str], None] = Field(
         None,
         description='Optional list of extensions for file. The check for extension is '
         'case-insensitive.'
@@ -384,9 +386,9 @@ class DAGPathInput(DAGFolderInput):
         }
 
     """
-    type: constr(regex='^DAGPathInput$') = 'DAGPathInput'
+    type: Literal['DAGPathInput'] = 'DAGPathInput'
 
-    extensions: List[str] = Field(
+    extensions: Union[List[str], None] = Field(
         None,
         description='Optional list of extensions for path. The check for extension is '
         'case-insensitive. The extension will only be validated for file inputs.'
@@ -418,9 +420,9 @@ class DAGArrayInput(DAGGenericInput):
     See http://json-schema.org/understanding-json-schema/reference/array.html for
     more information.
     """
-    type: constr(regex='^DAGArrayInput$') = 'DAGArrayInput'
+    type: Literal['DAGArrayInput'] = 'DAGArrayInput'
 
-    default: List = Field(
+    default: Union[List, None] = Field(
         None,
         description='Default value to use for an input if a value was not supplied.'
     )
@@ -431,8 +433,9 @@ class DAGArrayInput(DAGGenericInput):
         'the same type.'
     )
 
-    @validator('default', always=True)
-    def replace_none_value(cls, v):
+    @field_validator('default', mode='before')
+    @classmethod
+    def replace_none_value(cls, v: List) -> List:
         return [] if not v else v
 
     def validate_spec(self, value):
@@ -457,15 +460,16 @@ class DAGJSONObjectInput(DAGGenericInput):
     See http://json-schema.org/understanding-json-schema/reference/object.html for
     more information.
     """
-    type: constr(regex='^DAGJSONObjectInput$') = 'DAGJSONObjectInput'
+    type: Literal['DAGJSONObjectInput'] = 'DAGJSONObjectInput'
 
-    default: Dict = Field(
+    default: Union[Dict, None] = Field(
         None,
         description='Default value to use for an input if a value was not supplied.'
     )
 
-    @validator('default', always=True)
-    def replace_none_value(cls, v):
+    @field_validator('default', mode='before')
+    @classmethod
+    def replace_none_value(cls, v: Dict) -> Dict:
         return {} if not v else v
 
     def validate_spec(self, value):
@@ -480,6 +484,7 @@ class DAGJSONObjectInput(DAGGenericInput):
 
 
 DAGInputs = Union[
-    DAGGenericInput, DAGStringInput, DAGIntegerInput, DAGNumberInput, DAGBooleanInput,
-    DAGFolderInput, DAGFileInput, DAGPathInput, DAGArrayInput, DAGJSONObjectInput
+    DAGStringInput, DAGIntegerInput, DAGNumberInput, DAGBooleanInput,
+    DAGFolderInput, DAGFileInput, DAGPathInput, DAGArrayInput, DAGJSONObjectInput,
+    DAGGenericInput
 ]
