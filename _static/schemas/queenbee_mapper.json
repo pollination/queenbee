@@ -1,0 +1,37 @@
+{
+  "classes": {
+    "BaseStatus": "queenbee.interface.job.status",
+    "DAG": "queenbee.interface.recipe.dag",
+    "DAGTask": "queenbee.interface.recipe.task",
+    "DAGTaskLoop": "queenbee.interface.recipe.task",
+    "DockerConfig": "queenbee.interface.plugin.plugin",
+    "Function": "queenbee.interface.plugin.function",
+    "IOBase": "queenbee.interface.io.common",
+    "InputReference": "queenbee.interface.io.reference",
+    "Job": "queenbee.interface.job.job",
+    "JobStatus": "queenbee.interface.job.job",
+    "License": "queenbee.interface.base.metadata",
+    "LocalConfig": "queenbee.interface.plugin.plugin",
+    "MetaData": "queenbee.interface.base.metadata",
+    "Plugin": "queenbee.interface.plugin.plugin",
+    "PluginConfig": "queenbee.interface.plugin.plugin",
+    "Recipe": "queenbee.interface.recipe.recipe",
+    "RecipeInterface": "queenbee.interface.recipe.recipe",
+    "RepositoryIndex": "queenbee.interface.repository.index",
+    "RepositoryMetadata": "queenbee.interface.repository.index",
+    "RunStatus": "queenbee.interface.job.run",
+    "StepStatus": "queenbee.interface.job.run",
+    "TaskReference": "queenbee.interface.io.reference",
+    "ValueListReference": "queenbee.interface.io.reference",
+    "_BaseReference": "queenbee.interface.io.reference",
+    "_InputReferenceBase": "queenbee.interface.io.reference",
+    "_TaskReferenceBase": "queenbee.interface.io.reference"
+  },
+  "enums": {
+    "JobStatusEnum": "queenbee.interface.job.job",
+    "RunStatusEnum": "queenbee.interface.job.run",
+    "ScriptingLanguages": "queenbee.interface.plugin.function",
+    "StatusType": "queenbee.interface.job.run",
+    "StepStatusEnum": "queenbee.interface.job.run"
+  }
+}
