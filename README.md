@@ -11,8 +11,8 @@ workflows see
 which converts Queenbee workflows to executable
 [Luigi](https://luigi.readthedocs.io/en/stable/) pipelines.
 
-You can find more workflow samples in
-[honeybee-radiance-workflow](https://github.com/ladybug-tools/honeybee-radiance-workflow)
+You can find examples of run-able queenbee workflows in the
+[lbt-recipes](https://github.com/ladybug-tools/lbt-recipes)
 repository.
 
 ## Installation
