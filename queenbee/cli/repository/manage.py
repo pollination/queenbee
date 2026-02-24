@@ -1,4 +1,3 @@
-import os
 import json
 
 try:
@@ -10,7 +9,6 @@ except ImportError:
     )
 
 from ...config.repositories import RepositoryReference
-from ...repository.index import RepositoryIndex, RepositoryMetadata
 
 
 @click.command('add')

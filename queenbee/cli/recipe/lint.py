@@ -1,7 +1,7 @@
 import os
 
 from pydantic import ValidationError
-from ...recipe import Recipe, BakedRecipe
+from ...recipe import BakedRecipe
 
 try:
     import click

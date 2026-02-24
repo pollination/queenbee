@@ -2,7 +2,7 @@ import os
 
 from pydantic import ValidationError
 
-from ...recipe import Recipe, BakedRecipe
+from ...recipe import BakedRecipe
 from ...repository import PackageVersion
 
 try:

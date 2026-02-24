@@ -10,8 +10,7 @@ Task argument and return objects provide the interface to connect:
 
 """
 
-from typing import Union
-from typing import Literal
+from typing import Union, Literal
 from pydantic import Field
 from ...base.basemodel import BaseModel
 from ..reference import InputReference, ItemReference, TaskReference, ValueReference, \

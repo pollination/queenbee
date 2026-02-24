@@ -33,7 +33,10 @@ def index(path, index_path, new, force, skip):
         if new:
             repo_index = RepositoryIndex.from_folder(path)
         else:
-            repo_index = RepositoryIndex.parse_file(index_path)
+            with open(index_path, 'r') as f:
+                content = f.read()
+            repo_index = RepositoryIndex.model_validate_json(content)
+            
             repo_index.merge_folder(path, force, skip)
     except ValueError as error:
         raise click.ClickException(error)

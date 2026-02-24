@@ -1,8 +1,9 @@
 import os
-from typing import List, Union, Dict, Literal, Optional
-from datetime import datetime
+import json
+from typing import List, Union, Dict, Literal
+from datetime import datetime, timezone
 from pydantic import Field, model_validator, field_validator
- 
+
 from ..base.basemodel import BaseModel
 
 from ..plugin import Plugin
@@ -16,55 +17,59 @@ class RepositoryMetadata(BaseModel):
     type: Literal['RepositoryMetadata'] = 'RepositoryMetadata'
 
     name: Union[str, None] = Field(
-        None,
+        default=None,
         description='The name of the repository'
     )
 
     description: str = Field(
-        'A Queenbee package repository',
+        default='A Queenbee package repository',
         description='A short description of the repository'
     )
 
     source: Union[str, None] = Field(
-        None,
+        default=None,
         description='The source path (url or local) to the repository'
     )
 
     plugin_count: int = Field(
-        0,
+        default=0,
         description='The number of plugins hosted by the repository'
     )
 
     recipe_count: int = Field(
-        0,
+        default=0,
         description='The number of recipes hosted by the repository'
     )
 
 
 class RepositoryIndex(BaseModel):
     """A searchable index for a Queenbee Plugin and Recipe repository"""
-    api_version: Literal['v1beta1'] = Field('v1beta1', json_schema_extra={'readOnly': True})
+
+    api_version: Literal['v1beta1'] = Field(
+        'v1beta1', 
+        json_schema_extra={'readOnly': True}
+    )
 
     type: Literal['RepositoryIndex'] = 'RepositoryIndex'
- 
+
     generated: Union[datetime, None] = Field(
-        None,
+        default=None,
         description='The timestamp at which the index was generated'
     )
 
     metadata: RepositoryMetadata = Field(
-        RepositoryMetadata(),
+        default_factory=RepositoryMetadata,
         description='Extra information about the repository'
     )
 
     plugin: Dict[str, List[PackageVersion]] = Field(
-        {},
+        default_factory=dict,
         description='A dict of plugins accessible by name. Each name key points to'
         ' a list of plugin versions'
     )
 
     recipe: Dict[str, List[PackageVersion]] = Field(
-        {},
+        default_factory=dict,
         description='A dict of recipes accessible by name. Each name key points to a'
         ' list of recipesversions'
     )
@@ -147,17 +152,10 @@ class RepositoryIndex(BaseModel):
                     os.path.join('recipes', package).replace('\\', '/')
                 index.index_recipe_version(resource_version)
 
-        index.generated = datetime.utcnow()
+        index.generated = datetime.now(timezone.utc)
 
-        cls.add_slugs(
-            root=tail,
-            packages=index.plugin,
-        )
-
-        cls.add_slugs(
-            root=tail,
-            packages=index.recipe,
-        )
+        cls.add_slugs(root=tail, packages=index.plugin)
+        cls.add_slugs(root=tail, packages=index.recipe)
 
         index.metadata.plugin_count = len(index.plugin)
         index.metadata.recipe_count = len(index.recipe)
@@ -322,7 +320,7 @@ class RepositoryIndex(BaseModel):
         self.recipe = self._index_resource_version(
             self.recipe, recipe_version, overwrite=overwrite
         )
-        self.generated = datetime.utcnow()
+        self.generated = datetime.now(timezone.utc)
 
     def index_plugin_version(self, plugin_version: PackageVersion,
                                overwrite: bool = False):
@@ -338,7 +336,7 @@ class RepositoryIndex(BaseModel):
         self.plugin = self._index_resource_version(
             self.plugin, plugin_version, overwrite=overwrite
         )
-        self.generated = datetime.utcnow()
+        self.generated = datetime.now(timezone.utc)
 
     def merge_folder(self, folder_path, overwrite: bool = False, skip: bool = False):
         """Merge the contents of a repository folder with the index

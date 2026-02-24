@@ -234,7 +234,7 @@ class IOBase(BaseModel):
             if not hasattr(io, 'alias') or not io.alias:
                 # function inputs/outputs
                 return v
-            for alias in io['alias']:
+            for alias in io.alias:
                 for platform in alias.platform:
                     platforms.append(platform)
 
@@ -246,7 +246,7 @@ class IOBase(BaseModel):
                     # no alias use the original name
                     names.append(io.name)
                     continue
-                for alias in io['alias']:
+                for alias in io.alias:
                     if platform in alias.platform:
                         names.append(alias.name)
                         break

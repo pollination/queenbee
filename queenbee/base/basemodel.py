@@ -1,7 +1,6 @@
 """Queenbee utility functions."""
 import hashlib
-import json
-from typing import List, Union, Dict, Any
+from typing import List, Dict, Any, Optional
 
 import yaml
 from pydantic import BaseModel as PydanticBaseModel
@@ -150,13 +149,19 @@ class BaseModelNoType(PydanticBaseModel):
 class BaseModel(BaseModelNoType):
     """BaseModel with functionality to return the object as a yaml string."""
 
-    type: str = Field('BaseModel', pattern='^BaseModel$')
+    type: str = Field(default='BaseModel', pattern='^BaseModel$')
 
-    annotations: Dict[str, Any] = Field(
+    annotations: Optional[Dict[str, Any]] = Field(
         default_factory=dict,
         description='An optional dictionary to add annotations to inputs. These '
-        'annotations will be used by the client side libraries.'
+        'annotations will be used by the client side libraries.',
+        validate_default=True
     )
+
+    @field_validator('annotations', mode='before')
+    @classmethod
+    def convert_none_to_empty_dict(cls, v):
+        return v if v is not None else {}
 
     @field_validator('type')
     @classmethod

@@ -1,6 +1,4 @@
-import os
 import json
-from urllib.parse import urlparse
 
 try:
     import click
@@ -9,8 +7,6 @@ except ImportError:
     raise ImportError(
         'click modules not installed. Try `pip install queenbee[cli]` command.'
     )
-
-from ...config.repositories import RepositoryReference
 
 
 @click.command('search')

@@ -2,7 +2,7 @@ import os
 import re
 import hashlib
 from io import BytesIO
-from datetime import datetime
+from datetime import datetime, timezone
 from tarfile import TarInfo, TarFile
 from typing import Union, Tuple, Dict, Literal
 
@@ -92,7 +92,7 @@ class PackageVersion(MetaData):
         package_path = f'{resource.metadata.name}-{resource.metadata.tag}.tgz'
 
         if created is None:
-            created = datetime.utcnow()
+            created = datetime.now(timezone.utc)
 
         input_dict = resource.metadata.to_dict()
         input_dict['type'] = 'PackageVersion'

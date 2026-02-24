@@ -34,13 +34,19 @@ class DAGGenericOutputAlias(GenericOutput):
 
     @field_validator('platform', mode='before')
     @classmethod
-    def create_empty_platform_list(cls, v: List[str]) -> List[str]:
+    def create_empty_platform_list(cls, v):
         return [] if v is None else v
 
     @field_validator('handler', mode='before')
     @classmethod
+    def create_empty_handler_list(cls, v):
+        """Catch None before Pydantic throws a type error."""
+        return [] if v is None else v
+
+    @field_validator('handler', mode='after')
+    @classmethod
     def check_duplicate_platform_name(cls, v: List[IOAliasHandler], info: ValidationInfo) -> List[IOAliasHandler]:
-        v = [] if v is None else v
+        """Run validation on the properly instantiated objects."""
         languages = [h.language for h in v]
         dup_lang = find_dup_items(languages)
         if dup_lang:
@@ -67,7 +73,7 @@ class _DAGArtifactOutputAlias(DAGGenericOutputAlias):
     This class add a required input. By default all artifact outputs are required.
     """
     required: bool = Field(
-        True,
+        default=True,
         description='A boolean to indicate if an artifact output is required. A False '
         'value makes the artifact optional.'
     )
@@ -167,7 +173,7 @@ class DAGArrayOutputAlias(DAGStringOutputAlias):
     type: Literal['DAGArrayOutputAlias'] = 'DAGArrayOutputAlias'
 
     items_type: ItemType = Field(
-        ItemType.String,
+        default=ItemType.String,
         description='Type of items in this array. All the items in an array must be '
         'from the same type.'
     )

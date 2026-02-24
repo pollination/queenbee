@@ -7,7 +7,7 @@ the original input.
 """
 
 import os
-from typing import Dict, Union, List, Literal
+from typing import Dict, Union, List, Literal, Any, Optional
 
 from pydantic import Field, field_validator, ValidationInfo
 from jsonschema import validate as json_schema_validator
@@ -26,31 +26,31 @@ class DAGGenericInputAlias(GenericInput):
     type: Literal['DAGGenericInputAlias'] = 'DAGGenericInputAlias'
 
     platform: List[str] = Field(
-        ...,
+        default_factory=list,
         description='Name of the client platform (e.g. Grasshopper, Revit, etc). The '
         'value can be any strings as long as it has been agreed between client-side '
         'developer and author of the recipe.'
     )
 
     handler: List[IOAliasHandler] = Field(
-        ...,
+        default_factory=list,
         description='List of process actions to process the input or output value.'
     )
 
-    default: Union[str, None] = Field(
-        None,
+    default: Any = Field(
+        default=None,
         description='Default value for generic input.'
     )
 
     # see: https://github.com/ladybug-tools/queenbee/issues/172
     required: bool = Field(
-        False,
+        default=False,
         description='A field to indicate if this input is required. This input needs to '
         'be set explicitly even when a default value is provided.'
     )
 
-    spec: Union[Dict, None] = Field(
-        None,
+    spec: Optional[Dict] = Field(
+        default=None,
         description='An optional JSON Schema specification to validate the input value. '
         'You can use validate_spec method to validate a value against the spec.'
     )
@@ -67,7 +67,7 @@ class DAGGenericInputAlias(GenericInput):
 
     @field_validator('default')
     @classmethod
-    def validate_default_refs(cls, v: str, info: ValidationInfo) -> str:
+    def validate_default_refs(cls, v: Any, info: ValidationInfo) -> Any:
         """Validate referenced variables in the command"""
         if 'type' not in info.data:
             raise ValueError(f'Input with missing type: {cls.__name__}')
@@ -89,10 +89,9 @@ class DAGGenericInputAlias(GenericInput):
 
         return v
 
-
     @field_validator('spec')
     @classmethod
-    def validate_default_value(cls, v: Dict, info: ValidationInfo) -> Dict:
+    def validate_default_value(cls, v: Optional[Dict], info: ValidationInfo) -> Optional[Dict]:
         """Validate default value against spec if provided."""
         if 'type' not in info.data:
             raise ValueError(f'Input with missing type: {cls.__name__}')
@@ -119,14 +118,14 @@ class DAGGenericInputAlias(GenericInput):
 
     @field_validator('platform', mode='before')
     @classmethod
-    def create_empty_platform_list(cls, v: List[str]) -> List[str]:
+    def create_empty_platform_list(cls, v: Optional[List[str]]) -> List[str]:
         return [] if v is None else v
 
     @field_validator('handler', mode='before')
     @classmethod
-    def check_duplicate_platform_name(cls, v: List[IOAliasHandler], info: ValidationInfo) -> List[IOAliasHandler]:
+    def check_duplicate_platform_name(cls, v: Optional[List[IOAliasHandler]], info: ValidationInfo) -> List[IOAliasHandler]:
         v = [] if v is None else v
-        languages = [h['language'] for h in v]
+        languages = [h['language'] if isinstance(h, dict) else h.language for h in v]
         dup_lang = find_dup_items(languages)
         if dup_lang:
             platform = info.data.get('platform', 'unknown')
@@ -164,11 +163,10 @@ class DAGStringInputAlias(DAGGenericInputAlias):
         }
 
     """
-
     type: Literal['DAGStringInputAlias'] = 'DAGStringInputAlias'
 
-    default: Union[str, None] = Field(
-        None,
+    default: Optional[str] = Field(
+        default=None,
         description='Default value to use for an input if a value was not supplied.'
     )
 
@@ -195,8 +193,8 @@ class DAGIntegerInputAlias(DAGGenericInputAlias):
     """
     type: Literal['DAGIntegerInputAlias'] = 'DAGIntegerInputAlias'
 
-    default: Union[int, None] = Field(
-        None,
+    default: Optional[int] = Field(
+        default=None,
         description='Default value to use for an input if a value was not supplied.'
     )
 
@@ -222,8 +220,8 @@ class DAGNumberInputAlias(DAGGenericInputAlias):
     """
     type: Literal['DAGNumberInputAlias'] = 'DAGNumberInputAlias'
 
-    default: Union[float, None] = Field(
-        None,
+    default: Optional[float] = Field(
+        default=None,
         description='Default value to use for an input if a value was not supplied.'
     )
 
@@ -251,8 +249,8 @@ class DAGBooleanInputAlias(DAGGenericInputAlias):
     """
     type: Literal['DAGBooleanInputAlias'] = 'DAGBooleanInputAlias'
 
-    default: Union[bool, None] = Field(
-        None,
+    default: Optional[bool] = Field(
+        default=None,
         description='Default value to use for an input if a value was not supplied.'
     )
 
@@ -288,8 +286,8 @@ class DAGFolderInputAlias(DAGGenericInputAlias):
     """
     type: Literal['DAGFolderInputAlias'] = 'DAGFolderInputAlias'
 
-    default: Union[HTTP, S3, ProjectFolder, None] = Field(
-        None,
+    default: Optional[Union[HTTP, S3, ProjectFolder]] = Field(
+        default=None,
         description='The default source for file if the value is not provided.'
     )
 
@@ -346,10 +344,9 @@ class DAGFileInputAlias(DAGFolderInputAlias):
     """
     type: Literal['DAGFileInputAlias'] = 'DAGFileInputAlias'
 
-    extensions: Union[List[str], None] = Field(
-        None,
-        description='Optional list of extensions for file. The check for extension is '
-        'case-insensitive.'
+    extensions: Optional[List[str]] = Field(
+        default=None,
+        description='Optional list of extensions for file.'
     )
 
     def validate_spec(self, value):
@@ -359,8 +356,8 @@ class DAGFileInputAlias(DAGFolderInputAlias):
         """
         assert os.path.isfile(value), f'There is no file at {value}'
         if self.extensions:
-            assert value.lower().endswith(self.extension.lower()), \
-                f'Input file extension for {value} must be {self.extensions}'
+            assert value.lower().endswith(tuple(ext.lower() for ext in self.extensions)), \
+                f'Input file extension for {value} must be one of {self.extensions}'
         if self.spec:
             spec = dict(self.spec)
             spec['type'] = 'string'
@@ -396,10 +393,9 @@ class DAGPathInputAlias(DAGFolderInputAlias):
     """
     type: Literal['DAGPathInputAlias'] = 'DAGPathInputAlias'
 
-    extensions: Union[List[str], None] = Field(
-        None,
-        description='Optional list of extensions for path. The check for extension is '
-        'case-insensitive. The extension will only be validated for file inputs.'
+    extensions: Optional[List[str]] = Field(
+        default=None,
+        description='Optional list of extensions for path.'
     )
 
     def validate_spec(self, value):
@@ -409,8 +405,8 @@ class DAGPathInputAlias(DAGFolderInputAlias):
         """
         if os.path.isfile(value):
             if self.extensions:
-                assert value.lower().endswith(self.extension.lower()), \
-                    f'Input file extension for {value} must be {self.extensions}'
+                assert value.lower().endswith(tuple(ext.lower() for ext in self.extensions)), \
+                    f'Input file extension for {value} must be one of {self.extensions}'
         elif not os.path.isdir(value):
             raise ValueError(f'{value} is not a valid file or folder.')
 
@@ -430,20 +426,19 @@ class DAGArrayInputAlias(DAGGenericInputAlias):
     """
     type: Literal['DAGArrayInputAlias'] = 'DAGArrayInputAlias'
 
-    default: Union[List, None] = Field(
-        None,
+    default: Optional[List] = Field(
+        default=None,
         description='Default value to use for an input if a value was not supplied.'
     )
 
     items_type: ItemType = Field(
-        ItemType.String,
-        description='Type of items in an array. All the items in an array must be from '
-        'the same type.'
+        default=ItemType.String,
+        description='Type of items in an array.'
     )
 
     @field_validator('default', mode='before')
     @classmethod
-    def replace_none_value(cls, v: List) -> List:
+    def replace_none_value(cls, v: Optional[List]) -> List:
         return [] if not v else v
 
     def validate_spec(self, value):
@@ -470,14 +465,14 @@ class DAGJSONObjectInputAlias(DAGGenericInputAlias):
     """
     type: Literal['DAGJSONObjectInputAlias'] = 'DAGJSONObjectInputAlias'
 
-    default: Union[Dict, None] = Field(
-        None,
+    default: Optional[Dict] = Field(
+        default=None,
         description='Default value to use for an input if a value was not supplied.'
     )
 
     @field_validator('default', mode='before')
     @classmethod
-    def replace_none_value(cls, v: Dict) -> Dict:
+    def replace_none_value(cls, v: Optional[Dict]) -> Dict:
         return {} if not v else v
 
     def validate_spec(self, value):

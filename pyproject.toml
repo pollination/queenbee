@@ -33,7 +33,7 @@ click-plugins = "^1.1.1"
 cli = ["click", "click_plugins"]
 
 [tool.poetry.group.dev.dependencies]
-pydantic-openapi-helper = "^1.0.2"
+pydantic-openapi-helper = "^1.0.4"
 coverage = ">=6"
 coveralls = ">=3"
 pytest = ">=6.2.4"

@@ -144,7 +144,6 @@ class Job(BaseModel):
 
 class JobStatusEnum(str, Enum):
     """Enumaration of allowable status strings"""
-
     # The job has been created
     created = 'Created'
     # The job folder is being prepared for execution and runs are being scheduled
