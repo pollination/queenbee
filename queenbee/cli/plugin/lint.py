@@ -22,7 +22,7 @@ def lint(path):
     try:
         op = Plugin.from_folder(path)
         obj = op.to_dict()
-        Plugin.parse_obj(obj)
+        Plugin.model_validate(obj)
     except ValidationError as error:
         raise click.ClickException(error)
     except FileNotFoundError as error:

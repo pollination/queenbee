@@ -265,8 +265,7 @@ class Recipe(BaseModel):
         Arguments:
             folder_path {str} -- The path to the recipe folder
         """
-
-        self_dict = json.loads(self.json(by_alias=True, exclude_unset=False))
+        self_dict = self.model_dump(by_alias=True, exclude_unset=False, mode='json')
 
         with open(os.path.join(folder_path, 'dependencies.yaml'), 'w') as f:
             f.write(
@@ -703,17 +702,17 @@ class RecipeInterface(BaseModel):
         description='Recipe metadata information.'
     )
 
-    source: str = Field(
+    source: Union[str, None] = Field(
         None,
         description='A URL to the source this recipe from a registry.'
     )
 
-    inputs: List[DAGInputs] = Field(
+    inputs: Union[List[DAGInputs], None] = Field(
         None,
         description='A list of recipe inputs.'
     )
 
-    outputs: List[DAGOutputs] = Field(
+    outputs: Union[List[DAGOutputs], None] = Field(
         None,
         description='A list of recipe outputs.'
     )

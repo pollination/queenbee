@@ -110,7 +110,7 @@ class StepStatus(BaseStatus):
 
 class RunStatusEnum(str, Enum):
     """Enumaration of allowable status strings"""
-    
+
     # The run has been created
     created = 'Created'
     # The run has been scheduled for execution

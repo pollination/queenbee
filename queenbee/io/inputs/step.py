@@ -4,8 +4,7 @@ For more information on plugins see plugin module.
 """
 
 import json
-from typing import Union, List, Dict, Any
-from typing import Literal
+from typing import Union, List, Dict, Any, Optional, Literal
 from pydantic import Field
 from .function import FunctionStringInput, FunctionIntegerInput, \
     FunctionNumberInput, FunctionBooleanInput, FunctionFolderInput, \
@@ -63,7 +62,7 @@ class StepFolderInput(FunctionFolderInput):
     # TODO: Change this path to target_path and the one for output to source_path
     # for this iteration I'm keeping the changes as minimum as possible to break as
     # little as possible.
-    path: str = Field(
+    path: Optional[str] = Field(
         None,
         description='Path to the target location that the input will be copied to. '
         ' This path is relative to the working directory where the command is executed.'
@@ -83,7 +82,7 @@ class StepFileInput(FunctionFileInput):
     # TODO: Change this path to target_path and the one for output to source_path
     # for this iteration I'm keeping the changes as minimum as possible to break as
     # little as possible.
-    path: str = Field(
+    path: Optional[str] = Field(
         None,
         description='Path to the target location that the input will be copied to. '
         ' This path is relative to the working directory where the command is executed.'
@@ -103,7 +102,7 @@ class StepPathInput(FunctionPathInput):
     # TODO: Change this path to target_path and the one for output to source_path
     # for this iteration I'm keeping the changes as minimum as possible to break as
     # little as possible.
-    path: str = Field(
+    path: Optional[str] = Field(
         None,
         description='Path to the target location that the input will be copied to. '
         ' This path is relative to the working directory where the command is executed.'

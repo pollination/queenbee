@@ -2,7 +2,7 @@
 
 from typing import Union, List
 
-from pydantic import Field, field_validator
+from pydantic import Field
 
 from ..common import ItemType, FromOutput
 from .alias import DAGAliasOutputs

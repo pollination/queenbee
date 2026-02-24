@@ -66,7 +66,7 @@ class DAGTask(BaseModel):
         'should be saved. This is useful when performing a loop or invoking another '
         'workflow and wanting to save results in a specific sub_folder.'
     )
-    
+
     returns: List[TaskReturns] = Field(
         default_factory=list,
         description='List of task returns.'
@@ -92,7 +92,7 @@ class DAGTask(BaseModel):
     def check_references(cls, v: str, info: ValidationInfo) -> str:
         loop = info.data.get('loop')
         arguments = info.data.get('arguments')
-        
+
         if v is None:
             return v
 

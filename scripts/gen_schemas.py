@@ -3,15 +3,20 @@
 import argparse
 import json
 import os
+from typing import List, Union
 
 from importlib.metadata import distribution
 from pydantic_openapi_helper.core import get_openapi
 from pydantic_openapi_helper.inheritance import class_mapper
 
+from pydantic import BaseModel
 from queenbee.job import Job, JobStatus, RunStatus
 from queenbee.plugin import Plugin
 from queenbee.recipe import Recipe, RecipeInterface
 from queenbee.repository import RepositoryIndex
+from queenbee.io.inputs.step import StepInputs
+from queenbee.io.outputs.step import StepOutputs
+
 
 folder = os.path.join(os.path.dirname(__file__), '../docs/_static/schemas')
 if not os.path.isdir(folder):
@@ -95,42 +100,27 @@ with open(os.path.join(folder, 'repository-openapi.json'), 'w') as out_file:
     )
 
 
+def dump_model_schema(model, path):
+    with open(path, 'w') as f:
+        json.dump(model.model_json_schema(), f, indent=2)
+
 with open(os.path.join(folder, 'job-schemas-combined.json'), 'w') as out_file:
-    from typing import List, Union
-
-    from pydantic import BaseModel
-
-    from queenbee.io.inputs.step import StepInputs
-    from queenbee.io.outputs.step import StepOutputs
-
     class JobSchemas(BaseModel):
         job: Job
         job_status: JobStatus
         run_status: RunStatus
         results: List[Union[StepInputs, StepOutputs]]
 
-    out_file.write(JobSchemas.schema_json())
+    json.dump(JobSchemas.model_json_schema(), out_file, indent=2)
 
-with open(os.path.join(folder, 'job-schema.json'), 'w') as out_file:
-    out_file.write(Job.schema_json())
+dump_model_schema(Job, os.path.join(folder, 'job-schema.json'))
+dump_model_schema(JobStatus, os.path.join(folder, 'job-status-schema.json'))
+dump_model_schema(RunStatus, os.path.join(folder, 'run-status-schema.json'))
+dump_model_schema(Plugin, os.path.join(folder, 'plugin-schema.json'))
+dump_model_schema(Recipe, os.path.join(folder, 'recipe-schema.json'))
+dump_model_schema(RepositoryIndex, os.path.join(folder, 'repository-schema.json'))
 
-with open(os.path.join(folder, 'job-status-schema.json'), 'w') as out_file:
-    out_file.write(JobStatus.schema_json())
 
-with open(os.path.join(folder, 'run-status-schema.json'), 'w') as out_file:
-    out_file.write(RunStatus.schema_json())
-
-with open(os.path.join(folder, 'plugin-schema.json'), 'w') as out_file:
-    out_file.write(Plugin.schema_json())
-
-with open(os.path.join(folder, 'recipe-schema.json'), 'w') as out_file:
-    out_file.write(Recipe.schema_json())
-
-with open(os.path.join(folder, 'repository-schema.json'), 'w') as out_file:
-    out_file.write(RepositoryIndex.schema_json())
-
-# write openapi with inheritance and mapper json files
-# these files are mainly used for creating .NET SDK
 external_docs = {
     "description": "OpenAPI Specification with Inheritance",
     "url": "./queenbee_inheritance.json"
@@ -138,6 +128,7 @@ external_docs = {
 
 models = [Recipe, Plugin, Job, RepositoryIndex,
           RecipeInterface, JobStatus, RunStatus]
+
 openapi = get_openapi(
     models,
     title='Queenbee Schema',

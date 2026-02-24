@@ -1,6 +1,5 @@
 import os
 import pathlib
-import platform
 from urllib import request
 from typing import Dict
 
