@@ -1,0 +1,139 @@
+{
+  "$defs": {
+    "JobStatusEnum": {
+      "description": "Enumaration of allowable status strings",
+      "enum": [
+        "Created",
+        "Pre-Processing",
+        "Running",
+        "Failed",
+        "Cancelled",
+        "Completed",
+        "Unknown"
+      ],
+      "title": "JobStatusEnum",
+      "type": "string"
+    }
+  },
+  "description": "Parametric Job Status.",
+  "properties": {
+    "type": {
+      "const": "JobStatus",
+      "default": "JobStatus",
+      "title": "Type",
+      "type": "string"
+    },
+    "annotations": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+      "title": "Annotations"
+    },
+    "api_version": {
+      "const": "v1beta1",
+      "default": "v1beta1",
+      "readOnly": true,
+      "title": "Api Version",
+      "type": "string"
+    },
+    "id": {
+      "description": "The ID of the individual job.",
+      "title": "Id",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/JobStatusEnum",
+      "default": "Unknown",
+      "description": "The status of this job."
+    },
+    "message": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Any message produced by the job. Usually error/debugging hints.",
+      "title": "Message"
+    },
+    "started_at": {
+      "description": "The time at which the job was started",
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "finished_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The time at which the task was completed",
+      "title": "Finished At"
+    },
+    "source": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Source url for the status object. It can be a recipe or a function.",
+      "title": "Source"
+    },
+    "runs_pending": {
+      "default": 0,
+      "description": "The count of runs that are pending",
+      "title": "Runs Pending",
+      "type": "integer"
+    },
+    "runs_running": {
+      "default": 0,
+      "description": "The count of runs that are running",
+      "title": "Runs Running",
+      "type": "integer"
+    },
+    "runs_completed": {
+      "default": 0,
+      "description": "The count of runs that have completed",
+      "title": "Runs Completed",
+      "type": "integer"
+    },
+    "runs_failed": {
+      "default": 0,
+      "description": "The count of runs that have failed",
+      "title": "Runs Failed",
+      "type": "integer"
+    },
+    "runs_cancelled": {
+      "default": 0,
+      "description": "The count of runs that have been cancelled",
+      "title": "Runs Cancelled",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "started_at"
+  ],
+  "title": "JobStatus",
+  "type": "object"
+}

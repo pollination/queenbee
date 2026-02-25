@@ -1,0 +1,317 @@
+{
+  "$defs": {
+    "HTTP": {
+      "description": "HTTP Source\n\nA web HTTP to an FTP server or an API for example.",
+      "properties": {
+        "type": {
+          "const": "HTTP",
+          "default": "HTTP",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "url": {
+          "description": "For a HTTP endpoint this can be http://climate.onebuilding.org.",
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "title": "HTTP",
+      "type": "object"
+    },
+    "JobArgument": {
+      "description": "Job argument is an argument input for arguments which are not files or folders.",
+      "properties": {
+        "type": {
+          "const": "JobArgument",
+          "default": "JobArgument",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Argument name. The name must match one of the input names from Job's DAG template.",
+          "title": "Name",
+          "type": "string"
+        },
+        "value": {
+          "description": "The value of the job argument.",
+          "title": "Value"
+        }
+      },
+      "required": [
+        "name",
+        "value"
+      ],
+      "title": "JobArgument",
+      "type": "object"
+    },
+    "JobPathArgument": {
+      "properties": {
+        "type": {
+          "const": "JobPathArgument",
+          "default": "JobPathArgument",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Argument name. The name must match one of the input names from Job's template which can be a function or DAG.",
+          "title": "Name",
+          "type": "string"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HTTP"
+            },
+            {
+              "$ref": "#/$defs/S3"
+            },
+            {
+              "$ref": "#/$defs/ProjectFolder"
+            }
+          ],
+          "description": "The path to source the file from.",
+          "title": "Source"
+        }
+      },
+      "required": [
+        "name",
+        "source"
+      ],
+      "title": "JobPathArgument",
+      "type": "object"
+    },
+    "ProjectFolder": {
+      "description": "Project Folder Source\n\nThis is the path to a folder where files and folders can be sourced. In the context\nof a desktop run Workflow this folder will correspond to a local folder. In the\ncontext of a workflow run on Pollination this folder will correspond to a Project\nscoped folder.",
+      "properties": {
+        "type": {
+          "const": "ProjectFolder",
+          "default": "ProjectFolder",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "path": {
+          "default": null,
+          "description": "The path to a folder where files and folders can be sourced. For a local filesystem this can be \"C:\\Users\\me\\jobs\\test\".",
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "title": "ProjectFolder",
+      "type": "object"
+    },
+    "S3": {
+      "description": "S3 Source\n\nAn S3 bucket artifact Source.",
+      "properties": {
+        "type": {
+          "const": "S3",
+          "default": "S3",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "key": {
+          "description": "The path inside the bucket to source artifacts from.",
+          "title": "Key",
+          "type": "string"
+        },
+        "endpoint": {
+          "description": "The HTTP endpoint to reach the S3 bucket.",
+          "title": "Endpoint",
+          "type": "string"
+        },
+        "bucket": {
+          "description": "The name of the S3 bucket on the host server.",
+          "title": "Bucket",
+          "type": "string"
+        },
+        "credentials_path": {
+          "default": null,
+          "description": "Path to the file holding the AccessKey and SecretAccessKey to authenticate to the bucket. Assumes public bucket access if none are specified.",
+          "title": "Credentials Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "endpoint",
+        "bucket"
+      ],
+      "title": "S3",
+      "type": "object"
+    }
+  },
+  "description": "Queenbee Job.\n\nA Job is an object to submit a list of arguments to execute a Queenbee recipe.",
+  "properties": {
+    "type": {
+      "const": "Job",
+      "default": "Job",
+      "title": "Type",
+      "type": "string"
+    },
+    "annotations": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+      "title": "Annotations"
+    },
+    "api_version": {
+      "const": "v1beta1",
+      "default": "v1beta1",
+      "readOnly": true,
+      "title": "Api Version",
+      "type": "string"
+    },
+    "source": {
+      "description": "The source url for downloading the recipe.",
+      "title": "Source",
+      "type": "string"
+    },
+    "arguments": {
+      "anyOf": [
+        {
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/JobArgument"
+                },
+                {
+                  "$ref": "#/$defs/JobPathArgument"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Input arguments for this job.",
+      "title": "Arguments"
+    },
+    "name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "An optional name for this job. This name will be used a the display name for the run.",
+      "title": "Name"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Run description.",
+      "title": "Description"
+    },
+    "labels": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Optional user data as a dictionary. User data is for user reference only and will not be used in the execution of the job.",
+      "title": "Labels"
+    }
+  },
+  "required": [
+    "source"
+  ],
+  "title": "Job",
+  "type": "object"
+}

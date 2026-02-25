@@ -1,0 +1,3620 @@
+{
+  "$defs": {
+    "DAGArrayInputAlias": {
+      "description": "A JSON array input.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/array.html for\nmore information.",
+      "properties": {
+        "type": {
+          "const": "DAGArrayInputAlias",
+          "default": "DAGArrayInputAlias",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "platform": {
+          "description": "Name of the client platform (e.g. Grasshopper, Revit, etc). The value can be any strings as long as it has been agreed between client-side developer and author of the recipe.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Platform",
+          "type": "array"
+        },
+        "handler": {
+          "description": "List of process actions to process the input or output value.",
+          "items": {
+            "$ref": "#/$defs/IOAliasHandler"
+          },
+          "title": "Handler",
+          "type": "array"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default value to use for an input if a value was not supplied.",
+          "title": "Default"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        },
+        "items_type": {
+          "$ref": "#/$defs/ItemType",
+          "default": "String",
+          "description": "Type of items in an array."
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "DAGArrayInputAlias",
+      "type": "object"
+    },
+    "DAGBooleanInputAlias": {
+      "description": "The boolean type matches only two special values: True and False.\n\nNote that values that evaluate to true or false, such as 1 and 0, are not accepted.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/boolean.html for more\ninformation.",
+      "properties": {
+        "type": {
+          "const": "DAGBooleanInputAlias",
+          "default": "DAGBooleanInputAlias",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "platform": {
+          "description": "Name of the client platform (e.g. Grasshopper, Revit, etc). The value can be any strings as long as it has been agreed between client-side developer and author of the recipe.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Platform",
+          "type": "array"
+        },
+        "handler": {
+          "description": "List of process actions to process the input or output value.",
+          "items": {
+            "$ref": "#/$defs/IOAliasHandler"
+          },
+          "title": "Handler",
+          "type": "array"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default value to use for an input if a value was not supplied.",
+          "title": "Default"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "DAGBooleanInputAlias",
+      "type": "object"
+    },
+    "DAGFileInputAlias": {
+      "description": "An alias file input.\n\nFile is a special string input. Unlike other string inputs, a file will be copied\nfrom its location to execution folder when a workflow is executed.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/string.html#string for\nmore information.\n\n.. code-block:: python\n\n    # a file with maximum 50 characters with an ``epw`` extension.\n\n    \"schema\": {\n        \"type\": \"string\",\n        \"maxLength\": 50,\n        \"pattern\": \"(?i)(^.*\\.epw$)\"\n    }",
+      "properties": {
+        "type": {
+          "const": "DAGFileInputAlias",
+          "default": "DAGFileInputAlias",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "platform": {
+          "description": "Name of the client platform (e.g. Grasshopper, Revit, etc). The value can be any strings as long as it has been agreed between client-side developer and author of the recipe.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Platform",
+          "type": "array"
+        },
+        "handler": {
+          "description": "List of process actions to process the input or output value.",
+          "items": {
+            "$ref": "#/$defs/IOAliasHandler"
+          },
+          "title": "Handler",
+          "type": "array"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HTTP"
+            },
+            {
+              "$ref": "#/$defs/S3"
+            },
+            {
+              "$ref": "#/$defs/ProjectFolder"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The default source for file if the value is not provided.",
+          "title": "Default"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        },
+        "extensions": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional list of extensions for file.",
+          "title": "Extensions"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "DAGFileInputAlias",
+      "type": "object"
+    },
+    "DAGFolderInputAlias": {
+      "description": "An alias folder input.\n\nFolder is a special string input. Unlike other string inputs, a folder will be copied\nfrom its location to execution folder when a workflow is executed.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/string.html#string for\nmore information.\n\n.. code-block:: python\n\n    \"schema\": {\n        \"type\": \"string\",\n        \"maxLength\": 50,\n    }",
+      "properties": {
+        "type": {
+          "const": "DAGFolderInputAlias",
+          "default": "DAGFolderInputAlias",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "platform": {
+          "description": "Name of the client platform (e.g. Grasshopper, Revit, etc). The value can be any strings as long as it has been agreed between client-side developer and author of the recipe.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Platform",
+          "type": "array"
+        },
+        "handler": {
+          "description": "List of process actions to process the input or output value.",
+          "items": {
+            "$ref": "#/$defs/IOAliasHandler"
+          },
+          "title": "Handler",
+          "type": "array"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HTTP"
+            },
+            {
+              "$ref": "#/$defs/S3"
+            },
+            {
+              "$ref": "#/$defs/ProjectFolder"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The default source for file if the value is not provided.",
+          "title": "Default"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "DAGFolderInputAlias",
+      "type": "object"
+    },
+    "DAGGenericInputAlias": {
+      "description": "Base class for DAG Alias inputs.\n\nThis class adds a handler to input to handle the process of loading the input\nfrom different graphical interfaces.",
+      "properties": {
+        "type": {
+          "const": "DAGGenericInputAlias",
+          "default": "DAGGenericInputAlias",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "platform": {
+          "description": "Name of the client platform (e.g. Grasshopper, Revit, etc). The value can be any strings as long as it has been agreed between client-side developer and author of the recipe.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Platform",
+          "type": "array"
+        },
+        "handler": {
+          "description": "List of process actions to process the input or output value.",
+          "items": {
+            "$ref": "#/$defs/IOAliasHandler"
+          },
+          "title": "Handler",
+          "type": "array"
+        },
+        "default": {
+          "default": null,
+          "description": "Default value for generic input.",
+          "title": "Default"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "DAGGenericInputAlias",
+      "type": "object"
+    },
+    "DAGIntegerInputAlias": {
+      "description": "An alias integer input.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/numeric.html#numeric\nfor more information.",
+      "properties": {
+        "type": {
+          "const": "DAGIntegerInputAlias",
+          "default": "DAGIntegerInputAlias",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "platform": {
+          "description": "Name of the client platform (e.g. Grasshopper, Revit, etc). The value can be any strings as long as it has been agreed between client-side developer and author of the recipe.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Platform",
+          "type": "array"
+        },
+        "handler": {
+          "description": "List of process actions to process the input or output value.",
+          "items": {
+            "$ref": "#/$defs/IOAliasHandler"
+          },
+          "title": "Handler",
+          "type": "array"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default value to use for an input if a value was not supplied.",
+          "title": "Default"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "DAGIntegerInputAlias",
+      "type": "object"
+    },
+    "DAGJSONObjectInputAlias": {
+      "description": "An alias JSON object input.\n\nJSON objects are similar to Python dictionaries.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/object.html for\nmore information.",
+      "properties": {
+        "type": {
+          "const": "DAGJSONObjectInputAlias",
+          "default": "DAGJSONObjectInputAlias",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "platform": {
+          "description": "Name of the client platform (e.g. Grasshopper, Revit, etc). The value can be any strings as long as it has been agreed between client-side developer and author of the recipe.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Platform",
+          "type": "array"
+        },
+        "handler": {
+          "description": "List of process actions to process the input or output value.",
+          "items": {
+            "$ref": "#/$defs/IOAliasHandler"
+          },
+          "title": "Handler",
+          "type": "array"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default value to use for an input if a value was not supplied.",
+          "title": "Default"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "DAGJSONObjectInputAlias",
+      "type": "object"
+    },
+    "DAGLinkedInputAlias": {
+      "description": "An Alias for Linked Inputs.\n\nA linked input alias will be hidden in the UI and will be linked to an object in \nthe UI using the input handler.",
+      "properties": {
+        "type": {
+          "const": "DAGLinkedInputAlias",
+          "default": "DAGLinkedInputAlias",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "platform": {
+          "description": "Name of the client platform (e.g. Grasshopper, Revit, etc). The value can be any strings as long as it has been agreed between client-side developer and author of the recipe.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Platform",
+          "type": "array"
+        },
+        "handler": {
+          "description": "List of process actions to process the input or output value.",
+          "items": {
+            "$ref": "#/$defs/IOAliasHandler"
+          },
+          "title": "Handler",
+          "type": "array"
+        },
+        "default": {
+          "default": null,
+          "description": "Default value for generic input.",
+          "title": "Default"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "DAGLinkedInputAlias",
+      "type": "object"
+    },
+    "DAGNumberInputAlias": {
+      "description": "An alias number input.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/numeric.html#numeric\nfor more information.",
+      "properties": {
+        "type": {
+          "const": "DAGNumberInputAlias",
+          "default": "DAGNumberInputAlias",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "platform": {
+          "description": "Name of the client platform (e.g. Grasshopper, Revit, etc). The value can be any strings as long as it has been agreed between client-side developer and author of the recipe.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Platform",
+          "type": "array"
+        },
+        "handler": {
+          "description": "List of process actions to process the input or output value.",
+          "items": {
+            "$ref": "#/$defs/IOAliasHandler"
+          },
+          "title": "Handler",
+          "type": "array"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default value to use for an input if a value was not supplied.",
+          "title": "Default"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "DAGNumberInputAlias",
+      "type": "object"
+    },
+    "DAGPathInputAlias": {
+      "description": "A file or a folder input.\n\nUse this input only in cases that the input can be either a file or folder. For file\nor folder-only inputs see File and Folder.\n\nPath is a special string input. Unlike other string inputs, a path will be copied\nfrom its location to execution folder when a workflow is executed.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/string.html#string for\nmore information.\n\n.. code-block:: python\n\n    # a file with maximum 50 characters with an ``epw`` extension.\n\n    \"schema\": {\n        \"type\": \"string\",\n        \"maxLength\": 50,\n        \"pattern\": \"(?i)(^.*\\.epw$)\"\n    }",
+      "properties": {
+        "type": {
+          "const": "DAGPathInputAlias",
+          "default": "DAGPathInputAlias",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "platform": {
+          "description": "Name of the client platform (e.g. Grasshopper, Revit, etc). The value can be any strings as long as it has been agreed between client-side developer and author of the recipe.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Platform",
+          "type": "array"
+        },
+        "handler": {
+          "description": "List of process actions to process the input or output value.",
+          "items": {
+            "$ref": "#/$defs/IOAliasHandler"
+          },
+          "title": "Handler",
+          "type": "array"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HTTP"
+            },
+            {
+              "$ref": "#/$defs/S3"
+            },
+            {
+              "$ref": "#/$defs/ProjectFolder"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The default source for file if the value is not provided.",
+          "title": "Default"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        },
+        "extensions": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional list of extensions for path.",
+          "title": "Extensions"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "DAGPathInputAlias",
+      "type": "object"
+    },
+    "DAGStringInputAlias": {
+      "description": "An Alias String input.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/string.html#string for\nmore information.\n\n.. code-block:: python\n\n    \"schema\": {\n        \"type\": \"string\",\n        \"maxLength\": 50,\n        \"pattern\": \"(?i)(^.*\\.epw$)\"\n    }",
+      "properties": {
+        "type": {
+          "const": "DAGStringInputAlias",
+          "default": "DAGStringInputAlias",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "platform": {
+          "description": "Name of the client platform (e.g. Grasshopper, Revit, etc). The value can be any strings as long as it has been agreed between client-side developer and author of the recipe.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Platform",
+          "type": "array"
+        },
+        "handler": {
+          "description": "List of process actions to process the input or output value.",
+          "items": {
+            "$ref": "#/$defs/IOAliasHandler"
+          },
+          "title": "Handler",
+          "type": "array"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default value to use for an input if a value was not supplied.",
+          "title": "Default"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "DAGStringInputAlias",
+      "type": "object"
+    },
+    "DockerConfig": {
+      "description": "Plugin Configuration to run in a Docker container",
+      "properties": {
+        "type": {
+          "const": "DockerConfig",
+          "default": "DockerConfig",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "image": {
+          "description": "Docker image name. Must include tag.",
+          "title": "Image",
+          "type": "string"
+        },
+        "registry": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The container registry URLs that this container should be pulled from. Will default to Dockerhub if none is specified.",
+          "title": "Registry"
+        },
+        "workdir": {
+          "description": "The working directory the entrypoint command of the container runsin. This is used to determine where to load artifacts when running in the container.",
+          "title": "Workdir",
+          "type": "string"
+        }
+      },
+      "required": [
+        "image",
+        "workdir"
+      ],
+      "title": "DockerConfig",
+      "type": "object"
+    },
+    "Function": {
+      "description": "A Function with a single or a script.",
+      "properties": {
+        "type": {
+          "const": "Function",
+          "default": "Function",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "inputs": {
+          "description": "Input arguments for this function.",
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "FunctionArrayInput": "#/$defs/FunctionArrayInput",
+                "FunctionBooleanInput": "#/$defs/FunctionBooleanInput",
+                "FunctionFileInput": "#/$defs/FunctionFileInput",
+                "FunctionFolderInput": "#/$defs/FunctionFolderInput",
+                "FunctionIntegerInput": "#/$defs/FunctionIntegerInput",
+                "FunctionJSONObjectInput": "#/$defs/FunctionJSONObjectInput",
+                "FunctionNumberInput": "#/$defs/FunctionNumberInput",
+                "FunctionPathInput": "#/$defs/FunctionPathInput",
+                "FunctionStringInput": "#/$defs/FunctionStringInput"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/FunctionStringInput"
+              },
+              {
+                "$ref": "#/$defs/FunctionIntegerInput"
+              },
+              {
+                "$ref": "#/$defs/FunctionNumberInput"
+              },
+              {
+                "$ref": "#/$defs/FunctionBooleanInput"
+              },
+              {
+                "$ref": "#/$defs/FunctionFolderInput"
+              },
+              {
+                "$ref": "#/$defs/FunctionFileInput"
+              },
+              {
+                "$ref": "#/$defs/FunctionPathInput"
+              },
+              {
+                "$ref": "#/$defs/FunctionArrayInput"
+              },
+              {
+                "$ref": "#/$defs/FunctionJSONObjectInput"
+              }
+            ]
+          },
+          "title": "Inputs",
+          "type": "array"
+        },
+        "outputs": {
+          "description": "List of output arguments.",
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "FunctionArrayOutput": "#/$defs/FunctionArrayOutput",
+                "FunctionBooleanOutput": "#/$defs/FunctionBooleanOutput",
+                "FunctionFileOutput": "#/$defs/FunctionFileOutput",
+                "FunctionFolderOutput": "#/$defs/FunctionFolderOutput",
+                "FunctionIntegerOutput": "#/$defs/FunctionIntegerOutput",
+                "FunctionJSONObjectOutput": "#/$defs/FunctionJSONObjectOutput",
+                "FunctionNumberOutput": "#/$defs/FunctionNumberOutput",
+                "FunctionPathOutput": "#/$defs/FunctionPathOutput",
+                "FunctionStringOutput": "#/$defs/FunctionStringOutput"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/FunctionStringOutput"
+              },
+              {
+                "$ref": "#/$defs/FunctionIntegerOutput"
+              },
+              {
+                "$ref": "#/$defs/FunctionNumberOutput"
+              },
+              {
+                "$ref": "#/$defs/FunctionBooleanOutput"
+              },
+              {
+                "$ref": "#/$defs/FunctionFolderOutput"
+              },
+              {
+                "$ref": "#/$defs/FunctionFileOutput"
+              },
+              {
+                "$ref": "#/$defs/FunctionPathOutput"
+              },
+              {
+                "$ref": "#/$defs/FunctionArrayOutput"
+              },
+              {
+                "$ref": "#/$defs/FunctionJSONObjectOutput"
+              }
+            ]
+          },
+          "title": "Outputs",
+          "type": "array"
+        },
+        "name": {
+          "description": "Function name. Must be unique within a plugin.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Function description. A short human readable description for this function.",
+          "title": "Description"
+        },
+        "command": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Full shell command for this function. Each function accepts only one command. The command will be executed as a shell command in plugin. For running several commands after each other use && between the commands or pipe data from one to another using |",
+          "title": "Command"
+        },
+        "language": {
+          "$ref": "#/$defs/ScriptingLanguages",
+          "default": "python",
+          "description": "Programming language of the script. Currently only Python is supported."
+        },
+        "source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Source contains the source code of the script to execute.",
+          "title": "Source"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Function",
+      "type": "object"
+    },
+    "FunctionArrayInput": {
+      "description": "A JSON array input.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/array.html for\nmore information.",
+      "properties": {
+        "type": {
+          "const": "FunctionArrayInput",
+          "default": "FunctionArrayInput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default value to use for an input if a value was not supplied.",
+          "title": "Default"
+        },
+        "alias": {
+          "description": "A list of aliases for this input in different platforms.",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DAGStringInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGIntegerInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGNumberInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGBooleanInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFolderInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFileInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGPathInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGArrayInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGJSONObjectInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGLinkedInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGGenericInputAlias"
+              }
+            ]
+          },
+          "title": "Alias",
+          "type": "array"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        },
+        "items_type": {
+          "$ref": "#/$defs/ItemType",
+          "default": "String",
+          "description": "Type of items in an array. All the items in an array must be from the same type."
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FunctionArrayInput",
+      "type": "object"
+    },
+    "FunctionArrayOutput": {
+      "description": "Function array output.\n\nThis output loads the content from a JSON file which must be a JSON Array.",
+      "properties": {
+        "type": {
+          "const": "FunctionArrayOutput",
+          "default": "FunctionArrayOutput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Output name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for output.",
+          "title": "Description"
+        },
+        "path": {
+          "description": "Path to the output file relative to where the function command is executed.",
+          "title": "Path",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "description": "A boolean to indicate if an artifact output is required. A False value makes the artifact optional.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "items_type": {
+          "$ref": "#/$defs/ItemType",
+          "default": "String",
+          "description": "Type of items in this array. All the items in an array must be from the same type."
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "FunctionArrayOutput",
+      "type": "object"
+    },
+    "FunctionBooleanInput": {
+      "description": "The boolean type matches only two special values: True and False.\n\nNote that values that evaluate to true or false, such as 1 and 0, are not accepted.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/boolean.html for more\ninformation.",
+      "properties": {
+        "type": {
+          "const": "FunctionBooleanInput",
+          "default": "FunctionBooleanInput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default value to use for an input if a value was not supplied.",
+          "title": "Default"
+        },
+        "alias": {
+          "description": "A list of aliases for this input in different platforms.",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DAGStringInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGIntegerInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGNumberInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGBooleanInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFolderInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFileInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGPathInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGArrayInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGJSONObjectInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGLinkedInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGGenericInputAlias"
+              }
+            ]
+          },
+          "title": "Alias",
+          "type": "array"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FunctionBooleanInput",
+      "type": "object"
+    },
+    "FunctionBooleanOutput": {
+      "description": "Function boolean output.\n\nThis output loads the content from a file as a boolean.",
+      "properties": {
+        "type": {
+          "const": "FunctionBooleanOutput",
+          "default": "FunctionBooleanOutput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Output name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for output.",
+          "title": "Description"
+        },
+        "path": {
+          "description": "Path to the output file relative to where the function command is executed.",
+          "title": "Path",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "description": "A boolean to indicate if an artifact output is required. A False value makes the artifact optional.",
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "FunctionBooleanOutput",
+      "type": "object"
+    },
+    "FunctionFileInput": {
+      "description": "A file input.\n\nFile is a special string input. Unlike other string inputs, a file will be copied\nfrom its location to execution folder when a workflow is executed.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/string.html#string for\nmore information.\n\n.. code-block:: python\n\n    # a file with maximum 50 characters with an ``epw`` extension.\n\n    \"schema\": {\n        \"type\": \"string\",\n        \"maxLength\": 50,\n        \"pattern\": \"(?i)(^.*\\.epw$)\"\n    }",
+      "properties": {
+        "type": {
+          "const": "FunctionFileInput",
+          "default": "FunctionFileInput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HTTP"
+            },
+            {
+              "$ref": "#/$defs/S3"
+            },
+            {
+              "$ref": "#/$defs/ProjectFolder"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The default source for file if the value is not provided.",
+          "title": "Default"
+        },
+        "alias": {
+          "description": "A list of aliases for this input in different platforms.",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DAGStringInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGIntegerInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGNumberInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGBooleanInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFolderInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFileInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGPathInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGArrayInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGJSONObjectInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGLinkedInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGGenericInputAlias"
+              }
+            ]
+          },
+          "title": "Alias",
+          "type": "array"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        },
+        "path": {
+          "description": "Path to the target location that the input will be copied to.  This path is relative to the working directory where the command is executed.",
+          "title": "Path",
+          "type": "string"
+        },
+        "extensions": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional list of extensions for file. The check for extension is case-insensitive.",
+          "title": "Extensions"
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "FunctionFileInput",
+      "type": "object"
+    },
+    "FunctionFileOutput": {
+      "description": "Function File output.",
+      "properties": {
+        "type": {
+          "const": "FunctionFileOutput",
+          "default": "FunctionFileOutput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Output name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for output.",
+          "title": "Description"
+        },
+        "path": {
+          "description": "Path to the output file relative to where the function command is executed.",
+          "title": "Path",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "description": "A boolean to indicate if an artifact output is required. A False value makes the artifact optional.",
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "FunctionFileOutput",
+      "type": "object"
+    },
+    "FunctionFolderInput": {
+      "description": "A folder input.\n\nFolder is a special string input. Unlike other string inputs, a folder will be copied\nfrom its location to execution folder when a workflow is executed.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/string.html#string for\nmore information.\n\n.. code-block:: python\n\n    \"schema\": {\n        \"type\": \"string\",\n        \"maxLength\": 50,\n    }",
+      "properties": {
+        "type": {
+          "const": "FunctionFolderInput",
+          "default": "FunctionFolderInput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HTTP"
+            },
+            {
+              "$ref": "#/$defs/S3"
+            },
+            {
+              "$ref": "#/$defs/ProjectFolder"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The default source for file if the value is not provided.",
+          "title": "Default"
+        },
+        "alias": {
+          "description": "A list of aliases for this input in different platforms.",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DAGStringInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGIntegerInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGNumberInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGBooleanInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFolderInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFileInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGPathInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGArrayInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGJSONObjectInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGLinkedInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGGenericInputAlias"
+              }
+            ]
+          },
+          "title": "Alias",
+          "type": "array"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        },
+        "path": {
+          "description": "Path to the target location that the input will be copied to.  This path is relative to the working directory where the command is executed.",
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "FunctionFolderInput",
+      "type": "object"
+    },
+    "FunctionFolderOutput": {
+      "description": "Function Folder output.",
+      "properties": {
+        "type": {
+          "const": "FunctionFolderOutput",
+          "default": "FunctionFolderOutput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Output name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for output.",
+          "title": "Description"
+        },
+        "path": {
+          "description": "Path to the output folder relative to where the function command is executed.",
+          "title": "Path",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "description": "A boolean to indicate if an artifact output is required. A False value makes the artifact optional.",
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "FunctionFolderOutput",
+      "type": "object"
+    },
+    "FunctionIntegerInput": {
+      "description": "An integer input.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/numeric.html#numeric\nfor more information.",
+      "properties": {
+        "type": {
+          "const": "FunctionIntegerInput",
+          "default": "FunctionIntegerInput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default value to use for an input if a value was not supplied.",
+          "title": "Default"
+        },
+        "alias": {
+          "description": "A list of aliases for this input in different platforms.",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DAGStringInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGIntegerInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGNumberInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGBooleanInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFolderInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFileInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGPathInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGArrayInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGJSONObjectInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGLinkedInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGGenericInputAlias"
+              }
+            ]
+          },
+          "title": "Alias",
+          "type": "array"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FunctionIntegerInput",
+      "type": "object"
+    },
+    "FunctionIntegerOutput": {
+      "description": "Function integer output.\n\nThis output loads the content from a file as an integer.",
+      "properties": {
+        "type": {
+          "const": "FunctionIntegerOutput",
+          "default": "FunctionIntegerOutput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Output name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for output.",
+          "title": "Description"
+        },
+        "path": {
+          "description": "Path to the output file relative to where the function command is executed.",
+          "title": "Path",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "description": "A boolean to indicate if an artifact output is required. A False value makes the artifact optional.",
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "FunctionIntegerOutput",
+      "type": "object"
+    },
+    "FunctionJSONObjectInput": {
+      "description": "A JSON object input.\n\nJSON objects are similar to Python dictionaries.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/object.html for\nmore information.",
+      "properties": {
+        "type": {
+          "const": "FunctionJSONObjectInput",
+          "default": "FunctionJSONObjectInput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default value to use for an input if a value was not supplied.",
+          "title": "Default"
+        },
+        "alias": {
+          "description": "A list of aliases for this input in different platforms.",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DAGStringInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGIntegerInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGNumberInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGBooleanInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFolderInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFileInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGPathInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGArrayInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGJSONObjectInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGLinkedInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGGenericInputAlias"
+              }
+            ]
+          },
+          "title": "Alias",
+          "type": "array"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FunctionJSONObjectInput",
+      "type": "object"
+    },
+    "FunctionJSONObjectOutput": {
+      "description": "Function object output.\n\nThis output loads the content from a file as a JSON object.",
+      "properties": {
+        "type": {
+          "const": "FunctionJSONObjectOutput",
+          "default": "FunctionJSONObjectOutput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Output name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for output.",
+          "title": "Description"
+        },
+        "path": {
+          "description": "Path to the output file relative to where the function command is executed.",
+          "title": "Path",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "description": "A boolean to indicate if an artifact output is required. A False value makes the artifact optional.",
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "FunctionJSONObjectOutput",
+      "type": "object"
+    },
+    "FunctionNumberInput": {
+      "description": "A number input.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/numeric.html#numeric\nfor more information.",
+      "properties": {
+        "type": {
+          "const": "FunctionNumberInput",
+          "default": "FunctionNumberInput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default value to use for an input if a value was not supplied.",
+          "title": "Default"
+        },
+        "alias": {
+          "description": "A list of aliases for this input in different platforms.",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DAGStringInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGIntegerInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGNumberInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGBooleanInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFolderInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFileInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGPathInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGArrayInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGJSONObjectInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGLinkedInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGGenericInputAlias"
+              }
+            ]
+          },
+          "title": "Alias",
+          "type": "array"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FunctionNumberInput",
+      "type": "object"
+    },
+    "FunctionNumberOutput": {
+      "description": "Function number output.\n\nThis output loads the content from a file as a floating number.",
+      "properties": {
+        "type": {
+          "const": "FunctionNumberOutput",
+          "default": "FunctionNumberOutput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Output name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for output.",
+          "title": "Description"
+        },
+        "path": {
+          "description": "Path to the output file relative to where the function command is executed.",
+          "title": "Path",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "description": "A boolean to indicate if an artifact output is required. A False value makes the artifact optional.",
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "FunctionNumberOutput",
+      "type": "object"
+    },
+    "FunctionPathInput": {
+      "description": "A file or a folder input.\n\nUse this input only in cases that the input can be either a file or folder. For file\nor folder-only inputs see File and Folder.\n\nPath is a special string input. Unlike other string inputs, a path will be copied\nfrom its location to execution folder when a workflow is executed.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/string.html#string for\nmore information.\n\n.. code-block:: python\n\n    # a file with maximum 50 characters with an ``epw`` extension.\n\n    \"schema\": {\n        \"type\": \"string\",\n        \"maxLength\": 50,\n        \"pattern\": \"(?i)(^.*\\.epw$)\"\n    }",
+      "properties": {
+        "type": {
+          "const": "FunctionPathInput",
+          "default": "FunctionPathInput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HTTP"
+            },
+            {
+              "$ref": "#/$defs/S3"
+            },
+            {
+              "$ref": "#/$defs/ProjectFolder"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The default source for file if the value is not provided.",
+          "title": "Default"
+        },
+        "alias": {
+          "description": "A list of aliases for this input in different platforms.",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DAGStringInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGIntegerInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGNumberInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGBooleanInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFolderInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFileInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGPathInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGArrayInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGJSONObjectInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGLinkedInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGGenericInputAlias"
+              }
+            ]
+          },
+          "title": "Alias",
+          "type": "array"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        },
+        "path": {
+          "description": "Path to the target location that the input will be copied to.  This path is relative to the working directory where the command is executed.",
+          "title": "Path",
+          "type": "string"
+        },
+        "extensions": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional list of extensions for file. The check for extension is case-insensitive.",
+          "title": "Extensions"
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "FunctionPathInput",
+      "type": "object"
+    },
+    "FunctionPathOutput": {
+      "description": "Function Path output.",
+      "properties": {
+        "type": {
+          "const": "FunctionPathOutput",
+          "default": "FunctionPathOutput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Output name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for output.",
+          "title": "Description"
+        },
+        "path": {
+          "description": "Path to the output file or folder relative to where the function command is executed.",
+          "title": "Path",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "description": "A boolean to indicate if an artifact output is required. A False value makes the artifact optional.",
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "FunctionPathOutput",
+      "type": "object"
+    },
+    "FunctionStringInput": {
+      "description": "A String input.\n\nYou can add additional validation by defining a JSONSchema specification.\n\nSee http://json-schema.org/understanding-json-schema/reference/string.html#string for\nmore information.\n\n.. code-block:: python\n\n    \"schema\": {\n        \"type\": \"string\",\n        \"maxLength\": 50,\n        \"pattern\": \"(?i)(^.*\\.epw$)\"\n    }",
+      "properties": {
+        "type": {
+          "const": "FunctionStringInput",
+          "default": "FunctionStringInput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Input name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for input.",
+          "title": "Description"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Default value to use for an input if a value was not supplied.",
+          "title": "Default"
+        },
+        "alias": {
+          "description": "A list of aliases for this input in different platforms.",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/DAGStringInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGIntegerInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGNumberInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGBooleanInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFolderInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGFileInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGPathInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGArrayInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGJSONObjectInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGLinkedInputAlias"
+              },
+              {
+                "$ref": "#/$defs/DAGGenericInputAlias"
+              }
+            ]
+          },
+          "title": "Alias",
+          "type": "array"
+        },
+        "required": {
+          "default": false,
+          "description": "A field to indicate if this input is required. This input needs to be set explicitly even when a default value is provided.",
+          "title": "Required",
+          "type": "boolean"
+        },
+        "spec": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "An optional JSON Schema specification to validate the input value. You can use validate_spec method to validate a value against the spec.",
+          "title": "Spec"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "FunctionStringInput",
+      "type": "object"
+    },
+    "FunctionStringOutput": {
+      "description": "Function string output.\n\nThis output loads the content from a file as a string.",
+      "properties": {
+        "type": {
+          "const": "FunctionStringOutput",
+          "default": "FunctionStringOutput",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Output name.",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional description for output.",
+          "title": "Description"
+        },
+        "path": {
+          "description": "Path to the output file relative to where the function command is executed.",
+          "title": "Path",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "description": "A boolean to indicate if an artifact output is required. A False value makes the artifact optional.",
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "FunctionStringOutput",
+      "type": "object"
+    },
+    "HTTP": {
+      "description": "HTTP Source\n\nA web HTTP to an FTP server or an API for example.",
+      "properties": {
+        "type": {
+          "const": "HTTP",
+          "default": "HTTP",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "url": {
+          "description": "For a HTTP endpoint this can be http://climate.onebuilding.org.",
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "title": "HTTP",
+      "type": "object"
+    },
+    "IOAliasHandler": {
+      "description": "Input and output alias handler object.",
+      "properties": {
+        "type": {
+          "const": "IOAliasHandler",
+          "default": "IOAliasHandler",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "language": {
+          "description": "Declare the language (e.g. python, csharp, etc.). This option allows the recipe to be flexible on handling different programming languages.",
+          "title": "Language",
+          "type": "string"
+        },
+        "module": {
+          "description": "Target module or namespace to load the alias function.",
+          "examples": [
+            "honeybee_rhino.handlers"
+          ],
+          "title": "Module",
+          "type": "string"
+        },
+        "function": {
+          "description": "Name of the function. The input value will be passed to this function as the first argument.",
+          "title": "Function",
+          "type": "string"
+        },
+        "index": {
+          "default": 0,
+          "description": "An integer to set the index for the order of execution. This input is only useful when there are more than one handler for the same platform and the output of one handler should be passed to another handler. This is also called chained handlers. By default all the handlers are indexed as 0 assuming they are not chained.",
+          "title": "Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "language",
+        "module",
+        "function"
+      ],
+      "title": "IOAliasHandler",
+      "type": "object"
+    },
+    "ItemType": {
+      "description": "Type enum for items in a list.\n\nItems can not be files or folder. For a list of files you should copy them to a\nfolder and use FolderInput input instead of using ArrayInput.",
+      "enum": [
+        "Generic",
+        "String",
+        "Integer",
+        "Number",
+        "Boolean",
+        "Array",
+        "JSONObject"
+      ],
+      "title": "ItemType",
+      "type": "string"
+    },
+    "License": {
+      "description": "License information for the Package",
+      "properties": {
+        "type": {
+          "const": "License",
+          "default": "License",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "The license name used for the package.",
+          "title": "Name",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A URL to the license used for the package.",
+          "title": "Url"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "License",
+      "type": "object"
+    },
+    "LocalConfig": {
+      "description": "Plugin Configuration to run on a desktop.",
+      "properties": {
+        "type": {
+          "const": "LocalConfig",
+          "default": "LocalConfig",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        }
+      },
+      "title": "LocalConfig",
+      "type": "object"
+    },
+    "Maintainer": {
+      "description": "Maintainer information",
+      "properties": {
+        "type": {
+          "const": "Maintainer",
+          "default": "Maintainer",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "The name of the author/maintainer person or organization.",
+          "title": "Name",
+          "type": "string"
+        },
+        "email": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The email address of the author/maintainer person or organization.",
+          "title": "Email"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Maintainer",
+      "type": "object"
+    },
+    "MetaData": {
+      "description": "Package metadata information.",
+      "properties": {
+        "type": {
+          "const": "MetaData",
+          "default": "MetaData",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "name": {
+          "description": "Package name. Make it descriptive and helpful ;)",
+          "title": "Name",
+          "type": "string"
+        },
+        "tag": {
+          "description": "The tag of the package",
+          "title": "Tag",
+          "type": "string"
+        },
+        "app_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The version of the application code underlying the manifest",
+          "title": "App Version"
+        },
+        "keywords": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A list of keywords to search the package by",
+          "title": "Keywords"
+        },
+        "maintainers": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Maintainer"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A list of maintainers for the package",
+          "title": "Maintainers"
+        },
+        "home": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The URL of this package's home page",
+          "title": "Home"
+        },
+        "sources": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A list of URLs to source code for this project",
+          "title": "Sources"
+        },
+        "icon": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A URL to an SVG or PNG image to be used as an icon",
+          "title": "Icon"
+        },
+        "deprecated": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether this package is deprecated",
+          "title": "Deprecated"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A description of what this package does",
+          "title": "Description"
+        },
+        "license": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/License"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The license information."
+        }
+      },
+      "required": [
+        "name",
+        "tag"
+      ],
+      "title": "MetaData",
+      "type": "object"
+    },
+    "PluginConfig": {
+      "description": "Plugin configuration.\n\nThe config is used to schedule functions on a desktop or in other contexts\n(ie: Docker).",
+      "properties": {
+        "type": {
+          "const": "PluginConfig",
+          "default": "PluginConfig",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "docker": {
+          "$ref": "#/$defs/DockerConfig",
+          "description": "The configuration to use this plugin in a docker container"
+        },
+        "local": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LocalConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The configuration to use this plugin locally"
+        }
+      },
+      "required": [
+        "docker"
+      ],
+      "title": "PluginConfig",
+      "type": "object"
+    },
+    "ProjectFolder": {
+      "description": "Project Folder Source\n\nThis is the path to a folder where files and folders can be sourced. In the context\nof a desktop run Workflow this folder will correspond to a local folder. In the\ncontext of a workflow run on Pollination this folder will correspond to a Project\nscoped folder.",
+      "properties": {
+        "type": {
+          "const": "ProjectFolder",
+          "default": "ProjectFolder",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "path": {
+          "default": null,
+          "description": "The path to a folder where files and folders can be sourced. For a local filesystem this can be \"C:\\Users\\me\\jobs\\test\".",
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "title": "ProjectFolder",
+      "type": "object"
+    },
+    "S3": {
+      "description": "S3 Source\n\nAn S3 bucket artifact Source.",
+      "properties": {
+        "type": {
+          "const": "S3",
+          "default": "S3",
+          "title": "Type",
+          "type": "string"
+        },
+        "annotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+          "title": "Annotations"
+        },
+        "key": {
+          "description": "The path inside the bucket to source artifacts from.",
+          "title": "Key",
+          "type": "string"
+        },
+        "endpoint": {
+          "description": "The HTTP endpoint to reach the S3 bucket.",
+          "title": "Endpoint",
+          "type": "string"
+        },
+        "bucket": {
+          "description": "The name of the S3 bucket on the host server.",
+          "title": "Bucket",
+          "type": "string"
+        },
+        "credentials_path": {
+          "default": null,
+          "description": "Path to the file holding the AccessKey and SecretAccessKey to authenticate to the bucket. Assumes public bucket access if none are specified.",
+          "title": "Credentials Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "endpoint",
+        "bucket"
+      ],
+      "title": "S3",
+      "type": "object"
+    },
+    "ScriptingLanguages": {
+      "description": "Supported Scripting Languages",
+      "enum": [
+        "python"
+      ],
+      "title": "ScriptingLanguages",
+      "type": "string"
+    }
+  },
+  "description": "A Queenbee Plugin.\n\nA plugin contains runtime configuration for a Command Line Interface (CLI) and\na list of functions that can be executed using this CLI tool.",
+  "properties": {
+    "type": {
+      "const": "Plugin",
+      "default": "Plugin",
+      "title": "Type",
+      "type": "string"
+    },
+    "annotations": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "An optional dictionary to add annotations to inputs. These annotations will be used by the client side libraries.",
+      "title": "Annotations"
+    },
+    "api_version": {
+      "const": "v1beta1",
+      "default": "v1beta1",
+      "readOnly": true,
+      "title": "Api Version",
+      "type": "string"
+    },
+    "metadata": {
+      "$ref": "#/$defs/MetaData",
+      "description": "The Plugin metadata information"
+    },
+    "config": {
+      "$ref": "#/$defs/PluginConfig",
+      "description": "The configuration information to run this plugin"
+    },
+    "functions": {
+      "description": "List of Plugin functions",
+      "items": {
+        "$ref": "#/$defs/Function"
+      },
+      "title": "Functions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "metadata",
+    "config",
+    "functions"
+  ],
+  "title": "Plugin",
+  "type": "object"
+}
